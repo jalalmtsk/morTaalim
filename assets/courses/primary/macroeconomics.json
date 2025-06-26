@@ -1,0 +1,30 @@
+{
+  "title": "Mathématiques",
+  "sections": [
+    {
+      "title": "1. Introduction en Nombre?",
+      "content": "Microeconomics is the study of how individuals and firms make decisions and how they interact in markets.",
+      "controller": ""
+
+    },
+    {
+      "title": "2. Les Nombres",
+      "content": "Supply and demand is one of the most fundamental concepts of economics...",
+      "controller": ""
+    },
+    {
+      "title": "3. Les Equations",
+      "content": "Elasticity measures how much buyers and sellers respond to changes in market conditions...",
+      "controller": "Bonjour_song.mp4"
+
+    },
+    {
+      "title": "4. Plus que et Moins Que",
+      "content": "Elasticity measures how much buyers and sellers respond to changes in market conditions...",
+      "controller" : ""
+
+    }
+  ]
+}
+
+

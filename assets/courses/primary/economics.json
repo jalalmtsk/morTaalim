@@ -1,0 +1,18 @@
+{
+  "title": "Economics",
+  "sections": [
+    {
+      "title": "What is Macroeconomics?",
+      "content": "GDP mea",
+      "controller": "Kids_song.mp4",
+      "type": "asset"
+    },
+    {
+      "title": "GDP and Inflation",
+      "content": "GDP measures economic output and inflation measures price changes.",
+      "controller": "https://www.youtube.com/watch?v=uQe1KMMvCXg",
+      "type": "youtube"
+
+    }
+  ]
+}
