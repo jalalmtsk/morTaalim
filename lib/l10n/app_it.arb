@@ -1,0 +1,20 @@
+{
+  "@@locale": "it",
+  "chooseLevel": "Scegli il tuo livello scolastico 👇",
+  "welcome": "Benvenuto",
+  "progress": "Avanzamento",
+  "loading": "Caricamento...",
+  "examTitle": "Esame Prima Elementare",
+  "class1": "1ª Elementare",
+  "class2": "2ª Elementare",
+  "class3": "3ª Elementare",
+  "class4": "4ª Elementare",
+  "class5": "5ª Elementare",
+  "class6": "6ª Elementare",
+
+  "math": "Matematica",
+  "french": "Francese",
+  "arabic": "Arabo",
+  "islamicEducation": "Educazione Islamica",
+  "artEducation": "Educazione Artistica"
+}

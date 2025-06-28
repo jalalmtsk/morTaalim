@@ -78,6 +78,7 @@ class _MyAppState extends State<MyApp> {
           Locale("fr"),
           Locale("ar"),
           Locale("en"),
+          Locale("it")
         ],
         locale: _locale,
         home: Index(onChangeLocale: _changeLanguage,));

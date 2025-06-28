@@ -168,52 +168,83 @@ class _CoursePageState extends State<CoursePage> {
                         ],
                       ),
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Directionality(
-                                textDirection: isArabic(section['content'])
-                                    ? TextDirection.rtl
-                                    : TextDirection.ltr,
-                                child: Container(
-                                  padding: const EdgeInsets.all(14),
-                                  decoration: BoxDecoration(
-                                    color: Colors.deepPurple.shade50,
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  child: Text(
-                                    section['content'],
-                                    textAlign: isArabic(section['content'])
-                                        ? TextAlign.right
-                                        : TextAlign.left,
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      height: 1.5,
-                                      color: Colors.deepPurple.shade900,
-                                      fontWeight: FontWeight.w600,
-                                      fontFamily: isArabic(section['content'])
-                                          ? 'Amiri'
-                                          : null,
-                                    ),
-                                  ),
-                                ),
+                        // Main Section Content
+                        Directionality(
+                          textDirection: isArabic(section['content']) ? TextDirection.rtl : TextDirection.ltr,
+                          child: Container(
+                            padding: const EdgeInsets.all(14),
+                            decoration: BoxDecoration(
+                              color: Colors.deepPurple.shade50,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              section['content'],
+                              textAlign: isArabic(section['content']) ? TextAlign.right : TextAlign.left,
+                              style: TextStyle(
+                                fontSize: 16,
+                                height: 1.5,
+                                color: Colors.deepPurple.shade900,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: isArabic(section['content']) ? 'Amiri' : null,
                               ),
-                              const SizedBox(height: 16),
-                              if (section['controller'] != null &&
-                                  section['controller']
-                                      .toString()
-                                      .trim()
-                                      .isNotEmpty)
-                                section['type'] == 'youtube'
-                                    ? YouTubeSectionPlayer(
-                                    videoUrl: section['controller'])
-                                    : SectionVlcPlayer(
-                                    videoPath: section['controller']),
-                            ],
+                            ),
                           ),
                         ),
+
+                        const SizedBox(height: 16),
+                        if (section['controller'] != null &&
+                            section['controller'].toString().trim().isNotEmpty)
+                          section['type'] == 'youtube'
+                              ? YouTubeSectionPlayer(videoUrl: section['controller'])
+                              : SectionVlcPlayer(videoPath: section['controller']),
+                        const SizedBox(height: 16),
+                        // ✅ Subsections (if any)
+                        if (section['subsections'] != null)
+                          ...List.generate(section['subsections'].length, (subIndex) {
+                            final sub = section['subsections'][subIndex];
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Directionality(
+                                    textDirection: isArabic(sub['title']) ? TextDirection.rtl : TextDirection.ltr,
+                                    child: Text(
+                                      sub['title'],
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.deepPurple.shade700,
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 4),
+                                  Directionality(
+                                    textDirection: isArabic(sub['content']) ? TextDirection.rtl : TextDirection.ltr,
+                                    child: Text(
+                                      sub['content'],
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ),
+
+                                  const SizedBox(height: 10),
+                                  if (sub['controller'] != null &&
+                                      sub['controller'].toString().trim().isNotEmpty)
+                                    sub['type'] == 'youtube'
+                                        ? YouTubeSectionPlayer(videoUrl: sub['controller'])
+                                        : SectionVlcPlayer(videoPath: sub['controller']),
+
+                                ],
+                              ),
+                            );
+                          }),
+
+                        // Video player
+
                       ],
                     ),
                   ),

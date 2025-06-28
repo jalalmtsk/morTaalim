@@ -101,6 +101,17 @@ class Index extends StatelessWidget {
             ],
           ),
         ),
+
+        PopupMenuItem<Locale>(
+          value: const Locale("it"),
+          child: Row(
+            children: const [
+              Text("🇮🇹", style: TextStyle(fontSize: 20)),
+              SizedBox(width: 10),
+              Text("Italiano", style: TextStyle(fontSize: 16)),
+            ],
+          ),
+        ),
       ],
     )]
     ),

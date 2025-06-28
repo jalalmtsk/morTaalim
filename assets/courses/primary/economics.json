@@ -5,14 +5,31 @@
       "title": "What is Macroeconomics?",
       "content": "GDP mea",
       "controller": "Kids_song.mp4",
-      "type": "asset"
+      "type": "asset",
+      "subsections": [
+        {
+          "title": "Definition of Macroeconomics",
+          "content": "Macroeconomics studies the overall economy."
+        },
+        {
+          "title": "Goals of Macroeconomics",
+          "content": "Stability, growth, and employment.",
+          "controller": "Kids_song.mp4",
+          "type": "asset"
+        },
+        {
+          "title": "Goals of Macroeconomics",
+          "content": "Stability, growth, and employment.",
+          "controller": "Kids_song.mp4",
+          "type": "asset"
+        }
+      ]
     },
     {
       "title": "GDP and Inflation",
       "content": "GDP measures economic output and inflation measures price changes.",
       "controller": "https://www.youtube.com/watch?v=uQe1KMMvCXg",
       "type": "youtube"
-
     }
   ]
 }
