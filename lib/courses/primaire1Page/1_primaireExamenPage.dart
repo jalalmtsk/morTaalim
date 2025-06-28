@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mortaalim/tools/HomeCourse.dart';
@@ -15,9 +14,9 @@ class _primaire1ExamState extends State<primaire1Exam> {
     {'title': 'Mathématiques', 'file': 'assets/courses/primary/microeconomics.json'},
     {'title': 'Activité scientifique', 'file': 'assets/courses/primary/economy.json'},
     {'title': 'Arabe', 'file': 'assets/courses/primary/economics.json'},
-    {'title': 'Francais', 'file': 'assets/courses/primary/economics.json'},
-    {'title': 'Education Islamique', 'file': 'assets/courses/primary/economics.json'},
-    {'title': 'Education Artistique', 'file': 'assets/courses/primary/economics.json'},
+    {'title': 'Français', 'file': 'assets/courses/primary/economics.json'},
+    {'title': 'Éducation Islamique', 'file': 'assets/courses/primary/economics.json'},
+    {'title': 'Éducation Artistique', 'file': 'assets/courses/primary/economics.json'},
   ];
 
   Map<String, double> courseProgress = {};
@@ -35,8 +34,8 @@ class _primaire1ExamState extends State<primaire1Exam> {
       final courseId = course['title']!;
       final saved = prefs.getStringList('progress_$courseId') ?? [];
       final total = await getTotalSections(course['file']!);
-
       double progress = total > 0 ? saved.length / total : 0.0;
+
       setState(() {
         courseProgress[courseId] = progress;
       });
@@ -52,12 +51,25 @@ class _primaire1ExamState extends State<primaire1Exam> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-        appBar: AppBar(
-            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-            title: Text('1ère Primaire Exam')),
-        body: Column(children: [
-        Expanded(child: Image.asset('assets/images/Mathematics_toy.png')),
+      backgroundColor: Colors.grey[100],
+      body: Column(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 20),
+            height: 180,
+            child: Image.asset('assets/images/Mathematics_toy.png'),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              'Choisis une matière',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.deepPurple,
+              ),
+            ),
+          ),
           Expanded(
             child: ListView.builder(
               itemCount: courses.length,
@@ -66,30 +78,76 @@ class _primaire1ExamState extends State<primaire1Exam> {
                 final title = course['title']!;
                 final progress = courseProgress[title] ?? 0.0;
                 final percentText = (progress * 100).toStringAsFixed(0);
+
                 return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Card(
-                    color: Theme.of(context).cardColor,
-                    child: ListTile(
-                      title: Text('$title ($percentText%)'),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => CoursePage(
-                              jsonFilePath: course['file']!,
-                              courseId: title,
-                            ),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CoursePage(
+                            jsonFilePath: course['file']!,
+                            courseId: title,
                           ),
-                        ).then((_) => loadProgressForCourses()); // refresh when returning
-                      },
+                        ),
+                      ).then((_) => loadProgressForCourses());
+                    },
+                    child: Card(
+                      elevation: 3,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(16),
+                          color: Colors.white,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(Icons.book_outlined, color: Colors.deepPurple),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    title,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  "$percentText%",
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepPurple,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 12),
+                            LinearProgressIndicator(
+                              value: progress,
+                              minHeight: 8,
+                              backgroundColor: Colors.grey[300],
+                              color: Colors.deepPurple,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 );
               },
             ),
           ),
-        ],)
+        ],
+      ),
     );
   }
 }

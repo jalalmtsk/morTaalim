@@ -25,6 +25,7 @@ class _CoursePageState extends State<CoursePage> {
     final arabicRegExp = RegExp(r'[\u0600-\u06FF]');
     return arabicRegExp.hasMatch(text);
   }
+
   late SharedPreferences prefs;
   bool isLoading = true;
 
@@ -74,18 +75,24 @@ class _CoursePageState extends State<CoursePage> {
   Widget build(BuildContext context) {
     if (isLoading) {
       return Scaffold(
-        appBar: AppBar(title: Text('Loading...')),
-        body: Center(child: CircularProgressIndicator()),
+        backgroundColor: Colors.grey[100],
+        appBar: AppBar(title: const Text('Chargement...')),
+        body: const Center(child: CircularProgressIndicator()),
       );
     }
 
-    double progress = sections.isEmpty
-        ? 0
-        : completedSections.length / sections.length;
+    double progress = sections.isEmpty ? 0 : completedSections.length /
+        sections.length;
     String progressPercent = (progress * 100).toStringAsFixed(0);
 
     return Scaffold(
+      backgroundColor: Colors.grey[100],
       appBar: AppBar(
+        elevation: 3,
+        backgroundColor: Colors.deepPurple,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
         title: Text('$courseTitle ($progressPercent%)'),
       ),
       body: Column(
@@ -95,14 +102,18 @@ class _CoursePageState extends State<CoursePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Progress: $progressPercent%',
-                    style: TextStyle(fontSize: 16)),
-                SizedBox(height: 8),
-                LinearProgressIndicator(
-                  value: progress,
-                  backgroundColor: Colors.grey[300],
-                  color: Colors.orangeAccent,
-                  minHeight: 8,
+                Text('Progression: $progressPercent%',
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.w500)),
+                const SizedBox(height: 8),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: LinearProgressIndicator(
+                    value: progress,
+                    backgroundColor: Colors.grey[300],
+                    color: Colors.deepPurpleAccent,
+                    minHeight: 10,
+                  ),
                 ),
               ],
             ),
@@ -114,94 +125,98 @@ class _CoursePageState extends State<CoursePage> {
                 final section = sections[index];
                 final isDone = completedSections.contains(index);
 
-                return ExpansionTile(
-                  key: Key('$index'),
-                  title: Row(
-                    children: [
-                      Expanded(child:  Directionality(
-                        textDirection: isArabic(section['title']) ? TextDirection.rtl : TextDirection.ltr,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                          margin: const EdgeInsets.symmetric(vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.orange.shade100,
-                            borderRadius: BorderRadius.circular(10),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.orange.withOpacity(0.2),
-                                blurRadius: 6,
-                                offset: Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            section['title'],
-                            textAlign: isArabic(section['title']) ? TextAlign.right : TextAlign.left,
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepOrange.shade700,
-                              letterSpacing: 0.5,
-                              fontFamily: isArabic(section['title']) ? 'Amiri' : null, // Optional Arabic font
-                            ),
-                          ),
-                        ),
-                      ),
-                      ),
-                      Checkbox(
-                        value: isDone,
-                        onChanged: (val) => toggleSection(index),
-                      ),
-                    ],
-                  ),
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                return Padding(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 6.0),
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 3,
+                    child: ExpansionTile(
+                      key: Key('$index'),
+                      tilePadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      title: Row(
                         children: [
-
-                          Directionality(
-                            textDirection: isArabic(section['content']) ? TextDirection.rtl : TextDirection.ltr,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                              margin: const EdgeInsets.symmetric(vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.orange.shade50,
-                                borderRadius: BorderRadius.circular(12),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.orange.withValues(alpha: 0.40),
-                                    blurRadius: 8,
-                                    offset: Offset(0, 3),
-                                  ),
-                                ],
-                              ),
+                          Expanded(
+                            child: Directionality(
+                              textDirection: isArabic(section['title'])
+                                  ? TextDirection.rtl
+                                  : TextDirection.ltr,
                               child: Text(
-                                section['content'],
-                                textAlign: isArabic(section['content']) ? TextAlign.right : TextAlign.left,
+                                section['title'],
+                                textAlign: isArabic(section['title'])
+                                    ? TextAlign.right
+                                    : TextAlign.left,
                                 style: TextStyle(
                                   fontSize: 18,
-                                  height: 1.5,
-                                  color: Colors.orange.shade900,
-                                  fontWeight: FontWeight.w600,
-                                  fontFamily: isArabic(section['content']) ? 'Amiri' : null, // Optional: use Arabic font if available
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.deepPurple,
+                                  fontFamily: isArabic(section['title'])
+                                      ? 'Amiri'
+                                      : null,
                                 ),
                               ),
                             ),
                           ),
-
-
-                          SizedBox(height: 16),
-                          if (section['controller'] != null && section['controller'].toString().trim().isNotEmpty)
-                            section['type'] == 'youtube'
-                                ? YouTubeSectionPlayer(videoUrl: section['controller'])
-                                : SectionVlcPlayer(videoPath: section['controller']),
-
+                          Checkbox(
+                            value: isDone,
+                            activeColor: Colors.deepPurple,
+                            onChanged: (val) => toggleSection(index),
+                          ),
                         ],
                       ),
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Directionality(
+                                textDirection: isArabic(section['content'])
+                                    ? TextDirection.rtl
+                                    : TextDirection.ltr,
+                                child: Container(
+                                  padding: const EdgeInsets.all(14),
+                                  decoration: BoxDecoration(
+                                    color: Colors.deepPurple.shade50,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    section['content'],
+                                    textAlign: isArabic(section['content'])
+                                        ? TextAlign.right
+                                        : TextAlign.left,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      height: 1.5,
+                                      color: Colors.deepPurple.shade900,
+                                      fontWeight: FontWeight.w600,
+                                      fontFamily: isArabic(section['content'])
+                                          ? 'Amiri'
+                                          : null,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 16),
+                              if (section['controller'] != null &&
+                                  section['controller']
+                                      .toString()
+                                      .trim()
+                                      .isNotEmpty)
+                                section['type'] == 'youtube'
+                                    ? YouTubeSectionPlayer(
+                                    videoUrl: section['controller'])
+                                    : SectionVlcPlayer(
+                                    videoPath: section['controller']),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 );
               },
             ),
@@ -211,5 +226,3 @@ class _CoursePageState extends State<CoursePage> {
     );
   }
 }
-
-

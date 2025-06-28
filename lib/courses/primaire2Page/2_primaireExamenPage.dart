@@ -3,21 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mortaalim/tools/HomeCourse.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-
-class primaire1 extends StatefulWidget {
+class primaire2Exam extends StatefulWidget {
   @override
-  _primaire1State createState() => _primaire1State();
+  _primaire2ExamState createState() => _primaire2ExamState();
 }
 
-class _primaire1State extends State<primaire1> {
+class _primaire2ExamState extends State<primaire2Exam> {
   final List<Map<String, String>> courses = [
-    {'title': 'math', 'file': 'assets/courses/primary/microeconomics.json'},
-    {'title': 'french', 'file': 'assets/courses/primary/economics.json'},
-    {'title': 'arabic', 'file': 'assets/courses/primary/economics.json'},
-    {'title': 'islamicEducation', 'file': 'assets/courses/primary/primaire1/Education_Islamique/1primaire_education_islamique.json'},
-    {'title': 'artEducation', 'file': 'assets/courses/primary/macroeconomics.json'},
+    {'title': 'Mathématiques', 'file': 'assets/courses/primary/microeconomics.json'},
+    {'title': 'Activité scientifique', 'file': 'assets/courses/primary/economy.json'},
+    {'title': 'Arabe', 'file': 'assets/courses/primary/economics.json'},
+    {'title': 'Français', 'file': 'assets/courses/primary/economics.json'},
+    {'title': 'Éducation Islamique', 'file': 'assets/courses/primary/economics.json'},
+    {'title': 'Éducation Artistique', 'file': 'assets/courses/primary/economics.json'},
   ];
 
   Map<String, double> courseProgress = {};
@@ -35,8 +34,8 @@ class _primaire1State extends State<primaire1> {
       final courseId = course['title']!;
       final saved = prefs.getStringList('progress_$courseId') ?? [];
       final total = await getTotalSections(course['file']!);
-
       double progress = total > 0 ? saved.length / total : 0.0;
+
       setState(() {
         courseProgress[courseId] = progress;
       });
@@ -49,40 +48,27 @@ class _primaire1State extends State<primaire1> {
     return (jsonResult['sections'] as List).length;
   }
 
-  IconData getCourseIcon(String title) {
-    switch (title) {
-      case 'Mathématiques':
-        return Icons.calculate;
-      case 'Français':
-        return Icons.language;
-      case 'Arabe':
-        return Icons.translate;
-      case 'Éducation Islamique':
-        return Icons.mosque;
-      case 'Éducation Artistique':
-        return Icons.brush;
-      default:
-        return Icons.menu_book;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: Column(
         children: [
-          const SizedBox(height: 40),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: Text("📘 ${AppLocalizations.of(context)!.class1}",
-              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.deepOrangeAccent),
-            ),
-          ),
           Container(
-            margin: const EdgeInsets.only(top: 10, bottom: 10),
-            height: 150,
+            margin: const EdgeInsets.only(top: 20),
+            height: 180,
             child: Image.asset('assets/images/Mathematics_toy.png'),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              'Choisis une matière',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w600,
+                color: Colors.deepPurple,
+              ),
+            ),
           ),
           Expanded(
             child: ListView.builder(
@@ -92,7 +78,6 @@ class _primaire1State extends State<primaire1> {
                 final title = course['title']!;
                 final progress = courseProgress[title] ?? 0.0;
                 final percentText = (progress * 100).toStringAsFixed(0);
-                final icon = getCourseIcon(title);
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -124,15 +109,11 @@ class _primaire1State extends State<primaire1> {
                           children: [
                             Row(
                               children: [
-                                Icon(icon, color: Colors.deepOrangeAccent),
-                                const SizedBox(width: 10),
+                                Icon(Icons.book_outlined, color: Colors.deepPurple),
+                                const SizedBox(width: 8),
                                 Expanded(
-                                  child: Text( course['title'] == 'math' ? AppLocalizations.of(context)!.math
-                                      : course['title'] == 'french' ? AppLocalizations.of(context)!.french
-                                      : course['title'] == 'arabic' ? AppLocalizations.of(context)!.arabic
-                                      : course['title'] == 'islamicEducation' ? AppLocalizations.of(context)!.islamicEducation
-                                      : course['title'] == 'artEducation' ? AppLocalizations.of(context)!.artEducation
-                                      : AppLocalizations.of(context)!.class6,
+                                  child: Text(
+                                    title,
                                     style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w600,
@@ -141,10 +122,10 @@ class _primaire1State extends State<primaire1> {
                                 ),
                                 Text(
                                   "$percentText%",
-                                  style: const TextStyle(
+                                  style: TextStyle(
                                     fontSize: 14,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.deepOrangeAccent,
+                                    color: Colors.deepPurple,
                                   ),
                                 ),
                               ],
@@ -154,7 +135,7 @@ class _primaire1State extends State<primaire1> {
                               value: progress,
                               minHeight: 8,
                               backgroundColor: Colors.grey[300],
-                              color: Colors.deepOrangeAccent,
+                              color: Colors.deepPurple,
                             ),
                           ],
                         ),
