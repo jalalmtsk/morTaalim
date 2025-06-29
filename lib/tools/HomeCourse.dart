@@ -1,31 +1,24 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mortaalim/tools/VideoPlayer.dart';
-import 'package:mortaalim/tools/YoutubePlayerPage.dart';
+import 'package:mortaalim/widgets/course_progress.dart';
+import 'package:mortaalim/widgets/section_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 
 class CoursePage extends StatefulWidget {
   final String jsonFilePath;
   final String courseId;
 
-  CoursePage({required this.jsonFilePath, required this.courseId});
+  const CoursePage({required this.jsonFilePath, required this.courseId, super.key});
 
   @override
-  _CoursePageState createState() => _CoursePageState();
+  State<CoursePage> createState() => _CoursePageState();
 }
 
 class _CoursePageState extends State<CoursePage> {
   String courseTitle = '';
   List<dynamic> sections = [];
   Set<int> completedSections = {};
-
-  bool isArabic(String text) {
-    final arabicRegExp = RegExp(r'[\u0600-\u06FF]');
-    return arabicRegExp.hasMatch(text);
-  }
-
   late SharedPreferences prefs;
   bool isLoading = true;
 
@@ -62,11 +55,9 @@ class _CoursePageState extends State<CoursePage> {
 
   void toggleSection(int index) {
     setState(() {
-      if (completedSections.contains(index)) {
-        completedSections.remove(index);
-      } else {
-        completedSections.add(index);
-      }
+      completedSections.contains(index)
+          ? completedSections.remove(index)
+          : completedSections.add(index);
     });
     saveProgress();
   }
@@ -74,180 +65,41 @@ class _CoursePageState extends State<CoursePage> {
   @override
   Widget build(BuildContext context) {
     if (isLoading) {
-      return Scaffold(
-        backgroundColor: Colors.grey[100],
-        appBar: AppBar(title: const Text('Chargement...')),
-        body: const Center(child: CircularProgressIndicator()),
+      return const Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(child: CircularProgressIndicator()),
       );
     }
 
-    double progress = sections.isEmpty ? 0 : completedSections.length /
-        sections.length;
+    double progress = sections.isEmpty ? 0 : completedSections.length / sections.length;
     String progressPercent = (progress * 100).toStringAsFixed(0);
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: AppBar(
-        elevation: 3,
+        title: Text('$courseTitle ($progressPercent%)'),
         backgroundColor: Colors.deepPurple,
+        elevation: 3,
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
         ),
-        title: Text('$courseTitle ($progressPercent%)'),
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Progression: $progressPercent%',
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.w500)),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: LinearProgressIndicator(
-                    value: progress,
-                    backgroundColor: Colors.grey[300],
-                    color: Colors.deepPurpleAccent,
-                    minHeight: 10,
-                  ),
-                ),
-              ],
-            ),
-          ),
+
+          //CourseProgress Page.......
+          CourseProgress(progress: progress, progressPercent: progressPercent),
           Expanded(
             child: ListView.builder(
               itemCount: sections.length,
               itemBuilder: (context, index) {
-                final section = sections[index];
-                final isDone = completedSections.contains(index);
 
-                return Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0, vertical: 6.0),
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 3,
-                    child: ExpansionTile(
-                      key: Key('$index'),
-                      tilePadding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      title: Row(
-                        children: [
-                          Expanded(
-                            child: Directionality(
-                              textDirection: isArabic(section['title'])
-                                  ? TextDirection.rtl
-                                  : TextDirection.ltr,
-                              child: Text(
-                                section['title'],
-                                textAlign: isArabic(section['title'])
-                                    ? TextAlign.right
-                                    : TextAlign.left,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.deepPurple,
-                                  fontFamily: isArabic(section['title'])
-                                      ? 'Amiri'
-                                      : null,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Checkbox(
-                            value: isDone,
-                            activeColor: Colors.deepPurple,
-                            onChanged: (val) => toggleSection(index),
-                          ),
-                        ],
-                      ),
-                      children: [
-                        // Main Section Content
-                        Directionality(
-                          textDirection: isArabic(section['content']) ? TextDirection.rtl : TextDirection.ltr,
-                          child: Container(
-                            padding: const EdgeInsets.all(14),
-                            decoration: BoxDecoration(
-                              color: Colors.deepPurple.shade50,
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Text(
-                              section['content'],
-                              textAlign: isArabic(section['content']) ? TextAlign.right : TextAlign.left,
-                              style: TextStyle(
-                                fontSize: 16,
-                                height: 1.5,
-                                color: Colors.deepPurple.shade900,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: isArabic(section['content']) ? 'Amiri' : null,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(height: 16),
-                        if (section['controller'] != null &&
-                            section['controller'].toString().trim().isNotEmpty)
-                          section['type'] == 'youtube'
-                              ? YouTubeSectionPlayer(videoUrl: section['controller'])
-                              : SectionVlcPlayer(videoPath: section['controller']),
-                        const SizedBox(height: 16),
-                        // ✅ Subsections (if any)
-                        if (section['subsections'] != null)
-                          ...List.generate(section['subsections'].length, (subIndex) {
-                            final sub = section['subsections'][subIndex];
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 10),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Directionality(
-                                    textDirection: isArabic(sub['title']) ? TextDirection.rtl : TextDirection.ltr,
-                                    child: Text(
-                                      sub['title'],
-                                      style: TextStyle(
-                                        fontSize: 15,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.deepPurple.shade700,
-                                      ),
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 4),
-                                  Directionality(
-                                    textDirection: isArabic(sub['content']) ? TextDirection.rtl : TextDirection.ltr,
-                                    child: Text(
-                                      sub['content'],
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Colors.black87,
-                                      ),
-                                    ),
-                                  ),
-
-                                  const SizedBox(height: 10),
-                                  if (sub['controller'] != null &&
-                                      sub['controller'].toString().trim().isNotEmpty)
-                                    sub['type'] == 'youtube'
-                                        ? YouTubeSectionPlayer(videoUrl: sub['controller'])
-                                        : SectionVlcPlayer(videoPath: sub['controller']),
-
-                                ],
-                              ),
-                            );
-                          }),
-
-                        // Video player
-
-                      ],
-                    ),
-                  ),
+                //SectionCard Page.......
+                return SectionCard(
+                  section: sections[index],
+                  isDone: completedSections.contains(index),
+                  index: index,
+                  toggle: toggleSection,
                 );
               },
             ),

@@ -1,22 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/courses/primaire1Page/index_1PrimairePage.dart';
-import 'package:mortaalim/courses/primaire2Page/2_primaire.dart';
 import 'package:mortaalim/courses/primaire2Page/index_2PrimairePage.dart';
 import 'package:mortaalim/courses/primaire3Page/3_primaire.dart';
 import 'package:mortaalim/courses/primaire4Page/4_primaire.dart';
 import 'package:mortaalim/courses/primaire5Page/5_primaire.dart';
 import 'package:mortaalim/courses/primaire6Page/6_primaire.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:mortaalim/main.dart';
+import 'package:mortaalim/tools/audio_tool.dart';
 
 
 
 
-class Index extends StatelessWidget {
+class Index extends StatefulWidget {
   final void Function(Locale) onChangeLocale;
 
   Index({required this.onChangeLocale});
 
+  @override
+  State<Index> createState() => _IndexState();
+}
+
+class _IndexState extends State<Index> {
+  final MusicPlayer _musicPlayer = MusicPlayer();
+
+  @override
+
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _musicPlayer.play("assets/audios/intro_music.mp3", loop: true);
+  }
+  @override
+  void dispose() {
+    _musicPlayer.dispose(); // stop and release resources
+    super.dispose();
+  }
   @override
   final List<Map<String, dynamic>> HighCourse = [
     {
@@ -56,20 +74,34 @@ class Index extends StatelessWidget {
       'color': Colors.deepPurple,
     },
   ];
-
+  bool musicisOn = true;
   @override
   Widget build(BuildContext context) {
     final tr = AppLocalizations.of(context)!;
-
+    clickedOnMusic()async{
+      setState(() {
+        musicisOn = !musicisOn;
+      });
+      if(musicisOn){
+       await _musicPlayer.play("assets/audios/into.mp3");
+      }else{
+        await _musicPlayer.stop();
+      }
+    }
     return Scaffold(
       appBar: AppBar(
-        actions: [PopupMenuButton<Locale>(
+        leading: IconButton(onPressed: () => clickedOnMusic(),
+        icon: Icon(musicisOn ?  Icons.music_note : Icons.music_off)),
+        actions: [
+          IconButton(onPressed: (){
+          }, icon: Icon(Icons.add)),
+          PopupMenuButton<Locale>(
       icon: const Icon(Icons.language_outlined, color: Colors.deepOrange, size: 28),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       color: Colors.white,
       elevation: 8,
       tooltip: 'Change Language',
-      onSelected: onChangeLocale,
+      onSelected: widget.onChangeLocale,
       itemBuilder: (BuildContext context) => [
         PopupMenuItem<Locale>(
           value: const Locale("en"),
@@ -129,6 +161,9 @@ class Index extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              ElevatedButton(onPressed: (){
+                _musicPlayer.play("assets/audios/intro_music.mp3");
+              }, child: Text("Play Sound")),
               Text(tr.welcome,
                 style: TextStyle(
                   fontSize: 28,
@@ -158,6 +193,7 @@ class Index extends StatelessWidget {
                     final course = HighCourse[index];
                     return GestureDetector(
                       onTap: () {
+                        _musicPlayer.stop();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
