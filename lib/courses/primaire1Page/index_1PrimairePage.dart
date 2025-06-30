@@ -9,39 +9,115 @@ class index1Primaire extends StatefulWidget {
   State<index1Primaire> createState() => _index1PrimaireState();
 }
 
-class _index1PrimaireState extends State<index1Primaire> {
+class _index1PrimaireState extends State<index1Primaire>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         backgroundColor: Colors.grey[100],
-        appBar: AppBar(
-          backgroundColor: Colors.deepOrangeAccent,
-          elevation: 2,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-          ),
-          title: const Text(
-            '1ère Année Primaire',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          bottom: const TabBar(
-            indicatorColor: Colors.white,
-            indicatorWeight: 3,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white70,
-            labelStyle: TextStyle(fontWeight: FontWeight.bold),
-            tabs: [
-              Tab(icon: Icon(Icons.menu_book), text: 'Cours'),
-              Tab(icon: Icon(Icons.assignment), text: 'Examens'),
-            ],
-          ),
-        ),
-        body: TabBarView(
+        body: Column(
           children: [
-            primaire1(),
-            primaire1Exam(),
+            SlideTransition(
+              position: _slideAnimation,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Container(
+                  padding: const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 12),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                    borderRadius: BorderRadius.vertical(
+                      bottom: Radius.circular(24),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children:  [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                            icon:  Icon(Icons.arrow_back, color: Colors.deepOrange),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                           Text(
+                            '1ère Année Primaire',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          const SizedBox(width: 48), // same width as back button for balance
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      TabBar(
+                        labelColor: Colors.deepOrange,
+                        unselectedLabelColor: Colors.grey,
+                        indicatorColor: Colors.deepOrange,
+                        indicatorWeight: 2.5,
+                        labelStyle: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                        tabs: [
+                          Tab(icon: Icon(Icons.menu_book), text: 'Cours'),
+                          Tab(icon: Icon(Icons.assignment), text: 'Examens'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  primaire1(),
+                  primaire1Exam(),
+                ],
+              ),
+            ),
           ],
         ),
       ),

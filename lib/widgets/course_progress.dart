@@ -7,7 +7,7 @@ class CourseProgress extends StatelessWidget {
   const CourseProgress({
     super.key,
     required this.progress,
-    required this.progressPercent,
+    required this.progressPercent, required MaterialAccentColor color,
   });
 
   @override
@@ -25,7 +25,7 @@ class CourseProgress extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               backgroundColor: Colors.grey[300],
-              color: Colors.deepPurpleAccent,
+              color: Colors.deepOrangeAccent,
               minHeight: 10,
             ),
           ),

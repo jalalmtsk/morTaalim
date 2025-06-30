@@ -1,0 +1,16 @@
+import 'package:flutter/material.dart';
+
+class MusicButton extends StatelessWidget {
+  final bool isOn;
+  final VoidCallback onPressed;
+
+  const MusicButton({super.key, required this.isOn, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: onPressed,
+      icon: Icon(isOn ? Icons.music_note : Icons.music_off),
+    );
+  }
+}
