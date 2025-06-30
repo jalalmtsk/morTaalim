@@ -14,10 +14,10 @@ class Index extends StatefulWidget {
   @override
   State<Index> createState() => _IndexState();
 }
+bool musicisOn = true;
 
 class _IndexState extends State<Index> {
   final MusicPlayer _musicPlayer = MusicPlayer();
-  bool musicisOn = true;
 
   @override
   void initState() {
@@ -45,7 +45,9 @@ class _IndexState extends State<Index> {
   @override
   Widget build(BuildContext context) {
     final tr = AppLocalizations.of(context)!;
-
+    if (tr == null) {
+      return Center(child: Text('Localization data not loaded'));
+    }
     return Scaffold(
       appBar: AppBar(
         leading: MusicButton(isOn: musicisOn, onPressed: toggleMusic),
@@ -77,6 +79,19 @@ class _IndexState extends State<Index> {
                 child: CourseGrid(
                     highCourses: highCourses, musicPlayer: _musicPlayer),
               ),
+              ElevatedButton(onPressed: (){
+  Navigator.of(context).pushReplacementNamed('DrawingAlphabet');
+              }, child: Text("DrawingAlphabet")),
+
+              ElevatedButton(onPressed: (){
+                Navigator.of(context).pushReplacementNamed('QuizGameApp');
+              }, child: Text("Quiz Game")),
+
+              ElevatedButton(onPressed: (){
+                Navigator.of(context).pushReplacementNamed('AppStories');
+              }, child: Text("App Stories")),
+
+
             ],
           ),
         ),

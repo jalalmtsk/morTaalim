@@ -17,5 +17,12 @@
     "arabic": "العربية",
     "islamicEducation": "التربية الإسلامية",
     "artEducation": "التربية الفنية",
-  "great_job" : "عمل رائع! أكملت جميع الأقسام"
+  "great_job" : "عمل رائع! أكملت جميع الأقسام",
+  "enterYourName": "أدخل اسمك",
+  "cancel": "إلغاء",
+  "ok": "موافق",
+  "pleaseEnterName": "يرجى إدخال اسم",
+  "selectGameMode": "اختر وضع اللعب",
+  "singlePlayer": "لاعب واحد",
+  "multiplayer": "لاعبين"
 }

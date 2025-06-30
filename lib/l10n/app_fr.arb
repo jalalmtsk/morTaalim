@@ -17,6 +17,13 @@
       "arabic": "Arabe",
       "islamicEducation": "Éducation Islamique",
       "artEducation": "Éducation Artistique",
-  "great_job": "Super travail ! Vous avez terminé toutes les sections"
+  "great_job": "Super travail ! Vous avez terminé toutes les sections",
+  "enterYourName": "Entrez votre nom",
+  "cancel": "Annuler",
+  "ok": "OK",
+  "pleaseEnterName": "Veuillez entrer un nom",
+  "selectGameMode": "Sélectionnez le mode de jeu",
+  "singlePlayer": "Joueur seul",
+  "multiplayer": "Multijoueur"
 }
 

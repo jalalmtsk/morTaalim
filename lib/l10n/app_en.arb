@@ -12,9 +12,16 @@
   "class5": "5th Grade",
   "class6": "6th Grade",
   "math": "Mathematics",
-    "french": "French",
-    "arabic": "Arabic",
-    "islamicEducation": "Islamic Education",
-    "artEducation": "Artistic Education",
-  "great_job" : "Great job! You have completed all sections"
+  "french": "French",
+  "arabic": "Arabic",
+  "islamicEducation": "Islamic Education",
+  "artEducation": "Artistic Education",
+  "great_job": "Great job! You have completed all sections",
+  "enterYourName": "Enter your name",
+  "cancel": "Cancel",
+  "ok": "OK",
+  "pleaseEnterName": "Please enter a name",
+  "selectGameMode": "Select Game Mode",
+  "singlePlayer": "Single Player",
+  "multiplayer": "Multiplayer"
 }

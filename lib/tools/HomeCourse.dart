@@ -86,7 +86,7 @@ class _CoursePageState extends State<CoursePage> {
         ),
       );
 
-      Future.delayed(const Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 5), () {
         if (mounted) {
           Navigator.of(context).pop(); // Go back
         }

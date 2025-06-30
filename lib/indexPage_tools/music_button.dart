@@ -10,7 +10,7 @@ class MusicButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: onPressed,
-      icon: Icon(isOn ? Icons.music_note : Icons.music_off),
+      icon: isOn ? Icon(Icons.music_note, color:Colors.deepOrange) : Icon(Icons.music_off),
     );
   }
 }

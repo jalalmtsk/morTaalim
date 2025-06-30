@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mortaalim/IndexPage.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 
 class CourseGrid extends StatelessWidget {
@@ -25,6 +26,7 @@ class CourseGrid extends StatelessWidget {
         return GestureDetector(
           onTap: () {
             musicPlayer.stop();
+            musicisOn = false;
             Navigator.push(context, MaterialPageRoute(
               builder: (_) => course['widget'],
             ));

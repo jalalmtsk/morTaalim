@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/games/App_stories/story_book_page.dart';
+import 'package:mortaalim/games/Quiz_Game/general_culture_game.dart';
+import 'package:mortaalim/games/Tracing_Alphabet_app/TracingAlphabetPage.dart';
+import 'package:mortaalim/games/Tracing_Alphabet_app/language_selector.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'IndexPage.dart';
@@ -62,9 +66,11 @@ class _MyAppState extends State<MyApp> {
         ),
 
         debugShowCheckedModeBanner: true,
-        initialRoute: 'Index',
         routes: {
-          //'Index' : (context) => Index(),
+          'Index' : (context) => Index(onChangeLocale: _changeLanguage),
+          'DrawingAlphabet' : (context) => LanguageSelectorPage(),
+          'QuizGameApp' : (context) => QuizGameApp(),
+          'AppStories' : (context) => StoryBookPage()
 
         },
         localizationsDelegates: const [
