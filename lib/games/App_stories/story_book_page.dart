@@ -1,14 +1,13 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:mortaalim/games/App_stories/story_page_data.dart';
-import 'package:mortaalim/games/App_stories/story_page_widget.dart';
-
-
+import 'Stories.dart';
+import 'story_page_widget.dart';
 
 class StoryBookPage extends StatefulWidget {
-  const StoryBookPage({super.key});
+  final Story story;
+
+  const StoryBookPage({super.key, required this.story});
 
   @override
   State<StoryBookPage> createState() => _StoryBookPageState();
@@ -16,38 +15,9 @@ class StoryBookPage extends StatefulWidget {
 
 class _StoryBookPageState extends State<StoryBookPage>
     with TickerProviderStateMixin {
-  final PageController _pageController = PageController();
-  final FlutterTts flutterTts = FlutterTts();
 
-  final List<StoryPageData> pages = [
-    StoryPageData(
-      words: [
-        'Once', 'upon', 'a', 'time,', 'there', 'was', 'a', 'silly', 'fox',
-        'named', 'Flick,', 'who', 'loved', 'to', 'dance', 'in', 'the', 'rain.'
-      ],
-      imageUrl: 'https://i.imgur.com/xO4rLyD.png',
-      characterName: 'Flick',
-      funnyLine: 'Oops! He slipped and did a funny twirl!',
-    ),
-    StoryPageData(
-      words: [
-        'Flick', 'decided', 'to', 'invite', 'his', 'best', 'friend,', 'Benny', 'the', 'bunny,',
-        'to', 'join', 'the', 'rain', 'dance', 'party.'
-      ],
-      imageUrl: 'https://i.imgur.com/MT2Hg6P.png',
-      characterName: 'Benny',
-      funnyLine: 'Benny tried to hop but ended up splashing mud everywhere!',
-    ),
-    StoryPageData(
-      words: [
-        'Together,', 'they', 'danced', 'and', 'laughed,', 'making', 'the', 'forest', 'a', 'happier', 'place.',
-        'Suddenly,', 'a', 'rainbow', 'appeared,', 'and', 'Flick', 'wished', 'for', 'more', 'adventures.'
-      ],
-      imageUrl: 'https://i.imgur.com/PMjRJ9N.png',
-      characterName: 'Flick & Benny',
-      funnyLine: 'Rainbow magic made Benny\'s ears glow bright pink!',
-    ),
-  ];
+  late final PageController _pageController;
+  final FlutterTts flutterTts = FlutterTts();
 
   int currentPageIndex = 0;
   int highlightedWordIndex = 0;
@@ -59,10 +29,16 @@ class _StoryBookPageState extends State<StoryBookPage>
   @override
   void initState() {
     super.initState();
+
+    _pageController = PageController(initialPage: 0);
+
     _initTts();
-    _bounceController =
-    AnimationController(vsync: this, duration: const Duration(seconds: 1))
-      ..repeat(reverse: true);
+
+    _bounceController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
+
     _bounceAnimation = Tween(begin: 0.0, end: -20.0).animate(
       CurvedAnimation(parent: _bounceController, curve: Curves.easeInOut),
     );
@@ -79,7 +55,7 @@ class _StoryBookPageState extends State<StoryBookPage>
     flutterTts.setCompletionHandler(() {
       setState(() {
         isPlaying = false;
-        highlightedWordIndex = pages[currentPageIndex].words.length - 1;
+        highlightedWordIndex = widget.story.pages[currentPageIndex].words.length - 1;
       });
     });
 
@@ -94,7 +70,7 @@ class _StoryBookPageState extends State<StoryBookPage>
       final spokenWords = spokenText.split(RegExp(r'\s+'));
       setState(() {
         highlightedWordIndex = (spokenWords.length - 1)
-            .clamp(0, pages[currentPageIndex].words.length - 1);
+            .clamp(0, widget.story.pages[currentPageIndex].words.length - 1);
       });
     });
 
@@ -104,7 +80,7 @@ class _StoryBookPageState extends State<StoryBookPage>
   }
 
   Future<void> _speak() async {
-    final text = pages[currentPageIndex].fullText;
+    final text = widget.story.pages[currentPageIndex].fullText;
     if (text.isEmpty) return;
 
     if (isPlaying) {
@@ -116,7 +92,7 @@ class _StoryBookPageState extends State<StoryBookPage>
   }
 
   void _goToPage(int index) async {
-    if (index < 0 || index >= pages.length) return;
+    if (index < 0 || index >= widget.story.pages.length) return;
 
     if (isPlaying) {
       await flutterTts.stop();
@@ -133,8 +109,8 @@ class _StoryBookPageState extends State<StoryBookPage>
   }
 
   void _onCharacterTap() {
-    final funnyLine = pages[currentPageIndex].funnyLine;
-    final characterName = pages[currentPageIndex].characterName;
+    final funnyLine = widget.story.pages[currentPageIndex].funnyLine;
+    final characterName = widget.story.pages[currentPageIndex].characterName;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('$characterName says: "$funnyLine"'),
@@ -154,13 +130,16 @@ class _StoryBookPageState extends State<StoryBookPage>
 
   @override
   Widget build(BuildContext context) {
+    final pages = widget.story.pages;
+
     return Scaffold(
       backgroundColor: Colors.orange.shade50,
       appBar: AppBar(
-        leading: IconButton(onPressed: (){
-          Navigator.of(context).pushReplacementNamed("Index");
-        }, icon: Icon(Icons.arrow_back)),
-        title: const Text('Story Book with TTS'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(widget.story.title),
         centerTitle: true,
         backgroundColor: Colors.deepOrange,
       ),
@@ -187,8 +166,7 @@ class _StoryBookPageState extends State<StoryBookPage>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 ElevatedButton.icon(
-                  onPressed:
-                  currentPageIndex == 0 ? null : () => _goToPage(currentPageIndex - 1),
+                  onPressed: currentPageIndex == 0 ? null : () => _goToPage(currentPageIndex - 1),
                   icon: const Icon(Icons.arrow_back),
                   label: const Text('Previous'),
                   style: ElevatedButton.styleFrom(

@@ -91,6 +91,10 @@ class _IndexState extends State<Index> {
                 Navigator.of(context).pushReplacementNamed('AppStories');
               }, child: Text("App Stories")),
 
+              ElevatedButton(onPressed: (){
+                Navigator.of(context).pushReplacementNamed('SpotTheDifference');
+              }, child: Text("Spot The Difference")),
+
 
             ],
           ),
