@@ -60,5 +60,37 @@
   "alphabetTracing": "Traçage de l'alphabet",
   "clear": "Effacer",
   "nextLetter": "Lettre suivante",
-  "piano" : "Piano Forte"
+  "piano" : "Piano Forte",
+
+  "settings": "Paramètres",
+  "music": "Musique",
+  "musicVolume": "Volume de la musique",
+  "darkMode": "Mode sombre",
+  "notifications": "Notifications",
+  "language": "Langue",
+  "username": "Nom d'utilisateur",
+  "changeName": "Changer de nom d'utilisateur",
+  "enterNewName": "Entrez un nouveau nom",
+  "save": "Enregistrer",
+  "aboutApp": "À propos de l'application",
+  "contactSupport": "Contacter le support",
+  "privacyPolicy": "Politique de confidentialité",
+  "termsOfUse": "Conditions d'utilisation",
+  "rateApp": "Évaluer l'application",
+
+  "parentalLock": "Contrôle parental",
+  "parentalLockEnabled": "Le contrôle parental est activé",
+  "parentalLockDisabled": "Le contrôle parental est désactivé",
+  "setParentalPin": "Définir le code PIN parental",
+  "enterPin": "Entrez le code PIN",
+
+  "enterPinToDisable": "Entrez le code PIN pour désactiver le contrôle parental",
+  "confirm": "Confirmer",
+  "incorrectPin": "Code PIN incorrect. Réessayez.",
+  "screenTimeLimit": "Limite de temps d'écran",
+  "noLimit": "Pas de limite",
+  "minutes": "minutes",
+  "set": "Définir",
+  "progressReports": "Rapports de progression",
+  "progressReportsComingSoon": "La fonctionnalité des rapports de progression arrive bientôt !"
 }

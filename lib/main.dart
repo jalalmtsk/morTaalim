@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/Settings/setting_Page.dart';
 import 'package:mortaalim/Shop/shop_main_ui.dart';
 import 'package:mortaalim/games/App_stories/Story_Grid_Main_Page.dart';
 import 'package:mortaalim/games/App_stories/favorite_Word/favorite_Page.dart';
@@ -8,14 +9,17 @@ import 'package:mortaalim/games/Piano_Game/Piano_main_page.dart';
 import 'package:mortaalim/games/Quiz_Game/general_culture_game.dart';
 import 'package:mortaalim/games/Shapes_game/Shapes_main.dart';
 import 'package:mortaalim/games/Tracing_Alphabet_app/language_selector.dart';
+import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/profileSetupPage.dart';
+import 'package:mortaalim/splashScreen.dart';
 import 'package:mortaalim/tools/CreditsPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'IndexPage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mortaalim/Settings/setting_Page.dart'; // ✅ Correct
 
+import 'IndexPage.dart';
 import 'XpSystem.dart';
 
 Locale _locale = const Locale('fr'); // default locale
@@ -82,7 +86,7 @@ class _MyAppState extends State<MyApp> {
 
       routes: {
         'Index': (context) => Index(onChangeLocale: _changeLanguage),
-        'DrawingAlphabet': (context) => LanguageSelectorPage(),
+        'DrawingAlphabet': (context) => LanguageSelectorPage(onChangeLocale: _changeLanguage,),
         'QuizGameApp': (context) => const QuizGameApp(),
         'AppStories': (context) => StoriesGridPage(stories: stories), // Pass real story list here
         'FavoriteWords': (context) => const FavoriteWordsPage(),
@@ -91,7 +95,9 @@ class _MyAppState extends State<MyApp> {
         'Profile': (context) => const ProfileSetupPage(),
         'Shop' : (context) => const RewardShopPage(),
         'Credits' : (context) =>  CreditsPage(),
-        'Piano' : (context) => PianoModeSelector()
+        'Piano' : (context) => WordGameApp(),
+        'Setting' : (context) => SettingsPage(onChangeLocale: _changeLanguage),
+        'Splash' : (context) => SplashPage(onChangeLocale: _changeLanguage)
 
       },
       localizationsDelegates: const [
@@ -107,7 +113,7 @@ class _MyAppState extends State<MyApp> {
         Locale("it"),
       ],
       locale: _locale,
-      home: Index(onChangeLocale: _changeLanguage),
+     initialRoute: 'Splash',
     );
   }
 }

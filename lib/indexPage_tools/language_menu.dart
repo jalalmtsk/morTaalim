@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 
 class LanguageMenu extends StatelessWidget {
   final void Function(Locale) onChangeLocale;
+  final Color colorButton;
 
-  const LanguageMenu({super.key, required this.onChangeLocale});
+   LanguageMenu({super.key, required this.onChangeLocale, required this.colorButton});
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<Locale>(
-      icon: const Icon(Icons.language_outlined, color: Colors.deepOrange, size: 28),
+      icon: Icon(Icons.language_outlined, color: colorButton, size: 28),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       color: Colors.white,
       elevation: 8,

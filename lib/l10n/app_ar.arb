@@ -60,5 +60,37 @@
   "alphabetTracing": "تتبع الحروف",
   "clear": "مسح",
   "nextLetter": "الحرف التالي",
-  "piano" : "البيان"
+  "piano" : "البيان",
+
+  "settings": "الإعدادات",
+  "music": "الموسيقى",
+  "musicVolume": "مستوى صوت الموسيقى",
+  "darkMode": "الوضع الداكن",
+  "notifications": "الإشعارات",
+  "language": "اللغة",
+  "username": "اسم المستخدم",
+  "changeName": "تغيير اسم المستخدم",
+  "enterNewName": "أدخل اسمًا جديدًا",
+  "save": "حفظ",
+  "aboutApp": "حول التطبيق",
+  "contactSupport": "الاتصال بالدعم",
+  "privacyPolicy": "سياسة الخصوصية",
+  "termsOfUse": "شروط الاستخدام",
+  "rateApp": "قيّم التطبيق",
+
+  "parentalLock": "قفل الوالدين",
+  "parentalLockEnabled": "تم تفعيل قفل الوالدين",
+  "parentalLockDisabled": "تم تعطيل قفل الوالدين",
+  "setParentalPin": "تعيين رقم التعريف الشخصي للقفل الأبوي",
+  "enterPin": "أدخل رمز PIN",
+
+  "enterPinToDisable": "أدخل رمز PIN لتعطيل قفل الوالدين",
+  "confirm": "تأكيد",
+  "incorrectPin": "رمز PIN غير صحيح. حاول مرة أخرى.",
+  "screenTimeLimit": "حد وقت الشاشة",
+  "noLimit": "بدون حد",
+  "minutes": "دقائق",
+  "set": "تعيين",
+  "progressReports": "تقارير التقدم",
+  "progressReportsComingSoon": "ميزة تقارير التقدم قادمة قريبًا!"
 }

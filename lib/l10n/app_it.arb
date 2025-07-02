@@ -59,5 +59,38 @@
   "alphabetTracing": "Tracciamento dell'alfabeto",
   "clear": "Cancella",
   "nextLetter": "Lettera successiva",
-  "piano" : "Piano"
+  "piano" : "Piano",
+
+  "settings": "Impostazioni",
+  "music": "Musica",
+  "musicVolume": "Volume della musica",
+  "darkMode": "Modalità scura",
+  "notifications": "Notifiche",
+  "language": "Lingua",
+  "username": "Nome utente",
+  "changeName": "Cambia nome utente",
+  "enterNewName": "Inserisci un nuovo nome",
+  "save": "Salva",
+  "aboutApp": "Informazioni sull'app",
+  "contactSupport": "Contatta il supporto",
+  "privacyPolicy": "Informativa sulla privacy",
+  "termsOfUse": "Termini di utilizzo",
+  "rateApp": "Valuta l'app",
+
+  "parentalLock": "Blocco genitori",
+  "parentalLockEnabled": "Blocco genitori abilitato",
+  "parentalLockDisabled": "Blocco genitori disabilitato",
+  "setParentalPin": "Imposta PIN genitori",
+  "enterPin": "Inserisci PIN",
+
+  "enterPinToDisable": "Inserisci PIN per disabilitare il blocco genitori",
+  "confirm": "Conferma",
+  "incorrectPin": "PIN errato. Riprova.",
+  "screenTimeLimit": "Limite di tempo dello schermo",
+  "noLimit": "Nessun limite",
+  "minutes": "minuti",
+  "set": "Imposta",
+  "progressReports": "Report di progresso",
+  "progressReportsComingSoon": "Funzionalità report di progresso in arrivo!"
 }
+

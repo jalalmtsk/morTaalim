@@ -3,12 +3,18 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../loading_page.dart';
+
 class GameGrid extends StatelessWidget {
   final List<Map<String, dynamic>> games;
   final MusicPlayer musicPlayer;
 
   const GameGrid({super.key, required this.games, required this.musicPlayer});
 
+  Future<void> simulateLoading() async {
+    // Simulate a network call or some async work
+    await Future.delayed(const Duration(seconds: 2));
+  }
   @override
   Widget build(BuildContext context) {
     final tr = AppLocalizations.of(context)!;
@@ -37,7 +43,15 @@ class GameGrid extends StatelessWidget {
                 onTap: () {
                   musicPlayer.stop();
                   // You might want to update musicisOn too if necessary
-                  Navigator.pushNamed(context, game['routeName']);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => LoadingPage(
+                        loadingFuture: simulateLoading(),       // Your async loading function
+                        nextRouteName: game['routeName'],       // Named route string from your map
+                      ),
+                    ),
+                  );
                 },
                 child: Container(
                   decoration: BoxDecoration(

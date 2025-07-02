@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/games/Tracing_Alphabet_app/TracingAlphabetPage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mortaalim/indexPage_tools/language_menu.dart';
 
 class LanguageSelectorPage extends StatelessWidget {
-  const LanguageSelectorPage({super.key});
+  final void Function(Locale) onChangeLocale;
+
+  const LanguageSelectorPage({super.key, required this.onChangeLocale});
 
   @override
   Widget build(BuildContext context) {
@@ -13,17 +16,43 @@ class LanguageSelectorPage extends StatelessWidget {
       LanguageOption(
         name: 'French Letters (A, B, C...)',
         languageCode: 'french',
-        icon: Icons.language,
+        icon: Icons.breakfast_dining_outlined,
         color: Colors.deepOrange,
       ),
       LanguageOption(
         name: 'حروف عربية',
         languageCode: 'arabic',
-        icon: Icons.menu_book,
+        icon: Icons.brightness_high_outlined,
         color: Colors.deepOrange.shade700,
       ),
-      // You can add more languages here in the future!
+      LanguageOption(
+        name: '🇯🇵 ひらがな (Japanese)',
+        languageCode: 'japanese',
+        icon: Icons.draw,
+        color: Colors.redAccent.shade200,
+      ),
+      LanguageOption(
+        name: '한글 (Korean Hangul)',
+        languageCode: 'korean',
+        icon: Icons.text_fields,
+        color: Colors.blueAccent.shade200,
+      ),
+      LanguageOption(
+        name: '汉字 (Chinese Hanzi)',
+        languageCode: 'chinese',
+        icon: Icons.translate,
+        color: Colors.green.shade400,
+      ),
+      LanguageOption(
+        name: 'Русский алфавит(Russian)',
+        languageCode: 'russian',
+        icon: Icons.airplanemode_active_sharp,
+        color: Colors.indigo.shade400,
+      ),
     ];
+
+
+
 
     return Scaffold(
       appBar: AppBar(
@@ -32,6 +61,8 @@ class LanguageSelectorPage extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
           tooltip: 'Back',
         ),
+        actions: [
+        ],
         title: Text(
           tr.alphabetTracing,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
