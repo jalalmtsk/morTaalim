@@ -12,17 +12,53 @@
   "class4": "السنة الرابعة",
   "class5": "السنة الخامسة",
   "class6": "السنة السادسة",
-   "math": "الرياضيات",
-    "french": "الفرنسية",
-    "arabic": "العربية",
-    "islamicEducation": "التربية الإسلامية",
-    "artEducation": "التربية الفنية",
-  "great_job" : "عمل رائع! أكملت جميع الأقسام",
+
+  "math": "الرياضيات",
+  "french": "الفرنسية",
+  "arabic": "العربية",
+  "islamicEducation": "التربية الإسلامية",
+  "artEducation": "التربية الفنية",
+
+  "greatJob": "عمل رائع! أكملت جميع الأقسام",
   "enterYourName": "أدخل اسمك",
   "cancel": "إلغاء",
   "ok": "موافق",
   "pleaseEnterName": "يرجى إدخال اسم",
+
   "selectGameMode": "اختر وضع اللعب",
   "singlePlayer": "لاعب واحد",
-  "multiplayer": "لاعبين"
+  "multiplayer": "لاعبين",
+
+  "courses": "الدورات",
+  "games": "ألعاب",
+  "drawingAlphabet": "رسم الحروف",
+  "quizGame": "لعبة الأسئلة",
+  "appStories": "قصص",
+  "shapeSorter": "فرز الأشكال",
+  "boardGame": "لعبة لوحية",
+  "myProfile": "ملفي الشخصي",
+
+  "stars": "نجوم",
+  "lives": "محاولات",
+  "score": "النقاط",
+  "name": "الاسم",
+
+  "storiesLibrary": "مكتبة القصص",
+  "selectDifficulty": "اختر مستوى الصعوبة",
+  "easy": "سهل",
+  "medium": "متوسط",
+  "hard": "صعب",
+
+  "funBoardGame": "لعبة لوحية ممتعة",
+  "tapStepOrJumpToMoveForward": "اضغط أو امشِ أو اقفز للتقدم",
+  "avoidTheHolesBoardScrollsOnlyWhenYouStart": "تجنب الحفر! اللوحة تتحرك فقط عند البدء",
+
+  "startGame": "ابدأ اللعبة",
+  "step": "خطوة",
+  "jump": "اقفز",
+  "chooseGame": "اختر لعبة",
+  "alphabetTracing": "تتبع الحروف",
+  "clear": "مسح",
+  "nextLetter": "الحرف التالي",
+  "piano" : "البيان"
 }

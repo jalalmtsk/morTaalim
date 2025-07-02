@@ -1,14 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/Shop/shop_main_ui.dart';
 import 'package:mortaalim/games/App_stories/Story_Grid_Main_Page.dart';
 import 'package:mortaalim/games/App_stories/favorite_Word/favorite_Page.dart';
 import 'package:mortaalim/games/App_stories/story_data.dart';  // Import your story list here
+import 'package:mortaalim/games/Board_game/board_main.dart';
+import 'package:mortaalim/games/Piano_Game/Piano_main_page.dart';
 import 'package:mortaalim/games/Quiz_Game/general_culture_game.dart';
 import 'package:mortaalim/games/Shapes_game/Shapes_main.dart';
 import 'package:mortaalim/games/Tracing_Alphabet_app/language_selector.dart';
+import 'package:mortaalim/profileSetupPage.dart';
+import 'package:mortaalim/tools/CreditsPage.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'IndexPage.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'XpSystem.dart';
 
 Locale _locale = const Locale('fr'); // default locale
 late SharedPreferences prefs;
@@ -16,7 +24,12 @@ late SharedPreferences prefs;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   prefs = await SharedPreferences.getInstance();
-  runApp(MyApp());
+
+
+  runApp(
+      ChangeNotifierProvider(
+        create: (_) => ExperienceManager(),
+        child:  MyApp(),));
 }
 
 class MyApp extends StatefulWidget {
@@ -65,13 +78,20 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
       debugShowCheckedModeBanner: true,
+
+
       routes: {
         'Index': (context) => Index(onChangeLocale: _changeLanguage),
         'DrawingAlphabet': (context) => LanguageSelectorPage(),
         'QuizGameApp': (context) => const QuizGameApp(),
         'AppStories': (context) => StoriesGridPage(stories: stories), // Pass real story list here
         'FavoriteWords': (context) => const FavoriteWordsPage(),
-        'SpotTheDifference': (context) => const ShapeSorterApp()
+        'SpotTheDifference': (context) => const ShapeSorterApp(),
+        'Board': (context) => const BoardGameApp(),
+        'Profile': (context) => const ProfileSetupPage(),
+        'Shop' : (context) => const RewardShopPage(),
+        'Credits' : (context) =>  CreditsPage(),
+        'Piano' : (context) => PianoModeSelector()
 
       },
       localizationsDelegates: const [

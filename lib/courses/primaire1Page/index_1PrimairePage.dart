@@ -20,7 +20,7 @@ class _index1PrimaireState extends State<index1Primaire>
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 1),
+      duration: const Duration(seconds: 2),
     );
 
     _slideAnimation = Tween<Offset>(

@@ -5,23 +5,62 @@
   "progress": "Progress",
   "loading": "Loading ...",
   "examTitle": "Exam Title",
+
   "class1": "1st Grade",
   "class2": "2nd Grade",
   "class3": "3rd Grade",
   "class4": "4th Grade",
   "class5": "5th Grade",
   "class6": "6th Grade",
+
   "math": "Mathematics",
   "french": "French",
   "arabic": "Arabic",
   "islamicEducation": "Islamic Education",
   "artEducation": "Artistic Education",
-  "great_job": "Great job! You have completed all sections",
+
+  "greatJob": "Great job! You have completed all sections",
   "enterYourName": "Enter your name",
+
   "cancel": "Cancel",
   "ok": "OK",
+
   "pleaseEnterName": "Please enter a name",
   "selectGameMode": "Select Game Mode",
   "singlePlayer": "Single Player",
-  "multiplayer": "Multiplayer"
+  "multiplayer": "Multiplayer",
+
+  "courses": "Courses",
+  "games": "Games",
+
+  "drawingAlphabet": "Drawing Alphabet",
+  "quizGame": "Quiz Game",
+  "appStories": "Stories",
+  "shapeSorter": "Shape Sorter",
+  "boardGame": "Board Game",
+  "myProfile": "My Profile",
+
+  "stars": "Stars",
+  "lives": "Lives",
+  "score": "Score",
+  "name": "Name",
+
+  "storiesLibrary": "Stories Library",
+  "selectDifficulty": "Select Difficulty",
+  "easy": "Easy",
+  "medium": "Medium",
+  "hard": "Hard",
+
+  "funBoardGame": "Fun Board Game",
+  "tapStepOrJumpToMoveForward": "Tap, Step or Jump to move forward",
+  "avoidTheHolesBoardScrollsOnlyWhenYouStart": "Avoid the holes! The board scrolls only when you start",
+
+  "startGame": "Start Game",
+  "step": "Step",
+  "jump": "Jump",
+  "chooseGame": "Choose a Game",
+  "alphabetTracing": "Alphabet Tracing",
+  "clear": "Clear",
+  "nextLetter": "Next Letter",
+  "piano" : "Piano"
 }

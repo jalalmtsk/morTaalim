@@ -17,12 +17,47 @@
   "arabic": "Arabo",
   "islamicEducation": "Educazione Islamica",
   "artEducation": "Educazione Artistica",
-  "great_job" : "Ottimo lavoro! Hai completato tutte le sezioni",
+
+  "greatJob": "Ottimo lavoro! Hai completato tutte le sezioni",
   "enterYourName": "Inserisci il tuo nome",
   "cancel": "Annulla",
   "ok": "OK",
   "pleaseEnterName": "Per favore inserisci un nome",
+
   "selectGameMode": "Seleziona modalità di gioco",
   "singlePlayer": "Giocatore singolo",
-  "multiplayer": "Multigiocatore"
+  "multiplayer": "Multigiocatore",
+
+  "courses": "Corsi",
+  "games": "Giochi",
+  "drawingAlphabet": "Disegna l'alfabeto",
+  "quizGame": "Gioco quiz",
+  "appStories": "Storie",
+  "shapeSorter": "Ordinatore di forme",
+  "boardGame": "Gioco da tavolo",
+  "myProfile": "Il mio profilo",
+
+  "stars": "Stelle",
+  "lives": "Vite",
+  "score": "Punteggio",
+  "name": "Nome",
+
+  "storiesLibrary": "Libreria di storie",
+  "selectDifficulty": "Seleziona la difficoltà",
+  "easy": "Facile",
+  "medium": "Medio",
+  "hard": "Difficile",
+
+  "funBoardGame": "Gioco da tavolo divertente",
+  "tapStepOrJumpToMoveForward": "Tocca, cammina o salta per andare avanti",
+  "avoidTheHolesBoardScrollsOnlyWhenYouStart": "Evita i buchi! La tavola scorre solo quando inizi",
+
+  "startGame": "Inizia il gioco",
+  "step": "Passo",
+  "jump": "Salta",
+  "chooseGame": "Scegli un gioco",
+  "alphabetTracing": "Tracciamento dell'alfabeto",
+  "clear": "Cancella",
+  "nextLetter": "Lettera successiva",
+  "piano" : "Piano"
 }

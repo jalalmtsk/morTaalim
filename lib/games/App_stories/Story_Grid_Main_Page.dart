@@ -110,7 +110,7 @@ class _StoriesGridPageState extends State<StoriesGridPage>
       appBar: AppBar(
         leading: IconButton(
             onPressed: () {
-              Navigator.of(context).pushReplacementNamed('Index');
+              Navigator.of(context).pop();
             },
             icon: const Icon(Icons.arrow_back)),
         actions: [

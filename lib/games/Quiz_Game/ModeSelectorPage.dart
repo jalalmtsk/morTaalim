@@ -125,7 +125,7 @@ class ModeSelectorPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.orange.shade50,
       appBar: AppBar(
-        leading: IconButton(   onPressed: () => Navigator.of(context).pushReplacementNamed("Index"),icon: Icon(Icons.arrow_back),),
+        leading: IconButton(   onPressed: () => Navigator.of(context).pop(),icon: Icon(Icons.arrow_back),),
         title:  Text("lol"),
         centerTitle: true,
         backgroundColor: Colors.deepOrange,

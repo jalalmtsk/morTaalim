@@ -78,7 +78,7 @@ class _CoursePageState extends State<CoursePage> {
       _confettiController.play();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text("${AppLocalizations.of(context)!.great_job} 🎉"),
+          content: Text("${AppLocalizations.of(context)!.greatJob} 🎉"),
           duration: Duration(seconds: 2),
           backgroundColor: Colors.deepOrange.shade700,
           behavior: SnackBarBehavior.floating,

@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mortaalim/games/Quiz_Game/Result_QuizPage.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:provider/provider.dart';
+import '../../XpSystem.dart';
 import 'question_model.dart';
 import 'avatar_widget.dart';
 import 'ModeSelectorPage.dart';
@@ -41,11 +43,23 @@ class QuizPage extends StatefulWidget {
 class _QuizPageState extends State<QuizPage> {
   final MusicPlayer _player = MusicPlayer();
   final List<Question> _originalQuestions = [
+
     Question('🌤️ What color is the sky?', ['Blue', 'Green', 'Red', 'Yellow'], 0),
     Question('🕷️ How many legs does a spider have?', ['6', '8', '10', '4'], 1),
     Question('🐶 Which animal barks?', ['Cat', 'Cow', 'Dog', 'Bird'], 2),
     Question('🧮 What is 2 + 2?', ['3', '4', '5'], 1),
     Question('🍌 Which one is a fruit?', ['Carrot', 'Banana', 'Potato', 'Onion'], 1),
+    Question('🐶 Which one is an animal?', ['Car', 'Dog', 'Table', 'Chair'], 1),
+    Question('🌈 What color is the sky?', ['Green', 'Blue', 'Red', 'Yellow'], 1),
+    Question('🚗 Which one can fly?', ['Car', 'Boat', 'Airplane', 'Bike'], 2),
+    Question('🍎 Which one is red?', ['Banana', 'Apple', 'Grape', 'Orange'], 1),
+    Question('🌻 Which one is a flower?', ['Rose', 'Tree', 'Grass', 'Rock'], 0),
+    Question('🐸 Which one lives in water?', ['Dog', 'Frog', 'Cat', 'Horse'], 1),
+    Question('🍪 Which one is a sweet treat?', ['Bread', 'Cookie', 'Rice', 'Potato'], 1),
+    Question('🎵 Which one is a musical instrument?', ['Piano', 'Book', 'Chair', 'Pen'], 0),
+    Question('⚽ What do you use to play soccer?', ['Ball', 'Bat', 'Glove', 'Racket'], 0),
+    Question('🌟 Which one shines in the night sky?', ['Moon', 'Sun', 'Cloud', 'Tree'], 0),
+
   ];
 
   late List<Question> _questions;
@@ -53,6 +67,8 @@ class _QuizPageState extends State<QuizPage> {
   int _player1Score = 0;
   int _player2Score = 0;
   int _playerTurn = 1;
+
+
 
   int _player1Lives = 2;
   int _player2Lives = 2;
@@ -114,8 +130,13 @@ class _QuizPageState extends State<QuizPage> {
       _selectedIndex = selected;
       _answered = true;
 
-      final correct = selected == _questions[_currentQuestion].correctIndex;
-      if (correct) {
+      final isCorrect = selected == _questions[_currentQuestion].correctIndex;
+
+      if (isCorrect) {
+        final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+        xpManager.addXP(3);   // 🎮 Give 3 XP
+        xpManager.addStars(1); // ⭐ Give 1 Star
+
         if (widget.mode == GameMode.single) {
           _player1Score++;
         } else {
@@ -125,6 +146,7 @@ class _QuizPageState extends State<QuizPage> {
             _player2Score++;
           }
         }
+
         _playSound('assets/audios/correct_anwser.mp3');
       } else {
         if (widget.mode == GameMode.single) {
@@ -142,6 +164,7 @@ class _QuizPageState extends State<QuizPage> {
 
     Future.delayed(const Duration(seconds: 2), _nextTurn);
   }
+
 
   void _nextTurn() {
     setState(() {
@@ -179,6 +202,11 @@ class _QuizPageState extends State<QuizPage> {
 
   @override
   Widget build(BuildContext context) {
+    final xpManager = Provider.of<ExperienceManager>(context);
+    final xp = xpManager.xp;
+    final level = xpManager.level;
+    final stars = xpManager.stars;
+
     if (_currentQuestion >= _questions.length) {
       return const Scaffold(
         body: Center(child: CircularProgressIndicator()),
@@ -201,6 +229,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
+
                 Align(
                   alignment: Alignment.topLeft,
                   child: IconButton(
@@ -209,6 +238,16 @@ class _QuizPageState extends State<QuizPage> {
                   ),
                 ),
                 const SizedBox(height: 10),
+                Text(
+                  '⏳ $_timeLeft s | XP: $xp',
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.deepOrange,
+                  ),
+                ),
+                const SizedBox(height: 30),
+
                 if (widget.mode == GameMode.multiplayer)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -222,8 +261,8 @@ class _QuizPageState extends State<QuizPage> {
                                 fontWeight: FontWeight.bold,
                                 color: _playerTurn == 1 ? Colors.deepOrange : Colors.grey[700],
                               )),
-                          Text('Score: $_player1Score'),
-                          Text('Lives: $_player1Lives'),
+                          Text('🧰: $_player1Score',style: TextStyle(fontSize: 20)),
+                          Text('❤️: $_player1Lives',style: TextStyle(fontSize: 20)),
                         ],
                       ),
                       Column(
@@ -235,15 +274,16 @@ class _QuizPageState extends State<QuizPage> {
                                 fontWeight: FontWeight.bold,
                                 color: _playerTurn == 2 ? Colors.deepOrange : Colors.grey[700],
                               )),
-                          Text('Score: $_player2Score'),
-                          Text('Lives: $_player2Lives'),
+                          Text('🧰: $_player2Score', style: TextStyle(fontSize: 20),),
+                          Text('❤️: $_player2Lives',style: TextStyle(fontSize: 20)),
                         ],
                       ),
+
                     ],
                   )
                 else
                   Text(
-                    'Score: $_player1Score | Lives: $_player1Lives | ⏳ $_timeLeft s',
+                    '🧰: $_player1Score | ⭐ $stars | ❤️: $_player1Lives | XP: $xp',
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,

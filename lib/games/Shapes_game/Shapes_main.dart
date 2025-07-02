@@ -19,7 +19,7 @@ class DifficultySelectionPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(onPressed: (){
-          Navigator.of(context).pushReplacementNamed("Index");
+          Navigator.of(context).pop();
         }, icon: Icon(Icons.arrow_back)),
         title: const Text('Select Difficulty'),
         backgroundColor: Colors.deepOrange,
