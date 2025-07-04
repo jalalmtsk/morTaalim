@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mortaalim/tools/HomeCourse.dart';
 import 'package:mortaalim/widgets/shimmerPage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+import '../../Inside_Course_Logic/HomeCourse.dart';
+
 class primaire1 extends StatefulWidget {
+  const primaire1({Key? key}) : super(key: key);
+
   @override
   _Primaire1State createState() => _Primaire1State();
 }
@@ -177,6 +180,7 @@ class _Primaire1State extends State<primaire1> {
                               builder: (_) => CoursePage(
                                 jsonFilePath: course['file']!,
                                 courseId: title,
+                                progressPrefix: "progress", // standard
                               ),
                             ),
                           ).then((_) => loadProgressForCourses());

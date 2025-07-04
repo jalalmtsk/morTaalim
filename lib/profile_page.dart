@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'XpSystem.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -91,6 +92,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
+    final tr = AppLocalizations.of(context)!;
     final level = xpManager.level;
     final progress = xpManager.levelProgress;
     final xp = xpManager.xp;
@@ -100,7 +102,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
       backgroundColor: Colors.orange.shade50,
       appBar: AppBar(
         title: Text(
-          "👶 My Profile",
+          tr.myProfile,
           style: TextStyle(
             fontFamily: 'ComicNeue',
             fontWeight: FontWeight.bold,
@@ -168,7 +170,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "Age",
+                  tr.age,
                   style: TextStyle(
                     fontFamily: 'ComicNeue',
                     fontSize: 26,

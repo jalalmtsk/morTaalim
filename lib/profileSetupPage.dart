@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'XpSystem.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileSetupPage extends StatefulWidget {
   const ProfileSetupPage({super.key});
@@ -43,6 +44,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
     final unlockedAvatars = xpManager.unlockedAvatars;
+    final tr = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
@@ -72,8 +74,18 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                       setState(() => selectedEmoji = emoji);
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("This avatar is locked. Unlock it in the Reward Shop."),
+                        SnackBar(
+                          duration: Duration(seconds: 1),
+                          content: Row(
+                            children: [
+                              Text(tr.this_avatar_is_locked_unlock_it_in_the),
+                              InkWell(onTap: (){Navigator.of(context).pushNamed("Shop");}
+                                  , child:  Text(
+                                      " ${tr.shop}",style: TextStyle(
+                                      color: Colors.orange,
+                                      fontWeight: FontWeight.w700),))
+                            ],
+                          ),
                         ),
                       );
                     }

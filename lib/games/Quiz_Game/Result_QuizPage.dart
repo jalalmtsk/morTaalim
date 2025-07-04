@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../main.dart';
 import 'general_culture_game.dart';
 
 class ResultPage extends StatefulWidget {
@@ -27,14 +29,14 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
 
   String get winner {
     if (widget.mode == GameMode.single) {
-      return "🎉 Great Job!";
+      return "🎉 ${tr(context).greatJob} ";
     } else {
       if (widget.player1Score > widget.player2Score) {
-        return "🏆 Player 1 Wins!";
+        return "🏆 ${tr(context).player1Wins}";
       } else if (widget.player2Score > widget.player1Score) {
-        return "🏆 Player 2 Wins!";
+        return "🏆 ${tr(context).player2Wins}";
       } else {
-        return "🤝 It's a Tie!";
+        return "🤝 ${tr(context).itsATie}";
       }
     }
   }
@@ -62,7 +64,7 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
     try {
       // You can use your own local asset or URL here
       // For example, add a 'victory.mp3' file in assets/sounds and declare in pubspec.yaml
-      await _musicPlayer.play('assets/audios/victory1.mp3');
+      await _musicPlayer.play('assets/audios/sound_effects/victory1.mp3');
     } catch (e) {
       // Handle error or fallback
       debugPrint('Error playing sound: $e');
@@ -79,9 +81,9 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange.shade50,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('🎮 Game Over!'),
+        title:  Text('🎮 ${tr(context).gameOver}'),
         backgroundColor: Colors.deepOrange,
       ),
       body: FadeTransition(
@@ -112,12 +114,18 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                   isRepeatingAnimation: false,
                 ),
               ),
-              const SizedBox(height: 30),
 
-              Text('Player 1: ${widget.player1Score}',
+              Lottie.asset(
+                'assets/animations/menWining.json',
+                width: 350,
+                height: 350,
+                fit: BoxFit.contain,
+              ),
+
+              Text('${tr(context).player1}: ${widget.player1Score} ${tr(context).points}',
                   style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
               if (widget.mode == GameMode.multiplayer)
-                Text('Player 2: ${widget.player2Score}',
+                Text('${tr(context).player2}: ${widget.player2Score} ${tr(context).points}',
                     style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600)),
 
               const SizedBox(height: 40),
@@ -133,7 +141,8 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                   padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 ),
-                child: const Text('🔁 Play Again', style: TextStyle(fontSize: 20)),
+                child: Text('🔁 ${tr(context).playAgain}', style: TextStyle(color: Colors.white, fontSize: 20)),
+
               ),
             ],
           ),

@@ -15,6 +15,43 @@ class ExperienceManager extends ChangeNotifier {
   List<String> get unlockedAvatars => _unlockedAvatars;
   String get selectedAvatar => _selectedAvatar;
 
+  List<String> _unlockedCourses = [];
+
+  List<String> get unlockedCourses => _unlockedCourses;
+
+  bool isCourseUnlocked(String title) {
+    return _unlockedCourses.contains(title);
+  }
+
+  void unlockCourse(String title, int cost) {
+    if (!_unlockedCourses.contains(title) && _stars >= cost) {
+      _unlockedCourses.add(title);
+      _stars -= cost;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  /////////// Trace Game Unlock Feature
+  List<String> _unlockedLanguages = ['arabic', 'french'];
+
+  List<String> get unlockedLanguages => _unlockedLanguages;
+
+  bool isLanguageUnlocked(String code) {
+    return _unlockedLanguages.contains(code);
+  }
+
+  void unlockLanguage(String code, int cost) {
+    if (!_unlockedLanguages.contains(code) && _stars >= cost) {
+      _unlockedLanguages.add(code);
+      _stars -= cost;
+      _saveData();
+      notifyListeners();
+    }
+  }
+/////////////////////////////////////////
+
+
   ExperienceManager() {
     _loadData();
   }
@@ -62,7 +99,10 @@ class ExperienceManager extends ChangeNotifier {
     _stars = prefs.getInt('stars') ?? 0;
     _selectedAvatar = prefs.getString('selectedAvatar') ?? '😀';
     _unlockedAvatars = prefs.getStringList('unlockedAvatars') ?? ['😀'];
+    _unlockedCourses = prefs.getStringList('unlockedCourses') ?? [];
     notifyListeners();
+    _unlockedLanguages = prefs.getStringList('unlockedLanguages') ?? ['arabic', 'french'];
+
   }
 
   Future<void> _saveData() async {
@@ -71,5 +111,8 @@ class ExperienceManager extends ChangeNotifier {
     await prefs.setInt('stars', _stars);
     await prefs.setString('selectedAvatar', _selectedAvatar);
     await prefs.setStringList('unlockedAvatars', _unlockedAvatars);
+    await prefs.setStringList('unlockedCourses', _unlockedCourses);
+    await prefs.setStringList('unlockedLanguages', _unlockedLanguages);
+
   }
 }

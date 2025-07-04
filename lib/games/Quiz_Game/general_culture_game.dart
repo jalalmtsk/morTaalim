@@ -42,6 +42,8 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   final MusicPlayer _player = MusicPlayer();
+  final MusicPlayer _backgroundMusic = MusicPlayer();
+
   final List<Question> _originalQuestions = [
 
     Question('🌤️ What color is the sky?', ['Blue', 'Green', 'Red', 'Yellow'], 0),
@@ -85,6 +87,7 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void initState() {
     super.initState();
+    _backgroundMusic.play("assets/audios/sound_track/piano.mp3");
     _questions = [..._originalQuestions]..shuffle();
     _startTimer();
   }
@@ -147,7 +150,7 @@ class _QuizPageState extends State<QuizPage> {
           }
         }
 
-        _playSound('assets/audios/correct_anwser.mp3');
+        _playSound('assets/audios/sound_effects/correct_anwser.mp3');
       } else {
         if (widget.mode == GameMode.single) {
           _player1Lives--;
@@ -158,7 +161,7 @@ class _QuizPageState extends State<QuizPage> {
             _player2Lives--;
           }
         }
-        _playSound('assets/audios/wrong_answer.mp3');
+        _playSound('assets/audios/sound_effects/wrong_answer.mp3');
       }
     });
 
@@ -197,6 +200,7 @@ class _QuizPageState extends State<QuizPage> {
   @override
   void dispose() {
     _timer.cancel();
+    _backgroundMusic.dispose();
     super.dispose();
   }
 

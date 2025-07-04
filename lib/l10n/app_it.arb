@@ -35,6 +35,7 @@
   "appStories": "Storie",
   "shapeSorter": "Ordinatore di forme",
   "boardGame": "Gioco da tavolo",
+  "linkWordgame": "Collega le parole",
   "myProfile": "Il mio profilo",
 
   "stars": "Stelle",
@@ -91,6 +92,31 @@
   "minutes": "minuti",
   "set": "Imposta",
   "progressReports": "Report di progresso",
-  "progressReportsComingSoon": "Funzionalità report di progresso in arrivo!"
+  "progressReportsComingSoon": "Funzionalità report di progresso in arrivo!",
+
+  "loadingPhrase1": "Calmati e aspetta un attimo!",
+  "loadingPhrase2": "Le cose buone richiedono tempo...",
+  "loadingPhrase3": "Caricamento... la pazienza è una virtù!",
+  "loadingPhrase4": "Quasi arrivati, tieni duro!",
+  "loadingPhrase5": "La magia sta accadendo!",
+  "loadingPhrase6": "Miao! Elaborazione della tua richiesta...",
+  "loadingPhrase7": "Questo gattino sta lavorando sodo!",
+  "loadingPhrase8": "Caricamento... tempo per un rapido stiramento del gatto!",
+  "loadingPhrase9": "Aspetta, il gattino sta facendo il debug del codice!",
+  "loadingPhrase10": "Mrrrow! Quasi finito!",
+
+  "this_avatar_is_locked_unlock_it_in_the": "Questo avatar è bloccato. Sbloccalo in",
+  "shop" : "Negozio",
+
+  "age": "Età",
+  "player1Wins": "Giocatore 1 ha vinto!",
+  "player": "Giocatore",
+  "player2Wins": "Giocatore 2 ha vinto!",
+  "itsATie": "È un pareggio!",
+  "gameOver": "Fine del gioco",
+  "points": "Punti",
+  "player1": "Giocatore 1",
+  "player2": "Giocatore 2",
+  "playAgain": "Gioca di nuovo"
 }
 

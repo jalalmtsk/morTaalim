@@ -8,6 +8,8 @@ import'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../XpSystem.dart';
 
+
+
 class BoardGameApp extends StatelessWidget {
   const BoardGameApp({super.key});
 
@@ -275,7 +277,7 @@ class _BoardGamePageState extends State<BoardGamePage>
 
   @override
   Widget build(BuildContext context) {
-
+    final xpManager = Provider.of<ExperienceManager>(context);
     final tr = AppLocalizations.of(context)!;
     final textStyleHeader = TextStyle(
       fontSize: 24,
@@ -329,6 +331,11 @@ class _BoardGamePageState extends State<BoardGamePage>
                 ),
               ],
             ),
+
+            ElevatedButton(onPressed: (){
+xpManager.addStars(20);
+print(xpManager.stars);
+            }, child: Text("LOL")),
             const SizedBox(height: 30),
             Text(
               "${tr.tapStepOrJumpToMoveForward} ${tr.avoidTheHolesBoardScrollsOnlyWhenYouStart}",

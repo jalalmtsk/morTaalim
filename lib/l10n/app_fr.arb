@@ -36,6 +36,7 @@
   "appStories": "Histoires",
   "shapeSorter": "Trie-formes",
   "boardGame": "Jeu de plateau",
+  "linkWordgame": "Relier les mots",
   "myProfile": "Mon profil",
 
   "stars": "Étoiles",
@@ -92,5 +93,30 @@
   "minutes": "minutes",
   "set": "Définir",
   "progressReports": "Rapports de progression",
-  "progressReportsComingSoon": "La fonctionnalité des rapports de progression arrive bientôt !"
+  "progressReportsComingSoon": "La fonctionnalité des rapports de progression arrive bientôt !",
+
+  "loadingPhrase1": "Restez calme et attendez un peu !",
+  "loadingPhrase2": "Les bonnes choses prennent du temps...",
+  "loadingPhrase3": "Chargement... la patience est une vertu !",
+  "loadingPhrase4": "Presque là, accrochez-vous !",
+  "loadingPhrase5": "La magie opère !",
+  "loadingPhrase6": "Miaou ! Traitement de votre demande...",
+  "loadingPhrase7": "Ce petit chat travaille dur !",
+  "loadingPhrase8": "Chargement... temps pour une petite étire du chat !",
+  "loadingPhrase9": "Attendez, le chat débogue le code !",
+  "loadingPhrase10": "Mrrrow ! Presque fini !",
+
+  "this_avatar_is_locked_unlock_it_in_the": "Cet avatar est verrouillé. Déverrouillez-le dans le",
+  "shop" : "Boutique",
+
+  "age": "Âge",
+  "player1Wins": "Le joueur 1 a gagné !",
+  "player": "Joueur",
+  "player2Wins": "Le joueur 2 a gagné !",
+  "itsATie": "Égalité !",
+  "gameOver": "Jeu terminé",
+  "points": "Points",
+  "player1": "Joueur 1",
+  "player2": "Joueur 2",
+  "playAgain": "Rejouer"
 }

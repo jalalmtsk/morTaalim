@@ -3,33 +3,66 @@
   "sections": [
     {
       "title": "What is Macroeconomics?",
-      "content": "GDP mea",
-      "controller": "Kids_song.mp4",
-      "type": "asset",
       "subsections": [
         {
-          "title": "Definition of Macroeconomics",
-          "content": "Macroeconomics studies the overall economy."
+          "title": "Definition",
+          "content": "Macroeconomics studies the economy as a whole.DP measures economic output andDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chan inflation measures price chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price  chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures  chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures chanDP measures economic output and inflation measures price chanDP measures economic output and inflation measures price chan",
+          "controller": "assets/videos/Bonjour_song.mp4",
+          "type": "video"
         },
         {
-          "title": "Goals of Macroeconomics",
-          "content": "Stability, growth, and employment.",
-          "controller": "Kids_song.mp4",
-          "type": "asset"
+          "title": "GDP and Inflation",
+          "content": "GDP measures economic output and inflation measures price changes.",
+          "controller": "assets/videos/Kids_song.mp4",
+          "type": "video"
         },
         {
-          "title": "Goals of Macroeconomics",
-          "content": "Stability, growth, and employment.",
-          "controller": "Kids_song.mp4",
-          "type": "asset"
+          "title": "الحفظ والتكرار",
+          "content": "يردد المتعلم السورة مقطعًا بعد مقطع، حتى يتمكن من حفظها واستظهارها.",
+          "type": "practice"
+        },
+        {
+          "title": "المعنى العام للسورة",
+          "content": "يتعرف المتعلم على المعاني الأساسية للسورة بلغة سهلة ومبسطة.",
+          "subsections": [
+            {
+              "title": "الآيات 1-3",
+              "content": "أقسم الله بالتين والزيتون وجبل سيناء ومكة المكرمة، وهي أماكن مباركة."
+            },
+            {
+              "title": "الآية 4",
+              "content": "خلق الله الإنسان في أحسن صورة وأجمل هيئة."
+            },
+            {
+              "title": "الآية 5",
+              "content": "من أعرض عن الله، يرد إلى أدنى مرتبة وخسران."
+            },
+            {
+              "title": "الآية 6",
+              "content": "الذين آمنوا وعملوا الصالحات لهم أجر كبير لا ينقطع."
+            },
+            {
+              "title": "الآيتان 7-8",
+              "content": "لا يُكذّب بعد ذلك بالدين إلا من جحد. والله هو أعدل وأحكم الحاكمين."
+            }
+          ]
+        },
+        {
+          "title": "التطبيق العملي",
+          "content": "يُقلّد المتعلم نموذج العمل الصالح في حياته اليومية، مثل الأمانة، الإحسان، ومساعدة الآخرين.",
+          "type": "application"
+        },
+        {
+          "title": "نشاط تفاعلي",
+          "content": "يرسم المتعلم شكلًا تعبيريًا للإنسان المكرم، ويكتب تحته: 'لقد خلقنا الإنسان في أحسن تقويم'.",
+          "type": "activity"
+        },
+        {
+          "title": "التقويم",
+          "content": "يتأكد المتعلم من حفظه للسورة، ويستوعب الرسالة الأساسية فيها: كرامة الإنسان، جزاء العمل الصالح، وعدل الله تعالى.",
+          "type": "assessment"
         }
       ]
-    },
-    {
-      "title": "GDP and Inflation",
-      "content": "GDP measures economic output and inflation measures price changes.",
-      "controller": "https://www.youtube.com/watch?v=uQe1KMMvCXg",
-      "type": "youtube"
     }
   ]
 }

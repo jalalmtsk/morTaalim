@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mortaalim/Shop/shop_main_ui.dart';
 import 'package:mortaalim/loading_page.dart';
 import 'package:mortaalim/profile_page.dart';
 import 'package:provider/provider.dart';
@@ -149,7 +148,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
                 nextRouteName: 'Shop',
               ),
             )),
-            icon: const Icon(Icons.shop, color: Colors.white),
+            icon: const Icon(Icons.local_convenience_store_outlined, color: Colors.white),
           ),
           IconButton(
             onPressed: () => Navigator.of(context).pushNamed('Setting'),
@@ -158,10 +157,12 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
           const SizedBox(width: 4),
         ],
         bottom: TabBar(
+          unselectedLabelStyle: TextStyle(fontSize: 13),
           controller: _tabController,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
+          labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          unselectedLabelColor: Colors.white30,
           tabs: [
             Tab(icon: const Icon(Icons.school), text: tr.courses),
             Tab(icon: const Icon(Icons.videogame_asset), text: tr.games),
@@ -247,7 +248,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               const Icon(Icons.star, color: Colors.amber),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: 3),
                               Text(
                                 "$stars",
                                 style: const TextStyle(

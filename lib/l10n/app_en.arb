@@ -38,6 +38,7 @@
   "appStories": "Stories",
   "shapeSorter": "Shape Sorter",
   "boardGame": "Board Game",
+  "linkWordgame": "Link the Words",
   "myProfile": "My Profile",
 
   "stars": "Stars",
@@ -93,5 +94,31 @@
   "minutes": "minutes",
   "set": "Set",
   "progressReports": "Progress Reports",
-  "progressReportsComingSoon": "Progress Reports feature coming soon!"
+  "progressReportsComingSoon": "Progress Reports feature coming soon!",
+
+  "loadingPhrase1": "Keep calm and wait a bit!",
+  "loadingPhrase2": "Good things take time...",
+  "loadingPhrase3": "Loading... patience is a virtue!",
+  "loadingPhrase4": "Almost there, hang tight!",
+  "loadingPhrase5": "Making magic happen!",
+  "loadingPhrase6": "Miaow! Processing your request...",
+  "loadingPhrase7": "This kitty is working hard!",
+  "loadingPhrase8": "Loading... time for a quick cat stretch!",
+  "loadingPhrase9": "Hang on, kitty’s debugging the code!",
+  "loadingPhrase10": "Mrrrow! Almost done!",
+
+  "this_avatar_is_locked_unlock_it_in_the": "This avatar is locked. Unlock it in the",
+  "shop" : "Shop",
+
+  "age": "Age",
+  "player1Wins": "Player 1 wins!",
+  "player": "Player",
+  "player2Wins": "Player 2 wins!",
+  "itsATie": "It's a tie!",
+  "gameOver": "Game Over",
+  "points": "Points",
+  "player1": "Player 1",
+  "player2": "Player 2",
+  "playAgain": "Play Again"
+
 }

@@ -38,7 +38,6 @@ class _StoriesGridPageState extends State<StoriesGridPage>
         ),
       );
     }
-
     _controller.forward();
   }
 
@@ -47,6 +46,7 @@ class _StoriesGridPageState extends State<StoriesGridPage>
     _controller.dispose();
     super.dispose();
   }
+
 
   Widget _buildAnimatedItem(int index) {
     final story = widget.stories[index];

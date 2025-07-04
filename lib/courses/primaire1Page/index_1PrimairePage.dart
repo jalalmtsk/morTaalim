@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primaireExamenPage.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class index1Primaire extends StatefulWidget {
   const index1Primaire({super.key});
@@ -14,6 +15,40 @@ class _index1PrimaireState extends State<index1Primaire>
   late AnimationController _controller;
   late Animation<Offset> _slideAnimation;
   late Animation<double> _fadeAnimation;
+
+  Key _keyTab1 = UniqueKey();
+  Key _keyTab2 = UniqueKey();
+
+  Future<void> resetAllProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final List<String> titles = [
+      'math',
+      'french',
+      'arabic',
+      'islamicEducation',
+      'artEducation'
+    ];
+
+    for (String title in titles) {
+      await prefs.remove('progress_$title');
+      await prefs.remove('progress1_$title');
+    }
+
+    setState(() {
+      _keyTab1 = UniqueKey(); // force primaire1 to rebuild
+      _keyTab2 = UniqueKey(); // force primaire1Exam to rebuild
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('✅ Tous les progrès ont été réinitialisés.'),
+        backgroundColor: Colors.deepOrange,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
 
   @override
   void initState() {
@@ -113,14 +148,45 @@ class _index1PrimaireState extends State<index1Primaire>
             Expanded(
               child: TabBarView(
                 children: [
-                  primaire1(),
-                  primaire1Exam(),
+                  primaire1(key: _keyTab1),
+                  primaire1Exam(key: _keyTab2),
                 ],
               ),
             ),
           ],
         ),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (_) => AlertDialog(
+                title: Text("Réinitialiser tous les progrès"),
+                content: Text("Êtes-vous sûr de vouloir supprimer tous les progrès des cours et examens ?"),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: Text("Annuler"),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                      resetAllProgress();
+                    },
+                    style: ElevatedButton.styleFrom(backgroundColor: Colors.deepOrange),
+                    child: Text("Réinitialiser"),
+                  ),
+                ],
+              ),
+            );
+          },
+          label: Text("Réinitialiser tout"),
+          icon: Icon(Icons.refresh),
+          backgroundColor: Colors.deepOrange,
+        ),
+
       ),
+
     );
+
   }
 }

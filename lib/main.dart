@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/Settings/setting_Page.dart';
-import 'package:mortaalim/Shop/shop_main_ui.dart';
+import 'package:mortaalim/Shop/ShopPage.dart';
 import 'package:mortaalim/games/App_stories/Story_Grid_Main_Page.dart';
 import 'package:mortaalim/games/App_stories/favorite_Word/favorite_Page.dart';
 import 'package:mortaalim/games/App_stories/story_data.dart';  // Import your story list here
 import 'package:mortaalim/games/Board_game/board_main.dart';
+import 'package:mortaalim/games/IQTest_game/Section_Selector.dart';
+import 'package:mortaalim/games/IQTest_game/iqGame_data.dart';
 import 'package:mortaalim/games/Piano_Game/Piano_main_page.dart';
 import 'package:mortaalim/games/Quiz_Game/general_culture_game.dart';
 import 'package:mortaalim/games/Shapes_game/Shapes_main.dart';
@@ -24,6 +26,7 @@ import 'XpSystem.dart';
 
 Locale _locale = const Locale('fr'); // default locale
 late SharedPreferences prefs;
+AppLocalizations tr(BuildContext context) => AppLocalizations.of(context)!;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -86,16 +89,23 @@ class _MyAppState extends State<MyApp> {
 
       routes: {
         'Index': (context) => Index(onChangeLocale: _changeLanguage),
+
+
+        //Game Routes
         'DrawingAlphabet': (context) => LanguageSelectorPage(onChangeLocale: _changeLanguage,),
         'QuizGameApp': (context) => const QuizGameApp(),
         'AppStories': (context) => StoriesGridPage(stories: stories), // Pass real story list here
-        'FavoriteWords': (context) => const FavoriteWordsPage(),
-        'SpotTheDifference': (context) => const ShapeSorterApp(),
+        'ShapeSorter': (context) => const ShapeSorterApp(),
+        'Piano' : (context) => PianoModeSelector(),
         'Board': (context) => const BoardGameApp(),
+        'WordLink': (context) => const WordBoardGame(),
+        'IQGame' : (context) => SectionSelector(),
+
+        'FavoriteWords': (context) => const FavoriteWordsPage(),
         'Profile': (context) => const ProfileSetupPage(),
         'Shop' : (context) => const RewardShopPage(),
         'Credits' : (context) =>  CreditsPage(),
-        'Piano' : (context) => WordGameApp(),
+
         'Setting' : (context) => SettingsPage(onChangeLocale: _changeLanguage),
         'Splash' : (context) => SplashPage(onChangeLocale: _changeLanguage)
 

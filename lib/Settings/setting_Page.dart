@@ -369,6 +369,11 @@ class _SettingsPageState extends State<SettingsPage> {
             leading: const Icon(Icons.star_rate, color: Colors.amber),
             onTap: () => _launchURL("https://play.google.com/store/apps/details?id=com.example.mortaalim"),
           ),
+          ListTile(
+            title: Text("Credit"),
+            leading: const Icon(Icons.info_outlined, color: Colors.amber),
+            onTap: () => Navigator.of(context).pushNamed("Credits"),
+          ),
         ],
       ),
     );

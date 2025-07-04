@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mortaalim/games/App_stories/favorite_Word/favorite_word_dictionnary.dart';
 
 class FavoriteWordsPage extends StatefulWidget {
@@ -42,11 +43,16 @@ class _FavoriteWordsPageState extends State<FavoriteWordsPage> {
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: const [
-              Icon(Icons.star_border, size: 80, color: Colors.deepOrange),
+            children:  [
+              Lottie.asset(
+                'assets/animations/catInBox.json',
+                width: 350,
+                height: 350,
+                fit: BoxFit.contain,
+              ),
               SizedBox(height: 16),
               Text(
-                'No favorite words yet.',
+                'No favorite words yet. Add New Words Here!',
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.deepOrange,

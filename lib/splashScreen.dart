@@ -2,6 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/IndexPage.dart';
+import 'package:mortaalim/tools/audio_tool.dart';
+
+final MusicPlayer _musicPlayer = MusicPlayer();
+final MusicPlayer _musicPlayer_wave = MusicPlayer();
 
 class SplashPage extends StatefulWidget {
   final void Function(Locale) onChangeLocale;
@@ -11,50 +15,92 @@ class SplashPage extends StatefulWidget {
   State<SplashPage> createState() => _SplashPageState();
 }
 
-class _SplashPageState extends State<SplashPage> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _fadeAnimation;
+class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
+  bool _showLogo = false;
+  late final AnimationController _fadeController;
+  late final AnimationController _scaleController;
 
   @override
   void initState() {
     super.initState();
 
-    // Animation controller for fade-in effect
-    _controller = AnimationController(
+    _musicPlayer.play("assets/audios/seaSound.mp3");
+
+    // Fade-in controller
+    _fadeController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(milliseconds: 800),
     );
 
-    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
+    // Scale (zoom + bounce)
+    _scaleController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+      lowerBound: 2.4,
+      upperBound: 3.2,
+    );
 
-    _controller.forward();
+    // Trigger logo animations after 2 seconds
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        setState(() => _showLogo = true);
+        _fadeController.forward();
+        _musicPlayer_wave.play("assets/audios/openingZoom.mp3");
+        _scaleController.forward().then((_) {
+          _scaleController.reverse(); // bounce
+        });
+      }
+    });
 
-    // Navigate after delay
-    Timer(const Duration(seconds: 5), () {
+    // Move to next page after 4 seconds
+    Timer(const Duration(seconds: 4), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Index(onChangeLocale: widget.onChangeLocale)),
+        MaterialPageRoute(builder: (_) => Index(onChangeLocale: widget.onChangeLocale)),
       );
     });
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _fadeController.dispose();
+    _scaleController.dispose();
+    _musicPlayer.dispose();
+    _musicPlayer_wave.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Lottie.asset(
-          'assets/animations/superhero.json',
-          width: 300,
-          height: 300,
-          fit: BoxFit.contain,
-        ),
+      body: Stack(
+        children: [
+          // Background wave animation
+      /* Lottie.asset(
+              'assets/animations/anim.json',
+              fit: BoxFit.cover,
+            ),
+*/
+
+          // Logo appearing with fade + scale
+          if (_showLogo)
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: FadeTransition(
+                  opacity: _fadeController,
+                  child: ScaleTransition(
+                    scale: _scaleController,
+                    child: Image.asset(
+                      'assets/images/logo_black.png',
+                      width: 160,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }
-  }
+}

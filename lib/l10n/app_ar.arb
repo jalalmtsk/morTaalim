@@ -36,6 +36,7 @@
   "appStories": "قصص",
   "shapeSorter": "فرز الأشكال",
   "boardGame": "لعبة لوحية",
+  "linkWordgame": "ربط الكلمات",
   "myProfile": "ملفي الشخصي",
 
   "stars": "نجوم",
@@ -92,5 +93,30 @@
   "minutes": "دقائق",
   "set": "تعيين",
   "progressReports": "تقارير التقدم",
-  "progressReportsComingSoon": "ميزة تقارير التقدم قادمة قريبًا!"
+  "progressReportsComingSoon": "ميزة تقارير التقدم قادمة قريبًا!",
+
+  "loadingPhrase1": "اهدأ وانتظر قليلاً!",
+  "loadingPhrase2": "الأشياء الجيدة تحتاج إلى وقت...",
+  "loadingPhrase3": "جارٍ التحميل... الصبر فضيلة!",
+  "loadingPhrase4": "اقتربنا، تمسك جيداً!",
+  "loadingPhrase5": "السحر يحدث الآن!",
+  "loadingPhrase6": "مياو! جاري معالجة طلبك...",
+  "loadingPhrase7": "هذه القطة تعمل بجد!",
+  "loadingPhrase8": "جارٍ التحميل... حان وقت تمطيط القط السريع!",
+  "loadingPhrase9": "تمسك، القط يصحح الكود!",
+  "loadingPhrase10": "مروو! اقتربنا من الانتهاء!",
+
+  "this_avatar_is_locked_unlock_it_in_the": "هذه الصورة الرمزية مقفلة. قم بفتحها في",
+  "shop" : "متجر",
+
+  "age": "العمر",
+  "player1Wins": "فاز اللاعب 1!",
+  "player": "اللاعب",
+  "player2Wins": "فاز اللاعب 2!",
+  "itsATie": "إنها تعادل!",
+  "gameOver": "انتهت اللعبة",
+  "points": "النقاط",
+  "player1": "اللاعب 1",
+  "player2": "اللاعب 2",
+  "playAgain": "العب مرة أخرى"
 }

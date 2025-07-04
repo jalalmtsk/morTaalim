@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class LanguageMenu extends StatelessWidget {
   final void Function(Locale) onChangeLocale;
@@ -9,7 +10,12 @@ class LanguageMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<Locale>(
-      icon: Icon(Icons.language_outlined, color: colorButton, size: 28),
+      icon: Lottie.asset(
+        'assets/animations/translation_anim.json',
+        width: 40,
+        height: 100,
+        fit: BoxFit.cover,
+      ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       color: Colors.white,
       elevation: 8,
