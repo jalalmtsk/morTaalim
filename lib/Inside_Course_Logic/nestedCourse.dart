@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../tools/VideoPlayer.dart';
 import '../tools/YoutubePlayerPage.dart';
-import '../tools/audio_tool.dart';
+import '../tools/audio_tool/audio_tool.dart';
 
 
 class CourseNodePage extends StatefulWidget {

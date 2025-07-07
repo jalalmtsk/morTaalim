@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/IndexPage.dart';
-import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 
 final MusicPlayer _musicPlayer = MusicPlayer();
 final MusicPlayer _musicPlayer_wave = MusicPlayer();
@@ -24,7 +24,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
 
-    _musicPlayer.play("assets/audios/seaSound.mp3");
+    _musicPlayer.play("assets/audios/modern_logo.mp3");
 
     // Fade-in controller
     _fadeController = AnimationController(

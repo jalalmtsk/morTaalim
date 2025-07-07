@@ -119,6 +119,29 @@
   "points": "Points",
   "player1": "Player 1",
   "player2": "Player 2",
-  "playAgain": "Play Again"
+  "playAgain": "Play Again",
+  "enterName": "Enter your name",
+
+    "chooseYourLanguageToStartTracing": "Choose your language to start tracing!",
+    "nextLetter": "Next letter",
+    "clear": "Clear",
+    "languageLocked": "Language locked",
+    "unlockFor": "Unlock for",
+    "unlock": "Unlock",
+    "cancel": "Cancel",
+    "storiesLibrary": "Stories library",
+    "sunnyTheSquirrel": "Sunny the squirrel",
+    "flickTheDancingFox": "Flick the dancing fox",
+    "next": "Next",
+    "previous": "Previous",
+    "pageOf": "Page of",
+    "forb": "For",
+     "notEnoughStars": "Not enough stars",
+      "iQTest" : "IQ Test"
+
+
+
+
+
 
 }

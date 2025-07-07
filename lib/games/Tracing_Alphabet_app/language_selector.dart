@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
+import 'package:mortaalim/userStatutBar.dart';
 
 
 import '../../XpSystem.dart';
+import '../../main.dart';
 import 'Language_CardsUI.dart';
 
 class LanguageSelectorPage extends StatelessWidget {
@@ -13,52 +15,54 @@ class LanguageSelectorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context)!;
 
     final languages = [
       LanguageOption(
         name: 'French Letters (A, B, C...)',
         languageCode: 'french',
-        icon: Icons.breakfast_dining_outlined,
+        icon: "🇫🇷",
         color: Colors.deepOrange,
         locked: false,
       ),
       LanguageOption(
         name: 'حروف عربية',
         languageCode: 'arabic',
-        icon: Icons.brightness_high_outlined,
+        icon: "🇸🇦",
         color: Colors.deepOrange.shade700,
         locked: false,
       ),
+      
       LanguageOption(
-        name: '🇯🇵 ひらがな (Japanese)',
-        languageCode: 'japanese',
-        icon: Icons.draw,
-        color: Colors.redAccent.shade200,
+        name: 'Русс Russian',
+        languageCode: 'russian',
+        icon: "🇷🇺",
+        color: Colors.indigo.shade400,
         locked: true,
         cost: 15,
       ),
       LanguageOption(
-        name: '한글 (Korean Hangul)',
+        name: 'ひら Japanese',
+        languageCode: 'japanese',
+        icon: "🇯🇵",
+        color: Colors.redAccent.shade200,
+        locked: true,
+        cost: 50,
+      ),
+
+      LanguageOption(
+        name: '한글 Korean',
         languageCode: 'korean',
-        icon: Icons.text_fields,
+        icon: "🇰🇷",
         color: Colors.blueAccent.shade200,
         locked: true,
         cost: 15,
       ),
+
       LanguageOption(
-        name: '汉字 (Chinese Hanzi)',
+        name: '汉字 Chinese',
         languageCode: 'chinese',
-        icon: Icons.translate,
+        icon: "🇨🇳",
         color: Colors.green.shade400,
-        locked: true,
-        cost: 15,
-      ),
-      LanguageOption(
-        name: 'Русский алфавит(Russian)',
-        languageCode: 'russian',
-        icon: Icons.airplanemode_active_sharp,
-        color: Colors.indigo.shade400,
         locked: true,
         cost: 15,
       ),
@@ -75,7 +79,7 @@ class LanguageSelectorPage extends StatelessWidget {
         actions: [
         ],
         title: Text(
-          tr.alphabetTracing,
+          tr(context).alphabetTracing,
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
         ),
         centerTitle: true,
@@ -93,8 +97,8 @@ class LanguageSelectorPage extends StatelessWidget {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            // Fun top header with icon and welcome text
-            Text(textAlign: TextAlign.center,'Choose your language to start tracing!', style: TextStyle(
+Userstatutbar(),            // Fun top header with icon and welcome text
+            Text(textAlign: TextAlign.center, tr(context).chooseYourLanguageToStartTracing, style: TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w600,
               color: Colors.deepOrange.shade800,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'XpSystem.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 
 class ProfileSetupPage extends StatefulWidget {
   const ProfileSetupPage({super.key});
@@ -13,7 +13,6 @@ class ProfileSetupPage extends StatefulWidget {
 
 class _ProfileSetupPageState extends State<ProfileSetupPage> {
   final TextEditingController _nameController = TextEditingController();
-  String selectedEmoji = emojiList.first;
 
   @override
   void initState() {
@@ -24,7 +23,6 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
   Future<void> _loadProfile() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      selectedEmoji = prefs.getString('avatar') ?? emojiList.first;
       _nameController.text = prefs.getString('name') ?? "";
     });
   }
@@ -34,7 +32,6 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     if (name.isEmpty) return;
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('avatar', selectedEmoji);
     await prefs.setString('name', name);
 
     Navigator.pop(context); // Return to previous screen
@@ -44,6 +41,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
     final unlockedAvatars = xpManager.unlockedAvatars;
+    final selectedAvatar = xpManager.selectedAvatar;
     final tr = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -53,7 +51,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
-        child: Column(
+        child: ListView(
           children: [
             const Text(
               "Choose your emoji avatar:",
@@ -66,24 +64,31 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
               runSpacing: 16,
               children: emojiList.map((emoji) {
                 final isUnlocked = unlockedAvatars.contains(emoji);
-                final isSelected = selectedEmoji == emoji;
+                final isSelected = selectedAvatar == emoji;
 
                 return GestureDetector(
                   onTap: () {
                     if (isUnlocked) {
-                      setState(() => selectedEmoji = emoji);
+                      setState(() => xpManager.selectAvatar(emoji));
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          duration: Duration(seconds: 1),
-                          content: Row(
+                          duration: const Duration(seconds: 1),
+                          content: Wrap(
                             children: [
                               Text(tr.this_avatar_is_locked_unlock_it_in_the),
-                              InkWell(onTap: (){Navigator.of(context).pushNamed("Shop");}
-                                  , child:  Text(
-                                      " ${tr.shop}",style: TextStyle(
-                                      color: Colors.orange,
-                                      fontWeight: FontWeight.w700),))
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pushNamed("Shop");
+                                },
+                                child: Text(
+                                  " ${tr.shop}",
+                                  style: const TextStyle(
+                                    color: Colors.orange,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -115,7 +120,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                         const Positioned(
                           right: 0,
                           top: 0,
-                          child: Icon(Icons.lock, size: 20, color: Colors.grey),
+                          child: Icon(Icons.lock, size: 20, color: Colors.deepOrange),
                         ),
                     ],
                   ),

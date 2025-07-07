@@ -118,5 +118,28 @@
   "points": "النقاط",
   "player1": "اللاعب 1",
   "player2": "اللاعب 2",
-  "playAgain": "العب مرة أخرى"
-}
+  "playAgain": "العب مرة أخرى",
+  "enterName": "أدخل اسمك",
+
+"chooseYourLanguageToStartTracing": "اختر لغتك لبدء الرسم!",
+  "nextLetter": "الحرف التالي",
+  "clear": "مسح",
+  "languageLocked": "اللغة مقفلة",
+  "unlockFor": "فتح لـ",
+  "unlock": "فتح",
+  "cancel": "إلغاء",
+  "storiesLibrary": "مكتبة القصص",
+  "sunnyTheSquirrel": "ساني السنجاب",
+  "flickTheDancingFox": "فليك الثعلب الراقص",
+  "next": "التالي",
+  "previous": "السابق",
+  "pageOf": "صفحة من",
+  "forb": "لـ",
+   "notEnoughStars": "لا توجد نجوم كافية",
+   "iQTest" : "اختبار الذكاء"
+
+
+
+
+
+  }

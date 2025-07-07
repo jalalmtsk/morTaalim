@@ -1,21 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mortaalim/tools/audio_tool.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
+import '../../l10n/app_localizations.dart';
 import '../../main.dart';
+import 'ModeSelectorPage.dart';
 import 'general_culture_game.dart';
 
 class ResultPage extends StatefulWidget {
+
   final int player1Score;
   final int player2Score;
   final GameMode mode;
+  final QuizLanguage language;  // specify type explicitly
 
   const ResultPage({
     super.key,
     required this.player1Score,
     required this.player2Score,
     required this.mode,
+    required this.language,
   });
 
   @override
@@ -134,7 +138,7 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
               ElevatedButton(
                 onPressed: () => Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (_) => QuizPage(mode: widget.mode)),
+                  MaterialPageRoute(builder: (_) => QuizPage(mode: widget.mode, language:widget.language )),
                 ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepOrange,

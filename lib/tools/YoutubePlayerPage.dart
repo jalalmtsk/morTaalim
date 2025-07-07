@@ -1,6 +1,5 @@
 
 
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -26,10 +25,7 @@ class _YouTubeSectionPlayerState extends State<YouTubeSectionPlayer> {
   }
 
   Future<void> _checkInternetAndInitPlayer() async {
-    var result = await Connectivity().checkConnectivity();
-    bool connected = result != ConnectivityResult.none;
 
-    if (connected) {
       String? videoId = YoutubePlayer.convertUrlToId(widget.videoUrl);
       if (videoId != null) {
         _ytController = YoutubePlayerController(
@@ -46,7 +42,7 @@ class _YouTubeSectionPlayerState extends State<YouTubeSectionPlayer> {
         });
         return;
       }
-    }
+
 
     // No internet or invalid video URL
     setState(() {

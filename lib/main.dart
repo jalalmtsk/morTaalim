@@ -4,25 +4,28 @@ import 'package:mortaalim/Shop/ShopPage.dart';
 import 'package:mortaalim/games/App_stories/Story_Grid_Main_Page.dart';
 import 'package:mortaalim/games/App_stories/favorite_Word/favorite_Page.dart';
 import 'package:mortaalim/games/App_stories/story_data.dart';  // Import your story list here
-import 'package:mortaalim/games/Board_game/board_main.dart';
 import 'package:mortaalim/games/IQTest_game/Section_Selector.dart';
 import 'package:mortaalim/games/IQTest_game/iqGame_data.dart';
 import 'package:mortaalim/games/Piano_Game/Piano_main_page.dart';
 import 'package:mortaalim/games/Quiz_Game/general_culture_game.dart';
 import 'package:mortaalim/games/Shapes_game/Shapes_main.dart';
+import 'package:mortaalim/games/SpeedBombGame/speedBomb.dart';
 import 'package:mortaalim/games/Tracing_Alphabet_app/language_selector.dart';
 import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
+import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
+import 'package:mortaalim/games/paitingGame/paint_main.dart';
 import 'package:mortaalim/profileSetupPage.dart';
 import 'package:mortaalim/splashScreen.dart';
 import 'package:mortaalim/tools/CreditsPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:mortaalim/Settings/setting_Page.dart'; // ✅ Correct
 
 import 'IndexPage.dart';
 import 'XpSystem.dart';
+import 'games/JumpingBoard/JumpingBoard.dart';
 
 Locale _locale = const Locale('fr'); // default locale
 late SharedPreferences prefs;
@@ -70,6 +73,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       theme: ThemeData(
         primaryColor: Colors.white,
         appBarTheme: AppBarTheme(
@@ -96,10 +100,12 @@ class _MyAppState extends State<MyApp> {
         'QuizGameApp': (context) => const QuizGameApp(),
         'AppStories': (context) => StoriesGridPage(stories: stories), // Pass real story list here
         'ShapeSorter': (context) => const ShapeSorterApp(),
-        'Piano' : (context) => PianoModeSelector(),
-        'Board': (context) => const BoardGameApp(),
+        'Piano' : (context) => const PianoModeSelector(),
+        'PlaneDestroyer': (context) => const SpeedBomb(),
         'WordLink': (context) => const WordBoardGame(),
-        'IQGame' : (context) => SectionSelector(),
+        'IQGame' : (context) => const IQTestApp(),
+        "MagicPainting" : (context) =>  DrawingIndex(),
+        "JumpingBoard": (context) => const JumpingJellyApp(),
 
         'FavoriteWords': (context) => const FavoriteWordsPage(),
         'Profile': (context) => const ProfileSetupPage(),

@@ -8,6 +8,7 @@ final List<Map<String, dynamic>> games = [
     'color': Colors.deepPurple,
     'locked': false,
     'cost': 0,
+    'unlockType': 'creative',
   },
   {
     'title': 'quizGame',
@@ -16,6 +17,7 @@ final List<Map<String, dynamic>> games = [
     'color': Colors.deepOrange,
     'locked': true,
     'cost': 10,
+    'unlockType': 'logic',
   },
   {
     'title': 'appStories',
@@ -24,36 +26,35 @@ final List<Map<String, dynamic>> games = [
     'color': Colors.blue,
     'locked': true,
     'cost': 15,
+    'unlockType': 'reading',
   },
-  // etc...
-
-
-
-{
+  {
     'title': 'shapeSorter',
     'icon': Icons.square_foot_outlined,
     'routeName': 'ShapeSorter',
     'color': Colors.green,
-  'locked': true,
-  'cost': 15,
+    'locked': true,
+    'cost': 15,
+    'unlockType': 'puzzle',
   },
   {
-    'title': 'boardGame',
+    'title': 'PlaneDestroyer',
     'icon': Icons.dashboard_outlined,
-    'routeName': 'Board',
+    'routeName': 'PlaneDestroyer',
     'color': Colors.teal,
     'locked': false,
     'cost': 15,
+    'unlockType': 'strategy',
   },
   {
     'title': 'piano',
     'icon': Icons.piano,
     'routeName': 'Piano',
-    'color': Colors.black.withValues(alpha: 0.6),
+    'color': Colors.black,
     'locked': true,
     'cost': 15,
+    'unlockType': 'music',
   },
-
   {
     'title': 'WordLink',
     'icon': Icons.sort_by_alpha_outlined,
@@ -61,8 +62,8 @@ final List<Map<String, dynamic>> games = [
     'color': Colors.indigo,
     'locked': true,
     'cost': 10,
+    'unlockType': 'language',
   },
-
   {
     'title': 'IQGame',
     'icon': Icons.smart_toy_outlined,
@@ -70,6 +71,27 @@ final List<Map<String, dynamic>> games = [
     'color': Colors.pinkAccent,
     'locked': true,
     'cost': 10,
+    'unlockType': 'iq',
+  },
+
+  {
+    'title': 'JumpingBoard',
+    'icon': Icons.attractions,
+    'routeName': 'JumpingBoard',
+    'color': Colors.green,
+    'locked': true,
+    'cost': 10,
+    'unlockType': 'iq',
+  },
+
+  {
+    'title': 'MagicPainting',
+    'icon': Icons.format_paint,
+    'routeName': 'MagicPainting',
+    'color': Colors.orange,
+    'locked': true,
+    'cost': 50,
+    'unlockType': 'iq',
   },
 
 

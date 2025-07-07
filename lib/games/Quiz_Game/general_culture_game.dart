@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:mortaalim/games/Quiz_Game/Result_QuizPage.dart';
-import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:mortaalim/games/Quiz_Game/Result_QuizPage.dart' hide QuizLanguage;
+import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
+import 'package:mortaalim/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
+import 'Questions.dart';
 import 'question_model.dart';
 import 'avatar_widget.dart';
 import 'ModeSelectorPage.dart';
@@ -26,6 +28,7 @@ class QuizPage extends StatefulWidget {
   final String? player2Name;
   final String? player1Emoji;
   final String? player2Emoji;
+  final QuizLanguage language; // <- new required parameter
 
   const QuizPage({
     super.key,
@@ -34,6 +37,7 @@ class QuizPage extends StatefulWidget {
     this.player2Name,
     this.player1Emoji,
     this.player2Emoji,
+    required this.language,
   });
 
   @override
@@ -44,26 +48,6 @@ class _QuizPageState extends State<QuizPage> {
   final MusicPlayer _player = MusicPlayer();
   final MusicPlayer _backgroundMusic = MusicPlayer();
 
-  final List<Question> _originalQuestions = [
-
-    Question('🌤️ What color is the sky?', ['Blue', 'Green', 'Red', 'Yellow'], 0),
-    Question('🕷️ How many legs does a spider have?', ['6', '8', '10', '4'], 1),
-    Question('🐶 Which animal barks?', ['Cat', 'Cow', 'Dog', 'Bird'], 2),
-    Question('🧮 What is 2 + 2?', ['3', '4', '5'], 1),
-    Question('🍌 Which one is a fruit?', ['Carrot', 'Banana', 'Potato', 'Onion'], 1),
-    Question('🐶 Which one is an animal?', ['Car', 'Dog', 'Table', 'Chair'], 1),
-    Question('🌈 What color is the sky?', ['Green', 'Blue', 'Red', 'Yellow'], 1),
-    Question('🚗 Which one can fly?', ['Car', 'Boat', 'Airplane', 'Bike'], 2),
-    Question('🍎 Which one is red?', ['Banana', 'Apple', 'Grape', 'Orange'], 1),
-    Question('🌻 Which one is a flower?', ['Rose', 'Tree', 'Grass', 'Rock'], 0),
-    Question('🐸 Which one lives in water?', ['Dog', 'Frog', 'Cat', 'Horse'], 1),
-    Question('🍪 Which one is a sweet treat?', ['Bread', 'Cookie', 'Rice', 'Potato'], 1),
-    Question('🎵 Which one is a musical instrument?', ['Piano', 'Book', 'Chair', 'Pen'], 0),
-    Question('⚽ What do you use to play soccer?', ['Ball', 'Bat', 'Glove', 'Racket'], 0),
-    Question('🌟 Which one shines in the night sky?', ['Moon', 'Sun', 'Cloud', 'Tree'], 0),
-
-  ];
-
   late List<Question> _questions;
   int _currentQuestion = 0;
   int _player1Score = 0;
@@ -71,6 +55,9 @@ class _QuizPageState extends State<QuizPage> {
   int _playerTurn = 1;
 
 
+  List<Question> _loadQuestions(QuizLanguage lang) {
+    return questionsByLanguage[lang] ?? [];
+  }
 
   int _player1Lives = 2;
   int _player2Lives = 2;
@@ -88,11 +75,12 @@ class _QuizPageState extends State<QuizPage> {
   void initState() {
     super.initState();
     _backgroundMusic.play("assets/audios/sound_track/piano.mp3");
-    _questions = [..._originalQuestions]..shuffle();
+    _questions = _loadQuestions(widget.language)
+      ..shuffle();
     _startTimer();
   }
 
-  void _startTimer() {
+    void _startTimer() {
     _timeLeft = 10;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
@@ -137,17 +125,26 @@ class _QuizPageState extends State<QuizPage> {
 
       if (isCorrect) {
         final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-        xpManager.addXP(3);   // 🎮 Give 3 XP
-        xpManager.addStars(1); // ⭐ Give 1 Star
+        xpManager.addXP(2); // ✅ Give 2 XP instead of 3
 
+        // Count correct answers for player 1 or 2
+        int newScore;
         if (widget.mode == GameMode.single) {
           _player1Score++;
+          newScore = _player1Score;
         } else {
           if (_playerTurn == 1) {
             _player1Score++;
+            newScore = _player1Score;
           } else {
             _player2Score++;
+            newScore = _player2Score;
           }
+        }
+
+        // ✅ Give 1 token (star) every 3 correct answers
+        if (newScore % 3 == 0) {
+          xpManager.addTokens(1);
         }
 
         _playSound('assets/audios/sound_effects/correct_anwser.mp3');
@@ -188,7 +185,7 @@ class _QuizPageState extends State<QuizPage> {
           builder: (_) => ResultPage(
             player1Score: _player1Score,
             player2Score: _player2Score,
-            mode: widget.mode,
+            mode: widget.mode, language: widget.language,
           ),
         ),
       );
@@ -233,6 +230,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: const EdgeInsets.all(20.0),
             child: Column(
               children: [
+Userstatutbar(),
 
                 Align(
                   alignment: Alignment.topLeft,

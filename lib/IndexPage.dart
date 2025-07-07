@@ -3,14 +3,14 @@ import 'package:mortaalim/loading_page.dart';
 import 'package:mortaalim/profile_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 
 import 'XpSystem.dart';
 import 'indexPage_tools/Course_index_tool/course_index.dart';
 import 'indexPage_tools/Game_index_tool/game_index.dart';
 import 'indexPage_tools/language_menu.dart';
 import 'indexPage_tools/music_button.dart';
-import 'tools/audio_tool.dart';
+import 'tools/audio_tool/audio_tool.dart';
 
 class Index extends StatefulWidget {
   final void Function(Locale) onChangeLocale;
@@ -22,20 +22,13 @@ class Index extends StatefulWidget {
 
 bool musicisOn = true;
 
-class _IndexState extends State<Index> with TickerProviderStateMixin {
+class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBindingObserver {
   final MusicPlayer _musicPlayer = MusicPlayer();
+  final MusicPlayer _clickButton = MusicPlayer();
+
   late TabController _tabController;
-
-  final List<String> tabMusicPaths = [
-    "assets/audios/intro_music.mp3",
-    "assets/audios/into.mp3",
-  ];
-
-  int _currentIndex = 0;
-  String avatarEmoji = "🐱";
   String childName = "Player";
 
-  // Animation controllers for profile card
   late final AnimationController _profileAnimController;
   late final Animation<Offset> _profileSlideAnimation;
   late final Animation<double> _profileFadeAnimation;
@@ -43,44 +36,41 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
 
-    // Tab controller for tab navigation
-    _tabController = TabController(length: tabMusicPaths.length, vsync: this);
-    _tabController.addListener(_handleTabChange);
+    _tabController = TabController(length: 2, vsync: this);
 
     _loadProfile();
-    _musicPlayer.play(tabMusicPaths[0], loop: true);
 
-    // Setup animation controller for profile card
+    _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3", loop: true);
+
     _profileAnimController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 600),
     );
 
-    // Slide animation from left (-0.5 means half width to the left)
     _profileSlideAnimation = Tween<Offset>(
-      begin: const Offset(-0.5, 0),
+      begin: const Offset(-2, 0),
       end: Offset.zero,
     ).animate(CurvedAnimation(
       parent: _profileAnimController,
       curve: Curves.easeOut,
     ));
 
-    // Fade animation from transparent to opaque
     _profileFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
       CurvedAnimation(parent: _profileAnimController, curve: Curves.easeIn),
     );
 
-    // Start the animation
     _profileAnimController.forward();
   }
 
-  void _handleTabChange() {
-    if (_tabController.index != _currentIndex) {
-      _currentIndex = _tabController.index;
-      _musicPlayer.stop();
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _musicPlayer.pause();
+    } else if (state == AppLifecycleState.resumed) {
       if (musicisOn) {
-        _musicPlayer.play(tabMusicPaths[_currentIndex], loop: true);
+        _musicPlayer.resume();
       }
     }
   }
@@ -88,23 +78,23 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
   void toggleMusic() {
     setState(() => musicisOn = !musicisOn);
     musicisOn
-        ? _musicPlayer.play(tabMusicPaths[_tabController.index], loop: true)
+        ? _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3", loop: true)
         : _musicPlayer.stop();
   }
 
   void _loadProfile() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      avatarEmoji = prefs.getString('avatar') ?? "🐱";
       childName = prefs.getString('name') ?? "Player";
     });
   }
 
   @override
   void dispose() {
-    _tabController.removeListener(_handleTabChange);
-    _musicPlayer.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     _tabController.dispose();
+    _musicPlayer.dispose();
+    _clickButton.dispose();
     _profileAnimController.dispose();
     super.dispose();
   }
@@ -113,7 +103,6 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
     await Future.delayed(const Duration(seconds: 3));
   }
 
-  // Helper to create fade transition route for smooth page change
   Route createFadeRoute(Widget page) {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
@@ -128,6 +117,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final tr = AppLocalizations.of(context)!;
     final xpManager = Provider.of<ExperienceManager>(context);
+    final avatarEmoji = xpManager.selectedAvatar;
     final stars = xpManager.stars;
 
     return Scaffold(
@@ -142,27 +132,33 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
         actions: [
           LanguageMenu(onChangeLocale: widget.onChangeLocale, colorButton: Colors.white),
           IconButton(
-            onPressed: () => Navigator.of(context).push(createFadeRoute(
-              LoadingPage(
-                loadingFuture: simulateLoading(),
-                nextRouteName: 'Shop',
-              ),
-            )),
+            onPressed: () {
+              _clickButton.play("assets/audios/pop.mp3");
+              Navigator.of(context).push(createFadeRoute(
+                LoadingPage(
+                  loadingFuture: simulateLoading(),
+                  nextRouteName: 'Shop',
+                ),
+              ));
+            },
             icon: const Icon(Icons.local_convenience_store_outlined, color: Colors.white),
           ),
           IconButton(
-            onPressed: () => Navigator.of(context).pushNamed('Setting'),
+            onPressed: () {
+              _clickButton.play("assets/audios/pop.mp3");
+              Navigator.of(context).pushNamed('Setting');
+            },
             icon: const Icon(Icons.settings, color: Colors.white),
           ),
           const SizedBox(width: 4),
         ],
         bottom: TabBar(
-          unselectedLabelStyle: TextStyle(fontSize: 13),
           controller: _tabController,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
-          labelStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           unselectedLabelColor: Colors.white30,
+          unselectedLabelStyle: const TextStyle(fontSize: 13),
           tabs: [
             Tab(icon: const Icon(Icons.school), text: tr.courses),
             Tab(icon: const Icon(Icons.videogame_asset), text: tr.games),
@@ -181,60 +177,66 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
         child: SafeArea(
           child: Column(
             children: [
-              // Animated Profile card: slides in from left and fades in
               SlideTransition(
                 position: _profileSlideAnimation,
-                child: FadeTransition(
-                  opacity: _profileFadeAnimation,
-                  child: Container(
-                    margin: const EdgeInsets.only(bottom: 16),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.95),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.deepOrange.withOpacity(0.12),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Material(
-                          color: Colors.orange.withOpacity(0.1),
-                          shape: const CircleBorder(),
-                          child: InkWell(
-                            customBorder: const CircleBorder(),
-                            onTap: () {
-                              Navigator.of(context)
-                                  .push(createFadeRoute(ProfilePage(
-                                initialName: childName,
-                                initialAvatar: avatarEmoji,
-                                initialAge: 13,
-                                initialColor: Colors.red,
-                                initialMood: "Happy",
-                              )))
-                                  .then((_) => _loadProfile());
-                            },
-                            child: Tooltip(
-                              message: "Edit Profile",
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Text(
-                                  avatarEmoji,
-                                  style: const TextStyle(fontSize: 36),
-                                ),
+                child: Container(
+                  margin: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.95),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.deepOrange.withOpacity(0.12),
+                        blurRadius: 8,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Material(
+                        color: Colors.orange.withOpacity(0.1),
+                        shape: const CircleBorder(),
+                        child: InkWell(
+                          customBorder: const CircleBorder(),
+                          onTap: () {
+                            _clickButton.play("assets/audios/pop.mp3");
+                            Navigator.of(context)
+                                .push(createFadeRoute(ProfilePage(
+                              initialName: childName,
+                              initialAvatar: avatarEmoji,
+                              initialAge: 13,
+                              initialColor: Colors.red,
+                              initialMood: "Happy",
+                            )))
+                                .then((_) => _loadProfile());
+                          },
+                          child: Tooltip(
+                            message: "Edit Profile",
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Text(
+                                avatarEmoji,
+                                style: const TextStyle(fontSize: 36),
                               ),
                             ),
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          flex: 3,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        flex: 3,
+                        child: InkWell(
+                          onTap: () {
+                            Navigator.of(context)
+                                .pushNamed('Profile')
+                                .then((_) => _loadProfile());
+                          },
                           child: Text(
-                            childName,
+                            (childName == "Player" || childName.isEmpty)
+                                ? "${tr.enterName} ✏️"
+                                : childName,
                             style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.w600,
@@ -242,8 +244,14 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
-                        Expanded(
-                          flex: 2,
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: GestureDetector(
+                          onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => LoadingPage(
+                                  loadingFuture: simulateLoading(),
+                                  nextRouteName: "Shop"))),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
@@ -257,24 +265,34 @@ class _IndexState extends State<Index> with TickerProviderStateMixin {
                                   color: Colors.deepOrange,
                                 ),
                               ),
+                              const SizedBox(width: 12),
+                              const Icon(Icons.generating_tokens_rounded, color: Colors.green),
+                              const SizedBox(width: 3),
+                              Text(
+                                "${xpManager.saveTokens}",
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green,
+                                ),
+                              ),
                             ],
                           ),
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.edit, color: Colors.deepOrangeAccent),
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushNamed('Profile')
-                                .then((_) => _loadProfile());
-                          },
-                        ),
-                      ],
-                    ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.mode_edit_sharp, color: Colors.deepOrangeAccent),
+                        onPressed: () {
+                          _clickButton.play("assets/audios/pop.mp3");
+                          Navigator.of(context)
+                              .pushNamed('Profile')
+                              .then((_) => _loadProfile());
+                        },
+                      ),
+                    ],
                   ),
                 ),
               ),
-
-              // Tab section for courses and games
               Expanded(
                 child: TabBarView(
                   controller: _tabController,

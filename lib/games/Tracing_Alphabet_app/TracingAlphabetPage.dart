@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
+
+import '../../main.dart';
 
 
 class AlphabetTracingPage extends StatefulWidget {
@@ -15,6 +18,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
   late List<String> _letters;
   late Map<String, Map<String, String>> _letterDetails;
   int _currentLetterIndex = 0;
+  final MusicPlayer _drawingSound = new MusicPlayer();
 
   @override
 
@@ -163,7 +167,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Alphabet Tracing'),
+        title:  Text(tr(context).alphabetTracing),
         centerTitle: true,
       ),
       body: Center(
@@ -191,6 +195,10 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
 
                   // Drawing canvas on top
                   GestureDetector(
+
+                    onPanStart: (_) {
+                      _drawingSound.play("audios/writting.mp3");
+                    },
                     onPanUpdate: (details) {
                       final box = _paintKey.currentContext?.findRenderObject() as RenderBox?;
                       if (box != null) {
@@ -200,7 +208,8 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                         });
                       }
                     },
-                    onPanEnd: (details) {
+                    onPanEnd: (_) {
+                      _drawingSound.stop();
                       setState(() {
                         _points = List.from(_points)..add(null); // Stroke separator
                       });
@@ -223,7 +232,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                 ElevatedButton.icon(
                   onPressed: _clearCanvas,
                   icon: const Icon(Icons.clear),
-                  label: const Text('Clear'),
+                  label:  Text(tr(context).clear),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepOrange,
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
@@ -236,7 +245,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                 ElevatedButton.icon(
                   onPressed: _nextLetter,
                   icon: const Icon(Icons.arrow_forward),
-                  label: const Text('Next Letter'),
+                  label:  Text(tr(context).nextLetter),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepOrange,
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),

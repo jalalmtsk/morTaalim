@@ -106,7 +106,7 @@
   "loadingPhrase9": "Attendez, le chat débogue le code !",
   "loadingPhrase10": "Mrrrow ! Presque fini !",
 
-  "this_avatar_is_locked_unlock_it_in_the": "Cet avatar est verrouillé. Déverrouillez-le dans le",
+  "this_avatar_is_locked_unlock_it_in_the": "Cet avatar est verrouillé. Déverrouillez-le dans la",
   "shop" : "Boutique",
 
   "age": "Âge",
@@ -118,5 +118,28 @@
   "points": "Points",
   "player1": "Joueur 1",
   "player2": "Joueur 2",
-  "playAgain": "Rejouer"
+  "playAgain": "Rejouer",
+  "enterName": "Entrez votre nom",
+
+
+  "chooseYourLanguageToStartTracing": "Choisissez votre langue pour commencer à tracer !",
+    "nextLetter": "Lettre suivante",
+    "clear": "Effacer",
+    "languageLocked": "Langue verrouillée",
+    "unlockFor": "Déverrouiller pour",
+    "unlock": "Déverrouiller",
+    "cancel": "Annuler",
+    "storiesLibrary": "Bibliothèque d'histoires",
+    "sunnyTheSquirrel": "Sunny l'écureuil",
+    "flickTheDancingFox": "Flick le renard danseur",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "pageOf": "Page de",
+     "forb": "Pour",
+     "notEnoughStars": "Pas assez d'étoiles",
+          "iQTest" : "Test de QI"
+
+
+
+
 }

@@ -5,6 +5,8 @@ final List<Story> stories = [
   Story(
     title: 'Flick the Dancing Fox',
     pages: [
+
+      // FIRST STORY /////
       StoryPageData(
         words: [
           'Once', 'upon', 'a', 'time,', 'there', 'was', 'a', 'silly', 'fox',
@@ -34,6 +36,8 @@ final List<Story> stories = [
       ),
     ],
   ),
+
+  /// SECOND STORYY   EN
   Story(
     title: 'Sunny the Squirrel',
     pages: [
@@ -65,4 +69,40 @@ final List<Story> stories = [
       ),
     ],
   ),
+
+  /// THIRD STORY EN /////
+
+  Story(
+    title: 'Nina the Sleepy Narwhal',
+    pages: [
+      StoryPageData(
+        words: [
+          'In', 'the', 'deep', 'blue', 'sea,', 'lived', 'a', 'sleepy', 'narwhal', 'named', 'Nina.',
+          'She', 'loved', 'to', 'nap', 'everywhere—even', 'on', 'top', 'of', 'a', 'jellyfish!'
+        ],
+        imageUrl: 'https://i.imgur.com/ITfB8nR.png',
+        characterName: 'Nina',
+        funnyLine: 'Zzz... *BOING!* The jellyfish bounced her like a trampoline!',
+      ),
+      StoryPageData(
+        words: [
+          'One', 'day,', 'Nina', 'tried', 'to', 'nap', 'on', 'a', 'sea', 'turtle,', 'but',
+          'it', 'started', 'swimming', 'fast!', 'Wheee!'
+        ],
+        imageUrl: 'https://i.imgur.com/vpNIn9O.png',
+        characterName: 'Speedy Turtle',
+        funnyLine: 'Nina yelled, "I’m not a surfboard!" as she zoomed across the waves!',
+      ),
+      StoryPageData(
+        words: [
+          'At', 'last,', 'Nina', 'found', 'a', 'quiet', 'spot', 'on', 'a', 'rock.',
+          'But—SURPRISE!—it', 'was', 'a', 'sleeping', 'octopus!'
+        ],
+        imageUrl: 'https://i.imgur.com/okvFg5c.png',
+        characterName: 'Ollie the Octopus',
+        funnyLine: 'Ollie woke up, gave her a hug with all 8 arms, and said, "Best nap ever!"',
+      ),
+    ],
+  ),
+
 ];

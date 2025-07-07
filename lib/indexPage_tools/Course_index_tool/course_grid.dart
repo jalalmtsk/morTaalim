@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 import 'package:mortaalim/IndexPage.dart';
-import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 
 class CourseGrid extends StatelessWidget {
   final List<Map<String, dynamic>> highCourses;

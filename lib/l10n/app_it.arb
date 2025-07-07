@@ -117,6 +117,29 @@
   "points": "Punti",
   "player1": "Giocatore 1",
   "player2": "Giocatore 2",
-  "playAgain": "Gioca di nuovo"
+  "playAgain": "Gioca di nuovo",
+  "enterName": "Inserisci il tuo nome",
+
+
+  "chooseYourLanguageToStartTracing": "ScegliLaTuaLinguaPerIniziareIlTracciamento!",
+    "nextLetter": "Lettera successiva",
+    "clear": "Cancella",
+    "languageLocked": "Lingua bloccata",
+    "unlockFor": "Sblocca per",
+    "unlock": "Sblocca",
+    "cancel": "Annulla",
+    "storiesLibrary": "Biblioteca di storie",
+    "sunnyTheSquirrel": "Sunny lo scoiattolo",
+    "flickTheDancingFox": "Flick la volpe danzante",
+    "next": "Avanti",
+    "previous": "Precedente",
+    "pageOf": "Pagina di",
+    "forb": "Per",
+     "notEnoughStars": "Stelle insufficienti",
+     "iQTest" : "Test del QI"
+
+
+
+
 }
 

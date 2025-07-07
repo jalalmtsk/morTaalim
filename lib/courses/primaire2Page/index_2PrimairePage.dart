@@ -3,7 +3,7 @@ import 'package:mortaalim/courses/primaire1Page/1_primaireExamenPage.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePage.dart';
 import 'package:mortaalim/courses/primaire2Page/2_primaire.dart';
 import 'package:mortaalim/courses/primaire2Page/2_primaireExamenPage.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../l10n/app_localizations.dart';
 
 class index2Primaire extends StatefulWidget {
   const index2Primaire({super.key});
