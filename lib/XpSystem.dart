@@ -202,14 +202,21 @@ class ExperienceManager extends ChangeNotifier {
 
   Future<void> _loadData() async {
     final prefs = await SharedPreferences.getInstance();
+
     _xp = prefs.getInt('xp') ?? 0;
-    _stars = prefs.getInt('stars') ?? 0;
+
+    // Set default to 5 stars if not saved yet
+    _stars = prefs.containsKey('stars') ? prefs.getInt('stars')! : 5;
+
+    // Set default to 20 Tolims if not saved yet
+    Tolims = prefs.containsKey('saveTokens') ? prefs.getInt('saveTokens')! : 20;
+
     _selectedAvatar = prefs.getString('selectedAvatar') ?? '😀';
     _unlockedAvatars = prefs.getStringList('unlockedAvatars') ?? ['😀'];
     _unlockedCourses = prefs.getStringList('unlockedCourses') ?? [];
-    notifyListeners();
     _unlockedLanguages = prefs.getStringList('unlockedLanguages') ?? ['arabic', 'french'];
-    Tolims = prefs.getInt('saveTokens') ?? 0;
+
+    notifyListeners();
   }
 
   Future<void> _saveData() async {

@@ -183,7 +183,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
                   margin: const EdgeInsets.only(bottom: 16),
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.95),
+                    color: Colors.white.withValues(alpha: 0.95),
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
@@ -196,7 +196,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
                   child: Row(
                     children: [
                       Material(
-                        color: Colors.orange.withOpacity(0.1),
+                        color: Colors.orange.withValues(alpha: 0.1),
                         shape: const CircleBorder(),
                         child: InkWell(
                           customBorder: const CircleBorder(),

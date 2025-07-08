@@ -1,5 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:mortaalim/Ads_Manager.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -22,6 +24,9 @@ class GameGrid extends StatefulWidget {
 }
 
 class _GameGridState extends State<GameGrid> with TickerProviderStateMixin {
+
+  BannerAd? _bannerAd;
+
   late MusicPlayer _clickButton;
   late ConfettiController _confettiController;
 
@@ -31,6 +36,12 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin {
     _clickButton = MusicPlayer();
     _clickButton.preload("assets/audios/pop.mp3");
     _confettiController = ConfettiController(duration: const Duration(seconds: 1));
+
+    _bannerAd = AdHelper.getBannerAd((){
+      setState(() {
+
+      });
+    });
   }
 
   @override
@@ -38,7 +49,9 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin {
     _confettiController.dispose();
     _victorySound.dispose();
     _clickButton.dispose();
+
     super.dispose();
+
   }
 
 
@@ -297,10 +310,18 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin {
             ElevatedButton(
               onPressed: () {
                xpManager.addStars(40);
+               xpManager.addTokens(3);
 xpManager.addXP(30, context: context);
               },
               child: const Text("Add Stars and Tolims"),
             ),
+
+            if (_bannerAd != null)
+              Container(
+                width: _bannerAd!.size.width.toDouble(),
+                height: _bannerAd!.size.height.toDouble(),
+                child: AdWidget(ad: _bannerAd!),
+              ),
           ],
         ),
 

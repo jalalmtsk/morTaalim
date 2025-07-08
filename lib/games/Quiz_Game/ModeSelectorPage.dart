@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mortaalim/IndexPage.dart';
 import 'package:mortaalim/userStatutBar.dart';
 import '../../main.dart';
 import 'general_culture_game.dart';

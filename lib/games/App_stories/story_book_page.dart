@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:mortaalim/Ads_Manager.dart';
 import 'Stories.dart';
 import 'story_page_widget.dart';
 
@@ -15,7 +17,7 @@ class StoryBookPage extends StatefulWidget {
 
 class _StoryBookPageState extends State<StoryBookPage>
     with TickerProviderStateMixin {
-
+  late BannerAd _bannerAd;
   late final PageController _pageController;
   final FlutterTts flutterTts = FlutterTts();
 
@@ -29,7 +31,11 @@ class _StoryBookPageState extends State<StoryBookPage>
   @override
   void initState() {
     super.initState();
+    _bannerAd = AdHelper.getBannerAd((){
+      setState(() {
 
+      });
+    });
     _pageController = PageController(initialPage: 0);
 
     _initTts();
@@ -200,7 +206,15 @@ class _StoryBookPageState extends State<StoryBookPage>
               ],
             ),
           ),
-        ],
+          Text("Lol"),
+
+          if (_bannerAd != null)
+          SizedBox(
+              width: _bannerAd.size.width.toDouble(),
+              height: _bannerAd.size.height.toDouble(),
+                 child: AdWidget(ad: _bannerAd),
+                  )
+    ],
       ),
     );
   }

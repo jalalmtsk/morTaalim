@@ -1,7 +1,6 @@
 Map<String, String> getAllDefinitions() {
   return {
     'Flick': 'A funny fox who loves dancing.',
-    'rain': 'Water falling from the sky.',
     'bunny': 'A small, fluffy rabbit.',
     'forest': 'A large area covered with trees and animals.',
     'time' : "To Dance Baby",
@@ -30,12 +29,9 @@ Map<String, String> getAllDefinitions() {
     'best': 'The most awesome one! / Le meilleur / الأفضل',
     'friend,': 'Someone you like and trust. / Ami / صديق',
     'Benny': 'A bunny’s name! / Benny (nom propre) / بيني',
-    'the': 'Used to point to something specific. / Le, la, les / ال',
     'bunny,': 'A small, fluffy rabbit. / Lapin / أرنب',
-    'to': 'Shows direction or purpose. / À / إلى',
     'join': 'Come together. / Rejoindre / انضم',
     'rain': 'Water falling from the sky. / Pluie / مطر',
-    'dance': 'Move to music. / Danser / يرقص',
     'party.': 'A fun gathering. / Fête / حفلة',
 
     'Together,': 'With each other. / Ensemble / معاً',
@@ -44,8 +40,6 @@ Map<String, String> getAllDefinitions() {
     'and': 'Also, plus. / Et / و',
     'laughed,': 'Made happy sounds. / Ont ri / ضحكوا',
     'making': 'Creating something. / Faisant / يصنعون',
-    'forest': 'A large area with many trees. / Forêt / غابة',
-    'a': 'One thing. / Un(e) / واحد',
     'happier': 'More joyful. / Plus heureux / أكثر سعادة',
     'place.': 'A location. / Endroit / مكان',
     'Suddenly,': 'All of a sudden. / Soudainement / فجأة',

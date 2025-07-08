@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../XpSystem.dart';
 import 'avatarGrid.dart';
-import 'package:mortaalim/Ads_Manager.dart' hide AdManager;
+import 'package:mortaalim/Ads_Manager.dart';
 class RewardShopPage extends StatelessWidget {
   const RewardShopPage({super.key});
 
@@ -165,21 +165,26 @@ class RewardShopPage extends StatelessWidget {
                             ],
                             borderRadius: BorderRadius.circular(16),
                           ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Icon(Icons.video_library, color: Colors.white),
-                              SizedBox(width: 12),
-                              Text(
-                                'Watch Ad for 1⭐ & 1 Token',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  letterSpacing: 0.5,
+                          child: GestureDetector(
+                            onTap:() {
+                              AdHelper.showRewardedAdWithLoading(context, 1);
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: const [
+                                Icon(Icons.video_library, color: Colors.white),
+                                SizedBox(width: 12),
+                                Text(
+                                  'Watch Ad for 1⭐ & 1 Token',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    letterSpacing: 0.5,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

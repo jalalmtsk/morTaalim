@@ -56,12 +56,13 @@ dependencies:
   fl_chart: ^0.71.0
   flutter_vlc_player: ^7.4.2
   flutter_colorpicker: ^1.1.0
+  google_mobile_ads: ^6.0.0
 
 
 flutter_launcher_icons:
     android: "launcher_icon"
     ios: true
-    image_path: "assets/icons/app_icon.png"
+    image_path: "assets/icons/logo2.png"
     min_sdk_android: 21 # android min sdk min:16, default 21
 
 dev_dependencies:
