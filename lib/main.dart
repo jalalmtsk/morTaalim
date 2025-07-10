@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:mortaalim/Ads_Manager.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
+
 import 'package:mortaalim/Settings/setting_Page.dart';
-import 'package:mortaalim/Shop/ShopPage.dart';
+import 'package:mortaalim/Shop/MainShopPageIndex.dart';
 import 'package:mortaalim/games/App_stories/Story_Grid_Main_Page.dart';
 import 'package:mortaalim/games/App_stories/favorite_Word/favorite_Page.dart';
 import 'package:mortaalim/games/App_stories/story_data.dart';  // Import your story list here
@@ -13,12 +14,13 @@ import 'package:mortaalim/games/Quiz_Game/general_culture_game.dart';
 import 'package:mortaalim/games/Shapes_game/Shapes_main.dart';
 import 'package:mortaalim/games/SpeedBombGame/speedBomb.dart';
 import 'package:mortaalim/games/Tracing_Alphabet_app/language_selector.dart';
+import 'package:mortaalim/games/WordExplorer/WordExplorerPage.dart';
 import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
 import 'package:mortaalim/games/paitingGame/paint_main.dart';
-import 'package:mortaalim/pishing.dart';
 import 'package:mortaalim/profileSetupPage.dart';
-import 'package:mortaalim/splashScreen.dart';
+import 'package:mortaalim/tools/splashScreen.dart';
+import 'package:mortaalim/testing.dart';
 import 'package:mortaalim/tools/CreditsPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -109,14 +111,17 @@ class _MyAppState extends State<MyApp> {
         'IQGame' : (context) => const IQTestApp(),
         "MagicPainting" : (context) =>  DrawingIndex(),
         "JumpingBoard": (context) => const JumpingJellyApp(),
+        "WordExplorer" : (context) =>  WordExplorer(),
+
 
         'FavoriteWords': (context) => const FavoriteWordsPage(),
         'Profile': (context) => const ProfileSetupPage(),
-        'Shop' : (context) =>  RewardShopPage(),
+        'Shop' : (context) => MainShopPageIndex(),
         'Credits' : (context) =>  CreditsPage(),
 
         'Setting' : (context) => SettingsPage(onChangeLocale: _changeLanguage),
-        'Splash' : (context) => SplashPage(onChangeLocale: _changeLanguage)
+        'Splash' : (context) => SplashPage(onChangeLocale: _changeLanguage),
+        "Testing" : (context) => TestApp(),
 
       },
       localizationsDelegates: const [

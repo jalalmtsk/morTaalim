@@ -45,5 +45,24 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- Permissions required by your Flutter plugins -->
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to the microphone for audio features.</string>
+
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>This app uses speech recognition to assist with pronunciation and TTS.</string>
+
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app may access your location to check connectivity status.</string>
+
+	<key>NSUserTrackingUsageDescription</key>
+	<string>This app uses your data to deliver more relevant ads.</string>
 </dict>
 </plist>

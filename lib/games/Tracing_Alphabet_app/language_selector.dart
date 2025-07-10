@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import '../../l10n/app_localizations.dart';
-import 'package:mortaalim/userStatutBar.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
 
 
 import '../../XpSystem.dart';

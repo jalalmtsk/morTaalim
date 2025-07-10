@@ -131,7 +131,7 @@ class _Primaire1State extends State<primaire1> {
                 ),
                 background: Padding(
                   padding: const EdgeInsets.only(top: 30),
-                 /* child: Image.asset(
+                  /* child: Image.asset(
                     'assets/images/Mathematics_toy.png',
                     fit: BoxFit.cover,
                   ),*/

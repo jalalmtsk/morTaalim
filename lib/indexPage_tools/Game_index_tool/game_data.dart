@@ -94,5 +94,15 @@ final List<Map<String, dynamic>> games = [
     'unlockType': 'iq',
   },
 
+  {
+    'title': 'WordExplorer',
+    'icon': Icons.swipe_left,
+    'routeName': 'WordExplorer',
+    'color': Colors.amber,
+    'locked': true,
+    'cost': 50,
+    'unlockType': 'iq',
+  },
+
 
 ];

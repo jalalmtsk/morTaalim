@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart' hide useWhiteForeground;
 import 'package:confetti/confetti.dart';
-import 'package:mortaalim/userStatutBar.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 
 import '../../XpSystem.dart';
@@ -149,7 +149,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
 
     // Check if user has at least 1 star
-    if (xpManager.saveTokens < 1) {
+    if (xpManager.saveTokenCount < 1) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Row(
           children: [

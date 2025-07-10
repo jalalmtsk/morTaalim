@@ -1,7 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:mortaalim/Ads_Manager.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +9,7 @@ import 'package:confetti/confetti.dart';
 
 import '../../XpSystem.dart';
 import '../../tools/audio_tool/audio_tool.dart';
-import '../../loading_page.dart';
+import '../../tools/loading_page.dart';
 
 
 final MusicPlayer _victorySound = MusicPlayer();
@@ -373,6 +373,8 @@ xpManager.addXP(30, context: context);
         return tr.iQTest;
       case 'JumpingBoard':
         return tr.iQTest;
+      case 'WordExplorer':
+        return tr.enterPin;
       default:
         return key;
     }

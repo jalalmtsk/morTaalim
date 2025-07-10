@@ -82,7 +82,6 @@ class CreditsPage extends StatelessWidget {
                 },
               ),
             ),
-
           ],
         ),
       ),

@@ -1,17 +1,15 @@
-// 🟧 Refined CoursePage with Fun Bubble UI + JSON Integration + Progress Tracking
-
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mortaalim/tools/VideoPlayer.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import '../../l10n/app_localizations.dart';
 
 import 'nestedCourse.dart';
-
 
 class CoursePage extends StatefulWidget {
   final String jsonFilePath;
@@ -36,16 +34,16 @@ class _CoursePageState extends State<CoursePage> with TickerProviderStateMixin {
   bool isLoading = true;
   late SharedPreferences prefs;
   late ConfettiController _confettiController;
-  late AnimationController _wiggleController;
+  late AnimationController _breathController;
   final FlutterTts tts = FlutterTts();
 
   @override
   void initState() {
     super.initState();
     _confettiController = ConfettiController(duration: const Duration(seconds: 3));
-    _wiggleController = AnimationController(
+    _breathController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1500),
+      duration: const Duration(seconds: 3),
     )..repeat(reverse: true);
     loadData();
   }
@@ -53,7 +51,7 @@ class _CoursePageState extends State<CoursePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _confettiController.dispose();
-    _wiggleController.dispose();
+    _breathController.dispose();
     super.dispose();
   }
 
@@ -77,7 +75,7 @@ class _CoursePageState extends State<CoursePage> with TickerProviderStateMixin {
     await prefs.setStringList(_progressKey(), completedSections.map((e) => e.toString()).toList());
   }
 
-  void toggleSection(int index) {
+  Future<void> toggleSection(int index) async {
     setState(() {
       if (completedSections.contains(index)) {
         completedSections.remove(index);
@@ -89,11 +87,13 @@ class _CoursePageState extends State<CoursePage> with TickerProviderStateMixin {
 
     if (completedSections.length == sections.length && sections.isNotEmpty) {
       _confettiController.play();
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      await Future.delayed(const Duration(seconds: 3));
+      await ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("${AppLocalizations.of(context)!.greatJob} 🎉"),
         backgroundColor: Colors.deepOrange,
         duration: const Duration(seconds: 2),
       ));
+      Navigator.of(context).pop();
     }
   }
 
@@ -103,14 +103,15 @@ class _CoursePageState extends State<CoursePage> with TickerProviderStateMixin {
     await tts.speak(text);
   }
 
-  Widget wiggle(Widget child) {
+  // Breathing scale animation for the cards
+  Widget breathing(Widget child) {
     return AnimatedBuilder(
-      animation: _wiggleController,
-      child: child,
-      builder: (context, widget) {
-        final double offset = 0.05 * sin(_wiggleController.value * 2 * pi);
-        return Transform.rotate(angle: offset, child: widget);
+      animation: _breathController,
+      builder: (context, childWidget) {
+        final scale = 0.95 + 0.1 * _breathController.value; // 0.95 to 1.05 scale
+        return Transform.scale(scale: scale, child: childWidget);
       },
+      child: child,
     );
   }
 
@@ -119,7 +120,7 @@ class _CoursePageState extends State<CoursePage> with TickerProviderStateMixin {
     showModalBottomSheet(
       enableDrag: true,
       useSafeArea: true,
-
+      isScrollControlled: true,
       context: context,
       backgroundColor: Colors.deepOrange.shade50,
       shape: const RoundedRectangleBorder(
@@ -127,46 +128,39 @@ class _CoursePageState extends State<CoursePage> with TickerProviderStateMixin {
       ),
       builder: (_) => Padding(
         padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-
-            Text(
-              section['title'],
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 30),
-
-            Expanded(
-              child: ListView(children: [
-                Center(
-                  child: Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
-                    children: subsections.map<Widget>((sub) {
-                      return wiggle(BubbleButton(
-                        label: sub['title'],
-                        color: Colors.primaries[subsections.indexOf(sub) % Colors.primaries.length],
-                        onTap: () {
-                          Navigator.pop(context);
-                          speak(sub['title']);
-                          toggleSection(index);
-
-                          // Here's where you push to the detailed page:
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => CourseNodePage(node: sub),  // <== pass the subsection 'sub' here
-                            ),
-                          );
-                        },
-                      ));
-                    }).toList(),
-                  ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                section['title'],
+                style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+              ),
+              const SizedBox(height: 30),
+              Center(
+                child: Wrap(
+                  spacing: 14,
+                  runSpacing: 14,
+                  children: subsections.map<Widget>((sub) {
+                    return breathing(BubbleButton(
+                      label: sub['title'],
+                      color: Colors.primaries[subsections.indexOf(sub) % Colors.primaries.length].shade700,
+                      onTap: () {
+                        Navigator.pop(context);
+                        speak(sub['title']);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => CourseNodePage(node: sub),
+                          ),
+                        );
+                      },
+                    ));
+                  }).toList(),
                 ),
-              ],),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -180,36 +174,74 @@ class _CoursePageState extends State<CoursePage> with TickerProviderStateMixin {
       );
     }
 
+    final progressPercent = sections.isEmpty ? 0.0 : completedSections.length / sections.length;
+
     return Scaffold(
+      backgroundColor: Colors.orange.shade50,
       appBar: AppBar(
-        title: Text(courseTitle),
+        title: Text(
+          courseTitle,
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 28),
+        ),
         backgroundColor: Colors.deepOrange,
+        centerTitle: true,
+        toolbarHeight: 70,
       ),
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24),
+            padding: const EdgeInsets.only(top: 32, bottom: 24),
             child: Column(
               children: [
-                Text(
-                  "${(completedSections.length / sections.length * 100).toStringAsFixed(0)}%",
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                // Big fun progress indicator with emoji
+                CircularPercentIndicator(
+                  radius: 80,
+                  lineWidth: 14,
+                  animation: true,
+                  percent: progressPercent,
+                  center: Text(
+                    "${(progressPercent * 100).toInt()}%\n🎉",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 26, color: Colors.deepOrange),
+                  ),
+                  circularStrokeCap: CircularStrokeCap.round,
+                  progressColor: Colors.deepOrange,
+                  backgroundColor: Colors.deepOrange.shade100,
                 ),
-                const SizedBox(height: 12),
-                SizedBox(
-                  height: 180,
+
+                const SizedBox(height: 14),
+
+                // Linear progress bar for clarity
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: LinearProgressIndicator(
+                      minHeight: 20,
+                      value: progressPercent,
+                      backgroundColor: Colors.deepOrange.shade100,
+                      color: Colors.deepOrange,
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+
+                Expanded(
                   child: PageView.builder(
-                    controller: PageController(viewportFraction: 0.7),
+                    controller: PageController(viewportFraction: 0.72),
                     itemCount: sections.length,
                     itemBuilder: (context, index) {
                       final section = sections[index];
                       return GestureDetector(
                         onTap: () => showSubsectionModal(section, index),
-                        child: FunSectionCard(
+                        child: breathing(FunSectionCard(
                           title: section['title'],
                           emoji: '🎓',
-                          color: Colors.primaries[index % Colors.primaries.length],
-                        ),
+                          color: Colors.primaries[index % Colors.primaries.length].shade400,
+                          isCompleted: completedSections.contains(index),
+                          onToggle: () => toggleSection(index),
+                        )),
                       );
                     },
                   ),
@@ -217,6 +249,8 @@ class _CoursePageState extends State<CoursePage> with TickerProviderStateMixin {
               ],
             ),
           ),
+
+          // Confetti celebration on 100% progress
           Align(
             alignment: Alignment.topCenter,
             child: ConfettiWidget(
@@ -240,28 +274,71 @@ class FunSectionCard extends StatelessWidget {
   final String title;
   final Color color;
   final String emoji;
-  const FunSectionCard({super.key, required this.title, required this.color, required this.emoji});
+  final bool isCompleted;
+  final VoidCallback onToggle;
+
+  const FunSectionCard({
+    super.key,
+    required this.title,
+    required this.color,
+    required this.emoji,
+    required this.isCompleted,
+    required this.onToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       child: Material(
-        elevation: 5,
-        borderRadius: BorderRadius.circular(20),
+        elevation: 8,
+        borderRadius: BorderRadius.circular(24),
         color: color,
-        child: Container(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(emoji, style: const TextStyle(fontSize: 48)),
-              const SizedBox(height: 10),
-              Text(title,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold)),
-            ],
-          ),
+        child: Stack(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(28),
+              height: 200,
+              width: double.infinity,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(emoji, style: const TextStyle(fontSize: 56)),
+                  const SizedBox(height: 14),
+                  Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1, 1),
+                          blurRadius: 6,
+                          color: Colors.black26,
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Positioned(
+              top: 12,
+              right: 12,
+              child: Checkbox(
+                value: isCompleted,
+                onChanged: (_) => onToggle(),
+                checkColor: Colors.white,
+                activeColor: Colors.green.shade600,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
+                ),
+                side: BorderSide(color: Colors.white, width: 2),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -278,18 +355,19 @@ class BubbleButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       color: color,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(16),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(16),
+        splashColor: Colors.orange.shade200,
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           child: Text(
             label,
             style: const TextStyle(
               color: Colors.white,
               fontWeight: FontWeight.bold,
-              fontSize: 18,
+              fontSize: 20,
             ),
           ),
         ),

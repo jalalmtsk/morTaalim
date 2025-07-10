@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:mortaalim/Ads_Manager.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'Stories.dart';
 import 'story_page_widget.dart';
 
@@ -206,8 +206,6 @@ class _StoryBookPageState extends State<StoryBookPage>
               ],
             ),
           ),
-          Text("Lol"),
-
           if (_bannerAd != null)
           SizedBox(
               width: _bannerAd.size.width.toDouble(),

@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
-import 'package:mortaalim/userStatutBar.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 
 import '../../XpSystem.dart';

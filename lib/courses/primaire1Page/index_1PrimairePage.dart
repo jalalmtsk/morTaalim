@@ -114,7 +114,7 @@ class _index1PrimaireState extends State<index1Primaire>
                             icon:  Icon(Icons.arrow_back, color: Colors.deepOrange),
                             onPressed: () => Navigator.pop(context),
                           ),
-                           Text(
+                          Text(
                             '1ère Année Primaire',
                             style: TextStyle(
                               fontSize: 24,

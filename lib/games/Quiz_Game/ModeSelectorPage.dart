@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mortaalim/userStatutBar.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
 import '../../main.dart';
 import 'general_culture_game.dart';
 import '../../l10n/app_localizations.dart';

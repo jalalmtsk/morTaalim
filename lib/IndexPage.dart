@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mortaalim/loading_page.dart';
-import 'package:mortaalim/profile_page.dart';
+import 'package:mortaalim/tools/loading_page.dart';
+import 'package:mortaalim/widgets/profile_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../l10n/app_localizations.dart';
 
+import '../../l10n/app_localizations.dart';
 import 'XpSystem.dart';
 import 'indexPage_tools/Course_index_tool/course_index.dart';
 import 'indexPage_tools/Game_index_tool/game_index.dart';
@@ -22,7 +22,8 @@ class Index extends StatefulWidget {
 
 bool musicisOn = true;
 
-class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBindingObserver {
+class _IndexState extends State<Index>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   final MusicPlayer _musicPlayer = MusicPlayer();
   final MusicPlayer _clickButton = MusicPlayer();
 
@@ -42,7 +43,8 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
 
     _loadProfile();
 
-    _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3", loop: true);
+    _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3",
+        loop: true);
 
     _profileAnimController = AnimationController(
       vsync: this,
@@ -78,7 +80,9 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
   void toggleMusic() {
     setState(() => musicisOn = !musicisOn);
     musicisOn
-        ? _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3", loop: true)
+        ? _musicPlayer.play(
+        "assets/audios/sound_track/backGroundMusic8bit.mp3",
+        loop: true)
         : _musicPlayer.stop();
   }
 
@@ -130,7 +134,8 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
         title: Text(tr.welcome, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [
-          LanguageMenu(onChangeLocale: widget.onChangeLocale, colorButton: Colors.white),
+          LanguageMenu(
+              onChangeLocale: widget.onChangeLocale, colorButton: Colors.white),
           IconButton(
             onPressed: () {
               _clickButton.play("assets/audios/pop.mp3");
@@ -141,7 +146,8 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
                 ),
               ));
             },
-            icon: const Icon(Icons.local_convenience_store_outlined, color: Colors.white),
+            icon: const Icon(Icons.local_convenience_store_outlined,
+                color: Colors.white),
           ),
           IconButton(
             onPressed: () {
@@ -156,7 +162,8 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
           controller: _tabController,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
-          labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          labelStyle:
+          const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           unselectedLabelColor: Colors.white30,
           unselectedLabelStyle: const TextStyle(fontSize: 13),
           tabs: [
@@ -165,146 +172,166 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
           ],
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xfff8fafc), Color(0xfffcefe6)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      body: Stack(
+        children: [
+          // 🔹 Background image
+       /*   Positioned.fill(
+            child: Image.asset(
+              'assets/images/Untitled design-2.png', // make sure this path is correct
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        padding: const EdgeInsets.all(16),
-        child: SafeArea(
-          child: Column(
-            children: [
-              SlideTransition(
-                position: _profileSlideAnimation,
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.95),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.deepOrange.withOpacity(0.12),
-                        blurRadius: 8,
-                        offset: const Offset(0, 3),
+*/
+          // 🔸 Foreground content
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: SafeArea(
+              child: Column(
+                children: [
+                  SlideTransition(
+                    position: _profileSlideAnimation,
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.95),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.deepOrange.withOpacity(0.12),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Material(
-                        color: Colors.orange.withValues(alpha: 0.1),
-                        shape: const CircleBorder(),
-                        child: InkWell(
-                          customBorder: const CircleBorder(),
-                          onTap: () {
-                            _clickButton.play("assets/audios/pop.mp3");
-                            Navigator.of(context)
-                                .push(createFadeRoute(ProfilePage(
-                              initialName: childName,
-                              initialAvatar: avatarEmoji,
-                              initialAge: 13,
-                              initialColor: Colors.red,
-                              initialMood: "Happy",
-                            )))
-                                .then((_) => _loadProfile());
-                          },
-                          child: Tooltip(
-                            message: "Edit Profile",
-                            child: Padding(
-                              padding: const EdgeInsets.all(10.0),
-                              child: Text(
-                                avatarEmoji,
+                      child: Row(
+                        children: [
+                          Material(
+                            color: Colors.orange.withOpacity(0.1),
+                            shape: const CircleBorder(),
+                            child: InkWell(
+                              customBorder: const CircleBorder(),
+                              onTap: () {
+                                _clickButton.play("assets/audios/pop.mp3");
+                                Navigator.of(context)
+                                    .push(createFadeRoute(ProfilePage(
+                                  initialName: childName,
+                                  initialAvatar: avatarEmoji,
+                                  initialAge: 13,
+                                  initialColor: Colors.red,
+                                  initialMood: "Happy",
+                                )))
+                                    .then((_) => _loadProfile());
+                              },
+                              child: Tooltip(
+                                message: "Edit Profile",
+                                child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: xpManager.selectedAvatar.contains("assets/")
+                                  ? ClipOval(
+                                    child: Image.asset(
+                                  xpManager.selectedAvatar,
+                                  width: 55,
+                                  height: 55,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                                  : Text(
+                                xpManager.selectedAvatar,
                                 style: const TextStyle(fontSize: 36),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        flex: 3,
-                        child: InkWell(
-                          onTap: () {
-                            Navigator.of(context)
-                                .pushNamed('Profile')
-                                .then((_) => _loadProfile());
-                          },
-                          child: Text(
-                            (childName == "Player" || childName.isEmpty)
-                                ? "${tr.enterName} ✏️"
-                                : childName,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.deepOrange,
+
+                    ),
                             ),
                           ),
-                        ),
-                      ),
-                      Expanded(
-                        flex: 3,
-                        child: GestureDetector(
-                          onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                              builder: (_) => LoadingPage(
-                                  loadingFuture: simulateLoading(),
-                                  nextRouteName: "Shop"))),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              const Icon(Icons.star, color: Colors.amber),
-                              const SizedBox(width: 3),
-                              Text(
-                                "$stars",
+                          const SizedBox(width: 2),
+                          Expanded(
+                            flex: 2,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context)
+                                    .pushNamed('Profile')
+                                    .then((_) => _loadProfile());
+                              },
+                              child: Text(
+                                (childName == "Player" || childName.isEmpty)
+                                    ? "${tr.enterName} ✏️"
+                                    : childName,
                                 style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w600,
                                   color: Colors.deepOrange,
                                 ),
                               ),
-                              const SizedBox(width: 12),
-                              const Icon(Icons.generating_tokens_rounded, color: Colors.green),
-                              const SizedBox(width: 3),
-                              Text(
-                                "${xpManager.saveTokens}",
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
+                          Expanded(
+                            flex: 3,
+                            child: GestureDetector(
+                              onTap: () => Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                      builder: (_) => LoadingPage(
+                                          loadingFuture: simulateLoading(),
+                                          nextRouteName: "Shop"))),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  const Icon(Icons.star, color: Colors.amber),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    "$stars",
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.deepOrange,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 5),
+                                  const Icon(Icons.generating_tokens_rounded,
+                                      color: Colors.green),
+                                  const SizedBox(width: 2),
+                                  Text(
+                                    "${xpManager.saveTokenCount}",
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.mode_edit_sharp,
+                                color: Colors.deepOrangeAccent),
+                            onPressed: () {
+                              _clickButton.play("assets/audios/pop.mp3");
+                              Navigator.of(context)
+                                  .pushNamed('Profile')
+                                  .then((_) => _loadProfile());
+                            },
+                          ),
+                        ],
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.mode_edit_sharp, color: Colors.deepOrangeAccent),
-                        onPressed: () {
-                          _clickButton.play("assets/audios/pop.mp3");
-                          Navigator.of(context)
-                              .pushNamed('Profile')
-                              .then((_) => _loadProfile());
-                        },
-                      ),
-                    ],
+                    ),
                   ),
-                ),
+                  Expanded(
+                    child: TabBarView(
+                      controller: _tabController,
+                      children: [
+                        CourseTab(musicPlayer: _musicPlayer),
+                        GamesTab(musicPlayer: _musicPlayer),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-              Expanded(
-                child: TabBarView(
-                  controller: _tabController,
-                  children: [
-                    CourseTab(musicPlayer: _musicPlayer),
-                    GamesTab(musicPlayer: _musicPlayer),
-                  ],
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
