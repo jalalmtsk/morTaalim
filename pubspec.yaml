@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0
+  intl: ^0.20.2
 
 
 
@@ -108,6 +108,7 @@ flutter:
   - assets/fonts/ComicNeue-Regular.ttf
   - assets/fonts/ComicNeue-Bold.ttf
   - assets/animations/
+  - assets/animations/AnimatedAvatars/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

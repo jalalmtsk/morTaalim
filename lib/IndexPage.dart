@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/profile_page.dart';
 import 'package:provider/provider.dart';
@@ -92,6 +93,37 @@ class _IndexState extends State<Index>
       childName = prefs.getString('name') ?? "Player";
     });
   }
+
+
+
+  Widget _buildAvatar(String avatarPath) {
+    if (avatarPath.endsWith('.json')) {
+      return SizedBox(
+        width: 55,
+        height: 55,
+        child: Lottie.asset(
+          avatarPath,
+          fit: BoxFit.cover,
+          repeat: true,
+        ),
+      );
+    } else if (avatarPath.contains('assets/')) {
+      return Image.asset(
+        avatarPath,
+        width: 55,
+        height: 55,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Center(
+        child: Text(
+          avatarPath,
+          style: const TextStyle(fontSize: 36),
+        ),
+      );
+    }
+  }
+
 
   @override
   void dispose() {
@@ -228,18 +260,8 @@ class _IndexState extends State<Index>
                                 message: "Edit Profile",
                                 child: Padding(
                               padding: const EdgeInsets.all(2.0),
-                              child: xpManager.selectedAvatar.contains("assets/")
-                                  ? ClipOval(
-                                    child: Image.asset(
-                                  xpManager.selectedAvatar,
-                                  width: 55,
-                                  height: 55,
-                                  fit: BoxFit.cover,
-                                ),
-                              )
-                                  : Text(
-                                xpManager.selectedAvatar,
-                                style: const TextStyle(fontSize: 36),
+                              child: ClipOval(
+                                child: _buildAvatar(xpManager.selectedAvatar),
                               ),
                             ),
 

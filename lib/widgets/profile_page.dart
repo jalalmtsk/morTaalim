@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../../../l10n/app_localizations.dart';
 import '../XpSystem.dart';
@@ -58,6 +59,36 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
       CurvedAnimation(parent: _bounceController, curve: Curves.easeInOut),
     );
   }
+
+  Widget _buildAvatar(String avatarPath) {
+    if (avatarPath.endsWith('.json')) {
+      return SizedBox(
+        width: 140,
+        height: 140,
+        child: Lottie.asset(
+          avatarPath,
+          repeat: true,
+          fit: BoxFit.cover,
+        ),
+      );
+    } else if (avatarPath.contains('assets/')) {
+      return Image.asset(
+        avatarPath,
+        width: 160,
+        height: 160,
+        fit: BoxFit.cover,
+      );
+    } else {
+      return Center(
+        child: Text(
+          avatarPath,
+          style: const TextStyle(fontSize: 72),
+        ),
+      );
+    }
+  }
+
+
 
   @override
   void dispose() {
@@ -135,24 +166,9 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                     ),
                   ],
                 ),
-                child: CircleAvatar(
-                  radius: 70,
-                  backgroundColor: Colors.white,
-                  child: avatar.contains("assets/")
-                      ? ClipOval(
-                    child: Image.asset(
-                      avatar,
-                      width: 140,
-                      height: 140,
-                      fit: BoxFit.cover,
-                    ),
-                  )
-                      : Text(
-                    avatar,
-                    style: const TextStyle(fontSize: 72),
-                  ),
-                ),
-              ),
+                child: ClipOval(child: _buildAvatar(avatar)),
+
+      ),
             ),
 
             const SizedBox(height: 24),
@@ -284,17 +300,17 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
       {
         'image': 'assets/images/badges/Badge1.png',
         'label': 'First Steps',
-        'unlockXp': 0,
+        'unlockXp': 100,
       },
       {
         'image': 'assets/images/badges/Badge2.png',
         'label': 'Intermediate',
-        'unlockXp': 100,
+        'unlockXp': 200,
       },
       {
         'image': 'assets/images/badges/Badge3.png',
         'label': 'Advanced',
-        'unlockXp': 250,
+        'unlockXp': 350,
       },
       {
         'image': 'assets/images/badges/Badge4.png',
@@ -305,30 +321,30 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
       {
         'image': 'assets/images/badges/Badge5.png',
         'label': 'Top of the Class',
-        'unlockXp': 600,
+        'unlockXp': 750,
       },
 
       {
         'image': 'assets/images/badges/Badge6.png',
         'label': 'Top of the Class',
-        'unlockXp': 600,
+        'unlockXp': 1050,
       },
 
       {
         'image': 'assets/images/badges/Badge7.png',
         'label': 'Top of the Class',
-        'unlockXp': 600,
+        'unlockXp': 1800,
       },
 
       {
-        'image': 'assets/images/badges/Badge.png',
+        'image': 'assets/images/badges/Badge9.png',
         'label': 'Never Give Up',
-        'unlockXp': 700,
+        'unlockXp': 2900,
       },
       {
-        'image': 'assets/images/badges/Badge3.png',
+        'image': 'assets/images/badges/Badge10.png',
         'label': 'XP Hero',
-        'unlockXp': 800,
+        'unlockXp': 4000,
       },
     ];
 

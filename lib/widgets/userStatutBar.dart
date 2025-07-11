@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../XpSystem.dart';
@@ -158,6 +159,38 @@ class _UserStatutBar extends State<Userstatutbar> with TickerProviderStateMixin,
     }
   }
 
+  Widget _buildAvatar(String avatarPath) {
+    if (avatarPath.endsWith('.json')) {
+      // It's a Lottie animation
+      return SizedBox(
+        width: 40,
+        height: 40,
+        child: Lottie.asset(
+          avatarPath,
+          fit: BoxFit.cover,
+          repeat: true,
+        ),
+      );
+    } else if (avatarPath.contains('assets/')) {
+      // It's an image asset
+      return Image.asset(
+        avatarPath,
+        width: 40,
+        height: 40,
+        fit: BoxFit.cover,
+      );
+    } else {
+      // It's a text-based emoji avatar
+      return Center(
+        child: Text(
+          avatarPath,
+          style: const TextStyle(fontSize: 22),
+        ),
+      );
+    }
+  }
+
+
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -193,18 +226,8 @@ class _UserStatutBar extends State<Userstatutbar> with TickerProviderStateMixin,
             CircleAvatar(
               backgroundColor: Colors.blue.shade100,
               radius: 22,
-              child: xpManager.selectedAvatar.contains("assets/")
-                  ? ClipOval(
-                child: Image.asset(
-                  xpManager.selectedAvatar,
-                  width: 40,
-                  height: 40,
-                  fit: BoxFit.cover,
-                ),
-              )
-                  : Text(
-                xpManager.selectedAvatar,
-                style: const TextStyle(fontSize: 22),
+              child: ClipOval(
+                child: _buildAvatar(xpManager.selectedAvatar),
               ),
             ),
             const SizedBox(width: 10),
