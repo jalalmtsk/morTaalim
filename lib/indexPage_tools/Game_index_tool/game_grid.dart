@@ -23,7 +23,7 @@ class GameGrid extends StatefulWidget {
   State<GameGrid> createState() => _GameGridState();
 }
 
-class _GameGridState extends State<GameGrid> with TickerProviderStateMixin {
+class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, WidgetsBindingObserver  {
 
   BannerAd? _bannerAd;
 
@@ -33,23 +33,35 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+    _loadBannerAd();
     _clickButton = MusicPlayer();
     _clickButton.preload("assets/audios/pop.mp3");
     _confettiController = ConfettiController(duration: const Duration(seconds: 1));
 
-    _bannerAd = AdHelper.getBannerAd((){
-      setState(() {
+  }
 
-      });
+  void _loadBannerAd() {
+    _bannerAd?.dispose();
+    _bannerAd = AdHelper.getBannerAd(() {
+      setState(() {});
     });
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadBannerAd();
+    }
+  }
+
+  @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _confettiController.dispose();
     _victorySound.dispose();
     _clickButton.dispose();
-
+    _bannerAd?.dispose();
     super.dispose();
 
   }
@@ -317,10 +329,15 @@ xpManager.addXP(30, context: context);
             ),
 
             if (_bannerAd != null)
-              Container(
-                width: _bannerAd!.size.width.toDouble(),
-                height: _bannerAd!.size.height.toDouble(),
-                child: AdWidget(ad: _bannerAd!),
+              SafeArea(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: _bannerAd!.size.width.toDouble(),
+                    height: _bannerAd!.size.height.toDouble(),
+                    child: AdWidget(ad: _bannerAd!),
+                  ),
+                ),
               ),
           ],
         ),
