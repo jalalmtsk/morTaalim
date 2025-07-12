@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/AnimatedAvatars.dart';
+import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/Beams.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:provider/provider.dart';
@@ -32,16 +33,19 @@ class IndexFunMojiPage extends StatelessWidget {
               // 👇👇👇 TAB BAR SECTION HERE
               Expanded(
                 child: DefaultTabController(
-                  length: 5,
+                  length: 6,
                   child: Column(
                     children: const [
                       TabBar(
-                        labelColor: Colors.white,
-                        unselectedLabelColor: Colors.white70,
+                        labelColor: Colors.black,
+                        unselectedLabelColor: Colors.white60,
                         indicatorColor: Colors.white,
+                        isScrollable: true,
+
                         tabs: [
-                          Tab(text: 'Moji',),
                           Tab(text: 'Avatar'),
+                          Tab(text: 'Beams',),
+                          Tab(text: 'Moji',),
                           Tab(text: 'Babies'),
                           Tab(text: 'Animated'),
                           Tab(text: 'Aliens'),
@@ -50,11 +54,11 @@ class IndexFunMojiPage extends StatelessWidget {
                       Expanded(
                         child: TabBarView(
                           children: [
-                            Moji(),  // 👈 You can define each tab's content
                             AvatarCr(),
+                            Beams(),
+                            Moji(),  // 👈 You can define each tab's content
                             Babies(),
                             AnimatedAvatars(),
-
                             Center(child: Text('🎭 Themes', style: TextStyle(color: Colors.white))),
                           ],
                         ),

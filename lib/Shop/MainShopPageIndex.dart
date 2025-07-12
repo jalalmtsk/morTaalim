@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/Shop/BannerTab/IndexBanner.dart';
 import 'package:mortaalim/Shop/StarsTab/IndexStars.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 
@@ -7,8 +8,6 @@ import 'FunMojiTab/IndexFunMoji.dart';
 
 class MainShopPageIndex extends StatelessWidget {
   const MainShopPageIndex({super.key});
-
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -22,12 +21,11 @@ class MainShopPageIndex extends StatelessWidget {
             indicatorColor: Colors.white,
             tabs: [
               Tab(icon: Icon(Icons.face_2_sharp), text: "FunMoji"),
-              Tab(icon: Icon(Icons.stars_rounded), text: "Stars"),
-              Tab(icon: Icon(Icons.token), text: "Tolim"),
-              Tab(icon: Icon(Icons.local_play), text: "Mini-Games"),
+              Tab(icon: Icon(Icons.filter_b_and_w_outlined), text: "Banner"),
+              Tab(icon: Icon(Icons.token), text: "Stars/Tolims"),
+              Tab(icon: Icon(Icons.card_giftcard), text: "Specials"),
               Tab(icon: Icon(Icons.info_outline), text: "Info"),
-            ],
-          ),
+            ],),
         ),
         body: Column(
           children: [
@@ -43,9 +41,9 @@ class MainShopPageIndex extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                   IndexFunMojiPage(),
-                   IndexStars(),
-                  const Center(child: Text("🪙 Token Exchange", style: TextStyle(fontSize: 18))),
+                  IndexFunMojiPage(),
+                  IndexBanner(),
+                  IndexStars(),
                   const Center(child: Text("🎮 Mini Games", style: TextStyle(fontSize: 18))),
                   const Center(child: Text("ℹ️ Information", style: TextStyle(fontSize: 18))),
                 ],

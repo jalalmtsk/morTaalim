@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 
 import '../../main.dart';
+import '../../tools/Ads_Manager.dart';
 
 
 class AlphabetTracingPage extends StatefulWidget {
@@ -14,16 +16,25 @@ class AlphabetTracingPage extends StatefulWidget {
 }
 
 class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
-
+  BannerAd? _bannerAd;
   late List<String> _letters;
   late Map<String, Map<String, String>> _letterDetails;
   int _currentLetterIndex = 0;
   final MusicPlayer _drawingSound = new MusicPlayer();
 
   @override
-
   void initState() {
     super.initState();
+
+    // Load letters based on language...
+    switch (widget.language) {
+    // your existing switch cases...
+    }
+    // ✅ Load banner ad
+    _bannerAd = AdHelper.getBannerAd(() {
+      if (mounted) setState(() {});
+    });
+
     switch (widget.language) {
       case 'arabic':
         _letters = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ'];
@@ -157,6 +168,11 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
       _points.clear();
     });
   }
+@override
+  void dispose() {
+  _bannerAd?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -267,12 +283,20 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
               style: const TextStyle(fontSize: 22, color: Colors.black54),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 20),
 
+            const SizedBox(height: 20),
           ],
         ),
       ),
+      bottomNavigationBar: _bannerAd != null
+          ? SizedBox(
+        height: _bannerAd!.size.height.toDouble(),
+        width: _bannerAd!.size.width.toDouble(),
+        child: AdWidget(ad: _bannerAd!),
+      )
+          : null,
     );
+
   }
 }
 

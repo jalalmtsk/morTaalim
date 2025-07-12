@@ -12,7 +12,7 @@ class LanguageOption {
   final String name;
   final String languageCode;
   final String icon;
-  final Color color;
+  final String imagePath; // ✅ NEW
   final bool locked;
   final int cost;
 
@@ -20,7 +20,7 @@ class LanguageOption {
     required this.name,
     required this.languageCode,
     required this.icon,
-    required this.color,
+    required this.imagePath,
     this.locked = false,
     this.cost = 10,
   });
@@ -122,7 +122,7 @@ class _LanguageCardState extends State<LanguageCard> with SingleTickerProviderSt
     final xpManager = Provider.of<ExperienceManager>(context);
     final isUnlocked = !lang.locked || xpManager.isLanguageUnlocked(lang.languageCode);
 
-    final bgColor = isUnlocked ? lang.color : Colors.grey.shade400;
+    final bgColor = isUnlocked ? Colors.grey : Colors.grey.shade400;
     final iconColor = isUnlocked ? Colors.white : Colors.grey.shade200;
     final textColor = isUnlocked ? Colors.white : Colors.grey.shade100;
 
@@ -133,82 +133,104 @@ class _LanguageCardState extends State<LanguageCard> with SingleTickerProviderSt
           scale: _scaleAnim,
           child: GestureDetector(
             onTap: _onTap,
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 500),
-              width: 160,
-              height: 180,
-              padding: const EdgeInsets.all(16),
-              margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              decoration: BoxDecoration(
-                gradient: isUnlocked
-                    ? LinearGradient(
-                  colors: [lang.color.withOpacity(0.9), lang.color.withOpacity(0.7)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                )
-                    : LinearGradient(
-                  colors: [Colors.orange.shade700.withValues(alpha: 0.4), Colors.grey.shade900],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+            child: Stack(
+            alignment: Alignment.center,
+            children: [
+              // 🖼️ Background image with dark overlay if locked
+              ClipRRect(
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: bgColor.withOpacity(0.4),
-                    blurRadius: 10,
-                    offset: const Offset(0, 6),
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(
+                    lang.locked && !isUnlocked ? Colors.black.withOpacity(0.4) : Colors.transparent,
+                    BlendMode.darken,
                   ),
-                ],
-                border: isUnlocked ? Border.all(color: Colors.white.withOpacity(0.3), width: 2) : null,
+                  child: Image.asset(
+                    lang.imagePath,
+                    width: 160,
+                    height: 180,
+                    fit: BoxFit.cover,
+                  ),
+                ),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Text(lang.icon, style: TextStyle(fontSize: 40),),
-                      if (!isUnlocked)
-                        const Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Icon(Icons.lock, color: Colors.orange, size: 35),
-                        ),
-                    ],
-                  ),
-                  Text(
-                    lang.name,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: textColor,
-                      shadows: isUnlocked
-                          ? [const Shadow(blurRadius: 4, color: Colors.black26, offset: Offset(1, 1))]
-                          : [],
+
+              // 🎯 Card content on top
+              ScaleTransition(
+                scale: _scaleAnim,
+                child: GestureDetector(
+                  onTap: _onTap,
+                  child: Container(
+                    width: 160,
+                    height: 180,
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.white.withOpacity(0.7), width: 2),
                     ),
-                  ),
-                  if (!isUnlocked)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 6),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.star, size: 18, color: Colors.amber.shade200),
-                          const SizedBox(width: 4),
-                          Text(
-                            "${lang.cost}",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: textColor,
-                              fontWeight: FontWeight.bold,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Text(lang.icon, style: const TextStyle(fontSize: 40)),
+                            if (!isUnlocked)
+                              const Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: Icon(Icons.lock, color: Colors.orange, size: 35),
+                              ),
+                          ],
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          lang.name,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            shadows: const [Shadow(color: Colors.black, blurRadius: 4)],
+                          ),
+                        ),
+                        if (!isUnlocked)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 6),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.star, size: 18, color: Colors.amber),
+                                const SizedBox(width: 4),
+                                Text(
+                                  "${lang.cost}",
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
+                      ],
                     ),
-                ],
+                  ),
+                ),
               ),
-            ),
+              // 🎉 Confetti remains
+              Positioned(
+                top: 0,
+                child: ConfettiWidget(
+                  confettiController: _confettiController,
+                  blastDirectionality: BlastDirectionality.explosive,
+                  shouldLoop: false,
+                  emissionFrequency: 0.2,
+                  numberOfParticles: 20,
+                  gravity: 0.1,
+                  colors: const [Colors.green, Colors.blue, Colors.orange, Colors.pink],
+                ),
+              ),
+            ],
+          ),
           ),
         ),
 
@@ -219,9 +241,9 @@ class _LanguageCardState extends State<LanguageCard> with SingleTickerProviderSt
             confettiController: _confettiController,
             blastDirectionality: BlastDirectionality.explosive,
             shouldLoop: false,
-            emissionFrequency: 0.05,
+            emissionFrequency: 0.2,
             numberOfParticles: 20,
-            gravity: 0.2,
+            gravity: 0.1,
             colors: const [Colors.green, Colors.blue, Colors.orange, Colors.pink],
           ),
         ),

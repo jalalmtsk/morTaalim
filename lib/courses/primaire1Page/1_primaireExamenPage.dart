@@ -16,11 +16,12 @@ class primaire1Exam extends StatefulWidget {
 
 class _Primaire1StateExam extends State<primaire1Exam> {
   final List<Map<String, String>> courses = [
-    {'title': 'math', 'file': 'assets/courses/primary/microeconomics.json'},
-    {'title': 'french', 'file': 'assets/courses/primary/economics.json'},
-    {'title': 'arabic', 'file': 'assets/courses/primary/economics.json'},
-    {'title': 'islamicEducation', 'file': 'assets/courses/primary/primaire1/Education_Islamique/1primaire_education_islamique.json'},
-    {'title': 'artEducation', 'file': 'assets/courses/primary/macroeconomics.json'},
+    {'title': 'math', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_mathematique.json'},
+    {'title': 'french', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_francais.json'},
+    {'title': 'arabic', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
+    {'title': 'islamicEducation', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_education_islamique.json'},
+    {'title': 'artEducation', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
+    {'title': 'Activitéscientifique', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_activite_scientifique.json'},
   ];
 
   Map<String, double> courseProgress = {};

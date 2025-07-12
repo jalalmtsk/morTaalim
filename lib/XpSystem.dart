@@ -71,6 +71,58 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   bool get showStarFlash => _showStarFlash;
   int get saveTokenCount => Tolims;
 
+
+
+  //Banner
+  List<String> _unlockedBanners = ['assets/images/Banners/CuteBr/Banner1.png'];
+  String _selectedBannerImage = 'assets/images/Banners/CuteBr/Banner1.png';
+
+  List<String> get unlockedBanners => _unlockedBanners;
+  String get selectedBannerImage => _selectedBannerImage;
+
+  void unlockBanner(String path) {
+    if (!_unlockedBanners.contains(path)) {
+      _unlockedBanners.add(path);
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void selectBannerImage(String path) {
+    if (_unlockedBanners.contains(path)) {
+      _selectedBannerImage = path;
+      _saveData();
+      notifyListeners();
+    }
+  }
+  //-----------------------------------------------------------------------
+
+
+  // ✅ Avatar Frame Logic
+  String _selectedAvatarFrame = ''; // optional: can be asset path or mood string
+  List<String> _unlockedAvatarFrames = [];
+
+  String get selectedAvatarFrame => _selectedAvatarFrame;
+  List<String> get unlockedAvatarFrames => _unlockedAvatarFrames;
+
+  void unlockAvatarFrame(String path) {
+    if (!_unlockedAvatarFrames.contains(path)) {
+      _unlockedAvatarFrames.add(path);
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void selectAvatarFrame(String path) {
+    if (_unlockedAvatarFrames.contains(path)) {
+      _selectedAvatarFrame = path;
+      _saveData();
+      notifyListeners();
+    }
+  }
+  /// --------------------------------------------------------------
+
+
   void _startRewardTimer() {
     _rewardTimer?.cancel();
     _rewardTimer = Timer.periodic(rewardCooldown, (_) {
@@ -217,6 +269,10 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _unlockedAvatars = prefs.getStringList('unlockedAvatars') ?? ['😀'];
     _unlockedCourses = prefs.getStringList('unlockedCourses') ?? [];
     _unlockedLanguages = prefs.getStringList('unlockedLanguages') ?? ['arabic', 'french'];
+    _selectedBannerImage = prefs.getString('selectedBannerImage') ?? 'assets/images/Banners/CuteBr/Banner1.png';
+    _unlockedBanners = prefs.getStringList('unlockedBanners') ?? ['assets/images/Banners/CuteBr/Banner1.png'];
+    _selectedAvatarFrame = prefs.getString('selectedAvatarFrame') ?? '';
+    _unlockedAvatarFrames = prefs.getStringList('unlockedAvatarFrames') ?? [];
     notifyListeners();
   }
 
@@ -229,6 +285,10 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     await prefs.setStringList('unlockedAvatars', _unlockedAvatars);
     await prefs.setStringList('unlockedCourses', _unlockedCourses);
     await prefs.setStringList('unlockedLanguages', _unlockedLanguages);
+    await prefs.setString('selectedBannerImage', _selectedBannerImage);
+    await prefs.setStringList('unlockedBanners', _unlockedBanners);
+    await prefs.setString('selectedAvatarFrame', _selectedAvatarFrame);
+    await prefs.setStringList('unlockedAvatarFrames', _unlockedAvatarFrames);
   }
 
   void _showOverlayLevelUpBanner(BuildContext context, int newLevel) {

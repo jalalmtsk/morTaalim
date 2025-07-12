@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mortaalim/tools/VideoPlayer.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:confetti/confetti.dart';
@@ -190,43 +191,37 @@ class _CoursePageState extends State<CoursePage> with TickerProviderStateMixin {
       body: Stack(
         children: [
           Padding(
-            padding: const EdgeInsets.only(top: 32, bottom: 24),
+            padding: const EdgeInsets.only(top: 5, bottom: 24),
             child: Column(
               children: [
-                // Big fun progress indicator with emoji
-                CircularPercentIndicator(
-                  radius: 80,
-                  lineWidth: 14,
-                  animation: true,
-                  percent: progressPercent,
-                  center: Text(
-                    "${(progressPercent * 100).toInt()}%\n🎉",
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 26, color: Colors.deepOrange),
-                  ),
-                  circularStrokeCap: CircularStrokeCap.round,
-                  progressColor: Colors.deepOrange,
-                  backgroundColor: Colors.deepOrange.shade100,
-                ),
-
+                Userstatutbar(),
                 const SizedBox(height: 14),
-
                 // Linear progress bar for clarity
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(24),
-                    child: LinearProgressIndicator(
-                      minHeight: 20,
-                      value: progressPercent,
-                      backgroundColor: Colors.deepOrange.shade100,
-                      color: Colors.deepOrange,
-                    ),
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(24),
+                        child: LinearProgressIndicator(
+                          minHeight: 20,
+                          value: progressPercent,
+                          backgroundColor: Colors.deepOrange.shade100,
+                          color: Colors.deepOrange,
+                        ),
+                      ),
+                      Text(
+                        "${(progressPercent * 100).toInt()}% 🎉",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 26, color: Colors.deepOrange),
+                      ),
+                    ],
                   ),
                 ),
 
-                const SizedBox(height: 20),
-
+                const SizedBox(height: 10),
+                Text("Choose Course",  textAlign: TextAlign.center,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 26, color: Colors.deepOrange),),
                 Expanded(
                   child: PageView.builder(
                     controller: PageController(viewportFraction: 0.72),
@@ -285,7 +280,6 @@ class FunSectionCard extends StatelessWidget {
     required this.isCompleted,
     required this.onToggle,
   });
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -298,30 +292,32 @@ class FunSectionCard extends StatelessWidget {
           children: [
             Container(
               padding: const EdgeInsets.all(28),
-              height: 200,
+              height: 270,
               width: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(emoji, style: const TextStyle(fontSize: 56)),
-                  const SizedBox(height: 14),
-                  Text(
-                    title,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      shadows: [
-                        Shadow(
-                          offset: Offset(1, 1),
-                          blurRadius: 6,
-                          color: Colors.black26,
-                        )
-                      ],
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(emoji, style: const TextStyle(fontSize: 56)),
+                    const SizedBox(height: 14),
+                    Text(
+                      title,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        shadows: [
+                          Shadow(
+                            offset: Offset(1, 1),
+                            blurRadius: 6,
+                            color: Colors.black26,
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             Positioned(

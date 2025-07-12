@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primaireExamenPage.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePage.dart';
+import 'package:mortaalim/courses/primaire1Page/1_primairePratique.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class index1Primaire extends StatefulWidget {
@@ -18,6 +19,7 @@ class _index1PrimaireState extends State<index1Primaire>
 
   Key _keyTab1 = UniqueKey();
   Key _keyTab2 = UniqueKey();
+  Key _keyTab3 = UniqueKey();
 
   Future<void> resetAllProgress() async {
     final prefs = await SharedPreferences.getInstance();
@@ -33,11 +35,13 @@ class _index1PrimaireState extends State<index1Primaire>
     for (String title in titles) {
       await prefs.remove('progress_$title');
       await prefs.remove('progress1_$title');
+      await prefs.remove('progress2_$title');
     }
 
     setState(() {
       _keyTab1 = UniqueKey(); // force primaire1 to rebuild
-      _keyTab2 = UniqueKey(); // force primaire1Exam to rebuild
+      _keyTab2 = UniqueKey(); // force primaire1Pratique to rebuild
+      _keyTab3 = UniqueKey(); // force primaire1Exam to rebuild
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -80,7 +84,7 @@ class _index1PrimaireState extends State<index1Primaire>
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         backgroundColor: Colors.grey[100],
         body: Column(
@@ -137,6 +141,7 @@ class _index1PrimaireState extends State<index1Primaire>
                         ),
                         tabs: [
                           Tab(icon: Icon(Icons.menu_book), text: 'Cours'),
+                          Tab(icon: Icon(Icons.track_changes_rounded), text: 'Pratique'),
                           Tab(icon: Icon(Icons.assignment), text: 'Examens'),
                         ],
                       ),
@@ -149,7 +154,8 @@ class _index1PrimaireState extends State<index1Primaire>
               child: TabBarView(
                 children: [
                   primaire1(key: _keyTab1),
-                  primaire1Exam(key: _keyTab2),
+                  primaire1Pratique(key: _keyTab2),
+                  primaire1Exam(key: _keyTab3),
                 ],
               ),
             ),

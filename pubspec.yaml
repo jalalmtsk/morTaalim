@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.20.2
+  intl: ^0.19.0
 
 
 
@@ -58,6 +58,7 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   google_mobile_ads: ^6.0.0
   percent_indicator: ^4.2.5
+  in_app_purchase: ^3.2.3
 
 
 flutter_launcher_icons:
@@ -93,22 +94,38 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-  - assets/courses/primary/
-  - assets/courses/primary/primaire1/Education_Islamique/1primaire_education_islamique.json
+  - assets/courses/
+  - assets/courses/primaire1/Primaire1Cours/
+  #Images
   - assets/images/
+  - assets/images/GameGridImages/
+  - assets/images/FlagImagesForTracingLetters/
   - assets/images/AvatarImage/
+  - assets/images/AvatarImage/Beams/
   - assets/images/badges/
+  - assets/images/Banners/
+  - assets/images/Banners/Sci_FI_Banners/
+  - assets/images/Banners/Islamic/
+  - assets/images/Banners/CuteBr/
+  - assets/images/Banners/Joyful/
+
+    #Videos
   - assets/videos/
   - assets/videos/Kids_song.mp4
+  #Audios
   - assets/audios/
   - assets/audios/quranSourate/
   - assets/audios/sound_effects/
   - assets/audios/sound_track/
   - assets/audios/piano_notes/
+  #Fonts
   - assets/fonts/ComicNeue-Regular.ttf
   - assets/fonts/ComicNeue-Bold.ttf
+  #Animations
   - assets/animations/
   - assets/animations/AnimatedAvatars/
+
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

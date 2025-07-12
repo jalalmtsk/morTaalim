@@ -8,12 +8,12 @@ class AnimatedAvatars extends StatelessWidget {
   const AnimatedAvatars();
 
   static const List<Map<String, dynamic>> _lottieAvatarItems = [
-    {'lottie': 'assets/animations/AnimatedAvatars/Cat Crying emojiSticker animation.json', 'cost': 30},
-    {'lottie': 'assets/animations/AnimatedAvatars/Cat feeling love emotionsexpression. Emojisticker animation.json', 'cost': 30},
-    {'lottie': 'assets/animations/AnimatedAvatars/Cute bear dancing.json', 'cost': 30},
-    {'lottie': 'assets/animations/AnimatedAvatars/Cute dog eat.json', 'cost': 30},
-    {'lottie': 'assets/animations/AnimatedAvatars/Nice rabbit with balloon.json', 'cost': 30},
-    {'lottie': 'assets/animations/AnimatedAvatars/Smoothymon - typing.json', 'cost': 30},
+    {'lottie': 'assets/animations/AnimatedAvatars/CatCrying.json', 'cost': 800},
+    {'lottie': 'assets/animations/AnimatedAvatars/CatLove.json', 'cost': 1000},
+    {'lottie': 'assets/animations/AnimatedAvatars/CuteDogEat.json', 'cost': 1200},
+    {'lottie': 'assets/animations/AnimatedAvatars/RabbitWithBall.json', 'cost': 1200},
+    {'lottie': 'assets/animations/AnimatedAvatars/Smoothymon_typing.json', 'cost': 1300},
+    {'lottie': 'assets/animations/AnimatedAvatars/CuteBearDancing.json', 'cost': 1500},
   ];
   @override
   Widget build(BuildContext context) {

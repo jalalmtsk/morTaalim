@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mortaalim/widgets/shimmerPage.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
 
@@ -16,11 +17,12 @@ class primaire1 extends StatefulWidget {
 
 class _Primaire1State extends State<primaire1> {
   final List<Map<String, String>> courses = [
-    {'title': 'math', 'file': 'assets/courses/primary/microeconomics.json'},
-    {'title': 'french', 'file': 'assets/courses/primary/economics.json'},
-    {'title': 'arabic', 'file': 'assets/courses/primary/economics.json'},
-    {'title': 'islamicEducation', 'file': 'assets/courses/primary/primaire1/Education_Islamique/1primaire_education_islamique.json'},
-    {'title': 'artEducation', 'file': 'assets/courses/primary/macroeconomics.json'},
+    {'title': 'math', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_mathematique.json'},
+    {'title': 'french', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_francais.json'},
+    {'title': 'arabic', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
+    {'title': 'islamicEducation', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_education_islamique.json'},
+    {'title': 'artEducation', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
+    {'title': 'Activitéscientifique', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_activite_scientifique.json'},
   ];
 
   Map<String, double> courseProgress = {};
@@ -99,48 +101,48 @@ class _Primaire1State extends State<primaire1> {
           SliverAppBar(
             automaticallyImplyLeading: false,
             pinned: true,
-            expandedHeight: 100,
+            expandedHeight: 150,
             backgroundColor: Colors.transparent,
             elevation: 0,
-            flexibleSpace: Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Color(0xffff7043), Color(0xfff4511e)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+            flexibleSpace: FlexibleSpaceBar(
+              titlePadding: const EdgeInsets.only(left: 60, bottom: 10),
+              title: Text(
+                "📘 ${tr.class1}",
+                style: const TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
-                borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 12,
-                    offset: Offset(0, 4),
-                  ),
-                ],
               ),
-              child: FlexibleSpaceBar(
-
-                titlePadding: const EdgeInsets.only(left: 60, bottom: 20),
-                title: Text(
-                  "📘 ${tr.class1}",
-                  style: const TextStyle(
-                    fontSize: 25,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+              background: Container(
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Color(0xffff7043), Color(0xfff4511e)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
                   ),
-                ),
-                background: Padding(
-                  padding: const EdgeInsets.only(top: 30),
-                  /* child: Image.asset(
-                    'assets/images/Mathematics_toy.png',
-                    fit: BoxFit.cover,
-                  ),*/
-
+                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 12,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
                 ),
               ),
             ),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(28)),
+            ),
+          ),
+
+
+          /// Your Userstatutbar as a separate sliver
+          SliverToBoxAdapter(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              child: const Userstatutbar(),
             ),
           ),
 

@@ -166,76 +166,88 @@ class _ModeSelectorPageState extends State<ModeSelectorPage> {
         centerTitle: true,
         backgroundColor: Colors.deepOrange,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 10, bottom: 20, right: 30, left: 30),
-              child: Userstatutbar(),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 50),
-              child: Text(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              /// ✅ No Expanded — fixed content adapts better
+              Padding(
+                padding: const EdgeInsets.only(bottom: 20),
+                child: Userstatutbar(),
+              ),
+
+              const Text(
                 "🧠 Answer questions correctly to earn rewards:\n"
                     "- ✅ +2 XP for each correct answer\n"
-                    "- 🌟 Every 3 correct answers = +1 Token\n\n\n\n"
-                    "You can play solo or challenge a friend in multiplayer mode.\n",
+                    "- 🌟 Every 3 correct answers = +1 Token\n\n"
+                    "You can play solo or challenge a friend in multiplayer mode.",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.black87,
                 ),
               ),
-            ),
 
+              const SizedBox(height: 30),
 
-            const Text(
-              "Select Language:",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            ToggleButtons(
-              isSelected: [
-                _selectedLanguage == QuizLanguage.english,
-                _selectedLanguage == QuizLanguage.french,
-                _selectedLanguage == QuizLanguage.arabic,
-              ],
-              onPressed: (index) {
-                setState(() {
-                  _selectedLanguage = QuizLanguage.values[index];
-                });
-              },
-              borderRadius: BorderRadius.circular(8),
-              selectedColor: Colors.white,
-              fillColor: Colors.deepOrange,
-              children: const [
-                Padding(
+              const Text(
+                "Select Language:",
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+
+              const SizedBox(height: 10),
+
+              ToggleButtons(
+                isSelected: [
+                  _selectedLanguage == QuizLanguage.english,
+                  _selectedLanguage == QuizLanguage.french,
+                  _selectedLanguage == QuizLanguage.arabic,
+                ],
+                onPressed: (index) {
+                  setState(() {
+                    _selectedLanguage = QuizLanguage.values[index];
+                  });
+                },
+                borderRadius: BorderRadius.circular(8),
+                selectedColor: Colors.white,
+                fillColor: Colors.deepOrange,
+                children: const [
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('English')),
-                Padding(
+                    child: Text('English'),
+                  ),
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('Français')),
-                Padding(
+                    child: Text('Français'),
+                  ),
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text('العربية')),
-              ],
-            ),
-            const SizedBox(height: 40),
-            _buildModeButton(
-              context,
-              title: "🎯 ${tr(context).singlePlayer}",
-              icon: Icons.person,
-              mode: GameMode.single,
-            ),
-            const SizedBox(height: 30),
-            _buildModeButton(
-              context,
-              title: "👫 ${tr(context).multiplayer}",
-              icon: Icons.people,
-              mode: GameMode.multiplayer,
-            ),
-          ],
+                    child: Text('العربية'),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 40),
+
+              _buildModeButton(
+                context,
+                title: "🎯 ${tr(context).singlePlayer}",
+                icon: Icons.person,
+                mode: GameMode.single,
+              ),
+
+              const SizedBox(height: 30),
+
+              _buildModeButton(
+                context,
+                title: "👫 ${tr(context).multiplayer}",
+                icon: Icons.people,
+                mode: GameMode.multiplayer,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -34,12 +34,6 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
   late AnimationController _bounceController;
   late Animation<double> _bounceAnimation;
 
-  final List<Map<String, dynamic>> badges = [
-    {"icon": Icons.emoji_events, "label": "Champion", "color": Colors.orange},
-    {"icon": Icons.flash_on, "label": "Quick Learner", "color": Colors.purple},
-    {"icon": Icons.star, "label": "Top Scorer", "color": Colors.amber},
-    {"icon": Icons.cake, "label": "Anniversary", "color": Colors.pink},
-  ];
 
   @override
   void initState() {
@@ -61,32 +55,104 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
   }
 
   Widget _buildAvatar(String avatarPath) {
+    const double size = 80;
+
+    Widget avatarContent;
+
     if (avatarPath.endsWith('.json')) {
-      return SizedBox(
-        width: 140,
-        height: 140,
-        child: Lottie.asset(
-          avatarPath,
-          repeat: true,
-          fit: BoxFit.cover,
-        ),
+      avatarContent = Lottie.asset(
+        avatarPath,
+        repeat: true,
+        fit: BoxFit.contain,
       );
     } else if (avatarPath.contains('assets/')) {
-      return Image.asset(
+      avatarContent = Image.asset(
         avatarPath,
-        width: 160,
-        height: 160,
+        width: size,
+        height: size,
         fit: BoxFit.cover,
       );
     } else {
-      return Center(
+      avatarContent = Center(
         child: Text(
           avatarPath,
-          style: const TextStyle(fontSize: 72),
+          style: const TextStyle(fontSize: 64),
         ),
       );
     }
+
+    return Container(
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          colors: [
+            Colors.pink.shade100,
+            Colors.white,
+          ],
+          center: Alignment.topLeft,
+          radius: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.pinkAccent.withOpacity(0.3),
+            blurRadius: 18,
+            spreadRadius: 4,
+          ),
+        ],
+        border: Border.all(
+          color: Colors.pink.shade200,
+          width: 3,
+        ),
+      ),
+      child: ClipOval(
+        child: Container(
+          width: size,
+          height: size,
+          child: avatarContent,
+        ),
+      ),
+    );
   }
+
+  BoxDecoration avatarBorderDecorationByLevel(int level) {
+    Color borderColor;
+
+    if (level >= 30) {
+      borderColor = Colors.deepPurpleAccent;
+    } else if (level >= 20) {
+      borderColor = Colors.teal;
+    } else if (level >= 10) {
+      borderColor = Colors.indigoAccent;
+    } else if (level >= 5) {
+      borderColor = Colors.orangeAccent;
+    } else {
+      borderColor = Colors.grey;
+    }
+    return BoxDecoration(
+      shape: BoxShape.circle,
+      border: Border.all(color: borderColor, width: 4),
+      boxShadow: [
+        BoxShadow(
+          color: borderColor.withOpacity(0.5),
+          blurRadius: 10,
+          spreadRadius: 2,
+        ),
+      ],
+    );
+  }
+
+  /// RING FRAME IMAGE
+  String _getAvatarFrameImage(int level) {
+    if (level >= 50) return 'assets/images/Banners/Islamic/Islamic7.png';
+    if (level >= 35) return 'assets/images/Banners/Islamic/Islamic6.png';
+    if (level >= 25) return 'assets/images/Banners/Islamic/Islamic5.png';
+    if (level >= 15) return 'assets/images/Banners/Islamic/Islamic4.png';
+    if (level >= 7) return 'assets/images/Banners/Islamic/Islamic3.png';
+    if (level >= 5) return 'assets/images/Banners/Islamic/Islamic2.png';
+    return 'assets/images/Banners/Islamic/Islamic1.png';
+  }
+
 
 
 
@@ -152,44 +218,74 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Avatar
-            ScaleTransition(
-              scale: _bounceAnimation,
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: favoriteColor.withOpacity(0.6),
-                      blurRadius: 20,
-                      spreadRadius: 6,
-                    ),
-                  ],
+            // 🏞️ Banner Header with Avatar, Name, Mood
+            Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Image.asset(
+                    xpManager.selectedBannerImage,
+                    width: double.infinity,
+                    height: 200,
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                child: ClipOval(child: _buildAvatar(avatar)),
+                Container(
+                  height: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.black.withOpacity(0.2),
+                  ),
+                ),
+                Positioned.fill(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ScaleTransition(
+                          scale: _bounceAnimation,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              ClipOval(
+                                child: Container(
+                                  child: Image.asset(
+                                    _getAvatarFrameImage(level), // ⬅️ Your level-based frame
+                                    width: 115,
+                                    height: 115,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ),
+                              ClipOval(
+                                child: Container(
+                                  width: 110,
+                                  height: 110,
+                                  child: _buildAvatar(avatar),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
 
-      ),
+                        Text(
+                          name,
+                          style: const TextStyle(
+                            fontFamily: 'ComicNeue',
+                            fontSize: 40,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            shadows: [Shadow(blurRadius: 3, color: Colors.black)],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             ),
 
-            const SizedBox(height: 24),
-
-            Text(
-              name,
-              style: TextStyle(
-                fontFamily: 'ComicNeue',
-                fontSize: 40,
-                fontWeight: FontWeight.bold,
-                color: favoriteColor.darken(0.2),
-              ),
-            ),
-
-            const SizedBox(height: 12),
-            Text(
-              mood,
-              style: const TextStyle(fontSize: 40),
-            ),
-
-            const SizedBox(height: 32),
+            const SizedBox(height: 10),
 
             // Age
             Text("🎂 ${tr.age}", style: _sectionTitleStyle(favoriteColor)),
@@ -256,8 +352,8 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
             const SizedBox(height: 12),
             _infoRow(Icons.generating_tokens, "$saveTokens Tolim", Colors.green.shade700),
 
-            // 🔰 Badge Section
             const SizedBox(height: 40),
+
             _buildBadgesSection(),
 
             const SizedBox(height: 40),
@@ -274,7 +370,8 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
               ),
             ),
           ],
-        ),
+        )
+
       ),
     );
   }
@@ -351,7 +448,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("🏅 Badges", style: _sectionTitleStyle(favoriteColor)),
+        Text("🏅Badges", style: _sectionTitleStyle(favoriteColor)),
         const SizedBox(height: 16),
         Wrap(
           spacing: 12,
@@ -431,8 +528,6 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
       ],
     );
   }
-
-
 
   TextStyle _sectionTitleStyle(Color baseColor) {
     return TextStyle(

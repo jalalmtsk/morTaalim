@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
 import '../tools/VideoPlayer.dart';
 import '../tools/audio_tool/audio_tool.dart';
 
@@ -268,167 +269,174 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
-        child: Column(
-          children: [
-            Lottie.asset('assets/animations/rabbit_boat.json', height: 160),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Userstatutbar(),
+          ),
+          Expanded(
+            child: ListView(
+              children: [
+                Lottie.asset('assets/animations/rabbit_boat.json', height: 160),
 
-            buildMediaWidget(type, videoController, audioController),
+                buildMediaWidget(type, videoController, audioController),
 
-            const SizedBox(height: 22),
+                const SizedBox(height: 22),
 
-            if (content.isNotEmpty)
-              Container(
-                padding: const EdgeInsets.all(22),
-                decoration: BoxDecoration(
-                  color: Colors.pink.shade50,
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.pink.shade100.withOpacity(0.75),
-                      offset: const Offset(0, 6),
-                      blurRadius: 14,
+                if (content.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(22),
+                    decoration: BoxDecoration(
+                      color: Colors.pink.shade50,
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.pink.shade100.withOpacity(0.75),
+                          offset: const Offset(0, 6),
+                          blurRadius: 14,
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: Directionality(
-                  textDirection: isArabic(content) ? TextDirection.rtl : TextDirection.ltr,
-                  child: Text(
-                    content,
-                    style: const TextStyle(
+                    child: Directionality(
+                      textDirection: isArabic(content) ? TextDirection.rtl : TextDirection.ltr,
+                      child: Text(
+                        content,
+                        style: const TextStyle(
+                          fontFamily: 'ComicNeue',
+                          fontSize: 22,
+                          height: 1.6,
+                          color: Colors.deepPurple,
+                        ),
+                        textAlign: TextAlign.justify,
+                      ),
+                    ),
+                  ),
+
+                const SizedBox(height: 32),
+
+                if (children.isNotEmpty) ...[
+                  // Progress bar & percentage
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    child: Column(
+                      children: [
+                        Text(
+                          '🌟 التقدم: ${(progress * 100).toInt()}%',
+                          style: const TextStyle(
+                            fontFamily: 'ComicNeue',
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.pinkAccent,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: LinearProgressIndicator(
+                            value: progress,
+                            minHeight: 18,
+                            backgroundColor: Colors.pink.shade100,
+                            color: Colors.pinkAccent.shade400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  Text(
+                    '🎨 دروس إضافية:',
+                    style: TextStyle(
                       fontFamily: 'ComicNeue',
-                      fontSize: 22,
-                      height: 1.6,
-                      color: Colors.deepPurple,
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.pink.shade700,
                     ),
-                    textAlign: TextAlign.justify,
                   ),
-                ),
-              ),
 
-            const SizedBox(height: 32),
+                  const SizedBox(height: 14),
 
-            if (children.isNotEmpty) ...[
-              // Progress bar & percentage
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Column(
-                  children: [
-                    Text(
-                      '🌟 التقدم: ${(progress * 100).toInt()}%',
-                      style: const TextStyle(
-                        fontFamily: 'ComicNeue',
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.pinkAccent,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: LinearProgressIndicator(
-                        value: progress,
-                        minHeight: 18,
-                        backgroundColor: Colors.pink.shade100,
-                        color: Colors.pinkAccent.shade400,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                  ...children.asMap().entries.map((entry) {
+                    final item = entry.value;
+                    final emoji = emojiList[entry.key % emojiList.length];
+                    final hasSub = item['subsections'] != null && item['subsections'].isNotEmpty;
+                    final titleChild = item['title'] ?? '';
 
-              const SizedBox(height: 16),
+                    final breathAnimation = _getBreathAnimation(entry.key);
 
-              Text(
-                '🎨 دروس إضافية:',
-                style: TextStyle(
-                  fontFamily: 'ComicNeue',
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.pink.shade700,
-                ),
-              ),
-
-              const SizedBox(height: 14),
-
-              ...children.asMap().entries.map((entry) {
-                final item = entry.value;
-                final emoji = emojiList[entry.key % emojiList.length];
-                final hasSub = item['subsections'] != null && item['subsections'].isNotEmpty;
-                final titleChild = item['title'] ?? '';
-
-                final breathAnimation = _getBreathAnimation(entry.key);
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: ScaleTransition(
-                    scale: breathAnimation,
-                    child: Card(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                      elevation: 11,
-                      shadowColor: Colors.pink.shade300,
-                      color: Colors.primaries[entry.key % Colors.primaries.length].shade200,
-                      child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
-                        leading: Text(emoji, style: const TextStyle(fontSize: 40)),
-                        title: Directionality(
-                          textDirection: isArabic(titleChild) ? TextDirection.rtl : TextDirection.ltr,
-                          child: Text(
-                            titleChild,
-                            style: const TextStyle(
-                              fontFamily: 'ComicNeue',
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8),
+                      child: ScaleTransition(
+                        scale: breathAnimation,
+                        child: Card(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                          elevation: 11,
+                          shadowColor: Colors.pink.shade300,
+                          color: Colors.primaries[entry.key % Colors.primaries.length].shade200,
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+                            leading: Text(emoji, style: const TextStyle(fontSize: 40)),
+                            title: Directionality(
+                              textDirection: isArabic(titleChild) ? TextDirection.rtl : TextDirection.ltr,
+                              child: Text(
+                                titleChild,
+                                style: const TextStyle(
+                                  fontFamily: 'ComicNeue',
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
+                            subtitle: item['content'] != null && !hasSub
+                                ? Directionality(
+                              textDirection: isArabic(item['content']) ? TextDirection.rtl : TextDirection.ltr,
+                              child: Text(
+                                item['content'],
+                                maxLines: 3,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(fontSize: 18, color: Colors.deepPurple),
+                              ),
+                            )
+                                : null,
+                            trailing: Checkbox(
+                              value: CompletionTracker.isCompleted(titleChild),
+                              activeColor: Colors.pinkAccent.shade400,
+                              checkColor: Colors.white,
+                              onChanged: (val) {
+                                if (val == true) {
+                                  markCompleted(titleChild);
+                                } else {
+                                  unmarkCompleted(titleChild);
+                                }
+                                setState(() {});
+                              },
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                              side: BorderSide(color: Colors.pinkAccent.shade400, width: 2),
+                            ),
+                            onTap: () {
+                              _musicPlayer.play('assets/audios/pop.mp3');
+                              if (hasSub) {
+                                showSubsectionsModal(item['subsections']);
+                              } else {
+                                Navigator.push(context, _createRoute(item, title));
+                              }
+                            },
                           ),
                         ),
-                        subtitle: item['content'] != null && !hasSub
-                            ? Directionality(
-                          textDirection: isArabic(item['content']) ? TextDirection.rtl : TextDirection.ltr,
-                          child: Text(
-                            item['content'],
-                            maxLines: 3,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 18, color: Colors.deepPurple),
-                          ),
-                        )
-                            : null,
-                        trailing: Checkbox(
-                          value: CompletionTracker.isCompleted(titleChild),
-                          activeColor: Colors.pinkAccent.shade400,
-                          checkColor: Colors.white,
-                          onChanged: (val) {
-                            if (val == true) {
-                              markCompleted(titleChild);
-                            } else {
-                              unmarkCompleted(titleChild);
-                            }
-                            setState(() {});
-                          },
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                          side: BorderSide(color: Colors.pinkAccent.shade400, width: 2),
-                        ),
-                        onTap: () {
-                          _musicPlayer.play('assets/audios/pop.mp3');
-                          if (hasSub) {
-                            showSubsectionsModal(item['subsections']);
-                          } else {
-                            Navigator.push(context, _createRoute(item, title));
-                          }
-                        },
                       ),
-                    ),
-                  ),
-                );
-              }).toList(),
-            ],
+                    );
+                  }).toList(),
+                ],
 
-            const SizedBox(height: 40),
+                const SizedBox(height: 40),
 
-            Lottie.asset('assets/animations/girl_studying.json', ),
-          ],
-        ),
+                Lottie.asset('assets/animations/girl_studying.json', ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

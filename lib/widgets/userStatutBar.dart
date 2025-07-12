@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
@@ -210,151 +211,165 @@ class _UserStatutBar extends State<Userstatutbar> with TickerProviderStateMixin,
     final xpManager = Provider.of<ExperienceManager>(context);
 
     return GestureDetector(
+      onLongPress: () => Navigator.of(context).pushNamed("Shop"),
       onTap: () => setState(() => showAvatarXp = !showAvatarXp),
       child: Container(
         margin: const EdgeInsets.all(10),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: Colors.indigo.shade50.withOpacity(0.5),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: Colors.indigo.withOpacity(0.2)),
-          boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 4)],
-        ),
-        child: showAvatarXp
-            ? Row(
+        height: 60,
+        child: Stack(
           children: [
-            CircleAvatar(
-              backgroundColor: Colors.blue.shade100,
-              radius: 22,
-              child: ClipOval(
-                child: _buildAvatar(xpManager.selectedAvatar),
+            // 🖼️ Background image
+            ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                xpManager.selectedBannerImage, // ✅ Change to any user-selected image
+                fit: BoxFit.cover,
+                width: double.infinity,
+                height: double.infinity,
               ),
             ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text("Level ${xpManager.level}",
-                      style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
-                  const SizedBox(height: 3),
-                  LinearProgressIndicator(
-                    value: xpManager.levelProgress,
-                    backgroundColor: Colors.grey.shade300.withOpacity(0.4),
-                    color: Colors.blueAccent.withOpacity(0.8),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 10),
 
-            // Show Stars and Tokens next to avatar/XP
-            AnimatedBuilder(
-              animation: _starColorAnimation,
-              builder: (context, child) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _starColorAnimation.value,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: ScaleTransition(
-                    scale: _starScaleController,
-                    child: Row(
-                      children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 20),
-                        const SizedBox(width: 4),
-                        Text("${xpManager.stars}",
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
-                  ),
-                );
-              },
+            // 🎨 Semi-transparent overlay
+            Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.black.withOpacity(0.2),
+              ),
             ),
-            const SizedBox(width: 8),
-            AnimatedBuilder(
-              animation: _tokenColorAnimation,
-              builder: (context, child) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _tokenColorAnimation.value,
-                    borderRadius: BorderRadius.circular(8),
+
+
+            // 🔤 Content (XP or Timer)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 6),
+              child: showAvatarXp
+                  ? Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.blue.shade100,
+                    radius: 20,
+                    child: ClipOval(
+                      child: _buildAvatar(xpManager.selectedAvatar),
+                    ),
                   ),
-                  child: ScaleTransition(
-                    scale: _tokenScaleController,
-                    child: Row(
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.generating_tokens_rounded, color: Colors.green, size: 20),
-                        const SizedBox(width: 4),
-                        Text("${xpManager.saveTokenCount}",
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(
+                          "Level ${xpManager.level}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                color: Colors.black87,
+                                offset: Offset(1, 1),
+                                blurRadius: 3,
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        LinearProgressIndicator(
+                          value: xpManager.levelProgress,
+                          backgroundColor: Colors.white24,
+                          color: Colors.deepOrange,
+                        ),
                       ],
                     ),
                   ),
-                );
-              },
-            ),
-          ],
-        )
-            : Row(
-          children: [
-            const Icon(Icons.timer_outlined, color: Colors.deepPurple),
-            const SizedBox(width: 8),
-            Text("Next Reward: ${_formatDuration(_timeLeft)}",
-                style: const TextStyle(fontWeight: FontWeight.w600)),
-            const Spacer(),
-            AnimatedBuilder(
-              animation: _starColorAnimation,
-              builder: (context, child) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _starColorAnimation.value,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: ScaleTransition(
-                    scale: _starScaleController,
+                  const SizedBox(width: 10),
+                  // ⭐ Stars
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: _starColorAnimation.value,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
                     child: Row(
                       children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 20),
-                        const SizedBox(width: 4),
-                        Text("${xpManager.stars}",
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                          Row(children: [
+                            const Icon(Icons.star, color: Colors.amber, size: 20),
+                            const SizedBox(width: 1),
+                            Text("${xpManager.stars}",
+                              style: const TextStyle(
+                                  shadows: [
+                                    Shadow(
+                                      color: Colors.black87,
+                                      offset: Offset(1, 1),
+                                      blurRadius: 3,
+                                    )
+                                  ],
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white),
+                            ),
+                          ],),
+
+                          Row(children: [
+                             Row(
+                                children: [
+                                  const Icon(Icons.generating_tokens_rounded,
+                                      color: Colors.green, size: 20),
+                                  const SizedBox(width: 2),
+                                  Text("${xpManager.saveTokenCount}",
+                                      style: const TextStyle(
+                                          shadows: [
+                                            Shadow(
+                                              color: Colors.black87,
+                                              offset: Offset(1, 1),
+                                              blurRadius: 3,
+                                            )
+                                          ],
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white)),
+                                ],
+                              ),
+
+                          ],)
+
+                        ],),
+                        SizedBox(width: 10),
                       ],
+
                     ),
+
                   ),
-                );
-              },
-            ),
-            const SizedBox(width: 8),
-            AnimatedBuilder(
-              animation: _tokenColorAnimation,
-              builder: (context, child) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: _tokenColorAnimation.value,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: ScaleTransition(
-                    scale: _tokenScaleController,
+                  const SizedBox(width: 8),
+                  // 🟢 Tokens
+                ],
+              )
+                  : Center(
                     child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.generating_tokens_rounded, color: Colors.green, size: 20),
-                        const SizedBox(width: 4),
-                        Text("${xpManager.saveTokenCount}",
-                            style: const TextStyle(fontWeight: FontWeight.bold)),
-                      ],
-                    ),
+                    const Icon(Icons.timer_outlined, color: Colors.white),
+                    const SizedBox(width: 8),
+                    Text("Next Reward: ${_formatDuration(_timeLeft)}",
+                        style: const TextStyle(
+                            shadows: [
+                              Shadow(
+                                color: Colors.black87,
+                                offset: Offset(1, 1),
+                                blurRadius: 3,
+                              )
+                            ],
+                            fontWeight: FontWeight.w600, color: Colors.white)),
+                    const Spacer(),
+                    // Same stars & tokens UI
+                    // ...
+                                    ],
+                                  ),
                   ),
-                );
-              },
             ),
           ],
         ),
       ),
     );
+
   }
 }

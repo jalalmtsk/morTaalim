@@ -99,8 +99,8 @@ class _IndexState extends State<Index>
   Widget _buildAvatar(String avatarPath) {
     if (avatarPath.endsWith('.json')) {
       return SizedBox(
-        width: 55,
-        height: 55,
+        width: 85,
+        height: 85,
         child: Lottie.asset(
           avatarPath,
           fit: BoxFit.cover,
@@ -110,8 +110,8 @@ class _IndexState extends State<Index>
     } else if (avatarPath.contains('assets/')) {
       return Image.asset(
         avatarPath,
-        width: 55,
-        height: 55,
+        width: 85,
+        height: 85,
         fit: BoxFit.cover,
       );
     } else {
@@ -222,124 +222,132 @@ class _IndexState extends State<Index>
                 children: [
                   SlideTransition(
                     position: _profileSlideAnimation,
-                    child: Container(
-                      margin: const EdgeInsets.only(bottom: 16),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.95),
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.deepOrange.withOpacity(0.12),
-                            blurRadius: 8,
-                            offset: const Offset(0, 3),
+                    child: Stack(
+                      children: [
+                        // 🖼 Banner background
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.asset(
+                            xpManager.selectedBannerImage, // Example: 'assets/images/banners/Banner1.jpg'
+                            width: double.infinity,
+                            height: 100,
+                            fit: BoxFit.cover,
                           ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          Material(
-                            color: Colors.orange.withOpacity(0.1),
-                            shape: const CircleBorder(),
-                            child: InkWell(
-                              customBorder: const CircleBorder(),
-                              onTap: () {
-                                _clickButton.play("assets/audios/pop.mp3");
-                                Navigator.of(context)
-                                    .push(createFadeRoute(ProfilePage(
-                                  initialName: childName,
-                                  initialAvatar: avatarEmoji,
-                                  initialAge: 13,
-                                  initialColor: Colors.red,
-                                  initialMood: "Happy",
-                                )))
-                                    .then((_) => _loadProfile());
-                              },
-                              child: Tooltip(
-                                message: "Edit Profile",
-                                child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: ClipOval(
-                                child: _buildAvatar(xpManager.selectedAvatar),
-                              ),
-                            ),
+                        ),
 
-                    ),
-                            ),
+                        // 🟧 Semi-transparent overlay
+                        Container(
+                          height: 100,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.black.withOpacity(0.15),
                           ),
-                          const SizedBox(width: 2),
-                          Expanded(
-                            flex: 2,
-                            child: InkWell(
-                              onTap: () {
-                                Navigator.of(context)
-                                    .pushNamed('Profile')
-                                    .then((_) => _loadProfile());
-                              },
-                              child: Text(
-                                (childName == "Player" || childName.isEmpty)
-                                    ? "${tr.enterName} ✏️"
-                                    : childName,
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.deepOrange,
+                        ),
+
+                        // 🧒🏻 Foreground Profile Info
+                        Positioned.fill(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Material(
+                                  color: Colors.orange.withOpacity(0.1),
+                                  shape: const CircleBorder(),
+                                  child: InkWell(
+                                    customBorder: const CircleBorder(),
+                                    onTap: () {
+                                      _clickButton.play("assets/audios/pop.mp3");
+                                      Navigator.of(context)
+                                          .push(createFadeRoute(ProfilePage(
+                                        initialName: childName,
+                                        initialAvatar: avatarEmoji,
+                                        initialAge: 13,
+                                        initialColor: Colors.red,
+                                        initialMood: "Happy",
+                                      )
+                                      )
+                                      )
+                                          .then((_) => _loadProfile());
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(1.0),
+                                      child: ClipOval(child: _buildAvatar(avatarEmoji)),
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: GestureDetector(
-                              onTap: () => Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                      builder: (_) => LoadingPage(
-                                          loadingFuture: simulateLoading(),
-                                          nextRouteName: "Shop"))),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  const Icon(Icons.star, color: Colors.amber),
-                                  const SizedBox(width: 2),
-                                  Text(
-                                    "$stars",
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.deepOrange,
+                                const SizedBox(width: 3),
+                                Expanded(
+                                  flex: 2,
+                                  child: InkWell(
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .pushNamed('Profile')
+                                          .then((_) => _loadProfile());
+                                    },
+                                    child: Text(
+                                      (childName == "Player" || childName.isEmpty)
+                                          ? "${tr.enterName} ✏️"
+                                          : childName,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                        shadows: [Shadow(blurRadius: 3, color: Colors.black)],
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(width: 5),
-                                  const Icon(Icons.generating_tokens_rounded,
-                                      color: Colors.green),
-                                  const SizedBox(width: 2),
-                                  Text(
-                                    "${xpManager.saveTokenCount}",
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.green,
-                                    ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                          Row(children: [
+                                            const Icon(Icons.star, color: Colors.amber),
+                                            const SizedBox(width: 2),
+                                            Text("$stars",
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold)),
+                                          ],),
+
+                                          Row(children: [    const Icon(Icons.generating_tokens_rounded,
+                                              color: Colors.greenAccent),
+                                            const SizedBox(width: 2),
+                                            Text("${xpManager.saveTokenCount}",
+                                                style: const TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold)),],)
+                                        ],),
+
+                                    ],
                                   ),
-                                ],
-                              ),
+                                ),
+                                const SizedBox(width: 10,),
+                                IconButton(
+                                  icon: const Icon(Icons.mode_edit_sharp,
+                                      color: Colors.white70),
+                                  onPressed: () {
+                                    _clickButton.play("assets/audios/pop.mp3");
+                                    Navigator.of(context)
+                                        .pushNamed('Profile')
+                                        .then((_) => _loadProfile());
+                                  },
+                                ),
+                              ],
                             ),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.mode_edit_sharp,
-                                color: Colors.deepOrangeAccent),
-                            onPressed: () {
-                              _clickButton.play("assets/audios/pop.mp3");
-                              Navigator.of(context)
-                                  .pushNamed('Profile')
-                                  .then((_) => _loadProfile());
-                            },
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
+
                   Expanded(
                     child: TabBarView(
                       controller: _tabController,

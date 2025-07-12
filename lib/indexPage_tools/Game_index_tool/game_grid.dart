@@ -11,8 +11,8 @@ import '../../XpSystem.dart';
 import '../../tools/audio_tool/audio_tool.dart';
 import '../../tools/loading_page.dart';
 
-
 final MusicPlayer _victorySound = MusicPlayer();
+
 class GameGrid extends StatefulWidget {
   final List<Map<String, dynamic>> games;
   final MusicPlayer musicPlayer;
@@ -23,8 +23,8 @@ class GameGrid extends StatefulWidget {
   State<GameGrid> createState() => _GameGridState();
 }
 
-class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, WidgetsBindingObserver  {
-
+class _GameGridState extends State<GameGrid>
+    with TickerProviderStateMixin, WidgetsBindingObserver {
   BannerAd? _bannerAd;
 
   late MusicPlayer _clickButton;
@@ -38,7 +38,6 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, Widg
     _clickButton = MusicPlayer();
     _clickButton.preload("assets/audios/pop.mp3");
     _confettiController = ConfettiController(duration: const Duration(seconds: 1));
-
   }
 
   void _loadBannerAd() {
@@ -63,14 +62,11 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, Widg
     _clickButton.dispose();
     _bannerAd?.dispose();
     super.dispose();
-
   }
-
 
   Future<void> simulateLoading() async {
     final random = Random();
-    final seconds = 1 + random.nextInt(2); // 1, 2 seconds
-    print('Simulating loading for $seconds second(s)...'); // optional debug
+    final seconds = 1 + random.nextInt(2);
     await Future.delayed(Duration(seconds: seconds));
   }
 
@@ -78,7 +74,6 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, Widg
     _clickButton.play("assets/audios/sound_effects/unlock_sound.mp3");
 
     final overlay = Overlay.of(context);
-
     late OverlayEntry entry;
     entry = OverlayEntry(
       builder: (_) => Center(
@@ -96,12 +91,10 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, Widg
         ),
       ),
     );
-
     overlay.insert(entry);
   }
 
   void triggerConfetti() {
-    print("Confetti triggered!"); // Debug
     _clickButton.play("assets/audios/sound_effects/victory1.mp3");
     _confettiController.play();
   }
@@ -113,7 +106,6 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, Widg
 
     return Stack(
       children: [
-        /// Main content (behind confetti)
         Column(
           children: [
             Padding(
@@ -185,8 +177,9 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, Widg
                                     Navigator.pop(context);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                          duration: Duration(milliseconds: 1500),
-                                          content: Text("Not enough stars!")),
+                                        duration: Duration(milliseconds: 1500),
+                                        content: Text("Not enough stars!"),
+                                      ),
                                     );
                                   }
                                 },
@@ -197,80 +190,117 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, Widg
                         );
                       }
                     },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: isLocked
-                            ? Colors.grey.shade700
-                            : game['color'].withOpacity(0.9),
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: game['color'].withOpacity(0.3),
-                            blurRadius: 12,
-                            offset: const Offset(2, 6),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Stack(
                         children: [
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Icon(game['icon'], size: 48, color: Colors.white),
-                              if (isLocked)
-                                const Positioned(
-                                  bottom: 0,
-                                  right: 0,
-                                  child: Icon(Icons.lock, size: 30, color: Colors.orange),
-                                ),
-                            ],
-                          ),
-                          const SizedBox(height: 10),
-                          Text(
-                            _getCourseTitle(tr, game['title']),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
+                          Positioned.fill(
+                            child: Image.asset(
+                              game['image'] ?? 'assets/images/AvatarImage/Avatar2.png',
+                              fit: BoxFit.cover,
+                              color: isLocked ? Colors.black.withOpacity(0.3) : null,
+                              colorBlendMode: isLocked ? BlendMode.darken : null,
                             ),
                           ),
-                          if (isLocked)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 6),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.star, size: 18, color: Colors.amber),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    "$cost",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.black.withOpacity(0.3),
+                                    Colors.black.withOpacity(0.1),
+                                  ],
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    Icon(game['icon'], size: 48, color: Colors.white),
+                                    if (isLocked)
+                                      const Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: Icon(Icons.lock, size: 30, color: Colors.orange),
+                                      ),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  _getCourseTitle(tr, game['title']),
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black,
+                                        blurRadius: 4,
+                                        offset: Offset(1, 1),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (isLocked)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 6),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(Icons.star, size: 18, color: Colors.amber),
+                                        const SizedBox(width: 4),
+                                        Text(
+                                          "$cost",
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                            shadows: [
+                                              Shadow(
+                                                color: Colors.black,
+                                                blurRadius: 4,
+                                                offset: Offset(1, 1),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                ],
-                              ),
+                                if (!isLocked && cost == 0)
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 6),
+                                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Colors.green.shade600.withOpacity(0.8),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: const Text(
+                                      "FREE!",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                        shadows: [
+                                          Shadow(
+                                            color: Colors.black,
+                                            blurRadius: 4,
+                                            offset: Offset(1, 1),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
-                          if (!isLocked && cost == 0)
-                            Container(
-                              margin: const EdgeInsets.only(top: 6),
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: Colors.green.shade600,
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: const Text(
-                                "FREE!",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -278,8 +308,6 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, Widg
                 },
               ),
             ),
-
-            /// Dev Reset Button
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
               onPressed: () {
@@ -311,8 +339,6 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, Widg
               },
               child: const Text('Reset Purchases (Dev Only)'),
             ),
-
-            /// TEMP: Debug button to manually trigger confetti
             ElevatedButton(
               onPressed: () {
                 triggerConfetti();
@@ -321,13 +347,12 @@ class _GameGridState extends State<GameGrid> with TickerProviderStateMixin, Widg
             ),
             ElevatedButton(
               onPressed: () {
-               xpManager.addStars(40);
-               xpManager.addTokens(3);
-xpManager.addXP(30, context: context);
+                xpManager.addStars(40);
+                xpManager.addTokens(3);
+                xpManager.addXP(30, context: context);
               },
               child: const Text("Add Stars and Tolims"),
             ),
-
             if (_bannerAd != null)
               SafeArea(
                 child: Align(
@@ -341,8 +366,6 @@ xpManager.addXP(30, context: context);
               ),
           ],
         ),
-
-        /// Confetti Widget — always on top
         Positioned.fill(
           child: IgnorePointer(
             child: Align(
@@ -385,9 +408,7 @@ xpManager.addXP(30, context: context);
       case 'WordLink':
         return tr.linkWordgame;
       case 'IQGame':
-        return tr.iQTest;
       case 'MagicPainting':
-        return tr.iQTest;
       case 'JumpingBoard':
         return tr.iQTest;
       case 'WordExplorer':

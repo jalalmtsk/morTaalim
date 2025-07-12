@@ -21,14 +21,14 @@ class LanguageSelectorPage extends StatelessWidget {
         name: 'French Letters (A, B, C...)',
         languageCode: 'french',
         icon: "🇫🇷",
-        color: Colors.deepOrange,
+        imagePath: 'assets/images/FlagImagesForTracingLetters/FrenchLetters.png',
         locked: false,
       ),
       LanguageOption(
         name: 'حروف عربية',
         languageCode: 'arabic',
         icon: "🇸🇦",
-        color: Colors.deepOrange.shade700,
+        imagePath: 'assets/images/FlagImagesForTracingLetters/ArabicLetters.png',
         locked: false,
       ),
       
@@ -36,7 +36,7 @@ class LanguageSelectorPage extends StatelessWidget {
         name: 'Русс Russian',
         languageCode: 'russian',
         icon: "🇷🇺",
-        color: Colors.indigo.shade400,
+        imagePath: 'assets/images/FlagImagesForTracingLetters/RussianLetters.png',
         locked: true,
         cost: 15,
       ),
@@ -44,7 +44,7 @@ class LanguageSelectorPage extends StatelessWidget {
         name: 'ひら Japanese',
         languageCode: 'japanese',
         icon: "🇯🇵",
-        color: Colors.redAccent.shade200,
+        imagePath: 'assets/images/FlagImagesForTracingLetters/JapaneseLetters.png',
         locked: true,
         cost: 50,
       ),
@@ -53,7 +53,7 @@ class LanguageSelectorPage extends StatelessWidget {
         name: '한글 Korean',
         languageCode: 'korean',
         icon: "🇰🇷",
-        color: Colors.blueAccent.shade200,
+        imagePath: 'assets/images/FlagImagesForTracingLetters/KoreanLetters.png',
         locked: true,
         cost: 15,
       ),
@@ -62,7 +62,7 @@ class LanguageSelectorPage extends StatelessWidget {
         name: '汉字 Chinese',
         languageCode: 'chinese',
         icon: "🇨🇳",
-        color: Colors.green.shade400,
+        imagePath: 'assets/images/FlagImagesForTracingLetters/ChineseLetters.png',
         locked: true,
         cost: 15,
       ),
@@ -111,13 +111,9 @@ Userstatutbar(),            // Fun top header with icon and welcome text
                   height: 130,
                   fit: BoxFit.cover,
                 ),
-              ),
-
-            ],
+              ),],
             ),
-
                 SizedBox(height: 10),
-
             // Language options grid
             Expanded(
               child: GridView.builder(

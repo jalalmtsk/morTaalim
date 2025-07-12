@@ -5,7 +5,7 @@ final List<Map<String, dynamic>> games = [
     'title': 'drawingAlphabet',
     'icon': Icons.brush,
     'routeName': 'DrawingAlphabet',
-    'color': Colors.deepPurple,
+    'image': 'assets/images/GameGridImages/TrailingLetters.png', // ✅ New key
     'locked': false,
     'cost': 0,
     'unlockType': 'creative',
@@ -14,7 +14,7 @@ final List<Map<String, dynamic>> games = [
     'title': 'quizGame',
     'icon': Icons.quiz,
     'routeName': 'QuizGameApp',
-    'color': Colors.deepOrange,
+    'image': 'assets/images/GameGridImages/QuizzMe.png', // ✅ New key
     'locked': true,
     'cost': 10,
     'unlockType': 'logic',
@@ -23,16 +23,27 @@ final List<Map<String, dynamic>> games = [
     'title': 'appStories',
     'icon': Icons.menu_book,
     'routeName': 'AppStories',
-    'color': Colors.blue,
+    'image': 'assets/images/GameGridImages/StoriesGame.png', // ✅ New key
     'locked': true,
     'cost': 15,
     'unlockType': 'reading',
   },
+
+  {
+    'title': 'MagicPainting',
+    'icon': Icons.format_paint,
+    'routeName': 'MagicPainting',
+    'image': 'assets/images/GameGridImages/Painting.png', // ✅ New key
+    'locked': true,
+    'cost': 50,
+    'unlockType': 'iq',
+  },
+
   {
     'title': 'shapeSorter',
     'icon': Icons.square_foot_outlined,
     'routeName': 'ShapeSorter',
-    'color': Colors.green,
+    'image': 'assets/images/GameGridImages/Shape.png', // ✅ New key
     'locked': true,
     'cost': 15,
     'unlockType': 'puzzle',
@@ -41,7 +52,7 @@ final List<Map<String, dynamic>> games = [
     'title': 'PlaneDestroyer',
     'icon': Icons.dashboard_outlined,
     'routeName': 'PlaneDestroyer',
-    'color': Colors.teal,
+    'image': 'assets/images/GameGridImages/PlaneDestoyer.png', // ✅ New key
     'locked': false,
     'cost': 15,
     'unlockType': 'strategy',
@@ -50,7 +61,7 @@ final List<Map<String, dynamic>> games = [
     'title': 'piano',
     'icon': Icons.piano,
     'routeName': 'Piano',
-    'color': Colors.black,
+    'image': 'assets/images/GameGridImages/Piano.png', // ✅ New key
     'locked': true,
     'cost': 15,
     'unlockType': 'music',
@@ -59,7 +70,7 @@ final List<Map<String, dynamic>> games = [
     'title': 'WordLink',
     'icon': Icons.sort_by_alpha_outlined,
     'routeName': 'WordLink',
-    'color': Colors.indigo,
+    'image': 'assets/images/GameGridImages/WordLink.png', // ✅ New key
     'locked': true,
     'cost': 10,
     'unlockType': 'language',
@@ -68,7 +79,7 @@ final List<Map<String, dynamic>> games = [
     'title': 'IQGame',
     'icon': Icons.smart_toy_outlined,
     'routeName': 'IQGame',
-    'color': Colors.pinkAccent,
+    'image': 'assets/images/GameGridImages/IQTest.png', // ✅ New key
     'locked': true,
     'cost': 10,
     'unlockType': 'iq',
@@ -78,19 +89,9 @@ final List<Map<String, dynamic>> games = [
     'title': 'JumpingBoard',
     'icon': Icons.attractions,
     'routeName': 'JumpingBoard',
-    'color': Colors.green,
+    'image': 'assets/images/GameGridImages/JumpingSquare.png', // ✅ New key
     'locked': true,
     'cost': 10,
-    'unlockType': 'iq',
-  },
-
-  {
-    'title': 'MagicPainting',
-    'icon': Icons.format_paint,
-    'routeName': 'MagicPainting',
-    'color': Colors.orange,
-    'locked': true,
-    'cost': 50,
     'unlockType': 'iq',
   },
 
@@ -98,11 +99,9 @@ final List<Map<String, dynamic>> games = [
     'title': 'WordExplorer',
     'icon': Icons.swipe_left,
     'routeName': 'WordExplorer',
-    'color': Colors.amber,
+    'image': 'assets/images/GameGridImages/BookOfWords.png', // ✅ New key
     'locked': true,
     'cost': 50,
     'unlockType': 'iq',
   },
-
-
 ];

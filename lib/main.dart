@@ -99,7 +99,6 @@ class _MyAppState extends State<MyApp> {
       routes: {
         'Index': (context) => Index(onChangeLocale: _changeLanguage),
 
-
         //Game Routes
         'DrawingAlphabet': (context) => LanguageSelectorPage(onChangeLocale: _changeLanguage,),
         'QuizGameApp': (context) => const QuizGameApp(),
@@ -112,10 +111,10 @@ class _MyAppState extends State<MyApp> {
         "MagicPainting" : (context) =>  DrawingIndex(),
         "JumpingBoard": (context) => const JumpingJellyApp(),
         "WordExplorer" : (context) =>  WordExplorer(),
-
-
         'FavoriteWords': (context) => const FavoriteWordsPage(),
         'Profile': (context) => const ProfileSetupPage(),
+
+
         'Shop' : (context) => MainShopPageIndex(),
         'Credits' : (context) =>  CreditsPage(),
 
