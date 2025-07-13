@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../XpSystem.dart';
 
 class SettingsPage extends StatefulWidget {
   final void Function(Locale) onChangeLocale;
@@ -258,6 +261,15 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
 
+          //TODO: DROP ADS
+
+          SwitchListTile(
+            title: const Text('Enable Ads'),
+            value: context.watch<ExperienceManager>().adsEnabled,
+            onChanged: (value) {
+              context.read<ExperienceManager>().setAdsEnabled(value);
+            },
+          ),
           const Divider(height: 40),
 
           // 🔐 Parental Lock

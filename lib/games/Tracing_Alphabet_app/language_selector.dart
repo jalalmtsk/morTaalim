@@ -86,53 +86,54 @@ class LanguageSelectorPage extends StatelessWidget {
         backgroundColor: Colors.deepOrange,
         elevation: 6,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.deepOrange.shade200, Colors.deepOrange.shade50],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+      body: Stack(
+        children: [
+          // Background Image
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/UI/BackGrounds/bg9.jpg', // <-- replace with your image path
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-Userstatutbar(),            // Fun top header with icon and welcome text
-            Text(textAlign: TextAlign.center, tr(context).chooseYourLanguageToStartTracing, style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.w600,
-              color: Colors.deepOrange.shade800,
-            )),
-            Row(children: [
-              Container(
-                child: Lottie.asset(
-                  'assets/animations/paiting_building.json',
-                  width: 170,
-                  height: 130,
-                  fit: BoxFit.cover,
+
+          // Content with padding and scrollable GridView
+          Container(
+            padding: const EdgeInsets.all(10),
+            color: Colors.black.withOpacity(0.3), // optional: dark overlay for readability
+            child: Column(
+              children: [
+                Userstatutbar(), // Fun top header with icon and welcome text
+                Text(
+                  tr(context).chooseYourLanguageToStartTracing,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.deepOrange.shade50, // adjusted for contrast on image
+                  ),
                 ),
-              ),],
-            ),
-                SizedBox(height: 10),
-            // Language options grid
-            Expanded(
-              child: GridView.builder(
-                itemCount: languages.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2 per row
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                  childAspectRatio: 1.1,
+                const SizedBox(height: 10),
+                Expanded(
+                  child: GridView.builder(
+                    itemCount: languages.length,
+                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, // 2 per row
+                      crossAxisSpacing: 20,
+                      mainAxisSpacing: 20,
+                      childAspectRatio: 1.1,
+                    ),
+                    itemBuilder: (context, index) {
+                      final lang = languages[index];
+                      return LanguageCard(language: lang);
+                    },
+                  ),
                 ),
-                itemBuilder: (context, index) {
-                  final lang = languages[index];
-                  return LanguageCard(language: lang);
-                },
-              ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
+
     );
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/games/Quiz_Game/Result_QuizPage.dart' hide QuizLanguage;
@@ -9,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../XpSystem.dart';
+import '../../tools/Ads_Manager.dart';
 import 'Questions.dart';
 import 'question_model.dart';
 import 'avatar_widget.dart';
@@ -24,9 +24,6 @@ class QuizGameApp extends StatelessWidget {
     return const ModeSelectorPage();
   }
 }
-
-// quiz_page.dart (Enhanced UI Version with Return, Progress, Score, Lives)
-
 
 class QuizPage extends StatefulWidget {
   final GameMode mode;
@@ -54,6 +51,9 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   BannerAd? _bannerAd;
   final MusicPlayer _player = MusicPlayer();
   final MusicPlayer _backgroundMusic = MusicPlayer();
+  final MusicPlayer _CountDown = MusicPlayer();
+  final MusicPlayer _CountDownRobot = MusicPlayer();
+  final MusicPlayer _fire = MusicPlayer();
 
   late List<Question> _questions;
   int _currentQuestion = 0;
@@ -62,7 +62,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   int _playerTurn = 1;
   int _player1Lives = 2;
   int _player2Lives = 2;
-  int _timeLeft = 10;
+  int _timeLeft = 30;
   int? _selectedIndex;
   bool _answered = false;
   bool _showCorrectAnimation = false;
@@ -74,11 +74,11 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   late Animation<double> _scaleAnimation;
 
   @override
-  void initState() {
+  initState()  {
     super.initState();
-    _backgroundMusic.play("assets/audios/sound_track/piano.mp3");
+    _loadBannerAd();
+    _PlaySounds();
     _questions = _loadQuestions(widget.language)..shuffle();
-
     _introController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
@@ -93,10 +93,26 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     });
   }
 
+  Future<void> _PlaySounds() async {
+    try {
+      _CountDownRobot.play("assets/audios/QuizGame_Sounds/RoboticCountDown3sec.mp3");
+      await _CountDown.play("assets/audios/QuizGame_Sounds/GameCountDown3Sec.mp3");
+      _backgroundMusic.play("assets/audios/QuizGame_Sounds/heyWhistleUkulele30Sec.mp3", loop: true);
+    } catch (e) {
+      debugPrint('Error playing sound: $e');
+    }
+  }
+
+  void _loadBannerAd() {
+    _bannerAd?.dispose();
+    _bannerAd = AdHelper.getBannerAd(() {
+      setState(() {});
+    });
+  }
   List<Question> _loadQuestions(QuizLanguage lang) => questionsByLanguage[lang] ?? [];
 
   void _startTimer() {
-    _timeLeft = 10;
+    _timeLeft = 30;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       setState(() {
         _timeLeft--;
@@ -107,7 +123,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   void _handleTimeout() {
     _timer.cancel();
-    _playSound('assets/audios/wrong_answer.mp3');
+    _playSound('assets/audios/sound_effects/wrong_answer.mp3');
+    _fire.play("assets/audios/sound_effects/angry.mp3");
     _showWrongFeedback();
     if (widget.mode == GameMode.single) {
       _player1Lives--;
@@ -133,11 +150,12 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       final isCorrect = selected == _questions[_currentQuestion].correctIndex;
       if (isCorrect) {
         Provider.of<ExperienceManager>(context, listen: false).addXP(2);
-        _playSound('assets/audios/sound_effects/correct_anwser.mp3');
+        _playSound('assets/audios/QuizGame_Sounds/correct.mp3');
         _showCorrectAnimation = true;
-        Future.delayed(const Duration(seconds: 1), () => setState(() => _showCorrectAnimation = false));
+        Future.delayed(const Duration(seconds: 2), () => setState(() => _showCorrectAnimation = false));
       } else {
-        _playSound('assets/audios/sound_effects/wrong_answer.mp3');
+        _fire.play("assets/audios/sound_effects/angry.mp3");
+        _playSound('assets/audios/QuizGame_Sounds/incorrect.mp3');
         _showWrongFeedback();
         if (widget.mode == GameMode.single) {
           _player1Lives--;
@@ -153,7 +171,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   void _showWrongFeedback() {
     setState(() => _showWrongAnimation = true);
-    Future.delayed(const Duration(seconds: 1), () => setState(() => _showWrongAnimation = false));
+    Future.delayed(const Duration(seconds: 2), () => setState(() => _showWrongAnimation = false));
   }
 
   void _nextTurn() {
@@ -185,18 +203,52 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     }
   }
 
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadBannerAd();
+    }
+  }
+
   @override
   void dispose() {
     _timer.cancel();
     _backgroundMusic.dispose();
+    _CountDown.dispose();
     _introController.dispose();
+    _bannerAd?.dispose();
     super.dispose();
+  }
+
+  Widget _buildPlayerInfo({
+    required String name,
+    required String avatar,
+    required int score,
+    required int lives,
+    required bool isActive,
+  }) {
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 30,
+          backgroundColor: isActive ? Colors.deepOrange : Colors.grey.shade300,
+          child: Text(avatar, style: const TextStyle(fontSize: 28)),
+        ),
+        const SizedBox(height: 4),
+        Text(name, style: TextStyle(fontWeight: FontWeight.bold, color: isActive ? Colors.deepOrange : Colors.grey[700])),
+        const SizedBox(height: 4),
+        Text("❤️ $lives", style: const TextStyle(fontSize: 16)),
+        Text("🧰 $score", style: const TextStyle(fontSize: 16)),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final xpManager = Provider.of<ExperienceManager>(context);
     final question = _questions[_currentQuestion];
+    final player1Name = widget.player1Name ?? "Player 1";
+    final player2Name = widget.player2Name ?? "Player 2";
+    final player1Avatar = widget.player1Emoji ?? "😀";
+    final player2Avatar = widget.player2Emoji ?? "😎";
 
     return Stack(
       children: [
@@ -204,24 +256,22 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
           FadeTransition(
             opacity: _scaleAnimation,
             child: Scaffold(
-              backgroundColor: Colors.deepOrange,
+              backgroundColor: Colors.white,
               body: Center(
                 child: ScaleTransition(
                   scale: _scaleAnimation,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(widget.player1Name ?? "Player", style: const TextStyle(fontSize: 32, color: Colors.white)),
-                      const SizedBox(height: 16),
-                      Text(widget.player1Emoji ?? "😀", style: const TextStyle(fontSize: 50)),
-                      const SizedBox(height: 30),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
-                        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(24)),
-                        child: const Text("Steady... Ready... GO!",
-                            style: TextStyle(fontSize: 24, color: Colors.deepOrange)),
-                      )
-                    ],
+                  child: Container(
+                    color: Colors.orange.shade100,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Lottie.asset(
+                              "assets/animations/QuizzGame_Animation/CountdownGo.json",
+                          width: 400, height: 400),
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ),
@@ -242,74 +292,146 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
               ),
               centerTitle: true,
             ),
-            body: SafeArea(
-              child: Column(
-                children: [
-                  Userstatutbar(),
-                  LinearProgressIndicator(
-                    value: _timeLeft / 10,
-                    color: Colors.deepOrange,
-                    backgroundColor: Colors.orange.shade100,
-                  ),
-                  const SizedBox(height: 8),
-                  Text("⏳ $_timeLeft seconds", style: const TextStyle(fontSize: 18)),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text("❤️ Lives: $_player1Lives", style: const TextStyle(fontSize: 18)),
-                        Text("⭐ Score: $_player1Score", style: const TextStyle(fontSize: 18)),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Text(
-                      question.questionText,
-                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Expanded(
-                    child: GridView.count(
-                      crossAxisCount: 2,
-                      padding: const EdgeInsets.all(12),
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                      childAspectRatio: 3,
-                      children: List.generate(question.options.length, (index) {
-                        Color color = Colors.white;
-                        if (_answered) {
-                          if (index == question.correctIndex) {
-                            color = Colors.green.shade300;
-                          } else if (index == _selectedIndex) {
-                            color = Colors.red.shade300;
-                          }
-                        }
-                        return ElevatedButton(
-                          onPressed: () => _answerQuestion(index),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: color,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                            elevation: 4,
+            body: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.orange.shade50, Colors.orange.shade200],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 10),
+                    Userstatutbar(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: [
+                          LinearProgressIndicator(
+                            value: _timeLeft / 30,
+                            backgroundColor: Colors.orange.shade100,
+                            color: Colors.deepOrange,
                           ),
-                          child: Text(question.options[index], style: const TextStyle(fontSize: 18)),
-                        );
-                      }),
+                          const SizedBox(height: 6),
+                          Text("⏳ $_timeLeft seconds left", style: const TextStyle(fontSize: 16, color: Colors.deepOrange)),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 20),
+                    // Show scoreboard
+                    if (widget.mode == GameMode.multiplayer)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          _buildPlayerInfo(
+                            name: player1Name,
+                            avatar: player1Avatar,
+                            score: _player1Score,
+                            lives: _player1Lives,
+                            isActive: _playerTurn == 1,
+                          ),
+                          _buildPlayerInfo(
+                            name: player2Name,
+                            avatar: player2Avatar,
+                            score: _player2Score,
+                            lives: _player2Lives,
+                            isActive: _playerTurn == 2,
+                          ),
+                        ],
+                      )
+                    else
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 12),
+                        child: Text(
+                          '🧰 $_player1Score | ❤️ $_player1Lives',
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+                        ),
+                      ),
+
+
+                    const SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Card(
+                        elevation: 6,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                        shadowColor: Colors.deepOrange.withOpacity(0.4),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Text(
+                            question.questionText,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Expanded(
+                      child: GridView.count(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 12,
+                        mainAxisSpacing: 12,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        childAspectRatio: 3,
+                        children: List.generate(question.options.length, (index) {
+                          final isCorrect = index == question.correctIndex;
+                          final isSelected = index == _selectedIndex;
+                          final showResult = _answered;
+
+                          Color bgColor = Colors.white;
+                          Icon? icon;
+
+                          if (showResult) {
+                            if (isCorrect) {
+                              bgColor = Colors.green.shade400;
+                              icon = const Icon(Icons.check, color: Colors.white);
+                            } else if (isSelected) {
+                              bgColor = Colors.red.shade300;
+                              icon = const Icon(Icons.clear_outlined, color: Colors.white);
+                            }
+                          }
+
+                          return ElevatedButton.icon(
+                            onPressed: () => _answerQuestion(index),
+                            icon: icon ?? const SizedBox.shrink(),
+                            label: Text(question.options[index], style: const TextStyle(fontSize: 18)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: bgColor,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              elevation: 5,
+                              shadowColor: Colors.deepOrange.withOpacity(0.5),
+                            ),
+                          );
+                        }),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
+            /// ADS BANNER
+            ///
+            bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null
+                ? SafeArea(
+              child: Container(
+                color: Colors.orange.shade200,
+                height: _bannerAd!.size.height.toDouble(),
+                width: _bannerAd!.size.width.toDouble(),
+                child: AdWidget(ad: _bannerAd!),
+              ),
+            )
+                : null,
           ),
         if (_showCorrectAnimation)
           Center(
-            child: Lottie.asset('assets/animations/confetti_success.json', width: 200, repeat: false),
+            child: Lottie.asset('assets/animations/QuizzGame_Animation/DoneAnimation.json', width: 500, repeat: false),
           ),
         if (_showWrongAnimation)
           Center(
-            child: Lottie.asset('assets/animations/wrong_cross.json', width: 150, repeat: false),
+            child: Lottie.asset('assets/animations/QuizzGame_Animation/Fiery Lolo.json', width: 200, repeat: false),
           ),
       ],
     );

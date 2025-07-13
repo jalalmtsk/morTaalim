@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
+import 'package:provider/provider.dart';
+import '../../XpSystem.dart';
 import 'Stories.dart';
 import 'story_page_widget.dart';
 
@@ -17,7 +19,7 @@ class StoryBookPage extends StatefulWidget {
 
 class _StoryBookPageState extends State<StoryBookPage>
     with TickerProviderStateMixin {
-  late BannerAd _bannerAd;
+  BannerAd? _bannerAd;
   late final PageController _pageController;
   final FlutterTts flutterTts = FlutterTts();
 
@@ -31,13 +33,8 @@ class _StoryBookPageState extends State<StoryBookPage>
   @override
   void initState() {
     super.initState();
-    _bannerAd = AdHelper.getBannerAd((){
-      setState(() {
-
-      });
-    });
+    _loadBannerAd();
     _pageController = PageController(initialPage: 0);
-
     _initTts();
 
     _bounceController = AnimationController(
@@ -48,6 +45,18 @@ class _StoryBookPageState extends State<StoryBookPage>
     _bounceAnimation = Tween(begin: 0.0, end: -20.0).animate(
       CurvedAnimation(parent: _bounceController, curve: Curves.easeInOut),
     );
+  }
+
+  void _loadBannerAd() {
+    _bannerAd?.dispose();
+    _bannerAd = AdHelper.getBannerAd(() {
+      setState(() {});
+    });
+  }
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadBannerAd();
+    }
   }
 
   Future<void> _initTts() async {
@@ -129,6 +138,7 @@ class _StoryBookPageState extends State<StoryBookPage>
   @override
   void dispose() {
     _bounceController.dispose();
+    _bannerAd?.dispose();
     flutterTts.stop();
     _pageController.dispose();
     super.dispose();
@@ -206,14 +216,18 @@ class _StoryBookPageState extends State<StoryBookPage>
               ],
             ),
           ),
-          if (_bannerAd != null)
-          SizedBox(
-              width: _bannerAd.size.width.toDouble(),
-              height: _bannerAd.size.height.toDouble(),
-                 child: AdWidget(ad: _bannerAd),
-                  )
+
     ],
       ),
+      bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null
+          ? SafeArea(
+        child: SizedBox(
+          height: _bannerAd!.size.height.toDouble(),
+          width: _bannerAd!.size.width.toDouble(),
+          child: AdWidget(ad: _bannerAd!),
+        ),
+      )
+          : null,
     );
   }
 }

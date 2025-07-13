@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
@@ -273,6 +274,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _unlockedBanners = prefs.getStringList('unlockedBanners') ?? ['assets/images/Banners/CuteBr/Banner1.png'];
     _selectedAvatarFrame = prefs.getString('selectedAvatarFrame') ?? '';
     _unlockedAvatarFrames = prefs.getStringList('unlockedAvatarFrames') ?? [];
+    _adsEnabled = prefs.getBool('adsEnabled') ?? true;
     notifyListeners();
   }
 
@@ -289,6 +291,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     await prefs.setStringList('unlockedBanners', _unlockedBanners);
     await prefs.setString('selectedAvatarFrame', _selectedAvatarFrame);
     await prefs.setStringList('unlockedAvatarFrames', _unlockedAvatarFrames);
+    await prefs.setBool('adsEnabled', _adsEnabled);
   }
 
   void _showOverlayLevelUpBanner(BuildContext context, int newLevel) {
@@ -296,48 +299,122 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     late OverlayEntry entry;
 
     entry = OverlayEntry(
-      builder: (ctx) => Positioned(
-        top: 40,
-        left: 20,
-        right: 20,
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.amber.shade700.withOpacity(0.95),
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.3),
-                  blurRadius: 8,
-                  offset: const Offset(0, 4),
+      builder: (ctx) => Stack(
+        children: [
+          // Top banner: Level unlocked message (Row with Lottie + Text)
+          Positioned(
+            top: 40,
+            left: 20,
+            right: 20,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                decoration: BoxDecoration(
+                  color: Colors.amber.shade700.withOpacity(0.95),
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.upgrade, color: Colors.white),
-                const SizedBox(width: 10),
-                Text(
-                  'Level $newLevel Unlocked! +1 ⭐',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: Lottie.asset(
+                        'assets/animations/LvlUnlocked/LevelUp.json', // replace with your animation path
+                        repeat: true,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Level $newLevel Unlocked',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
+
+          // Center overlay: +1 Star (Lottie + Text), centered on screen
+          Center(
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 120,
+                      height: 120,
+                      child: Lottie.asset(
+                        'assets/animations/LvlUnlocked/StarPlus1.json', // replace with your animation path
+                        repeat: true,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    const Text(
+                      '+1 Star',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
 
     overlay.insert(entry);
-    Future.delayed(const Duration(seconds: 3), () => entry.remove());
+
+    Future.delayed(const Duration(seconds: 4), () => entry.remove());
   }
+
+
+  //ADS MANAGER
+  bool _adsEnabled = true; // default to true
+
+  bool get adsEnabled => _adsEnabled;
+
+  void setAdsEnabled(bool value) {
+    _adsEnabled = value;
+    _saveAdsPreference(); // Save to SharedPreferences
+    notifyListeners();
+  }
+
+  Future<void> _saveAdsPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('adsEnabled', _adsEnabled);
+  }
+  /////////////////////////////////////////////////////////
+
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

@@ -15,8 +15,8 @@ final List<Map<String, dynamic>> games = [
     'icon': Icons.quiz,
     'routeName': 'QuizGameApp',
     'image': 'assets/images/GameGridImages/QuizzMe.png', // ✅ New key
-    'locked': true,
-    'cost': 10,
+    'locked': false,
+    'cost': 0,
     'unlockType': 'logic',
   },
   {
@@ -25,7 +25,7 @@ final List<Map<String, dynamic>> games = [
     'routeName': 'AppStories',
     'image': 'assets/images/GameGridImages/StoriesGame.png', // ✅ New key
     'locked': true,
-    'cost': 15,
+    'cost': 100,
     'unlockType': 'reading',
   },
 
@@ -35,7 +35,7 @@ final List<Map<String, dynamic>> games = [
     'routeName': 'MagicPainting',
     'image': 'assets/images/GameGridImages/Painting.png', // ✅ New key
     'locked': true,
-    'cost': 50,
+    'cost': 120,
     'unlockType': 'iq',
   },
 
@@ -45,7 +45,7 @@ final List<Map<String, dynamic>> games = [
     'routeName': 'ShapeSorter',
     'image': 'assets/images/GameGridImages/Shape.png', // ✅ New key
     'locked': true,
-    'cost': 15,
+    'cost': 150,
     'unlockType': 'puzzle',
   },
   {
@@ -53,26 +53,18 @@ final List<Map<String, dynamic>> games = [
     'icon': Icons.dashboard_outlined,
     'routeName': 'PlaneDestroyer',
     'image': 'assets/images/GameGridImages/PlaneDestoyer.png', // ✅ New key
-    'locked': false,
-    'cost': 15,
+    'locked': true,
+    'cost': 180,
     'unlockType': 'strategy',
   },
-  {
-    'title': 'piano',
-    'icon': Icons.piano,
-    'routeName': 'Piano',
-    'image': 'assets/images/GameGridImages/Piano.png', // ✅ New key
-    'locked': true,
-    'cost': 15,
-    'unlockType': 'music',
-  },
+
   {
     'title': 'WordLink',
     'icon': Icons.sort_by_alpha_outlined,
     'routeName': 'WordLink',
     'image': 'assets/images/GameGridImages/WordLink.png', // ✅ New key
     'locked': true,
-    'cost': 10,
+    'cost': 220,
     'unlockType': 'language',
   },
   {
@@ -81,7 +73,7 @@ final List<Map<String, dynamic>> games = [
     'routeName': 'IQGame',
     'image': 'assets/images/GameGridImages/IQTest.png', // ✅ New key
     'locked': true,
-    'cost': 10,
+    'cost': 250,
     'unlockType': 'iq',
   },
 
@@ -91,7 +83,7 @@ final List<Map<String, dynamic>> games = [
     'routeName': 'JumpingBoard',
     'image': 'assets/images/GameGridImages/JumpingSquare.png', // ✅ New key
     'locked': true,
-    'cost': 10,
+    'cost': 250,
     'unlockType': 'iq',
   },
 
@@ -101,7 +93,18 @@ final List<Map<String, dynamic>> games = [
     'routeName': 'WordExplorer',
     'image': 'assets/images/GameGridImages/BookOfWords.png', // ✅ New key
     'locked': true,
-    'cost': 50,
+    'cost': 300,
     'unlockType': 'iq',
   },
+
+  {
+    'title': 'piano',
+    'icon': Icons.piano,
+    'routeName': 'Piano',
+    'image': 'assets/images/GameGridImages/Piano.png', // ✅ New key
+    'locked': true,
+    'cost': 500,
+    'unlockType': 'music',
+  },
+
 ];

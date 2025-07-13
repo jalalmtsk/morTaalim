@@ -79,8 +79,8 @@ class _GameGridState extends State<GameGrid>
       builder: (_) => Center(
         child: Lottie.asset(
           'assets/animations/unlock_key.json',
-          width: 100,
-          height: 100,
+          width: 200,
+          height: 200,
           repeat: false,
           onLoaded: (composition) {
             _clickButton.play("assets/audios/sound_effects/validationAfterUnlock.mp3");
@@ -177,7 +177,7 @@ class _GameGridState extends State<GameGrid>
                                     Navigator.pop(context);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        duration: Duration(milliseconds: 1500),
+                                        duration: Duration(milliseconds: 1200),
                                         content: Text("Not enough stars!"),
                                       ),
                                     );
@@ -198,7 +198,7 @@ class _GameGridState extends State<GameGrid>
                             child: Image.asset(
                               game['image'] ?? 'assets/images/AvatarImage/Avatar2.png',
                               fit: BoxFit.cover,
-                              color: isLocked ? Colors.black.withOpacity(0.3) : null,
+                              color: isLocked ? Colors.black.withValues(alpha: 0.5) : null,
                               colorBlendMode: isLocked ? BlendMode.darken : null,
                             ),
                           ),
@@ -207,8 +207,8 @@ class _GameGridState extends State<GameGrid>
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Colors.black.withOpacity(0.3),
-                                    Colors.black.withOpacity(0.1),
+                                    Colors.black.withValues(alpha: 0.3),
+                                    Colors.black.withValues(alpha: 0),
                                   ],
                                   begin: Alignment.bottomCenter,
                                   end: Alignment.topCenter,
@@ -250,16 +250,16 @@ class _GameGridState extends State<GameGrid>
                                 ),
                                 if (isLocked)
                                   Padding(
-                                    padding: const EdgeInsets.only(top: 6),
+                                    padding: const EdgeInsets.only(top: 2),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        const Icon(Icons.star, size: 18, color: Colors.amber),
-                                        const SizedBox(width: 4),
+                                        const Icon(Icons.star, size: 28, color: Colors.amber),
+                                        const SizedBox(width: 2),
                                         Text(
                                           "$cost",
                                           style: const TextStyle(
-                                            fontSize: 16,
+                                            fontSize: 20,
                                             color: Colors.white,
                                             fontWeight: FontWeight.bold,
                                             shadows: [
@@ -279,7 +279,7 @@ class _GameGridState extends State<GameGrid>
                                     margin: const EdgeInsets.only(top: 6),
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: Colors.green.shade600.withOpacity(0.8),
+                                      color: Colors.green.shade700.withValues(alpha: 0.8),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: const Text(
@@ -353,17 +353,20 @@ class _GameGridState extends State<GameGrid>
               },
               child: const Text("Add Stars and Tolims"),
             ),
-            if (_bannerAd != null)
-              SafeArea(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: _bannerAd!.size.width.toDouble(),
-                    height: _bannerAd!.size.height.toDouble(),
-                    child: AdWidget(ad: _bannerAd!),
-                  ),
+
+            ///:::::::: BANNER ADS
+            (context.watch<ExperienceManager>().adsEnabled && _bannerAd != null)
+                ? SafeArea(
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: _bannerAd!.size.width.toDouble(),
+                  height: _bannerAd!.size.height.toDouble(),
+                  child: AdWidget(ad: _bannerAd!),
                 ),
               ),
+            )
+                : const SizedBox.shrink(),
           ],
         ),
         Positioned.fill(
