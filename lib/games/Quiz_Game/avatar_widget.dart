@@ -9,11 +9,11 @@ Widget avatarWithHighlight(String emoji, bool isActive) {
           : [],
     ),
     child: CircleAvatar(
-      radius: 30,
+      radius: 50,
       backgroundColor: Colors.white,
       child: Text(
         emoji,
-        style: const TextStyle(fontSize: 30),
+        style: const TextStyle(fontSize: 35),
       ),
     ),
   );

@@ -26,6 +26,7 @@ class ImageBannerGrid extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
+                xpManager.addXP(25,context: context);
                 xpManager.addStars(-cost);
                 xpManager.unlockBanner(path);
                 xpManager.selectBannerImage(path);

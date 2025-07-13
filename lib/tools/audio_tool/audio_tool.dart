@@ -140,6 +140,10 @@ class _AudioPlayerWidgetState extends State<AudioPlayerWidget> {
 class MusicPlayer {
   final AudioPlayer _player = AudioPlayer();
   AudioPlayer get player => _player;
+  bool get isPlaying => _player.playing;
+  Future<void> setVolume(double volume) async {
+    await _player.setVolume(volume);
+  }
 
   Future<void> play(String assetPath, {bool loop = false}) async {
     try {

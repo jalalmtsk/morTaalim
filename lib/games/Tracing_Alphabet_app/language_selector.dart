@@ -70,68 +70,69 @@ class LanguageSelectorPage extends StatelessWidget {
 
 
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new),
-          onPressed: () => Navigator.of(context).pop(),
-          tooltip: 'Back',
-        ),
-        actions: [
-        ],
-        title: Text(
-          tr(context).alphabetTracing,
-          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-        ),
-        centerTitle: true,
-        backgroundColor: Colors.deepOrange,
-        elevation: 6,
-      ),
-      body: Stack(
-        children: [
-          // Background Image
-          Positioned.fill(
-            child: Image.asset(
-              'assets/images/UI/BackGrounds/bg9.jpg', // <-- replace with your image path
-              fit: BoxFit.cover,
-            ),
-          ),
 
-          // Content with padding and scrollable GridView
-          Container(
-            padding: const EdgeInsets.all(10),
-            color: Colors.black.withOpacity(0.3), // optional: dark overlay for readability
-            child: Column(
-              children: [
-                Userstatutbar(), // Fun top header with icon and welcome text
-                Text(
-                  tr(context).chooseYourLanguageToStartTracing,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.deepOrange.shade50, // adjusted for contrast on image
-                  ),
-                ),
-                const SizedBox(height: 10),
-                Expanded(
-                  child: GridView.builder(
-                    itemCount: languages.length,
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // 2 per row
-                      crossAxisSpacing: 20,
-                      mainAxisSpacing: 20,
-                      childAspectRatio: 1.1,
-                    ),
-                    itemBuilder: (context, index) {
-                      final lang = languages[index];
-                      return LanguageCard(language: lang);
-                    },
-                  ),
-                ),
-              ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // Background Image
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/UI/BackGrounds/bg9.jpg', // <-- replace with your image path
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-        ],
+
+            // Content with padding and scrollable GridView
+            Container(
+              height: double.infinity,
+              padding: const EdgeInsets.all(10),
+              color: Colors.black.withOpacity(0.25), // optional: dark overlay for readability
+              child: Column(
+                children: [
+                  Userstatutbar(),
+                  Row(
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.arrow_circle_left,
+                          size: 50,
+                        color: Colors.deepOrangeAccent,),
+                        onPressed: () => Navigator.of(context).pop(),
+                        tooltip: 'Back',
+                      ),
+                    ],
+                  ),
+                   // Fun top header with icon and welcome text
+                  Text(
+                    tr(context).chooseYourLanguageToStartTracing,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.deepOrange.shade50, // adjusted for contrast on image
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: GridView.builder(
+                      itemCount: languages.length,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2, // 2 per row
+                        crossAxisSpacing: 20,
+                        mainAxisSpacing: 20,
+                        childAspectRatio: 1.1,
+                      ),
+                      itemBuilder: (context, index) {
+                        final lang = languages[index];
+                        return LanguageCard(language: lang);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
 
     );

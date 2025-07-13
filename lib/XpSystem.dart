@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
@@ -72,10 +73,32 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   bool get showStarFlash => _showStarFlash;
   int get saveTokenCount => Tolims;
 
+//MUSIC SOUND--------------------------------////
+  bool _musicEnabled = true; // Default value
 
+  bool get musicEnabled => _musicEnabled;
+  double get musicVolume => _musicVolume;
+  double _musicVolume = 0.5; // default volume 50%
+
+  void setMusicEnabled(bool value) {
+    _musicEnabled = value;
+    _saveData();
+    notifyListeners();
+  }
+
+
+  void setMusicVolume(double value) {
+    _musicVolume = value.clamp(0.0, 1.0);
+    notifyListeners();
+  }
+
+  ///-------------------------------------------------------------
 
   //Banner
-  List<String> _unlockedBanners = ['assets/images/Banners/CuteBr/Banner1.png'];
+  List<String> _unlockedBanners = [''
+      'assets/images/Banners/CuteBr/Banner1.png',
+      'assets/images/Banners/CuteBr/Banner2.png',
+  ];
   String _selectedBannerImage = 'assets/images/Banners/CuteBr/Banner1.png';
 
   List<String> get unlockedBanners => _unlockedBanners;
@@ -191,14 +214,24 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _saveData();
     notifyListeners();
 
-    if (context != null && newLevel > oldLevel) {
-      Future.delayed(const Duration(milliseconds: 300), () {
+    if (context != null) {
+      // Always show XP overlay
+      Future.delayed(const Duration(milliseconds: 100), () {
         if (context.mounted) {
-          _showOverlayLevelUpBanner(context, newLevel);
+          _showOverlayXPAddedBanner(context, amount);
         }
       });
+
+      if (newLevel > oldLevel) {
+        Future.delayed(const Duration(milliseconds: 300), () {
+          if (context.mounted) {
+            _showOverlayLevelUpBanner(context, newLevel);
+          }
+        });
+      }
     }
   }
+
 
   bool isCourseUnlocked(String title) => _unlockedCourses.contains(title);
 
@@ -274,6 +307,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _unlockedBanners = prefs.getStringList('unlockedBanners') ?? ['assets/images/Banners/CuteBr/Banner1.png'];
     _selectedAvatarFrame = prefs.getString('selectedAvatarFrame') ?? '';
     _unlockedAvatarFrames = prefs.getStringList('unlockedAvatarFrames') ?? [];
+    _musicEnabled = prefs.getBool('musicEnabled') ?? true;
+    _musicVolume = prefs.getDouble('musicVolume') ?? 0.5;
     _adsEnabled = prefs.getBool('adsEnabled') ?? true;
     notifyListeners();
   }
@@ -291,96 +326,162 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     await prefs.setStringList('unlockedBanners', _unlockedBanners);
     await prefs.setString('selectedAvatarFrame', _selectedAvatarFrame);
     await prefs.setStringList('unlockedAvatarFrames', _unlockedAvatarFrames);
+    await prefs.setBool('musicEnabled', _musicEnabled);
+    await prefs.setDouble('musicVolume', _musicVolume);
     await prefs.setBool('adsEnabled', _adsEnabled);
   }
 
+
+
   void _showOverlayLevelUpBanner(BuildContext context, int newLevel) {
     final overlay = Overlay.of(context);
+    if (overlay == null) return;
+    LvlUp.play("assets/audios/sound_effects/victory2.mp3");
+    LvlUp2.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
     late OverlayEntry entry;
 
     entry = OverlayEntry(
-      builder: (ctx) => Stack(
-        children: [
-          // Top banner: Level unlocked message (Row with Lottie + Text)
-          Positioned(
-            top: 40,
-            left: 20,
-            right: 20,
-            child: Material(
-              color: Colors.transparent,
+      builder: (ctx) => Positioned(
+        top: MediaQuery.of(context).padding.top + 12,
+        left: 16,
+        right: 16,
+        child: SafeArea(
+          child: Material(
+            color: Colors.transparent,
+            child: AnimatedOpacity(
+              opacity: 1.0,
+              duration: const Duration(milliseconds: 300),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 decoration: BoxDecoration(
-                  color: Colors.amber.shade700.withOpacity(0.95),
-                  borderRadius: BorderRadius.circular(12),
+                  gradient: LinearGradient(
+                    colors: [Colors.deepOrange.shade400, Colors.amber.shade500],
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,
+                  ),
+                  borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withOpacity(0.3),
                       blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: Lottie.asset(
-                        'assets/animations/LvlUnlocked/LevelUp.json', // replace with your animation path
-                        repeat: true,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      'Level $newLevel Unlocked',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-
-          // Center overlay: +1 Star (Lottie + Text), centered on screen
-          Center(
-            child: Material(
-              color: Colors.transparent,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
+                      offset: const Offset(0, 3),
                     ),
                   ],
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // 🎉 Lottie Animation
                     SizedBox(
                       width: 120,
                       height: 120,
                       child: Lottie.asset(
-                        'assets/animations/LvlUnlocked/StarPlus1.json', // replace with your animation path
-                        repeat: true,
+                        'assets/animations/LvlUnlocked/StarPlus1.json',
+                        repeat: false,
                       ),
                     ),
+
                     const SizedBox(width: 12),
-                    const Text(
-                      '+1 Star',
-                      style: TextStyle(
+
+                    // Text Info
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Level $newLevel Reached!',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 2,
+                                color: Colors.black38,
+                                offset: Offset(1, 1),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          '+1 ⭐ Star!',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    overlay.insert(entry);
+    // Remove with fade-out
+    Future.delayed(const Duration(seconds: 4), () {
+      entry.markNeedsBuild();
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        entry.remove();
+      });
+    });
+  }
+
+final MusicPlayer LvlUp = MusicPlayer();
+  final MusicPlayer LvlUp2 = MusicPlayer();
+
+  //ADDING XP
+  void _showOverlayXPAddedBanner(BuildContext context, int xpAmount) {
+    final overlay = Overlay.of(context);
+    if (overlay == null) return;
+    LvlUp.play("assets/audios/sound_effects/correct_anwser.mp3");
+
+    late OverlayEntry entry;
+
+    entry = OverlayEntry(
+      builder: (ctx) => Positioned(
+        top: MediaQuery.of(context).padding.top + 120,
+        left: 16,
+        right: 16,
+        child: SafeArea(
+          child: Material(
+            color: Colors.transparent,
+            child: AnimatedOpacity(
+              opacity: 1,
+              duration: const Duration(milliseconds: 300),
+              child: Container(
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.deepOrange.withValues(alpha: 0.45),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      width: 100,
+                      height: 100,
+                      child: Lottie.asset(
+                        'assets/animations/LvlUnlocked/LevelUp.json',
+                        repeat: false,
+                      ),
+                    ),
+                    Text(
+                      '+$xpAmount XP!',
+                      style: const TextStyle(
+                        fontSize: 20,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 24,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 3,
+                            color: Colors.black,
+                            offset: Offset(1, 1),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -388,14 +489,20 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
 
     overlay.insert(entry);
 
-    Future.delayed(const Duration(seconds: 4), () => entry.remove());
+    Future.delayed(const Duration(seconds: 2), () {
+      entry.markNeedsBuild();
+      Future.delayed(const Duration(milliseconds: 800), () {
+        entry.remove();
+      });
+    });
   }
+////----------------------------------------------------------------------
 
 
   //ADS MANAGER

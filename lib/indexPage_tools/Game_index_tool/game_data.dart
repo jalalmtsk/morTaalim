@@ -38,6 +38,15 @@ final List<Map<String, dynamic>> games = [
     'cost': 120,
     'unlockType': 'iq',
   },
+  {
+    'title': 'SugraSmash',
+    'icon': Icons.square_foot_outlined,
+    'routeName': 'SugraSmash',
+    'image': 'assets/images/GameGridImages/Shape.png', // ✅ New key
+    'locked': true,
+    'cost': 150,
+    'unlockType': 'puzzle',
+  },
 
   {
     'title': 'shapeSorter',

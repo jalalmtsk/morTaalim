@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
-
+import 'package:mortaalim/widgets/userStatutBar.dart';
+import 'package:provider/provider.dart';
+import '../../XpSystem.dart';
 import '../../main.dart';
 import '../../tools/Ads_Manager.dart';
 
-
 class AlphabetTracingPage extends StatefulWidget {
-  final String language; // 'french' or 'arabic'
+  final String language;
 
   const AlphabetTracingPage({super.key, required this.language});
 
@@ -20,20 +21,17 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
   late List<String> _letters;
   late Map<String, Map<String, String>> _letterDetails;
   int _currentLetterIndex = 0;
-  final MusicPlayer _drawingSound = new MusicPlayer();
+  final MusicPlayer _drawingSound = MusicPlayer();
+  final GlobalKey _paintKey = GlobalKey();
+  List<Offset?> _points = [];
+  Set<int> _rewardedLetterIndexes = {};
 
+  int xp = 0;
+  int Tolims = 0;
+  bool _isBannerAdLoaded = false;
   @override
   void initState() {
     super.initState();
-
-    // Load letters based on language...
-    switch (widget.language) {
-    // your existing switch cases...
-    }
-    // ✅ Load banner ad
-    _bannerAd = AdHelper.getBannerAd(() {
-      if (mounted) setState(() {});
-    });
 
     switch (widget.language) {
       case 'arabic':
@@ -49,70 +47,151 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
         };
         break;
 
-      case 'japanese':
-        _letters = ['あ', 'い', 'う', 'え', 'お', 'か', 'き', 'く', 'け', 'こ'];
+
+      case 'russian':
+        _letters = [
+          'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й',
+          'К', 'Л', 'М', 'Н', 'О', 'П', 'Р', 'С', 'Т', 'У', 'Ф',
+          'Х', 'Ц', 'Ч', 'Ш', 'Щ', 'Ъ', 'Ы', 'Ь', 'Э', 'Ю', 'Я'
+        ];
         _letterDetails = {
-          'あ': {'pronunciation': 'a', 'example': 'あめ (ame) – Rain'},
+          'А': {'pronunciation': 'A', 'example': 'Арбуз (Arbuz) – Watermelon'},
+          'Б': {'pronunciation': 'B', 'example': 'Бабочка (Babochka) – Butterfly'},
+          'В': {'pronunciation': 'V', 'example': 'Волк (Volk) – Wolf'},
+          'Г': {'pronunciation': 'G', 'example': 'Гриб (Grib) – Mushroom'},
+          'Д': {'pronunciation': 'D', 'example': 'Дом (Dom) – House'},
+          'Е': {'pronunciation': 'Ye', 'example': 'Ель (Yelʹ) – Fir Tree'},
+          'Ё': {'pronunciation': 'Yo', 'example': 'Ёж (Yozh) – Hedgehog'},
+          'Ж': {'pronunciation': 'Zh', 'example': 'Жираф (Zhiraf) – Giraffe'},
+          'З': {'pronunciation': 'Z', 'example': 'Зонт (Zont) – Umbrella'},
+          'И': {'pronunciation': 'I', 'example': 'Игра (Igra) – Game'},
+          'Й': {'pronunciation': 'Y', 'example': 'Йогурт (Yogurt) – Yogurt'},
+          'К': {'pronunciation': 'K', 'example': 'Кот (Kot) – Cat'},
+          'Л': {'pronunciation': 'L', 'example': 'Лес (Les) – Forest'},
+          'М': {'pronunciation': 'M', 'example': 'Машина (Mashina) – Car'},
+          'Н': {'pronunciation': 'N', 'example': 'Нос (Nos) – Nose'},
+          'О': {'pronunciation': 'O', 'example': 'Окно (Okno) – Window'},
+          'П': {'pronunciation': 'P', 'example': 'Птица (Ptitsa) – Bird'},
+          'Р': {'pronunciation': 'R', 'example': 'Рыба (Ryba) – Fish'},
+          'С': {'pronunciation': 'S', 'example': 'Собака (Sobaka) – Dog'},
+          'Т': {'pronunciation': 'T', 'example': 'Тигр (Tigr) – Tiger'},
+          'У': {'pronunciation': 'U', 'example': 'Утка (Utka) – Duck'},
+          'Ф': {'pronunciation': 'F', 'example': 'Флаг (Flag) – Flag'},
+          'Х': {'pronunciation': 'Kh', 'example': 'Хлеб (Khleb) – Bread'},
+          'Ц': {'pronunciation': 'Ts', 'example': 'Цветок (Tsvetok) – Flower'},
+          'Ч': {'pronunciation': 'Ch', 'example': 'Чашка (Chashka) – Cup'},
+          'Ш': {'pronunciation': 'Sh', 'example': 'Шар (Shar) – Ball'},
+          'Щ': {'pronunciation': 'Shch', 'example': 'Щука (Shchuka) – Pike (fish)'},
+          'Ъ': {'pronunciation': 'Hard sign', 'example': 'Твёрдый знак (Tvyordy znak) – Silent'},
+          'Ы': {'pronunciation': 'Y', 'example': 'Сыры (Syry) – Cheeses'},
+          'Ь': {'pronunciation': 'Soft sign', 'example': 'Мягкий знак (Myagkiy znak) – Silent'},
+          'Э': {'pronunciation': 'E', 'example': 'Это (Eto) – This'},
+          'Ю': {'pronunciation': 'Yu', 'example': 'Юла (Yula) – Spinning Top'},
+          'Я': {'pronunciation': 'Ya', 'example': 'Яблоко (Yabloko) – Apple'},
+        };
+        break;
+
+      case 'chinese':
+        _letters = ['人', '口', '大', '小', '日', '月', '山', '水', '火', '木'];
+        _letterDetails = {
+          '人': {'pronunciation': 'rén', 'example': '人 (rén) – Person'},
+          '口': {'pronunciation': 'kǒu', 'example': '口 (kǒu) – Mouth'},
+          '大': {'pronunciation': 'dà', 'example': '大人 (dàrén) – Adult'},
+          '小': {'pronunciation': 'xiǎo', 'example': '小孩 (xiǎohái) – Child'},
+          '日': {'pronunciation': 'rì', 'example': '日出 (rìchū) – Sunrise'},
+          '月': {'pronunciation': 'yuè', 'example': '月亮 (yuèliang) – Moon'},
+          '山': {'pronunciation': 'shān', 'example': '高山 (gāoshān) – Mountain'},
+          '水': {'pronunciation': 'shuǐ', 'example': '喝水 (hē shuǐ) – Drink water'},
+          '火': {'pronunciation': 'huǒ', 'example': '火车 (huǒchē) – Train'},
+          '木': {'pronunciation': 'mù', 'example': '木头 (mùtou) – Wood'},
+        };
+        break;
+
+      case 'japanese':
+        _letters = [
+          'あ', 'い', 'う', 'え', 'お',
+          'か', 'き', 'く', 'け', 'こ',
+          'さ', 'し', 'す', 'せ', 'そ',
+          'た', 'ち', 'つ', 'て', 'と'
+        ];
+
+        _letterDetails = {
+          // A row
+          'あ': {'pronunciation': 'a', 'example': 'あめ (ame) – Rain / Candy'},
           'い': {'pronunciation': 'i', 'example': 'いぬ (inu) – Dog'},
-          'う': {'pronunciation': 'u', 'example': 'うま (uma) – Horse'},
+          'う': {'pronunciation': 'u', 'example': 'うみ (umi) – Sea'},
           'え': {'pronunciation': 'e', 'example': 'えんぴつ (enpitsu) – Pencil'},
-          'お': {'pronunciation': 'o', 'example': 'おにぎり (onigiri) – Rice ball'},
+          'お': {'pronunciation': 'o', 'example': 'おちゃ (ocha) – Tea'},
+
+          // Ka row
           'か': {'pronunciation': 'ka', 'example': 'かさ (kasa) – Umbrella'},
-          'き': {'pronunciation': 'ki', 'example': 'きつね (kitsune) – Fox'},
+          'き': {'pronunciation': 'ki', 'example': 'き (ki) – Tree'},
           'く': {'pronunciation': 'ku', 'example': 'くるま (kuruma) – Car'},
           'け': {'pronunciation': 'ke', 'example': 'けむし (kemushi) – Caterpillar'},
           'こ': {'pronunciation': 'ko', 'example': 'こども (kodomo) – Child'},
+
+          // Sa row
+          'さ': {'pronunciation': 'sa', 'example': 'さかな (sakana) – Fish'},
+          'し': {'pronunciation': 'shi', 'example': 'しろ (shiro) – White / Castle'},
+          'す': {'pronunciation': 'su', 'example': 'すいか (suika) – Watermelon'},
+          'せ': {'pronunciation': 'se', 'example': 'せみ (semi) – Cicada'},
+          'そ': {'pronunciation': 'so', 'example': 'そら (sora) – Sky'},
+
+          // Ta row
+          'た': {'pronunciation': 'ta', 'example': 'たまご (tamago) – Egg'},
+          'ち': {'pronunciation': 'chi', 'example': 'ちず (chizu) – Map'},
+          'つ': {'pronunciation': 'tsu', 'example': 'つき (tsuki) – Moon'},
+          'て': {'pronunciation': 'te', 'example': 'てがみ (tegami) – Letter'},
+          'と': {'pronunciation': 'to', 'example': 'とけい (tokei) – Clock'},
         };
         break;
+
 
       case 'korean':
-        _letters = ['ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ', 'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ'];
+        _letters = [
+          'ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ',
+          'ㅂ', 'ㅅ', 'ㅇ', 'ㅈ', 'ㅊ',
+          'ㅋ', 'ㅌ', 'ㅍ', 'ㅎ',
+          'ㅏ', 'ㅑ', 'ㅓ', 'ㅕ', 'ㅗ',
+          'ㅛ', 'ㅜ', 'ㅠ', 'ㅡ', 'ㅣ'
+        ];
+
         _letterDetails = {
-          'ㄱ': {'pronunciation': 'G/K (giyeok)', 'example': '고양이 (goyangi) – Cat'},
-          'ㄴ': {'pronunciation': 'N (nieun)', 'example': '나무 (namu) – Tree'},
-          'ㄷ': {'pronunciation': 'D/T (digeut)', 'example': '다리 (dari) – Leg/Bridge'},
-          'ㄹ': {'pronunciation': 'R/L (rieul)', 'example': '라면 (ramyeon) – Ramen'},
-          'ㅁ': {'pronunciation': 'M (mieum)', 'example': '물 (mul) – Water'},
-          'ㅂ': {'pronunciation': 'B/P (bieup)', 'example': '바다 (bada) – Sea'},
-          'ㅅ': {'pronunciation': 'S (siot)', 'example': '사과 (sagwa) – Apple'},
-          'ㅇ': {'pronunciation': 'Silent/ng (ieung)', 'example': '아이 (ai) – Child'},
-          'ㅈ': {'pronunciation': 'J (jieut)', 'example': '자동차 (jadongcha) – Car'},
-          'ㅊ': {'pronunciation': 'Ch (chieut)', 'example': '책 (chaek) – Book'},
-        };
-        break;
-      case 'chinese':
-        _letters = ['一', '二', '三', '人', '大', '口', '日', '月', '山', '水'];
-        _letterDetails = {
-          '一': {'pronunciation': 'yī', 'example': '一人 (yī rén) – One person'},
-          '二': {'pronunciation': 'èr', 'example': '二月 (èr yuè) – February'},
-          '三': {'pronunciation': 'sān', 'example': '三本书 (sān běn shū) – Three books'},
-          '人': {'pronunciation': 'rén', 'example': '中国人 (zhōng guó rén) – Chinese person'},
-          '大': {'pronunciation': 'dà', 'example': '大学 (dà xué) – University'},
-          '口': {'pronunciation': 'kǒu', 'example': '人口 (rén kǒu) – Population'},
-          '日': {'pronunciation': 'rì', 'example': '生日 (shēng rì) – Birthday'},
-          '月': {'pronunciation': 'yuè', 'example': '月亮 (yuè liàng) – Moon'},
-          '山': {'pronunciation': 'shān', 'example': '山水 (shān shuǐ) – Landscape'},
-          '水': {'pronunciation': 'shuǐ', 'example': '水果 (shuǐ guǒ) – Fruit'},
-        };
-        break;
-      case 'russian':
-        _letters = ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И'];
-        _letterDetails = {
-          'А': {'pronunciation': 'A', 'example': 'Арбуз (Arbuz) – Watermelon'},
-          'Б': {'pronunciation': 'B', 'example': 'Банан (Banan) – Banana'},
-          'В': {'pronunciation': 'V', 'example': 'Волк (Volk) – Wolf'},
-          'Г': {'pronunciation': 'G', 'example': 'Груша (Grusha) – Pear'},
-          'Д': {'pronunciation': 'D', 'example': 'Дом (Dom) – House'},
-          'Е': {'pronunciation': 'Ye', 'example': 'Ель (Yel) – Fir tree'},
-          'Ё': {'pronunciation': 'Yo', 'example': 'Ёж (Yozh) – Hedgehog'},
-          'Ж': {'pronunciation': 'Zh', 'example': 'Жук (Zhuk) – Beetle'},
-          'З': {'pronunciation': 'Z', 'example': 'Звезда (Zvezda) – Star'},
-          'И': {'pronunciation': 'Ee', 'example': 'Игла (Igla) – Needle'},
+          'ㄱ': {'pronunciation': 'g/k', 'example': '가방 (gabang) – Bag'},
+          'ㄴ': {'pronunciation': 'n', 'example': '나무 (namu) – Tree'},
+          'ㄷ': {'pronunciation': 'd/t', 'example': '달 (dal) – Moon'},
+          'ㄹ': {'pronunciation': 'r/l', 'example': '라면 (ramyeon) – Ramen'},
+          'ㅁ': {'pronunciation': 'm', 'example': '물 (mul) – Water'},
+
+          'ㅂ': {'pronunciation': 'b/p', 'example': '바다 (bada) – Sea'},
+          'ㅅ': {'pronunciation': 's', 'example': '사과 (sagwa) – Apple'},
+          'ㅇ': {'pronunciation': 'ng/silent', 'example': '아이 (ai) – Child'},
+          'ㅈ': {'pronunciation': 'j', 'example': '자전거 (jajeongeo) – Bicycle'},
+          'ㅊ': {'pronunciation': 'ch', 'example': '치마 (chima) – Skirt'},
+
+          'ㅋ': {'pronunciation': 'k', 'example': '코 (ko) – Nose'},
+          'ㅌ': {'pronunciation': 't', 'example': '토끼 (tokki) – Rabbit'},
+          'ㅍ': {'pronunciation': 'p', 'example': '피자 (pija) – Pizza'},
+          'ㅎ': {'pronunciation': 'h', 'example': '하늘 (haneul) – Sky'},
+
+          'ㅏ': {'pronunciation': 'a', 'example': '아기 (agi) – Baby'},
+          'ㅑ': {'pronunciation': 'ya', 'example': '야구 (yagu) – Baseball'},
+          'ㅓ': {'pronunciation': 'eo', 'example': '어서 (eoseo) – Quickly'},
+          'ㅕ': {'pronunciation': 'yeo', 'example': '여우 (yeou) – Fox'},
+          'ㅗ': {'pronunciation': 'o', 'example': '오이 (oi) – Cucumber'},
+
+          'ㅛ': {'pronunciation': 'yo', 'example': '요리 (yori) – Cooking'},
+          'ㅜ': {'pronunciation': 'u', 'example': '우산 (usan) – Umbrella'},
+          'ㅠ': {'pronunciation': 'yu', 'example': '유리 (yuri) – Glass'},
+          'ㅡ': {'pronunciation': 'eu', 'example': '음악 (eumak) – Music'},
+          'ㅣ': {'pronunciation': 'i', 'example': '이름 (ireum) – Name'},
         };
         break;
 
+
       case 'french':
-        _letters = List.generate(26, (i) => String.fromCharCode(65 + i)); // A–Z
+      default:
+        _letters = List.generate(26, (i) => String.fromCharCode(65 + i));
         _letterDetails = {
           'A': {'pronunciation': 'ah', 'example': 'Avion – Plane'},
           'B': {'pronunciation': 'bay', 'example': 'Banane – Banana'},
@@ -142,19 +221,10 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
           'Z': {'pronunciation': 'zed', 'example': 'Zèbre – Zebra'},
         };
         break;
-
-      case 'french':
-      default:
-        _letters = List.generate(26, (i) => String.fromCharCode(65 + i)); // A–Z
     }
+
+    _loadBannerAd();
   }
-
-
-
-
-  final GlobalKey _paintKey = GlobalKey();
-  List<Offset?> _points = [];
-
 
   void _clearCanvas() {
     setState(() {
@@ -168,135 +238,275 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
       _points.clear();
     });
   }
-@override
+
+  void giveTolimAndXP() {
+    setState(() {
+      xp += 10;
+      Tolims += 1;
+    });
+  }
+
+  void _showRewardToast(BuildContext context, String message) {
+    final overlay = Overlay.of(context);
+    if (overlay == null) return;
+
+    final entry = OverlayEntry(
+      builder: (ctx) => Positioned(
+        top: MediaQuery.of(context).padding.top + 20,
+        left: 20,
+        right: 20,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.deepOrangeAccent.withOpacity(0.9),
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Center(
+              child: Text(
+                message,
+                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(entry);
+    Future.delayed(const Duration(seconds: 2), () => entry.remove());
+  }
+
+  void _loadBannerAd() {
+    _bannerAd?.dispose();
+    _isBannerAdLoaded = false;
+
+    _bannerAd = AdHelper.getBannerAd(() {
+      setState(() {
+        _isBannerAdLoaded = true;
+      });
+    });
+  }
+
+
+  double _calculateTotalDrawnDistance(List<Offset?> points) {
+    double distance = 0.0;
+    for (int i = 0; i < points.length - 1; i++) {
+      final p1 = points[i];
+      final p2 = points[i + 1];
+
+      if (p1 != null && p2 != null) {
+        distance += (p1 - p2).distance;
+      }
+    }
+    return distance;
+  }
+
+  @override
   void dispose() {
-  _bannerAd?.dispose();
+    _bannerAd?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final xpManager = Provider.of<ExperienceManager>(context);
     final currentLetter = _letters[_currentLetterIndex];
     final details = _letterDetails[currentLetter];
     final pronunciation = details?['pronunciation'] ?? '';
     final example = details?['example'] ?? '';
 
     return Scaffold(
-      appBar: AppBar(
-        title:  Text(tr(context).alphabetTracing),
-        centerTitle: true,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SizedBox(
-              width: 300,
-              height: 300,
-              child: Stack(
-                children: [
-                  // Big letter in background
-                  Center(
-                    child: Text(
-                      currentLetter,
-                      style: TextStyle(
-                        fontSize: 200,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFFFFE0B2),
+              Color(0xFFFFCCBC),
+              Color(0xFFFFAB91),
+            ],
+          ),
+        ),
+        child: SafeArea(
+          child: Column(
+            children: [
+              const Userstatutbar(),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        shape: const CircleBorder(),
+                        padding: const EdgeInsets.all(12),
+                        backgroundColor: Colors.deepOrange,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                      child: const Icon(Icons.arrow_back, color: Colors.white),
+                    ),
+                    Text(
+                      'Letter ${_currentLetterIndex + 1}/${_letters.length}',
+                      style: const TextStyle(
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.orange.shade200,
-                        fontFamily: 'NotoSansJP', // or 'NotoSansKR', 'NotoSansSC'
+                        color: Colors.brown,
                       ),
                     ),
+                    const SizedBox(width: 48), // Empty for alignment
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 10),
+              Center(
+                child: Container(
+                  width: 320,
+                  height: 320,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.orange.withOpacity(0.3),
+                        blurRadius: 12,
+                        offset: const Offset(4, 4),
+                      )
+                    ],
                   ),
+                  child: Stack(
+                    children: [
+                      Center(
+                        child: Text(
+                          currentLetter,
+                          style: TextStyle(
+                            fontSize: 200,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange.shade100,
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onPanStart: (_) {
+                          _drawingSound.play("audios/writting.mp3");
+                        },
+                        onPanUpdate: (details) {
+                          final box = _paintKey.currentContext?.findRenderObject() as RenderBox?;
+                          if (box != null) {
+                            final localPosition = box.globalToLocal(details.globalPosition);
+                            setState(() {
+                              _points = List.from(_points)..add(localPosition);
+                            });
+                          }
+                        },
+                        onPanEnd: (_) {
+                          _drawingSound.stop();
+                          setState(() {
+                            _points = List.from(_points)..add(null);
+                          });
 
+                          final drawnDistance = _calculateTotalDrawnDistance(_points);
 
-                  // Drawing canvas on top
-                  GestureDetector(
+                          if (drawnDistance > 500 && !_rewardedLetterIndexes.contains(_currentLetterIndex)) {
+                            _rewardedLetterIndexes.add(_currentLetterIndex);
+                            giveTolimAndXP();
+                            xpManager.addTokens(1);
+                            xpManager.addXP(2, context: context);
+                            _showRewardToast(context, "+1 Score 🎯");
+                          }
+                        },
+                        child: CustomPaint(
+                          key: _paintKey,
+                          painter: TracingPainter(points: _points),
+                          size: const Size(320, 320),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
 
-                    onPanStart: (_) {
-                      _drawingSound.play("audios/writting.mp3");
-                    },
-                    onPanUpdate: (details) {
-                      final box = _paintKey.currentContext?.findRenderObject() as RenderBox?;
-                      if (box != null) {
-                        final localPosition = box.globalToLocal(details.globalPosition);
-                        setState(() {
-                          _points = List.from(_points)..add(localPosition);
-                        });
-                      }
-                    },
-                    onPanEnd: (_) {
-                      _drawingSound.stop();
-                      setState(() {
-                        _points = List.from(_points)..add(null); // Stroke separator
-                      });
-                    },
-                    child: CustomPaint(
-                      key: _paintKey,
-                      painter: TracingPainter(points: _points),
-                      size: const Size(300, 300),
+              Card(
+                margin: const EdgeInsets.symmetric(horizontal: 24),
+                color: Colors.white.withOpacity(0.9),
+                elevation: 4,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Text(
+                        "🔤 Pronunciation: $pronunciation",
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        "📘 Example: $example",
+                        style: const TextStyle(fontSize: 17),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: _clearCanvas,
+                    icon: const Icon(Icons.refresh),
+                    label: const Text("Retry"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepOrange.shade300,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
-
-
+                  ElevatedButton.icon(
+                    onPressed: _nextLetter,
+                    icon: const Icon(Icons.navigate_next),
+                    label: const Text("Next"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orangeAccent.shade200,
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
                 ],
               ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton.icon(
-                  onPressed: _clearCanvas,
-                  icon: const Icon(Icons.clear),
-                  label:  Text(tr(context).clear),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrange,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    textStyle: const TextStyle(fontSize: 18),
-                  ),
+
+              const SizedBox(height: 20),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(50),
+                  boxShadow: [BoxShadow(color: Colors.orange.shade100, blurRadius: 10)],
                 ),
-
-
-                const SizedBox(width: 20),
-                ElevatedButton.icon(
-                  onPressed: _nextLetter,
-                  icon: const Icon(Icons.arrow_forward),
-                  label:  Text(tr(context).nextLetter),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrange,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                    textStyle: const TextStyle(fontSize: 18),
-                  ),
+                child: Text(
+                  "🎯 Score: $Tolims",
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-              ],
-            ),
-
-            Text(
-              'Pronunciation: $pronunciation',
-              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(height: 6),
-
-
-            Text(
-              'Example: $example',
-              style: const TextStyle(fontSize: 22, color: Colors.black54),
-              textAlign: TextAlign.center,
-            ),
-
-            const SizedBox(height: 20),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
-      bottomNavigationBar: _bannerAd != null
-          ? SizedBox(
-        height: _bannerAd!.size.height.toDouble(),
-        width: _bannerAd!.size.width.toDouble(),
-        child: AdWidget(ad: _bannerAd!),
+      bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded
+          ? SafeArea(
+        child: Container(
+          height: _bannerAd!.size.height.toDouble(),
+          width: _bannerAd!.size.width.toDouble(),
+          child: AdWidget(ad: _bannerAd!),
+        ),
       )
           : null,
     );
-
   }
 }
 

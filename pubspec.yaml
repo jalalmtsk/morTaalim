@@ -98,10 +98,13 @@ flutter:
   - assets/courses/primaire1/Primaire1Cours/
   #Images
   - assets/images/
+  - assets/images/Sketches/
   - assets/images/GameGridImages/
+  - assets/images/SugarSmash/
   - assets/images/FlagImagesForTracingLetters/
   - assets/images/AvatarImage/
   - assets/images/AvatarImage/Beams/
+  - assets/images/AvatarImage/Aliens/
   - assets/images/badges/
   - assets/images/Banners/
   - assets/images/Banners/Sci_FI_Banners/

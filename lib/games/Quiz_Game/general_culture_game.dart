@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:mortaalim/games/Quiz_Game/Result_QuizPage.dart' hide QuizLanguage;
+import 'package:mortaalim/games/Quiz_Game/Result_QuizPage.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
@@ -9,9 +9,9 @@ import 'package:lottie/lottie.dart';
 
 import '../../XpSystem.dart';
 import '../../tools/Ads_Manager.dart';
+import '../../tools/SettingPanelInGame.dart';
 import 'Questions.dart';
 import 'question_model.dart';
-import 'avatar_widget.dart';
 import 'ModeSelectorPage.dart';
 
 enum GameMode { single, multiplayer }
@@ -54,6 +54,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   final MusicPlayer _CountDown = MusicPlayer();
   final MusicPlayer _CountDownRobot = MusicPlayer();
   final MusicPlayer _fire = MusicPlayer();
+  bool _isBannerAdLoaded = false;
 
   late List<Question> _questions;
   int _currentQuestion = 0;
@@ -97,7 +98,9 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     try {
       _CountDownRobot.play("assets/audios/QuizGame_Sounds/RoboticCountDown3sec.mp3");
       await _CountDown.play("assets/audios/QuizGame_Sounds/GameCountDown3Sec.mp3");
-      _backgroundMusic.play("assets/audios/QuizGame_Sounds/heyWhistleUkulele30Sec.mp3", loop: true);
+      if (Provider.of<ExperienceManager>(context, listen: false).musicEnabled) {
+        _backgroundMusic.play("assets/audios/QuizGame_Sounds/heyWhistleUkulele30Sec.mp3", loop: true);
+      }
     } catch (e) {
       debugPrint('Error playing sound: $e');
     }
@@ -105,10 +108,15 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   void _loadBannerAd() {
     _bannerAd?.dispose();
+    _isBannerAdLoaded = false;
+
     _bannerAd = AdHelper.getBannerAd(() {
-      setState(() {});
+      setState(() {
+        _isBannerAdLoaded = true;
+      });
     });
   }
+
   List<Question> _loadQuestions(QuizLanguage lang) => questionsByLanguage[lang] ?? [];
 
   void _startTimer() {
@@ -149,7 +157,19 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       _answered = true;
       final isCorrect = selected == _questions[_currentQuestion].correctIndex;
       if (isCorrect) {
-        Provider.of<ExperienceManager>(context, listen: false).addXP(2);
+        Provider.of<ExperienceManager>(context, listen: false).addXP(30, context: context);
+
+        // Increment score on correct answer
+        if (widget.mode == GameMode.single) {
+          _player1Score++;
+        } else {
+          if (_playerTurn == 1) {
+            _player1Score++;
+          } else {
+            _player2Score++;
+          }
+        }
+
         _playSound('assets/audios/QuizGame_Sounds/correct.mp3');
         _showCorrectAnimation = true;
         Future.delayed(const Duration(seconds: 2), () => setState(() => _showCorrectAnimation = false));
@@ -157,17 +177,22 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         _fire.play("assets/audios/sound_effects/angry.mp3");
         _playSound('assets/audios/QuizGame_Sounds/incorrect.mp3');
         _showWrongFeedback();
+
+        // Decrement lives on wrong answer
         if (widget.mode == GameMode.single) {
           _player1Lives--;
         } else {
-          (widget.mode == GameMode.multiplayer && _playerTurn == 1)
-              ? _player1Lives--
-              : _player2Lives--;
+          if (_playerTurn == 1) {
+            _player1Lives--;
+          } else {
+            _player2Lives--;
+          }
         }
       }
     });
     Future.delayed(const Duration(seconds: 2), _nextTurn);
   }
+
 
   void _showWrongFeedback() {
     setState(() => _showWrongAnimation = true);
@@ -256,22 +281,15 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
           FadeTransition(
             opacity: _scaleAnimation,
             child: Scaffold(
-              backgroundColor: Colors.white,
-              body: Center(
-                child: ScaleTransition(
-                  scale: _scaleAnimation,
-                  child: Container(
-                    color: Colors.orange.shade100,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Lottie.asset(
-                              "assets/animations/QuizzGame_Animation/CountdownGo.json",
-                          width: 400, height: 400),
-                        ],
-                      ),
-                    ),
+              backgroundColor: Colors.orange.shade100,
+              body: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Container(
+                  color: Colors.orange.shade100,
+                  child: Center(
+                    child: Lottie.asset(
+                        "assets/animations/QuizzGame_Animation/CountdownGo.json",
+                    width: 450, height: 450),
                   ),
                 ),
               ),
@@ -279,23 +297,10 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
           )
         else
           Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.deepOrange),
-                onPressed: () => Navigator.pop(context),
-              ),
-              title: Text(
-                "Question ${_currentQuestion + 1} of ${_questions.length}",
-                style: const TextStyle(color: Colors.deepOrange),
-              ),
-              centerTitle: true,
-            ),
             body: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.orange.shade50, Colors.orange.shade200],
+                  colors: [Colors.orange.withValues(alpha: 0.1), Colors.orange.shade200],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -303,8 +308,56 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
               child: SafeArea(
                 child: Column(
                   children: [
-                    const SizedBox(height: 10),
                     Userstatutbar(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(
+                              Icons.arrow_circle_left,
+                              size: 50,
+                              color: Colors.deepOrangeAccent,),
+                            onPressed: () => Navigator.of(context).pop(),
+                            tooltip: 'Back',
+                          ),
+
+                          IconButton(
+                            icon: const Icon(Icons.settings),
+                            onPressed: () {
+                              showDialog(
+                                context: context,
+                                builder: (_) => const SettingsDialog(),
+                              );
+                            },
+                          ),
+
+
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            "Question ${_currentQuestion + 1}/",
+                            style: const TextStyle(
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepOrange),
+                          ),
+                          Text(
+                            "${_questions.length}",
+                            style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.orangeAccent),
+                          ),
+
+                        ],
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: Column(
@@ -315,7 +368,11 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                             color: Colors.deepOrange,
                           ),
                           const SizedBox(height: 6),
-                          Text("⏳ $_timeLeft seconds left", style: const TextStyle(fontSize: 16, color: Colors.deepOrange)),
+                          Text(
+                              "⏳ $_timeLeft seconds left",
+                              style: const TextStyle(
+                                  fontSize: 28,
+                                  color: Colors.deepOrange)),
                         ],
                       ),
                     ),
@@ -357,7 +414,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                       child: Card(
                         elevation: 6,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                        shadowColor: Colors.deepOrange.withOpacity(0.4),
+                        shadowColor: Colors.deepOrange.withValues(alpha: 0.4),
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Text(
@@ -402,7 +459,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                               backgroundColor: bgColor,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                               elevation: 5,
-                              shadowColor: Colors.deepOrange.withOpacity(0.5),
+                              shadowColor: Colors.deepOrange.withValues(alpha: 0.5),
                             ),
                           );
                         }),
@@ -414,7 +471,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             ),
             /// ADS BANNER
             ///
-            bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null
+            bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded
                 ? SafeArea(
               child: Container(
                 color: Colors.orange.shade200,

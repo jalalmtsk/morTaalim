@@ -174,10 +174,9 @@ class _SettingsPageState extends State<SettingsPage> {
           // 🎵 Sound Settings
           SwitchListTile(
             title: Text(tr.music),
-            value: musicOn,
+            value: context.watch<ExperienceManager>().musicEnabled,
             onChanged: (val) {
-              setState(() => musicOn = val);
-              _savePref('musicOn', val);
+              context.read<ExperienceManager>().setMusicEnabled(val);
             },
           ),
           ListTile(

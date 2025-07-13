@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/tools/SettingPanelInGame.dart';
 import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/profile_page.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,6 @@ import 'XpSystem.dart';
 import 'indexPage_tools/Course_index_tool/course_index.dart';
 import 'indexPage_tools/Game_index_tool/game_index.dart';
 import 'indexPage_tools/language_menu.dart';
-import 'indexPage_tools/music_button.dart';
 import 'tools/audio_tool/audio_tool.dart';
 
 class Index extends StatefulWidget {
@@ -20,8 +20,6 @@ class Index extends StatefulWidget {
   @override
   State<Index> createState() => _IndexState();
 }
-
-bool musicisOn = true;
 
 class _IndexState extends State<Index>
     with TickerProviderStateMixin, WidgetsBindingObserver {
@@ -44,8 +42,24 @@ class _IndexState extends State<Index>
 
     _loadProfile();
 
-    _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3",
-        loop: true);
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+
+    if (xpManager.musicEnabled) {
+      _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3", loop: true);
+      _musicPlayer.setVolume(xpManager.musicVolume);
+    }
+
+    // Listen to music state & volume changes in ExperienceManager
+    xpManager.addListener(() {
+      if (xpManager.musicEnabled) {
+        _musicPlayer.setVolume(xpManager.musicVolume);
+        if (!_musicPlayer.isPlaying) {
+          _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3", loop: true);
+        }
+      } else {
+        _musicPlayer.stop();
+      }
+    });
 
     _profileAnimController = AnimationController(
       vsync: this,
@@ -72,19 +86,13 @@ class _IndexState extends State<Index>
     if (state == AppLifecycleState.paused) {
       _musicPlayer.pause();
     } else if (state == AppLifecycleState.resumed) {
-      if (musicisOn) {
+      final musicIsOn = Provider.of<ExperienceManager>(context, listen: false).musicEnabled;
+      if (musicIsOn) {
         _musicPlayer.resume();
+        final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+        _musicPlayer.setVolume(xpManager.musicVolume);
       }
     }
-  }
-
-  void toggleMusic() {
-    setState(() => musicisOn = !musicisOn);
-    musicisOn
-        ? _musicPlayer.play(
-        "assets/audios/sound_track/backGroundMusic8bit.mp3",
-        loop: true)
-        : _musicPlayer.stop();
   }
 
   void _loadProfile() async {
@@ -93,8 +101,6 @@ class _IndexState extends State<Index>
       childName = prefs.getString('name') ?? "Player";
     });
   }
-
-
 
   Widget _buildAvatar(String avatarPath) {
     if (avatarPath.endsWith('.json')) {
@@ -124,7 +130,6 @@ class _IndexState extends State<Index>
     }
   }
 
-
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -151,23 +156,23 @@ class _IndexState extends State<Index>
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context)!;
     final xpManager = Provider.of<ExperienceManager>(context);
+    final tr = AppLocalizations.of(context)!;
     final avatarEmoji = xpManager.selectedAvatar;
     final stars = xpManager.stars;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrangeAccent.withAlpha(220),
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 8),
-          child: MusicButton(isOn: musicisOn, onPressed: toggleMusic),
+        leading:    LanguageMenu(
+          onChangeLocale: widget.onChangeLocale,
+          colorButton: Colors.white,
         ),
+        // Removed the leading MusicButton here
         title: Text(tr.welcome, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [
-          LanguageMenu(
-              onChangeLocale: widget.onChangeLocale, colorButton: Colors.white),
+
           IconButton(
             onPressed: () {
               _clickButton.play("assets/audios/pop.mp3");
@@ -178,15 +183,17 @@ class _IndexState extends State<Index>
                 ),
               ));
             },
-            icon: const Icon(Icons.local_convenience_store_outlined,
-                color: Colors.white),
+            icon: const Icon(Icons.storefront_outlined, color: Colors.white),
           ),
           IconButton(
+            icon: const Icon(Icons.settings, color: Colors.white,),
             onPressed: () {
               _clickButton.play("assets/audios/pop.mp3");
-              Navigator.of(context).pushNamed('Setting');
+              showDialog(
+                context: context,
+                builder: (_) => const SettingsDialog(),
+              );
             },
-            icon: const Icon(Icons.settings, color: Colors.white),
           ),
           const SizedBox(width: 4),
         ],
@@ -206,15 +213,14 @@ class _IndexState extends State<Index>
       ),
       body: Stack(
         children: [
-          // 🔹 Background image
-       /*   Positioned.fill(
-            child: Image.asset(
-              'assets/images/Untitled design-2.png', // make sure this path is correct
-              fit: BoxFit.cover,
-            ),
-          ),
-*/
-          // 🔸 Foreground content
+          // Background image (optional)
+          // Positioned.fill(
+          //   child: Image.asset(
+          //     'assets/images/Untitled design-2.png',
+          //     fit: BoxFit.cover,
+          //   ),
+          // ),
+
           Padding(
             padding: const EdgeInsets.all(16),
             child: SafeArea(
@@ -224,18 +230,15 @@ class _IndexState extends State<Index>
                     position: _profileSlideAnimation,
                     child: Stack(
                       children: [
-                        // 🖼 Banner background
                         ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Image.asset(
-                            xpManager.selectedBannerImage, // Example: 'assets/images/banners/Banner1.jpg'
+                            xpManager.selectedBannerImage,
                             width: double.infinity,
                             height: 100,
                             fit: BoxFit.cover,
                           ),
                         ),
-
-                        // 🟧 Semi-transparent overlay
                         Container(
                           height: 100,
                           decoration: BoxDecoration(
@@ -243,8 +246,6 @@ class _IndexState extends State<Index>
                             color: Colors.black.withOpacity(0.15),
                           ),
                         ),
-
-                        // 🧒🏻 Foreground Profile Info
                         Positioned.fill(
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -265,9 +266,7 @@ class _IndexState extends State<Index>
                                         initialAge: 13,
                                         initialColor: Colors.red,
                                         initialMood: "Happy",
-                                      )
-                                      )
-                                      )
+                                      )))
                                           .then((_) => _loadProfile());
                                     },
                                     child: Padding(
@@ -293,7 +292,9 @@ class _IndexState extends State<Index>
                                         fontSize: 20,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
-                                        shadows: [Shadow(blurRadius: 3, color: Colors.black)],
+                                        shadows: [
+                                          Shadow(blurRadius: 3, color: Colors.black)
+                                        ],
                                       ),
                                     ),
                                   ),
@@ -304,32 +305,43 @@ class _IndexState extends State<Index>
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
                                       Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                          Row(children: [
-                                            const Icon(Icons.star, color: Colors.amber),
-                                            const SizedBox(width: 2),
-                                            Text("$stars",
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Icon(Icons.star,
+                                                  color: Colors.amber),
+                                              const SizedBox(width: 2),
+                                              Text(
+                                                "$stars",
                                                 style: const TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 18,
-                                                    fontWeight: FontWeight.bold)),
-                                          ],),
-
-                                          Row(children: [    const Icon(Icons.generating_tokens_rounded,
-                                              color: Colors.greenAccent),
-                                            const SizedBox(width: 2),
-                                            Text("${xpManager.saveTokenCount}",
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          ),
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                  Icons.generating_tokens_rounded,
+                                                  color: Colors.greenAccent),
+                                              const SizedBox(width: 2),
+                                              Text(
+                                                "${xpManager.saveTokenCount}",
                                                 style: const TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 18,
-                                                    fontWeight: FontWeight.bold)),],)
-                                        ],),
-
+                                                    fontWeight: FontWeight.bold),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 10,),
+                                const SizedBox(width: 10),
                                 IconButton(
                                   icon: const Icon(Icons.mode_edit_sharp,
                                       color: Colors.white70),
@@ -347,7 +359,6 @@ class _IndexState extends State<Index>
                       ],
                     ),
                   ),
-
                   Expanded(
                     child: TabBarView(
                       controller: _tabController,

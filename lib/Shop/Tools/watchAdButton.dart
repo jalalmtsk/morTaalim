@@ -30,10 +30,10 @@ class WatchAdButton extends StatelessWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: const [
-            Icon(Icons.video_library, color: Colors.white),
-            SizedBox(width: 12),
+            Icon(Icons.ads_click, color: Colors.white),
+            SizedBox(width: 5),
             Text(
-              'Watch Ad for 1⭐ & 1 Token',
+              'Ad for 1⭐ & 1 Token',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
             ),
           ],

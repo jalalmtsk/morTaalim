@@ -27,6 +27,7 @@ class AvatarGrid extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
+                xpManager.addXP(35,context: context);
                 xpManager.addStars(-cost);
                 xpManager.unlockAvatar(emoji);
                 xpManager.selectAvatar(emoji);

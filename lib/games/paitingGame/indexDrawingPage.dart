@@ -68,7 +68,7 @@ class DrawingIndex extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => LearningProgramPage(),
+                    builder: (context) => SketchSelectorPage()
                   ),
                 );
               },

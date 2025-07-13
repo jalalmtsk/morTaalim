@@ -26,6 +26,7 @@ class LottieAvatarGrid extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
+                xpManager.addXP(1000,context: context);
                 xpManager.addStars(-cost);
                 xpManager.unlockAvatar(lottiePath);
                 xpManager.selectAvatar(lottiePath);

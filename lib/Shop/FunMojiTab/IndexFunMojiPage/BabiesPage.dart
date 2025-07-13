@@ -18,13 +18,6 @@ class Babies extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFFff9966), Color(0xFFff5e62)],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
       child: SafeArea(
         child: ImageAvatarGrid(imageAvatars: _imageAvatarItems),
       ),

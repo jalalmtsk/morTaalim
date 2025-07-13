@@ -29,12 +29,12 @@ class _GameGridState extends State<GameGrid>
 
   late MusicPlayer _clickButton;
   late ConfettiController _confettiController;
-
+  bool _isBannerAdLoaded = false;
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _loadBannerAd();
+    WidgetsBinding.instance.addObserver(this);
     _clickButton = MusicPlayer();
     _clickButton.preload("assets/audios/pop.mp3");
     _confettiController = ConfettiController(duration: const Duration(seconds: 1));
@@ -42,10 +42,15 @@ class _GameGridState extends State<GameGrid>
 
   void _loadBannerAd() {
     _bannerAd?.dispose();
+    _isBannerAdLoaded = false;
+
     _bannerAd = AdHelper.getBannerAd(() {
-      setState(() {});
+      setState(() {
+        _isBannerAdLoaded = true;
+      });
     });
   }
+
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -169,6 +174,7 @@ class _GameGridState extends State<GameGrid>
                                     xpManager.unlockCourse(game['title'], cost);
                                     Navigator.pop(context);
                                     if (mounted) {
+                                      xpManager.addXP(10,context: context);
                                       triggerConfetti();
                                       showUnlockAnimation(context);
                                     }
@@ -355,7 +361,7 @@ class _GameGridState extends State<GameGrid>
             ),
 
             ///:::::::: BANNER ADS
-            (context.watch<ExperienceManager>().adsEnabled && _bannerAd != null)
+            (context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded)
                 ? SafeArea(
               child: Align(
                 alignment: Alignment.bottomCenter,
@@ -415,6 +421,9 @@ class _GameGridState extends State<GameGrid>
       case 'JumpingBoard':
         return tr.iQTest;
       case 'WordExplorer':
+        return tr.enterPin;
+
+      case 'SugrarSmash':
         return tr.enterPin;
       default:
         return key;

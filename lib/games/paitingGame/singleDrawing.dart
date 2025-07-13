@@ -8,11 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart' hide useWhiteForeground;
 import 'package:confetti/confetti.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 
 import '../../XpSystem.dart';
 import '../../main.dart';
+import '../../tools/Ads_Manager.dart';
 import 'model_logic_page.dart';
 
 class SavedDrawing {
@@ -52,6 +54,9 @@ class SingleDrawingPage extends StatefulWidget {
 }
 
 class _SingleDrawingPageState extends State<SingleDrawingPage> {
+  BannerAd? _bannerAd;
+  bool _isBannerAdLoaded = false;
+
   late List<DrawPoint?> points;
   late Color selectedColor;
   late double strokeWidth;
@@ -68,6 +73,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
   @override
   void initState() {
     super.initState();
+    _loadBannerAd();
     points = widget.initialPoints ?? [];
     selectedColor = widget.initialColor;
     strokeWidth = widget.initialStrokeWidth;
@@ -81,8 +87,20 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
     }
   }
 
+
+  void _loadBannerAd() {
+    _bannerAd?.dispose();
+    _isBannerAdLoaded = false;
+    _bannerAd = AdHelper.getBannerAd(() {
+      setState(() {
+        _isBannerAdLoaded = true;
+      });
+    });
+  }
+
   @override
   void dispose() {
+    _bannerAd?.dispose();
     _timer?.cancel();
     _confettiController.dispose();
     super.dispose();
@@ -145,6 +163,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
       );
       return;
     }
+
 
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
 
@@ -267,7 +286,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
 
           // 🕒 Timer Display (Top Left)
           Positioned(
-            top: 70, // ⬅️ moved down below the status bar
+            top: 100, // ⬅️ moved down below the status bar
             left: 16,
             child: Container(
               decoration: BoxDecoration(
@@ -295,7 +314,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
 
           // 🧰 Tools Row (Top Right)
           Positioned(
-            top: 65, // ⬅️ moved down below the status bar
+            top: 93, // ⬅️ moved down below the status bar
             right: 12,
             child: Row(
               children: [
@@ -352,7 +371,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
 
           // 🔙 Back Button (Bottom Left)
           Positioned(
-            bottom: 16,
+            bottom: 50,
             left: 16,
             child: FloatingActionButton(
               heroTag: 'back',
@@ -363,6 +382,19 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
               tooltip: 'Back',
             ),
           ),
+
+          (context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded)
+              ? SafeArea(
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                width: _bannerAd!.size.width.toDouble(),
+                height: _bannerAd!.size.height.toDouble(),
+                child: AdWidget(ad: _bannerAd!),
+              ),
+            ),
+          )
+              : const SizedBox.shrink(),
         ],
       ),
     );

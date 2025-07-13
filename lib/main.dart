@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 
 import 'package:mortaalim/Settings/setting_Page.dart';
@@ -112,10 +113,11 @@ class _MyAppState extends State<MyApp> {
         "JumpingBoard": (context) => const JumpingJellyApp(),
         "WordExplorer" : (context) =>  WordExplorer(),
         'FavoriteWords': (context) => const FavoriteWordsPage(),
+        "SugarSmash" : (context) => const Sugrasmash(),
         'Profile': (context) => const ProfileSetupPage(),
 
 
-        'Shop' : (context) => MainShopPageIndex(),
+        'Shop' : (context) => Sugrasmash(),
         'Credits' : (context) =>  CreditsPage(),
 
         'Setting' : (context) => SettingsPage(onChangeLocale: _changeLanguage),

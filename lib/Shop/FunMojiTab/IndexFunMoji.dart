@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/Aliens.dart';
 import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/AnimatedAvatars.dart';
 import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/Beams.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
@@ -47,8 +48,8 @@ class IndexFunMojiPage extends StatelessWidget {
                           Tab(text: 'Beams',),
                           Tab(text: 'Moji',),
                           Tab(text: 'Babies'),
-                          Tab(text: 'Animated'),
                           Tab(text: 'Aliens'),
+                          Tab(text: 'Animated'),
                         ],
                       ),
                       Expanded(
@@ -58,8 +59,8 @@ class IndexFunMojiPage extends StatelessWidget {
                             Beams(),
                             Moji(),  // 👈 You can define each tab's content
                             Babies(),
+                            Aliens(),
                             AnimatedAvatars(),
-                            Center(child: Text('🎭 Themes', style: TextStyle(color: Colors.white))),
                           ],
                         ),
                       ),

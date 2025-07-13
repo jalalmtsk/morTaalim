@@ -26,6 +26,7 @@ class ImageAvatarGrid extends StatelessWidget {
             ),
             TextButton(
               onPressed: () {
+                xpManager.addXP(15,context: context);
                 xpManager.addStars(-cost);
                 xpManager.unlockAvatar(imagePath);
                 xpManager.selectAvatar(imagePath);

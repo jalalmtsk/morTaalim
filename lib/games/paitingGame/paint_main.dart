@@ -6,10 +6,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart' hide useWhiteForeground;
 import 'package:flutter/rendering.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:mortaalim/games/paitingGame/singleDrawing.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
+import '../../XpSystem.dart';
+import '../../tools/Ads_Manager.dart';
 import 'model_logic_page.dart';
 
 class DrawingApp extends StatefulWidget {
@@ -18,6 +22,8 @@ class DrawingApp extends StatefulWidget {
 }
 
 class _DrawingAppState extends State<DrawingApp> {
+
+
   List<SavedDrawing> savedDrawings = [];
   int _currentIndex = 0; // 0 = Draw, 1 = Gallery
 
@@ -125,6 +131,11 @@ class _DrawingAppState extends State<DrawingApp> {
 
     await metaFile.writeAsString(jsonEncode(metaList));
   }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,6 +180,7 @@ class _DrawingAppState extends State<DrawingApp> {
         },
         onBack: () => setState(() => _currentIndex = 0),
       ),
+
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         backgroundColor: Colors.deepPurple,
@@ -180,6 +192,7 @@ class _DrawingAppState extends State<DrawingApp> {
           BottomNavigationBarItem(icon: Icon(Icons.photo_library), label: "Gallery"),
         ],
       ),
+
     );
   }
 }
@@ -281,11 +294,14 @@ class GalleryPage extends StatelessWidget {
                     tooltip: 'Delete Drawing',
                   ),
                 ),
+
               ],
             );
           },
         ),
       ),
+
+
     );
   }
 

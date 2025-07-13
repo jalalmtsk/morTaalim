@@ -24,7 +24,6 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
   late Animation<Color?> _colorAnimation;
   final MusicPlayer _transition = MusicPlayer();
 
-
   @override
   void initState() {
     super.initState();
@@ -50,7 +49,9 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
     final TextEditingController nameController = TextEditingController();
     String selectedEmoji = '😀';
     final emojis = [
-      '😀', '😎', '🥳', '🤓', '👻', '🐱', '🐶', '🦊', '🐻', '🐼', '🚀', '🎈', '🎮', '🍭', '🍕'
+      '😀', '😎', '🥳', '🤓',
+      '👻', '🐱', '🐶', '🦊', '🐻',
+      '🐼', '🚀', '🎈', '🎮', '🍭', '🍕'
     ];
 
     return showDialog<Map<String, String>>(
@@ -104,15 +105,11 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                 ElevatedButton(
                   onPressed: () {
                     final name = nameController.text.trim();
-                    if (name.isEmpty) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Please enter a name')),
-                      );
-                      return;
-                    }
+                    // If name is empty, assign default name based on playerNumber
+                    final finalName = name.isEmpty ? 'Player$playerNumber' : name;
                     Navigator.pop(context, {
-                      'name': name,
-                      'emoji': selectedEmoji
+                      'name': finalName,
+                      'emoji': selectedEmoji,
                     });
                   },
                   child: const Text('OK'),
@@ -170,18 +167,57 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
     }
   }
 
+  void _showInstructionsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          backgroundColor: Colors.deepOrange.shade50,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: const [
+              Icon(Icons.info_outline, color: Colors.deepOrange),
+              SizedBox(width: 10),
+              Text("How to Play", style: TextStyle(color: Colors.deepOrange)),
+            ],
+          ),
+          content: const Text(
+            "🎯 Ready to play?\n\n"
+                "✅ Choose your language.\n"
+                "✅ Pick single or multiplayer.\n\n"
+                "🌟 Rules:\n"
+                "- 3 correct answers = 1 star\n"
+                "- Every correct answer = +2 XP\n"
+                "- Compete or play solo\n\n"
+                "🎉 Have fun and learn something new!",
+            style: TextStyle(fontSize: 16),
+          ),
+          actions: [
+            TextButton(
+              child: const Text("Got it!", style: TextStyle(color: Colors.deepOrange)),
+              onPressed: () => Navigator.of(ctx).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Stack(
         children: [
-          Container(
-            height: double.infinity,
-            child: Positioned.fill(
-              child: Image.asset(
-                'assets/images/UI/BackGrounds/bg_QuizzGame.jpg',
-                fit: BoxFit.cover,
-              ),
+          SizedBox.expand(
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/UI/BackGrounds/bg_QuizzGame.jpg',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ],
             ),
           ),
           Positioned.fill(child: Container(color: Colors.black.withOpacity(0.3))),
@@ -193,30 +229,43 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const SizedBox(height: 60),
                       const Userstatutbar(),
-                      const SizedBox(height: 20),
-                      const Text(
-                        "🎯 Ready to play?\nAnswer questions to win stars and XP!\n\n"
-                            "🌟 3 right answers = 1 star\n"
-                            "💡 Each correct answer = +2 XP\n\n"
-                            "Play alone or with a friend!",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: Colors.white),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepOrange,
+                              shape: const CircleBorder(),
+                              padding: const EdgeInsets.all(12),
+                            ),
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Icon(Icons.arrow_back, color: Colors.white),
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepOrange,
+                              shape: const CircleBorder(),
+                              padding: const EdgeInsets.all(12),
+                            ),
+                            onPressed: () => _showInstructionsDialog(context),
+                            child: const Icon(Icons.info_outline, color: Colors.white),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 50),
                       AnimatedBuilder(
                         animation: _colorAnimation,
                         builder: (context, child) => Text(
-                          "Choose your language:",
+                          tr(context).chooseGame,
                           style: TextStyle(
-                            fontSize:30,
+                            fontSize: 30,
                             fontWeight: FontWeight.bold,
                             color: _languageWarning ? _colorAnimation.value : Colors.white,
                           ),
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                       Wrap(
                         spacing: 3,
                         children: QuizLanguage.values.map((lang) {
@@ -230,39 +279,30 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                           return ChoiceChip(
                             label: Text(
                               label,
-                              style: TextStyle(color: isSelected ? Colors.white : Colors.black87, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                color: isSelected ? Colors.white : Colors.black87,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             selected: isSelected,
                             selectedColor: Colors.deepOrange,
-                            backgroundColor: Colors.white70,
+                            backgroundColor: Colors.orange.withOpacity(0.6),
                             elevation: 3,
                             pressElevation: 6,
                             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                             onSelected: (_) {
                               _transition.play("assets/audios/sound_effects/buttonPressed.mp3");
-                              setState(() => _selectedLanguage = lang);},
+                              setState(() => _selectedLanguage = lang);
+                            },
                           );
                         }).toList(),
                       ),
-                      const SizedBox(height: 40),
+                      const SizedBox(height: 60),
                       _buildModeButton(context, mode: GameMode.single, assetPath: 'assets/images/UI/Buttons/1Player.png'),
-                      const SizedBox(height: 30),
+                      const SizedBox(height: 20),
                       _buildModeButton(context, mode: GameMode.multiplayer, assetPath: 'assets/images/UI/Buttons/2Player.png'),
                     ],
-                  ),
-                ),
-                Positioned(
-                  top: 10,
-                  left: 10,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepOrange,
-                      shape: const CircleBorder(),
-                      padding: const EdgeInsets.all(12),
-                    ),
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Icon(Icons.arrow_back, color: Colors.white),
                   ),
                 ),
               ],
@@ -277,19 +317,21 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
     return ElevatedButton(
       onPressed: () {
         _transition.play("assets/audios/sound_effects/buttonPressed.mp3");
-        _startGame(mode);},
+        _startGame(mode);
+      },
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.zero,
         backgroundColor: Colors.transparent,
         shadowColor: Colors.black.withOpacity(0.2),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)),
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(30),
         child: Image.asset(
           assetPath,
-          width: 240,
-          height: 120,
+          width: 290,
+          height: 150,
           fit: BoxFit.cover,
         ),
       ),

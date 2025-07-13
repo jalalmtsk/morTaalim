@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/widgets/ProfileStatusBar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'XpSystem.dart';
@@ -34,14 +35,12 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('name', name);
 
-    Navigator.pop(context); // Return to previous screen
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
-    final unlockedAvatars = xpManager.unlockedAvatars;
-    final selectedAvatar = xpManager.selectedAvatar;
     final tr = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -50,105 +49,127 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
         backgroundColor: Colors.deepOrange,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        child: Column(
           children: [
-            const Text(
-              "Choose your emoji avatar:",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            // Add the status bar here
+            ProfileStatusBar(
+              playerName: _nameController.text.isEmpty
+                  ? "Player"
+                  : _nameController.text,
+              onEditName: () {
+                // Scroll to textfield or open dialog to edit name (optional)
+                FocusScope.of(context).requestFocus(
+                    FocusNode()); // Remove keyboard focus
+                // Or just focus the TextField below:
+                // _nameFocusNode.requestFocus(); // if you add a FocusNode to TextField
+              },
             ),
-            const SizedBox(height: 20),
 
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              children: emojiList.map((emoji) {
-                final isUnlocked = unlockedAvatars.contains(emoji);
-                final isSelected = selectedAvatar == emoji;
+            const SizedBox(height: 30),
 
-                return GestureDetector(
-                  onTap: () {
-                    if (isUnlocked) {
-                      setState(() => xpManager.selectAvatar(emoji));
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          duration: const Duration(seconds: 1),
-                          content: Wrap(
-                            children: [
-                              Text(tr.this_avatar_is_locked_unlock_it_in_the),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.of(context).pushNamed("Shop");
-                                },
-                                child: Text(
-                                  " ${tr.shop}",
-                                  style: const TextStyle(
-                                    color: Colors.orange,
-                                    fontWeight: FontWeight.w700,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  child: Stack(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: isSelected && isUnlocked
-                              ? Colors.deepOrange.withOpacity(0.2)
-                              : Colors.white,
-                          border: Border.all(
-                            color: isSelected && isUnlocked
-                                ? Colors.deepOrange
-                                : Colors.grey.shade300,
-                            width: 3,
-                          ),
-                        ),
-                        child: Text(
-                          emoji,
-                          style: const TextStyle(fontSize: 40),
-                        ),
-                      ),
-                      if (!isUnlocked)
-                        const Positioned(
-                          right: 0,
-                          top: 0,
-                          child: Icon(Icons.lock, size: 20, color: Colors.deepOrange),
-                        ),
-                    ],
+            Expanded(
+              child: ListView(
+                children: [
+                  Text(
+                    "Choose your banner:",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepOrange.shade700,
+                    ),
                   ),
-                );
-              }).toList(),
-            ),
+                  const SizedBox(height: 12),
+                  SizedBox(
+                    height: 140,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: xpManager.unlockedBanners.length,
+                      itemBuilder: (context, index) {
+                        final banner = xpManager.unlockedBanners[index];
+                        final isSelected = xpManager.selectedBannerImage ==
+                            banner;
 
-            const SizedBox(height: 30),
+                        return GestureDetector(
+                          onTap: () {
+                            xpManager.selectBannerImage(banner);
+                          },
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            margin: const EdgeInsets.symmetric(horizontal: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: isSelected
+                                    ? Colors.deepOrange
+                                    : Colors.grey.shade300,
+                                width: isSelected ? 4 : 2,
+                              ),
+                              boxShadow: isSelected
+                                  ? [
+                                BoxShadow(
+                                  color: Colors.deepOrange.withOpacity(0.4),
+                                  blurRadius: 12,
+                                  spreadRadius: 1,
+                                  offset: const Offset(0, 5),
+                                )
+                              ]
+                                  : [],
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Image.asset(
+                                banner,
+                                width: 240,
+                                height: 140,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
 
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: "Your Name",
-                border: OutlineInputBorder(),
+                  const SizedBox(height: 40),
+
+                  TextField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      labelText: tr.name ?? "Your Name",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      prefixIcon: const Icon(Icons.person),
+                    ),
+                    onChanged: (val) {
+                      // Update status bar instantly
+                      setState(() {});
+                    },
+                  ),
+                ],
               ),
             ),
 
             const SizedBox(height: 30),
 
-            ElevatedButton(
-              onPressed: _saveProfile,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepOrange,
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-              ),
-              child: const Text(
-                "Save Profile",
-                style: TextStyle(fontSize: 18),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: _saveProfile,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepOrange,
+                  padding:
+                  const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  "Save Profile" ?? "Save Profile",
+                  style:
+                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
               ),
             ),
           ],
@@ -156,10 +177,5 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       ),
     );
   }
-}
 
-const List<String> emojiList = [
-  "🐶", "🐱", "🐻", "🐸", "🦄", "🐵",
-  "🐼", "🦊", "🐯", "🐷", "🐨", "🐥",
-  '🧙‍♂️','👽',"🤖", "🐼"
-];
+}
