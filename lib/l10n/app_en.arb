@@ -33,12 +33,17 @@
   "courses": "Courses",
   "games": "Games",
 
-  "drawingAlphabet": "Drawing Alphabet",
-  "quizGame": "Quiz Game",
-  "appStories": "Stories",
-  "shapeSorter": "Shape Sorter",
-  "boardGame": "Board Game",
-  "linkWordgame": "Link the Words",
+  "drawingAlphabet": "AlphaDraw",
+  "quizGame": "BrainQuest",
+  "appStories": "StoryLand",
+  "shapeSorter": "ShapePop!",
+  "boardGame": "BrainyBoard",
+  "wordLink": "Word Weave",
+  "sugarSmash": "Sugar Swirl",
+  "magicPainting": "Color Whiz",
+  "planeDestroyer": "Sky Blaster",
+  "iqTest": "IQ Spark",
+  "jumpingBoard": "HopZone",
   "myProfile": "My Profile",
 
   "stars": "Stars",
@@ -137,11 +142,7 @@
     "pageOf": "Page of",
     "forb": "For",
      "notEnoughStars": "Not enough stars",
-      "iQTest" : "IQ Test"
-
-
-
-
+     "lol" : "Lole"
 
 
 }

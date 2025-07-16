@@ -30,12 +30,19 @@
 
   "courses": "Corsi",
   "games": "Giochi",
-  "drawingAlphabet": "Disegna l'alfabeto",
-  "quizGame": "Gioco quiz",
-  "appStories": "Storie",
-  "shapeSorter": "Ordinatore di forme",
-  "boardGame": "Gioco da tavolo",
-  "linkWordgame": "Collega le parole",
+
+  "drawingAlphabet": "Disegna l'Alfabeto Magico",
+    "quizGame": "Sfida dei Cervelloni",
+    "appStories": "Storie Incantate",
+    "shapeSorter": "Il Re delle Forme",
+    "boardGame": "Avventura da Tavolo",
+    "wordLink": "Catena di Parole",
+    "sugarSmash": "Dolce Esplosione",
+    "magicPainting": "Pittura Magica",
+    "planeDestroyer": "Caccia Aerei",
+    "iqTest": "Test di Genialità",
+    "jumpingBoard": "Salti Pazzi",
+
   "myProfile": "Il mio profilo",
 
   "stars": "Stelle",
@@ -136,10 +143,6 @@
     "pageOf": "Pagina di",
     "forb": "Per",
      "notEnoughStars": "Stelle insufficienti",
-     "iQTest" : "Test del QI"
-
-
-
-
+     "lol" : "lola"
 }
 

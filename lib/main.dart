@@ -110,14 +110,14 @@ class _MyAppState extends State<MyApp> {
         'WordLink': (context) => const WordBoardGame(),
         'IQGame' : (context) => const IQTestApp(),
         "MagicPainting" : (context) =>  DrawingIndex(),
-        "JumpingBoard": (context) => const JumpingJellyApp(),
+        "JumpingBoard": (context) => const JumpingBoard(),
         "WordExplorer" : (context) =>  WordExplorer(),
         'FavoriteWords': (context) => const FavoriteWordsPage(),
         "SugarSmash" : (context) => const Sugrasmash(),
         'Profile': (context) => const ProfileSetupPage(),
 
 
-        'Shop' : (context) => Sugrasmash(),
+        'Shop' : (context) => MainShopPageIndex(),
         'Credits' : (context) =>  CreditsPage(),
 
         'Setting' : (context) => SettingsPage(onChangeLocale: _changeLanguage),

@@ -31,12 +31,18 @@
 
   "courses": "الدورات",
   "games": "ألعاب",
-  "drawingAlphabet": "رسم الحروف",
-  "quizGame": "لعبة الأسئلة",
-  "appStories": "قصص",
-  "shapeSorter": "فرز الأشكال",
-  "boardGame": "لعبة لوحية",
-  "linkWordgame": "ربط الكلمات",
+  "drawingAlphabet": "رسام الحروف",
+  "quizGame": "تحدي الأذكياء",
+  "appStories": "رحلة في الحكايات",
+  "shapeSorter": "ملك الأشكال",
+  "boardGame": "مغامرة الطاولة",
+  "wordLink": "شبكة الكلمات",
+  "sugarSmash": "انفجار الحلوى",
+  "magicPainting": "اللوحة السحرية",
+  "planeDestroyer": "صائد الطائرات",
+  "iqTest": "مقياس العبقرية",
+  "jumpingBoard": "لوحة القفز المجنون",
+
   "myProfile": "ملفي الشخصي",
 
   "stars": "نجوم",
@@ -136,10 +142,5 @@
   "pageOf": "صفحة من",
   "forb": "لـ",
    "notEnoughStars": "لا توجد نجوم كافية",
-   "iQTest" : "اختبار الذكاء"
-
-
-
-
-
+   "lol" : "lol"
   }

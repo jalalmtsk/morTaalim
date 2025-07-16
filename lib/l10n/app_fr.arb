@@ -31,12 +31,17 @@
 
   "courses": "Cours",
   "games": "Jeux",
-  "drawingAlphabet": "Tracer l'alphabet",
-  "quizGame": "Jeu questionnaire",
-  "appStories": "Histoires",
-  "shapeSorter": "Trie-formes",
-  "boardGame": "Jeu de plateau",
-  "linkWordgame": "Relier les mots",
+  "drawingAlphabet": "AlphaDessin",
+  "quizGame": "Défi Cerveau",
+  "appStories": "Histoires Magiques",
+  "shapeSorter": "Tri des Formes",
+  "boardGame": "Jeu de Plateau",
+  "wordLink": "Mots Liés",
+  "sugarSmash": "Explosion Sucrée",
+  "magicPainting": "Peinture Magique",
+  "planeDestroyer": "Chasseur d’Avions",
+  "iqTest": "Test de QI",
+  "jumpingBoard": "Plateforme Sautante",
   "myProfile": "Mon profil",
 
   "stars": "Étoiles",
@@ -137,9 +142,6 @@
     "pageOf": "Page de",
      "forb": "Pour",
      "notEnoughStars": "Pas assez d'étoiles",
-          "iQTest" : "Test de QI"
-
-
-
+     "lol" : "lole"
 
 }

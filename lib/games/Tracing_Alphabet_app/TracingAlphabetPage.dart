@@ -228,7 +228,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
 
   void _clearCanvas() {
     setState(() {
-      _points.clear();
+      _points = []; // assign new list, not just _points.clear()
     });
   }
 
@@ -415,7 +415,6 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                             giveTolimAndXP();
                             xpManager.addTokens(1);
                             xpManager.addXP(2, context: context);
-                            _showRewardToast(context, "+1 Score 🎯");
                           }
                         },
                         child: CustomPaint(
@@ -454,45 +453,53 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
               ),
 
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: _clearCanvas,
-                    icon: const Icon(Icons.refresh),
-                    label: const Text("Retry"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepOrange.shade300,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          ElevatedButton.icon(
+                            onPressed: _clearCanvas,
+                            icon: const Icon(Icons.refresh),
+                            label: const Text("Retry"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.deepOrange.shade300,
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                          ),
+                          ElevatedButton.icon(
+                            onPressed: _nextLetter,
+                            icon: const Icon(Icons.navigate_next),
+                            label: const Text("Next"),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orangeAccent.shade200,
+                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(50),
+                          boxShadow: [BoxShadow(color: Colors.orange.shade100, blurRadius: 10)],
+                        ),
+                        child: Text(
+                          "🎯 Score: $Tolims",
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ],
                   ),
-                  ElevatedButton.icon(
-                    onPressed: _nextLetter,
-                    icon: const Icon(Icons.navigate_next),
-                    label: const Text("Next"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.orangeAccent.shade200,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    ),
-                  ),
-                ],
+                ),
               ),
 
-              const SizedBox(height: 20),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(50),
-                  boxShadow: [BoxShadow(color: Colors.orange.shade100, blurRadius: 10)],
-                ),
-                child: Text(
-                  "🎯 Score: $Tolims",
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ),
             ],
           ),
         ),

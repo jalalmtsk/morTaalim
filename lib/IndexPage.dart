@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/tools/SettingPanelInGame.dart';
 import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/profile_page.dart';
@@ -342,15 +343,26 @@ class _IndexState extends State<Index>
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                IconButton(
-                                  icon: const Icon(Icons.mode_edit_sharp,
-                                      color: Colors.white70),
-                                  onPressed: () {
-                                    _clickButton.play("assets/audios/pop.mp3");
-                                    Navigator.of(context)
-                                        .pushNamed('Profile')
-                                        .then((_) => _loadProfile());
-                                  },
+                                Column(
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(Icons.mode_edit_sharp,
+                                          color: Colors.white),
+                                      onPressed: () {
+                                        _clickButton.play("assets/audios/pop.mp3");
+                                        Navigator.of(context)
+                                            .pushNamed('Profile')
+                                            .then((_) => _loadProfile());
+                                      },
+                                    ),
+
+                                    IconButton(
+                                      icon: const Icon(Icons.ads_click_outlined,
+                                          color: Colors.white),
+                                      onPressed:() => AdHelper.showRewardedAdWithLoading(context, 1),
+                                    ),
+
+                                  ],
                                 ),
                               ],
                             ),

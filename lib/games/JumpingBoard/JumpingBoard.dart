@@ -14,8 +14,8 @@ MusicPlayerOne backGround_sound = MusicPlayerOne();
 MusicPlayerOne score_sound = MusicPlayerOne();
 MusicPlayerOne explosion_sound = MusicPlayerOne();
 
-class JumpingJellyApp extends StatelessWidget {
-  const JumpingJellyApp({super.key});
+class JumpingBoard extends StatelessWidget {
+  const JumpingBoard({super.key});
 
   @override
   Widget build(BuildContext context) {

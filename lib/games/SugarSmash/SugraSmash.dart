@@ -9,19 +9,15 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: Sugrasmash(),
-  ));
-}
-
 class Sugrasmash extends StatelessWidget {
   const Sugrasmash({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(body: SafeArea(child: Match3Board()));
+    return Scaffold(
+        appBar: AppBar(),
+        body: const SafeArea(
+            child: Match3Board()));
   }
 }
 

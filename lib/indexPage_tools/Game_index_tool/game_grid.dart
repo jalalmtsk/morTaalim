@@ -229,11 +229,11 @@ class _GameGridState extends State<GameGrid>
                                 Stack(
                                   alignment: Alignment.center,
                                   children: [
-                                    Icon(game['icon'], size: 48, color: Colors.white),
+                                    Icon(game['icon'], size: 35, color: Colors.white),
                                     if (isLocked)
                                       const Positioned(
                                         bottom: 0,
-                                        right: 0,
+                                        right: 3,
                                         child: Icon(Icons.lock, size: 30, color: Colors.orange),
                                       ),
                                   ],
@@ -242,9 +242,9 @@ class _GameGridState extends State<GameGrid>
                                 Text(
                                   _getCourseTitle(tr, game['title']),
                                   style: const TextStyle(
-                                    fontSize: 18,
+                                    fontSize: 15,
                                     color: Colors.white,
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w800,
                                     shadows: [
                                       Shadow(
                                         color: Colors.black,
@@ -360,6 +360,7 @@ class _GameGridState extends State<GameGrid>
               child: const Text("Add Stars and Tolims"),
             ),
 
+
             ///:::::::: BANNER ADS
             (context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded)
                 ? SafeArea(
@@ -411,18 +412,15 @@ class _GameGridState extends State<GameGrid>
       case 'shapeSorter':
         return tr.shapeSorter;
       case 'PlaneDestroyer':
-        return tr.boardGame;
+        return AppLocalizations.of(context)!.shapeSorter;
       case 'piano':
         return tr.piano;
       case 'WordLink':
-        return tr.linkWordgame;
-      case 'IQGame':
-      case 'MagicPainting':
+        return tr.piano;
       case 'JumpingBoard':
         return tr.iQTest;
       case 'WordExplorer':
         return tr.enterPin;
-
       case 'SugrarSmash':
         return tr.enterPin;
       default:

@@ -41,7 +41,7 @@ final List<Map<String, dynamic>> games = [
   {
     'title': 'SugraSmash',
     'icon': Icons.square_foot_outlined,
-    'routeName': 'SugraSmash',
+    'routeName': 'SugarSmash',
     'image': 'assets/images/GameGridImages/Shape.png', // ✅ New key
     'locked': true,
     'cost': 150,
@@ -107,7 +107,7 @@ final List<Map<String, dynamic>> games = [
   },
 
   {
-    'title': 'piano',
+    'title': 'Piano',
     'icon': Icons.piano,
     'routeName': 'Piano',
     'image': 'assets/images/GameGridImages/Piano.png', // ✅ New key

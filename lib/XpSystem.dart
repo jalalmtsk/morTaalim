@@ -1,8 +1,12 @@
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'ManagerTools/AnimatedXpBanner.dart';
+import 'package:mortaalim/ManagerTools/LevelUpOverlayHelper.dart';
 
 class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   int _xp = 0;
@@ -215,7 +219,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
 
     if (context != null) {
-      // Always show XP overlay
       Future.delayed(const Duration(milliseconds: 100), () {
         if (context.mounted) {
           _showOverlayXPAddedBanner(context, amount);
@@ -225,7 +228,9 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
       if (newLevel > oldLevel) {
         Future.delayed(const Duration(milliseconds: 300), () {
           if (context.mounted) {
-            _showOverlayLevelUpBanner(context, newLevel);
+            LvlUp.play("assets/audios/sound_effects/correct_anwser.mp3");
+            LvlUp2.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
+            LevelUpOverlayHelper.showOverlayLevelUpBanner(context, newLevel);
           }
         });
       }
@@ -331,177 +336,34 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     await prefs.setBool('adsEnabled', _adsEnabled);
   }
 
-
-
-  void _showOverlayLevelUpBanner(BuildContext context, int newLevel) {
-    final overlay = Overlay.of(context);
-    if (overlay == null) return;
-    LvlUp.play("assets/audios/sound_effects/victory2.mp3");
-    LvlUp2.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
-    late OverlayEntry entry;
-
-    entry = OverlayEntry(
-      builder: (ctx) => Positioned(
-        top: MediaQuery.of(context).padding.top + 12,
-        left: 16,
-        right: 16,
-        child: SafeArea(
-          child: Material(
-            color: Colors.transparent,
-            child: AnimatedOpacity(
-              opacity: 1.0,
-              duration: const Duration(milliseconds: 300),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.deepOrange.shade400, Colors.amber.shade500],
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,
-                  ),
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.3),
-                      blurRadius: 8,
-                      offset: const Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // 🎉 Lottie Animation
-                    SizedBox(
-                      width: 120,
-                      height: 120,
-                      child: Lottie.asset(
-                        'assets/animations/LvlUnlocked/StarPlus1.json',
-                        repeat: false,
-                      ),
-                    ),
-
-                    const SizedBox(width: 12),
-
-                    // Text Info
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Level $newLevel Reached!',
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 2,
-                                color: Colors.black38,
-                                offset: Offset(1, 1),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        const Text(
-                          '+1 ⭐ Star!',
-                          style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-    overlay.insert(entry);
-    // Remove with fade-out
-    Future.delayed(const Duration(seconds: 4), () {
-      entry.markNeedsBuild();
-      Future.delayed(const Duration(milliseconds: 1000), () {
-        entry.remove();
-      });
-    });
-  }
-
-final MusicPlayer LvlUp = MusicPlayer();
+  final MusicPlayer LvlUp = MusicPlayer();
   final MusicPlayer LvlUp2 = MusicPlayer();
 
   //ADDING XP
   void _showOverlayXPAddedBanner(BuildContext context, int xpAmount) {
-    final overlay = Overlay.of(context);
-    if (overlay == null) return;
-    LvlUp.play("assets/audios/sound_effects/correct_anwser.mp3");
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
 
-    late OverlayEntry entry;
+      final overlay = Overlay.of(context);
+      if (overlay == null) return;
 
-    entry = OverlayEntry(
-      builder: (ctx) => Positioned(
-        top: MediaQuery.of(context).padding.top + 120,
-        left: 16,
-        right: 16,
-        child: SafeArea(
-          child: Material(
-            color: Colors.transparent,
-            child: AnimatedOpacity(
-              opacity: 1,
-              duration: const Duration(milliseconds: 300),
-              child: Container(
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.deepOrange.withValues(alpha: 0.45),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      width: 100,
-                      height: 100,
-                      child: Lottie.asset(
-                        'assets/animations/LvlUnlocked/LevelUp.json',
-                        repeat: false,
-                      ),
-                    ),
-                    Text(
-                      '+$xpAmount XP!',
-                      style: const TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 3,
-                            color: Colors.black,
-                            offset: Offset(1, 1),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+      LvlUp.play("assets/audios/sound_effects/correct_anwser.mp3");
 
-    overlay.insert(entry);
+      late OverlayEntry entry;
 
-    Future.delayed(const Duration(seconds: 2), () {
-      entry.markNeedsBuild();
-      Future.delayed(const Duration(milliseconds: 800), () {
-        entry.remove();
-      });
+      entry = OverlayEntry(
+        builder: (ctx) {
+          return AnimatedXPBanner(
+            xpAmount: xpAmount,
+            onDismiss: () => entry.remove(),
+          );
+        },
+      );
+
+      overlay.insert(entry);
     });
   }
+
 ////----------------------------------------------------------------------
 
 
