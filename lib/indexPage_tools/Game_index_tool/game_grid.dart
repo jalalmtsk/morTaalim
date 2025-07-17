@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
@@ -11,6 +12,7 @@ import '../../XpSystem.dart';
 import '../../tools/audio_tool/audio_tool.dart';
 import '../../tools/loading_page.dart';
 import '../../widgets/RewardChest.dart';
+import '../../widgets/SpinTheWheel.dart';
 
 final MusicPlayer _victorySound = MusicPlayer();
 
@@ -114,12 +116,52 @@ class _GameGridState extends State<GameGrid>
       children: [
         Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                tr.chooseGame,
-                style: TextStyle(fontSize: 20, color: Colors.grey[700]),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    tr.chooseGame,
+                    style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+                  ),
+                ),
+                IconButton(
+                  onPressed: () async {
+                    final prefs = await SharedPreferences.getInstance();
+                    final lastSpinTime = prefs.getInt('lastSpinTime');
+                    final now = DateTime.now().millisecondsSinceEpoch;
+
+                    final cooldownDuration = 24 * 60 * 60 * 1000; // 24 hours in ms
+
+                    if (lastSpinTime != null && (now - lastSpinTime) < cooldownDuration) {
+                      final remaining = Duration(milliseconds: cooldownDuration - (now - lastSpinTime));
+                      final hours = remaining.inHours;
+                      final minutes = remaining.inMinutes.remainder(60);
+
+                      // Show cooldown message
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text("🎁 Come Back Later!"),
+                          content: Text("Please wait $hours hour(s) and $minutes minute(s) to spin again."),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.pop(context), child: const Text("OK")),
+                          ],
+                        ),
+                      );
+                    } else {
+                      // Allow the spin wheel dialog to open
+                      showDialog(
+                        context: context,
+                        barrierDismissible: false,
+                        builder: (context) => const SpinWheelDialog(),
+                      );
+                    }
+                  },
+                  icon: const Icon(Icons.card_giftcard),
+                )
+              ],
             ),
             Expanded(
               child: GridView.builder(

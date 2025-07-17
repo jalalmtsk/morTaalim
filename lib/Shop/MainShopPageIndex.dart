@@ -60,7 +60,7 @@ class MainShopPageIndex extends StatelessWidget {
                       RewardChest(
                         cooldown: Duration(minutes: 50),
                         chestClosedAsset: 'assets/images/UI/utilities/Box.png',
-                        chestOpenAnimationAsset: 'assets/animations/GiftStar.json',
+                        chestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
                         onRewardCollected: () {
                           Provider.of<ExperienceManager>(context, listen: false).addXP(2, context: context);
                           Provider.of<ExperienceManager>(context, listen: false).addTokens(1);
