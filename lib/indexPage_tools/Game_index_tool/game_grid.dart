@@ -10,6 +10,7 @@ import 'package:confetti/confetti.dart';
 import '../../XpSystem.dart';
 import '../../tools/audio_tool/audio_tool.dart';
 import '../../tools/loading_page.dart';
+import '../../widgets/RewardChest.dart';
 
 final MusicPlayer _victorySound = MusicPlayer();
 
@@ -361,6 +362,7 @@ class _GameGridState extends State<GameGrid>
             ),
 
 
+
             ///:::::::: BANNER ADS
             (context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded)
                 ? SafeArea(
@@ -409,20 +411,25 @@ class _GameGridState extends State<GameGrid>
         return tr.quizGame;
       case 'appStories':
         return tr.appStories;
+      case 'MagicPainting':
+        return tr.magicPainting;
+      case 'SugarSmash':
+        return tr.sugarSmash;
       case 'shapeSorter':
         return tr.shapeSorter;
       case 'PlaneDestroyer':
-        return AppLocalizations.of(context)!.shapeSorter;
-      case 'piano':
-        return tr.piano;
+        return tr.planeDestroyer;
       case 'WordLink':
-        return tr.piano;
+        return tr.wordLink;
+      case 'IQGame':
+        return tr.iqTest;
       case 'JumpingBoard':
-        return tr.iQTest;
-      case 'WordExplorer':
-        return tr.enterPin;
-      case 'SugrarSmash':
-        return tr.enterPin;
+        return tr.jumpingBoard;
+      case 'boardGame':
+        return tr.boardGame;
+
+
+
       default:
         return key;
     }

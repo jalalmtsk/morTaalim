@@ -258,38 +258,68 @@ abstract class AppLocalizations {
   /// No description provided for @drawingAlphabet.
   ///
   /// In en, this message translates to:
-  /// **'Drawing Alphabet'**
+  /// **'AlphaDraw'**
   String get drawingAlphabet;
 
   /// No description provided for @quizGame.
   ///
   /// In en, this message translates to:
-  /// **'Quiz Game'**
+  /// **'BrainQuest'**
   String get quizGame;
 
   /// No description provided for @appStories.
   ///
   /// In en, this message translates to:
-  /// **'Stories'**
+  /// **'StoryLand'**
   String get appStories;
 
   /// No description provided for @shapeSorter.
   ///
   /// In en, this message translates to:
-  /// **'Shape Sorter'**
+  /// **'ShapePop!'**
   String get shapeSorter;
 
   /// No description provided for @boardGame.
   ///
   /// In en, this message translates to:
-  /// **'Board Game'**
+  /// **'BrainyBoard'**
   String get boardGame;
 
-  /// No description provided for @linkWordgame.
+  /// No description provided for @wordLink.
   ///
   /// In en, this message translates to:
-  /// **'Link the Words'**
-  String get linkWordgame;
+  /// **'Word Weave'**
+  String get wordLink;
+
+  /// No description provided for @sugarSmash.
+  ///
+  /// In en, this message translates to:
+  /// **'Sugar Swirl'**
+  String get sugarSmash;
+
+  /// No description provided for @magicPainting.
+  ///
+  /// In en, this message translates to:
+  /// **'Color Whiz'**
+  String get magicPainting;
+
+  /// No description provided for @planeDestroyer.
+  ///
+  /// In en, this message translates to:
+  /// **'Sky Blaster'**
+  String get planeDestroyer;
+
+  /// No description provided for @iqTest.
+  ///
+  /// In en, this message translates to:
+  /// **'IQ Spark'**
+  String get iqTest;
+
+  /// No description provided for @jumpingBoard.
+  ///
+  /// In en, this message translates to:
+  /// **'HopZone'**
+  String get jumpingBoard;
 
   /// No description provided for @myProfile.
   ///
@@ -795,11 +825,11 @@ abstract class AppLocalizations {
   /// **'Not enough stars'**
   String get notEnoughStars;
 
-  /// No description provided for @iQTest.
+  /// No description provided for @lol.
   ///
   /// In en, this message translates to:
-  /// **'IQ Test'**
-  String get iQTest;
+  /// **'Lole'**
+  String get lol;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -87,22 +87,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get games => 'Games';
 
   @override
-  String get drawingAlphabet => 'Drawing Alphabet';
+  String get drawingAlphabet => 'AlphaDraw';
 
   @override
-  String get quizGame => 'Quiz Game';
+  String get quizGame => 'BrainQuest';
 
   @override
-  String get appStories => 'Stories';
+  String get appStories => 'StoryLand';
 
   @override
-  String get shapeSorter => 'Shape Sorter';
+  String get shapeSorter => 'ShapePop!';
 
   @override
-  String get boardGame => 'Board Game';
+  String get boardGame => 'BrainyBoard';
 
   @override
-  String get linkWordgame => 'Link the Words';
+  String get wordLink => 'Word Weave';
+
+  @override
+  String get sugarSmash => 'Sugar Swirl';
+
+  @override
+  String get magicPainting => 'Color Whiz';
+
+  @override
+  String get planeDestroyer => 'Sky Blaster';
+
+  @override
+  String get iqTest => 'IQ Spark';
+
+  @override
+  String get jumpingBoard => 'HopZone';
 
   @override
   String get myProfile => 'My Profile';
@@ -357,5 +372,5 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notEnoughStars => 'Not enough stars';
 
   @override
-  String get iQTest => 'IQ Test';
+  String get lol => 'Lole';
 }

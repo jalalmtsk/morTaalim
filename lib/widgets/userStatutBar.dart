@@ -214,8 +214,14 @@ class _UserStatutBar extends State<Userstatutbar> with TickerProviderStateMixin,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Level ${xpManager.level}", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white, shadows: [Shadow(color: Colors.black87, offset: Offset(1, 1), blurRadius: 3)])),
-                        const SizedBox(height: 3),
+                        Text(
+                          "Level ${xpManager.level}",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            shadows: [Shadow(color: Colors.black87, offset: Offset(1, 1), blurRadius: 3)],
+                          ),
+                        ),                        const SizedBox(height: 3),
                         AnimatedContainer(
                           duration: const Duration(milliseconds: 500),
                           decoration: BoxDecoration(

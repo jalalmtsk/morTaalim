@@ -87,22 +87,37 @@ class AppLocalizationsFr extends AppLocalizations {
   String get games => 'Jeux';
 
   @override
-  String get drawingAlphabet => 'Tracer l\'alphabet';
+  String get drawingAlphabet => 'AlphaDessin';
 
   @override
-  String get quizGame => 'Jeu questionnaire';
+  String get quizGame => 'Défi Cerveau';
 
   @override
-  String get appStories => 'Histoires';
+  String get appStories => 'Histoires Magiques';
 
   @override
-  String get shapeSorter => 'Trie-formes';
+  String get shapeSorter => 'Tri des Formes';
 
   @override
-  String get boardGame => 'Jeu de plateau';
+  String get boardGame => 'Jeu de Plateau';
 
   @override
-  String get linkWordgame => 'Relier les mots';
+  String get wordLink => 'Mots Liés';
+
+  @override
+  String get sugarSmash => 'Explosion Sucrée';
+
+  @override
+  String get magicPainting => 'Peinture Magique';
+
+  @override
+  String get planeDestroyer => 'Chasseur d’Avions';
+
+  @override
+  String get iqTest => 'Test de QI';
+
+  @override
+  String get jumpingBoard => 'Plateforme Sautante';
 
   @override
   String get myProfile => 'Mon profil';
@@ -357,5 +372,5 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notEnoughStars => 'Pas assez d\'étoiles';
 
   @override
-  String get iQTest => 'Test de QI';
+  String get lol => 'lole';
 }

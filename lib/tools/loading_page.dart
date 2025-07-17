@@ -97,7 +97,7 @@ class _LoadingPageState extends State<LoadingPage> {
 
             /// Top Lottie
             Lottie.asset(
-              'assets/animations/cat_loading.json',
+              'assets/animations/CuteBunnies.json',
               width: 350,
               height: 350,
               fit: BoxFit.contain,

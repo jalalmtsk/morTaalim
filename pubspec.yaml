@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.19.0
+  intl: ^0.20.2
 
 
 
@@ -113,6 +113,7 @@ flutter:
   - assets/images/Banners/Joyful/
   - assets/images/UI/Buttons/
   - assets/images/UI/BackGrounds/
+  - assets/images/UI/utilities/
 
     #Videos
   - assets/videos/

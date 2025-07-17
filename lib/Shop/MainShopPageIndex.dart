@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:mortaalim/Shop/BannerTab/IndexBanner.dart';
 import 'package:mortaalim/Shop/StarsTab/IndexStars.dart';
 import 'package:mortaalim/Shop/Tools/watchAdButton.dart';
+import 'package:mortaalim/widgets/SpinTheWheel.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 
 import '../XpSystem.dart';
 import '../tools/Ads_Manager.dart';
+import '../widgets/RewardChest.dart';
 import 'FunMojiTab/IndexFunMoji.dart';
 import 'Tools/_StarCounter.dart';
 import 'Tools/_TokenAndSection.dart';
@@ -25,13 +27,13 @@ class MainShopPageIndex extends StatelessWidget {
           child: Column(
             children: [
               const Userstatutbar(),
-              const SizedBox(height: 20),
+              const SizedBox(height: 6),
 
               // Top Row: Back + Spacer
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -43,11 +45,34 @@ class MainShopPageIndex extends StatelessWidget {
                       onPressed: () => Navigator.of(context).pop(),
                       child: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
+
+                    Row(children: [
+                      RewardChest(
+                        cooldown: Duration(minutes: 10),
+                        chestClosedAsset: 'assets/images/UI/utilities/Box.png',
+                        chestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
+                        onRewardCollected: () {
+                          Provider.of<ExperienceManager>(context, listen: false).addXP(2, context: context);
+                        },
+                      ),
+                      const SizedBox(width: 20,),
+
+                      RewardChest(
+                        cooldown: Duration(minutes: 50),
+                        chestClosedAsset: 'assets/images/UI/utilities/Box.png',
+                        chestOpenAnimationAsset: 'assets/animations/GiftStar.json',
+                        onRewardCollected: () {
+                          Provider.of<ExperienceManager>(context, listen: false).addXP(2, context: context);
+                          Provider.of<ExperienceManager>(context, listen: false).addTokens(1);
+                        },
+                      ),
+                    ],)
+
                   ],
                 ),
               ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
 
               // Tabs bar container
               Container(
@@ -77,7 +102,7 @@ class MainShopPageIndex extends StatelessWidget {
                     IndexFunMojiPage(),
                     IndexBanner(),
                     IndexStars(),
-                    const Center(child: Text("🎮 Mini Games", style: TextStyle(fontSize: 18))),
+                    SingleChildScrollView(child: SpinTheWheel()),
                     const Center(child: Text("ℹ️ Information", style: TextStyle(fontSize: 18))),
                   ],
                 ),

@@ -173,7 +173,6 @@ class _IndexState extends State<Index>
         title: Text(tr.welcome, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [
-
           IconButton(
             onPressed: () {
               _clickButton.play("assets/audios/pop.mp3");

@@ -39,7 +39,7 @@ final List<Map<String, dynamic>> games = [
     'unlockType': 'iq',
   },
   {
-    'title': 'SugraSmash',
+    'title': 'SugarSmash',
     'icon': Icons.square_foot_outlined,
     'routeName': 'SugarSmash',
     'image': 'assets/images/GameGridImages/Shape.png', // ✅ New key

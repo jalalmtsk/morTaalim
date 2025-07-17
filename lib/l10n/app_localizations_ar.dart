@@ -87,22 +87,37 @@ class AppLocalizationsAr extends AppLocalizations {
   String get games => 'ألعاب';
 
   @override
-  String get drawingAlphabet => 'رسم الحروف';
+  String get drawingAlphabet => 'رسام الحروف';
 
   @override
-  String get quizGame => 'لعبة الأسئلة';
+  String get quizGame => 'تحدي الأذكياء';
 
   @override
-  String get appStories => 'قصص';
+  String get appStories => 'رحلة في الحكايات';
 
   @override
-  String get shapeSorter => 'فرز الأشكال';
+  String get shapeSorter => 'ملك الأشكال';
 
   @override
-  String get boardGame => 'لعبة لوحية';
+  String get boardGame => 'مغامرة الطاولة';
 
   @override
-  String get linkWordgame => 'ربط الكلمات';
+  String get wordLink => 'شبكة الكلمات';
+
+  @override
+  String get sugarSmash => 'انفجار الحلوى';
+
+  @override
+  String get magicPainting => 'اللوحة السحرية';
+
+  @override
+  String get planeDestroyer => 'صائد الطائرات';
+
+  @override
+  String get iqTest => 'مقياس العبقرية';
+
+  @override
+  String get jumpingBoard => 'لوحة القفز المجنون';
 
   @override
   String get myProfile => 'ملفي الشخصي';
@@ -357,5 +372,5 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notEnoughStars => 'لا توجد نجوم كافية';
 
   @override
-  String get iQTest => 'اختبار الذكاء';
+  String get lol => 'lol';
 }
