@@ -358,7 +358,9 @@ class _IndexState extends State<Index>
                                     IconButton(
                                       icon: const Icon(Icons.ads_click_outlined,
                                           color: Colors.white),
-                                      onPressed:() => AdHelper.showRewardedAdWithLoading(context, 1),
+                                      onPressed:() => AdHelper.showRewardedAdWithLoading(context, (){
+                                        Provider.of<ExperienceManager>(context, listen: false).addStars(1);
+                                      }),
                                     ),
 
                                   ],

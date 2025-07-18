@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../../XpSystem.dart';
 import '../../tools/Ads_Manager.dart';
 
 class WatchAdButton extends StatelessWidget {
@@ -9,7 +11,9 @@ class WatchAdButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => AdHelper.showRewardedAdWithLoading(context, 1),
+      onTap: () => AdHelper.showRewardedAdWithLoading(context, (){
+        Provider.of<ExperienceManager>(context, listen: false).addStars(1);
+      }),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
         decoration: BoxDecoration(

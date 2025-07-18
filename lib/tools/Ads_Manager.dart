@@ -55,7 +55,10 @@ class AdHelper {
   }
 
   /// ✅ Show Rewarded Ad with loading spinner
-  static Future<void> showRewardedAdWithLoading(BuildContext context, int stars) async {
+  static Future<void> showRewardedAdWithLoading(
+      BuildContext context,
+      VoidCallback onRewardEarned,
+      ) async {
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -65,28 +68,25 @@ class AdHelper {
     );
 
     await RewardedAd.load(
-      adUnitId: 'ca-app-pub-9936922975297046/5494650006', // ✅ Replace with real rewarded ad unit
+      adUnitId: 'ca-app-pub-9936922975297046/5494650006', // ✅ Replace with your real unit ID
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (RewardedAd ad) {
-          Navigator.of(context).pop(); // close loading
+          Navigator.of(context).pop(); // close loading dialog
 
           ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {
-              ad.dispose();
-            },
+            onAdDismissedFullScreenContent: (ad) => ad.dispose(),
             onAdFailedToShowFullScreenContent: (ad, error) {
               ad.dispose();
               debugPrint('❌ RewardedAd failed to show: ${error.message}');
             },
           );
 
-          ad.show(onUserEarnedReward: (ad, reward) {
-            Provider.of<ExperienceManager>(context, listen: false).addStars(stars);
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('🎉 You earned $stars star(s)!')),
-            );
-          });
+          ad.show(
+            onUserEarnedReward: (ad, reward) {
+              onRewardEarned(); // ✅ Callback for reward earned
+            },
+          );
         },
         onAdFailedToLoad: (LoadAdError error) {
           Navigator.of(context).pop(); // close loading
@@ -98,4 +98,5 @@ class AdHelper {
       ),
     );
   }
+
 }

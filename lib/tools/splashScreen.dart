@@ -37,7 +37,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       vsync: this,
       duration: const Duration(milliseconds: 800),
       lowerBound: 2.4,
-      upperBound: 3.2,
+      upperBound: 3.0,
     );
 
     // Trigger logo animations after 2 seconds
@@ -92,7 +92,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
                   child: ScaleTransition(
                     scale: _scaleController,
                     child: Image.asset(
-                      'assets/images/logo_black.png',
+                      'assets/images/fesKia.png',
                       width: 160,
                     ),
                   ),

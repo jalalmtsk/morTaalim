@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mortaalim/Shop/BannerTab/IndexBanner.dart';
 import 'package:mortaalim/Shop/StarsTab/IndexStars.dart';
 import 'package:mortaalim/Shop/Tools/watchAdButton.dart';
-import 'package:mortaalim/widgets/SpinTheWheel.dart';
+import 'package:mortaalim/widgets/SpinWheel/SpinTheWheel.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 
@@ -102,7 +102,7 @@ class MainShopPageIndex extends StatelessWidget {
                     IndexFunMojiPage(),
                     IndexBanner(),
                     IndexStars(),
-                    SingleChildScrollView(child: SpinTheWheel()),
+                    SingleChildScrollView(child: SpinWheelPopup()),
                     const Center(child: Text("ℹ️ Information", style: TextStyle(fontSize: 18))),
                   ],
                 ),
@@ -113,7 +113,9 @@ class MainShopPageIndex extends StatelessWidget {
                 color: Color(0xFFff9966),
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                 child: GestureDetector(
-                  onTap: () => AdHelper.showRewardedAdWithLoading(context, 1),
+                  onTap: () => AdHelper.showRewardedAdWithLoading(context, (){
+                    Provider.of<ExperienceManager>(context, listen: false).addStars(1);
+                  }),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.center,

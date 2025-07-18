@@ -95,89 +95,91 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
       ),
       body: FadeTransition(
         opacity: _fadeInAnimation,
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 300,
-                  child: AnimatedTextKit(
-                    animatedTexts: [
-                      ColorizeAnimatedText(
-                        winner,
-                        textStyle: const TextStyle(
-                          fontSize: 34,
-                          fontWeight: FontWeight.bold,
+        child: SingleChildScrollView(
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    width: 300,
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        ColorizeAnimatedText(
+                          winner,
+                          textStyle: const TextStyle(
+                            fontSize: 34,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          colors: [
+                            Colors.deepOrange,
+                            Colors.orange,
+                            Colors.redAccent,
+                            Colors.deepOrangeAccent,
+                          ],
                         ),
-                        colors: [
-                          Colors.deepOrange,
-                          Colors.orange,
-                          Colors.redAccent,
-                          Colors.deepOrangeAccent,
-                        ],
-                      ),
-                    ],
-                    isRepeatingAnimation: false,
+                      ],
+                      isRepeatingAnimation: false,
+                    ),
                   ),
-                ),
 
-                const SizedBox(height: 20),
+                  const SizedBox(height: 20),
 
-                Lottie.asset(
-                  'assets/animations/QuizzGame_Animation/Champion.json',
-                  width: 300,
-                  height: 300,
-                  fit: BoxFit.contain,
-                ),
+                  Lottie.asset(
+                    'assets/animations/QuizzGame_Animation/Champion.json',
+                    width: 300,
+                    height: 300,
+                    fit: BoxFit.contain,
+                  ),
 
-                const SizedBox(height: 10),
+                  const SizedBox(height: 10),
 
-                Card(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                  elevation: 6,
-                  shadowColor: Colors.deepOrange.withOpacity(0.3),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          '${tr(context).player1}: ${widget.player1Score} ${tr(context).points}',
-                          style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
-                        ),
-                        if (widget.mode == GameMode.multiplayer)
+                  Card(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    elevation: 6,
+                    shadowColor: Colors.deepOrange.withOpacity(0.3),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                      child: Column(
+                        children: [
                           Text(
-                            '${tr(context).player2}: ${widget.player2Score} ${tr(context).points}',
+                            '${tr(context).player1}: ${widget.player1Score} ${tr(context).points}',
                             style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
                           ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 30),
-
-                ElevatedButton.icon(
-                  onPressed: () => Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => QuizPage(
-                        mode: widget.mode,
-                        language: widget.language,
+                          if (widget.mode == GameMode.multiplayer)
+                            Text(
+                              '${tr(context).player2}: ${widget.player2Score} ${tr(context).points}',
+                              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w600),
+                            ),
+                        ],
                       ),
                     ),
                   ),
-                  icon: const Icon(Icons.refresh, color: Colors.white),
-                  label: Text('🔁 ${tr(context).playAgain}', style: const TextStyle(fontSize: 20)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrange,
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+
+                  const SizedBox(height: 30),
+
+                  ElevatedButton.icon(
+                    onPressed: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => QuizPage(
+                          mode: widget.mode,
+                          language: widget.language,
+                        ),
+                      ),
+                    ),
+                    icon: const Icon(Icons.refresh, color: Colors.white),
+                    label: Text('🔁 ${tr(context).playAgain}', style: const TextStyle(fontSize: 20)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepOrange,
+                      padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),
