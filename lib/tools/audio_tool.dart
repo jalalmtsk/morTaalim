@@ -3,6 +3,10 @@ import 'package:just_audio/just_audio.dart';
 class MusicPlayer {
   final AudioPlayer _player = AudioPlayer();
 
+  Future<void> setVolume(double volume) async {
+    await _player.setVolume(volume); // 👈 This is what you need
+  }
+
   Future<void> play(String assetPath, {bool loop = false}) async {
     try {
       print('Loading asset: $assetPath');

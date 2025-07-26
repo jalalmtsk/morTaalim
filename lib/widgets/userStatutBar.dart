@@ -177,7 +177,7 @@ class _UserStatutBar extends State<Userstatutbar> with TickerProviderStateMixin,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: showSparkle ? Colors.red : Colors.transparent,
+            color: showSparkle ? Colors.green : Colors.transparent,
             width: 5,
           ),
         ),

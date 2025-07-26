@@ -32,7 +32,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  intl: ^0.20.2
+  intl: ^0.19.0
 
 
 
@@ -100,6 +100,9 @@ flutter:
   - assets/images/
   - assets/images/Sketches/
   - assets/images/GameGridImages/
+  - assets/images/PractiseImage/
+  - assets/images/PractiseImage/HeavyLightImages/
+  - assets/images/PractiseImage/WuduImages/
   - assets/images/SugarSmash/
   - assets/images/FlagImagesForTracingLetters/
   - assets/images/AvatarImage/
@@ -126,6 +129,8 @@ flutter:
   - assets/audios/sound_track/
   - assets/audios/piano_notes/
   - assets/audios/QuizGame_Sounds/
+  - assets/audios/tts_female/
+  - assets/audios/tts_female/Wudu/
   #Fonts
   - assets/fonts/ComicNeue-Regular.ttf
   - assets/fonts/ComicNeue-Bold.ttf

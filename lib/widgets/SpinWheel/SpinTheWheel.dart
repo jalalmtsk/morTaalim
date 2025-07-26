@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../XpSystem.dart';
 import '../../tools/Ads_Manager.dart';
+import 'WheelUI.dart';
 
 class SpinWheelPopup extends StatefulWidget {
   const SpinWheelPopup({Key? key}) : super(key: key);
@@ -228,21 +229,35 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
 
               const SizedBox(height: 20),
 
-              Center(
-                child: AnimatedBuilder(
-                  animation: _controller,
-                  builder: (_, child) {
-                    return Transform.rotate(
-                      angle: _animation.value * pi / 180,
-                      child: child,
-                    );
-                  },
-                  child: CustomPaint(
-                    painter: WheelPainter(_rewards),
-                    size: Size(wheelRadius * 2, wheelRadius * 2),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  // Spinning Wheel
+                  AnimatedBuilder(
+                    animation: _controller,
+                    builder: (_, child) {
+                      return Transform.rotate(
+                        angle: _animation.value * pi / 180,
+                        child: child,
+                      );
+                    },
+                    child: CustomPaint(
+                      painter: WheelPainter(_rewards),
+                      size: Size(wheelRadius * 2, wheelRadius * 2),
+                    ),
                   ),
-                ),
+
+                  // Pointer
+                  Positioned(
+                    top: wheelRadius * 0.05,
+                    child: CustomPaint(
+                      size: const Size(30, 30),
+                      painter: TrianglePointerPainter(),
+                    ),
+                  ),
+                ],
               ),
+
 
               const SizedBox(height: 20),
 
@@ -294,40 +309,4 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
   }
 }
 
-class WheelPainter extends CustomPainter {
-  final List<String> rewards;
-  WheelPainter(this.rewards);
 
-  @override
-  void paint(Canvas canvas, Size size) {
-    final sweepAngle = 2 * pi / rewards.length;
-    final radius = size.width / 2;
-    final center = Offset(radius, radius);
-    final paint = Paint()..style = PaintingStyle.fill;
-
-    for (int i = 0; i < rewards.length; i++) {
-      paint.color = i.isEven ? Colors.purple : Colors.deepPurple;
-      canvas.drawArc(Rect.fromCircle(center: center, radius: radius), sweepAngle * i,
-          sweepAngle, true, paint);
-
-      final textPainter = TextPainter(
-        text: TextSpan(
-          text: rewards[i],
-          style: const TextStyle(color: Colors.white, fontSize: 12),
-        ),
-        textDirection: TextDirection.ltr,
-      )..layout();
-
-      final angle = sweepAngle * (i + 0.5);
-      final offset = Offset(
-        center.dx + (radius * 0.65) * cos(angle) - textPainter.width / 2,
-        center.dy + (radius * 0.65) * sin(angle) - textPainter.height / 2,
-      );
-
-      textPainter.paint(canvas, offset);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}

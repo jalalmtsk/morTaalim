@@ -1,11 +1,14 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:mortaalim/courses/primaire1Page/PractiseCoursesSubjects/IslamicEducation1/1_primaire_IslamicEducation_Practise.dart';
 import 'package:mortaalim/widgets/shimmerPage.dart';
-import '../../l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../l10n/app_localizations.dart';
+import 'PractiseCoursesSubjects/French1/1_primaire_French_Practise.dart';
+import 'PractiseCoursesSubjects/Math1/1_primaire_Math_Practise.dart';
+import 'PractiseCoursesSubjects/Science1/1_primaire_Science_Practise.dart';
 
-import '../../Inside_Course_Logic/HomeCourse.dart';
+// 👇 Import your course pages
+
 
 class primaire1Pratique extends StatefulWidget {
   const primaire1Pratique({Key? key}) : super(key: key);
@@ -16,43 +19,35 @@ class primaire1Pratique extends StatefulWidget {
 
 class _Primaire1StatePratique extends State<primaire1Pratique> {
   final List<Map<String, String>> courses = [
-    {'title': 'math', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_mathematique.json'},
-    {'title': 'french', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_francais.json'},
-    {'title': 'arabic', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
-    {'title': 'islamicEducation', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_education_islamique.json'},
-    {'title': 'artEducation', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
-    {'title': 'Activitéscientifique', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_activite_scientifique.json'},
+    {'title': 'math', 'route': 'IndexMath1Practise'},
+    {'title': 'french', 'route': 'IndexFrench1Practise'},
+    {'title': 'arabic', 'route': 'arabicCourse'},
+    {'title': 'islamicEducation', 'route': 'IndexIslamicEducation1Practise'},
+    {'title': 'science', 'route': 'IndexScience1Practise'},
   ];
 
   Map<String, double> courseProgress = {};
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     loadProgressForCourses();
   }
-  bool isLoading = true;
 
   Future<void> loadProgressForCourses() async {
     final prefs = await SharedPreferences.getInstance();
     for (var course in courses) {
       final courseId = course['title']!;
       final saved = prefs.getStringList('progress2_$courseId') ?? [];
-      final total = await getTotalSections(course['file']!);
+      final total = 10;
       final progress = total > 0 ? saved.length / total : 0.0;
-
       courseProgress[courseId] = progress;
     }
-    await Future.delayed(const Duration(seconds: 1)); // simulate loading
+    await Future.delayed(const Duration(seconds: 1));
     setState(() {
       isLoading = false;
     });
-  }
-
-  Future<int> getTotalSections(String jsonFilePath) async {
-    final data = await rootBundle.loadString(jsonFilePath);
-    final jsonResult = jsonDecode(data);
-    return (jsonResult['sections'] as List).length;
   }
 
   IconData getCourseIcon(String title) {
@@ -67,6 +62,8 @@ class _Primaire1StatePratique extends State<primaire1Pratique> {
         return Icons.mosque;
       case 'artEducation':
         return Icons.brush;
+      case 'science':
+        return Icons.science;
       default:
         return Icons.menu_book;
     }
@@ -84,8 +81,26 @@ class _Primaire1StatePratique extends State<primaire1Pratique> {
         return tr.islamicEducation;
       case 'artEducation':
         return tr.artEducation;
+      case 'science':
+        return tr.artEducation;
       default:
         return tr.class6;
+    }
+  }
+
+  Widget? getCoursePage(String route) {
+    switch (route) {
+      case 'IndexMath1Practise':
+        return  IndexMath1Practise();
+        case 'IndexFrench1Practise':
+          return  IndexFrench1Practise();
+      case 'IndexScience1Practise':
+        return  IndexScience1Practise();
+      case 'IndexIslamicEducation1Practise':
+        return  IndexIslamicEducation1Practise();
+
+      default:
+        return null;
     }
   }
 
@@ -120,7 +135,6 @@ class _Primaire1StatePratique extends State<primaire1Pratique> {
                 ],
               ),
               child: FlexibleSpaceBar(
-
                 titlePadding: const EdgeInsets.only(left: 60, bottom: 20),
                 title: Text(
                   "📘 ${tr.class1}",
@@ -130,22 +144,12 @@ class _Primaire1StatePratique extends State<primaire1Pratique> {
                     color: Colors.white,
                   ),
                 ),
-                background: Padding(
-                  padding: const EdgeInsets.only(top: 30),
-                  /* child: Image.asset(
-                    'assets/images/Mathematics_toy.png',
-                    fit: BoxFit.cover,
-                  ),*/
-
-                ),
               ),
             ),
             shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.vertical(bottom: Radius.circular(28)),
             ),
           ),
-
-          // Your course list section remains the same as SliverToBoxAdapter
           SliverToBoxAdapter(
             child: Padding(
               padding: const EdgeInsets.only(top: 20),
@@ -165,6 +169,7 @@ class _Primaire1StatePratique extends State<primaire1Pratique> {
                 itemBuilder: (context, index) {
                   final course = courses[index];
                   final title = course['title']!;
+                  final routeName = course['route']!;
                   final icon = getCourseIcon(title);
                   final percent = courseProgress[title] ?? 0.0;
                   final percentText = (percent * 100).toStringAsFixed(0);
@@ -175,16 +180,13 @@ class _Primaire1StatePratique extends State<primaire1Pratique> {
                     builder: (context, double value, child) {
                       return GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => CoursePage(
-                                jsonFilePath: course['file']!,
-                                courseId: title,
-                                progressPrefix: "progress2", // standard
-                              ),
-                            ),
-                          ).then((_) => loadProgressForCourses());
+                          final page = getCoursePage(routeName);
+                          if (page != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => page),
+                            ).then((_) => loadProgressForCourses());
+                          }
                         },
                         child: Card(
                           margin: const EdgeInsets.symmetric(vertical: 10),
@@ -196,10 +198,10 @@ class _Primaire1StatePratique extends State<primaire1Pratique> {
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.circular(22), // more rounded corners
+                              borderRadius: BorderRadius.circular(22),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.orange.withValues(alpha:0.4),
+                                  color: Colors.orange.withOpacity(0.4),
                                   blurRadius: 10,
                                   offset: const Offset(0, 3),
                                 ),

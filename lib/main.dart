@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:mortaalim/PractiseGames/HeavyLight/HeavyLight.dart';
+import 'package:mortaalim/PractiseGames/PlayTheWord/PlayTheWord.dart';
+import 'package:mortaalim/PractiseGames/WuduGame/WuduGame.dart';
+import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 
@@ -22,7 +26,7 @@ import 'package:mortaalim/games/paitingGame/paint_main.dart';
 import 'package:mortaalim/profileSetupPage.dart';
 import 'package:mortaalim/tools/splashScreen.dart';
 import 'package:mortaalim/testing.dart';
-import 'package:mortaalim/tools/CreditsPage.dart';
+import 'package:mortaalim/widgets/CreditsPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -114,11 +118,14 @@ class _MyAppState extends State<MyApp> {
         "WordExplorer" : (context) =>  WordExplorer(),
         'FavoriteWords': (context) => const FavoriteWordsPage(),
         "SugarSmash" : (context) => const Sugrasmash(),
+        "BreakingWalls" : (context) => BreakingWalls(),
         'Profile': (context) => const ProfileSetupPage(),
 
 
-        'Shop' : (context) => MainShopPageIndex(),
+        'Shop' : (context) => WuduGame(),
         'Credits' : (context) =>  CreditsPage(),
+
+
 
         'Setting' : (context) => SettingsPage(onChangeLocale: _changeLanguage),
         'Splash' : (context) => SplashPage(onChangeLocale: _changeLanguage),

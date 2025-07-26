@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primaireExamenPage.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePage.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePratique.dart';
+import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class index1Primaire extends StatefulWidget {
@@ -10,6 +11,8 @@ class index1Primaire extends StatefulWidget {
   @override
   State<index1Primaire> createState() => _index1PrimaireState();
 }
+
+final MusicPlayer backGroundIndexMusic = MusicPlayer();
 
 class _index1PrimaireState extends State<index1Primaire>
     with SingleTickerProviderStateMixin {
@@ -57,6 +60,7 @@ class _index1PrimaireState extends State<index1Primaire>
   @override
   void initState() {
     super.initState();
+    backGroundIndexMusic.play("assets/audios/sound_track/SugarSprinkle_BcG.mp3", loop: true);
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -78,6 +82,7 @@ class _index1PrimaireState extends State<index1Primaire>
   @override
   void dispose() {
     _controller.dispose();
+    backGroundIndexMusic.dispose();
     super.dispose();
   }
 
@@ -116,7 +121,9 @@ class _index1PrimaireState extends State<index1Primaire>
                         children: [
                           IconButton(
                             icon:  Icon(Icons.arrow_back, color: Colors.deepOrange),
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () {
+                              backGroundIndexMusic.stop();
+                              Navigator.pop(context);}
                           ),
                           Text(
                             '1ère Année Primaire',

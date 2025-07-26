@@ -37,6 +37,38 @@ class CreditsPage extends StatelessWidget {
       license: 'Licensed under Creative Commons: By Attribution 4.0 License',
       licenseUrl: 'http://creativecommons.org/licenses/by/4.0/',
     ),
+
+    MusicCredit(
+      title: 'Daisy',
+      artist: 'Sakura Girl | https://soundcloud.com/sakuragirl_official',
+      license: 'Creative Commons CC BY 3.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by/3.0/',
+    ),
+
+    MusicCredit(
+      title: 'Yay',
+      artist: 'Sakura Girl | https://soundcloud.com/sakuragirl_official',
+      license: 'Creative Commons CC BY 3.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by/3.0/',
+    ),
+
+    MusicCredit(
+      title: 'Sugar Sprinkle',
+      artist: 'PeriTune | https://peritune.com/',
+      license: 'Creative Commons CC BY 4.0',
+      licenseUrl: 'https://creativecommons.org/licenses/by/4.0/',
+    ),
+
+    MusicCredit(
+      title: 'Foam Rubber',
+      artist: 'Alexander Nakarada | https://creatorchords.com',
+      license: 'Creative Commons Attribution 4.0 International (CC BY 4.0)',
+      licenseUrl: 'https://creativecommons.org/licenses/by/4.0/',
+    ),
+
+
+
+
   ];
 
 

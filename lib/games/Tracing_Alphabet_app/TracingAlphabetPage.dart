@@ -26,8 +26,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
   List<Offset?> _points = [];
   Set<int> _rewardedLetterIndexes = {};
 
-  int xp = 0;
-  int Tolims = 0;
+  int score = 0;
   bool _isBannerAdLoaded = false;
   @override
   void initState() {
@@ -241,8 +240,14 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
 
   void giveTolimAndXP() {
     setState(() {
-      xp += 10;
-      Tolims += 1;
+      final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+      xpManager.addXP(2, context: context);
+      score += 1;    // Increment score by 1
+
+      if (score >= 3) {
+        xpManager.addTokens(1);  // Give 1 Tolim
+        score = 0;    // Reset score to 0
+      }
     });
   }
 
@@ -413,8 +418,6 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                           if (drawnDistance > 500 && !_rewardedLetterIndexes.contains(_currentLetterIndex)) {
                             _rewardedLetterIndexes.add(_currentLetterIndex);
                             giveTolimAndXP();
-                            xpManager.addTokens(1);
-                            xpManager.addXP(2, context: context);
                           }
                         },
                         child: CustomPaint(
@@ -431,7 +434,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
 
               Card(
                 margin: const EdgeInsets.symmetric(horizontal: 24),
-                color: Colors.white.withOpacity(0.9),
+                color: Colors.white.withValues(alpha: 0.9),
                 elevation: 4,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                 child: Padding(
@@ -491,7 +494,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                           boxShadow: [BoxShadow(color: Colors.orange.shade100, blurRadius: 10)],
                         ),
                         child: Text(
-                          "🎯 Score: $Tolims",
+                          "🎯 Score: $score",
                           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),
@@ -499,17 +502,16 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
       ),
       bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded
           ? SafeArea(
-        child: Container(
-          height: _bannerAd!.size.height.toDouble(),
-          width: _bannerAd!.size.width.toDouble(),
-          child: AdWidget(ad: _bannerAd!),
+            child: Container(
+              height: _bannerAd!.size.height.toDouble(),
+              width: _bannerAd!.size.width.toDouble(),
+                child: AdWidget(ad: _bannerAd!),
         ),
       )
           : null,

@@ -128,6 +128,7 @@
   "playAgain": "Play Again",
   "enterName": "Enter your name",
 
+
     "chooseYourLanguageToStartTracing": "Choose your language to start tracing!",
     "nextLetter": "Next letter",
     "clear": "Clear",
@@ -143,7 +144,64 @@
     "pageOf": "Page of",
     "forb": "For",
      "notEnoughStars": "Not enough stars",
-     "lol" : "Lole"
+
+
+
+
+  "courseLocked": "Course Locked",
+    "unlockThisCourseFor": "Unlock this course for",
+    "cancel": "Cancel",
+    "unlock": "Unlock",
+    "gained": "Gained",
+    "wellDone": "Well Done",
+
+    "freeDrawing": "Free Drawing",
+    "draw": "Draw",
+    "gallery": "Gallery",
+    "noDrawingsSavedYet": "No drawings saved yet",
+    "createSomeAwesomeArt": "Create some awesome art!",
+    "pickAColor": "Pick a color",
+    "ok": "OK",
+    "selectBrushSize": "Select brush size",
+    "drawSomethingBeforeSaving": "Draw something before saving",
+    "drawingSaved": "Drawing saved",
+    "time": "Time",
+
+    "chooseYourBanner": "Choose your banner",
+    "retry": "Retry",
+    "next": "Next",
+    "letter": "Letter",
+    "secondsLeft": "Seconds left",
+    "question": "Question",
+    "addtofavorite": "Add to favorite",
+    "close": "Close",
+    "previous": "Previous",
+    "favoriteWords": "Favorite Words",
+    "noFavoriteWordsYetAddNewWordsHere": "No favorite words yet. Add new words here.",
+    "free": "Free",
+    "saveProfile": "Save Profile",
+    "funMoji": "FunMoji",
+    "avatar": "Avatar",
+    "beams": "Beams",
+    "moji": "Moji",
+    "aliens": "Aliens",
+    "animated": "Animated",
+    "banners": "Banners",
+    "cute": "Cute",
+    "joyful": "Joyful",
+    "sciFi": "Sci-Fi",
+    "fantasy": "Fantasy",
+    "islamic": "Islamic",
+    "store": "Store",
+    "stars": "Stars",
+    "tolims": "Tolims",
+    "spinningWheel": "Spinning Wheel",
+    "spin": "Spin",
+    "reroll": "Reroll",
+    "comeBackin": "Come back in",
+    "dailyReward": "Daily Reward",
+    "watchAd": "Watch Ad",
+    "earn": "Earn"
 
 
 }
