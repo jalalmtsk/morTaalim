@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 
@@ -15,6 +16,8 @@ class LanguageSelectorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final xpManager = Provider.of<ExperienceManager>(context, listen: true);
 
     final languages = [
       LanguageOption(
@@ -99,6 +102,21 @@ class LanguageSelectorPage extends StatelessWidget {
                         color: Colors.deepOrangeAccent,),
                         onPressed: () => Navigator.of(context).pop(),
                         tooltip: 'Back',
+                      ),
+
+                      ElevatedButton(
+                        onPressed: () async {
+                          // Add XP first
+                          xpManager.addXP(3, context: context);
+
+                          // Wait before showing the star banner
+                          await Future.delayed(const Duration(milliseconds: 2000));
+                          xpManager.addStarBanner(context, 1000);
+
+                          // Wait before showing the token banner
+                          await Future.delayed(const Duration(milliseconds: 2500));
+                          xpManager.addTokenBanner(context, 2);
+                        }, child: Text("Add"),
                       ),
                     ],
                   ),

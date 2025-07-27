@@ -25,9 +25,10 @@ class ImageBannerGrid extends StatelessWidget {
               child: const Text("Cancel"),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async{
                 xpManager.addXP(25,context: context);
-                xpManager.addStars(-cost);
+                await Future.delayed(Duration(seconds: 1));
+                xpManager.SpendStarBanner(context, -cost);
                 xpManager.unlockBanner(path);
                 xpManager.selectBannerImage(path);
                 Navigator.pop(context);

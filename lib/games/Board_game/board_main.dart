@@ -118,7 +118,7 @@ class _BoardGamePageState extends State<BoardGamePage>
           if (lives == 0) {
             int starsEarned = (score / 20).floor();
             if (starsEarned > 0) {
-              xpManager.addStars(starsEarned);
+              xpManager.addStarBanner(context, starsEarned);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                     content:
@@ -332,8 +332,7 @@ class _BoardGamePageState extends State<BoardGamePage>
             ),
 
             ElevatedButton(onPressed: (){
-xpManager.addStars(20);
-print(xpManager.stars);
+                xpManager.addStarBanner(context,20);
             }, child: Text("LOL")),
             const SizedBox(height: 30),
             Text(

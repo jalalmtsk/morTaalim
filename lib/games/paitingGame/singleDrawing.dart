@@ -197,7 +197,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
         widget.onSave(savedDrawing);
 
         // Deduct 1 star for saving
-        xpManager.addTokens(-1);
+        xpManager.addTokenBanner(context, -1);
 
         clearCanvas();
 

@@ -30,7 +30,12 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
 
   Future<void> _saveProfile() async {
     final name = _nameController.text.trim();
-    if (name.isEmpty) return;
+    if (name.isEmpty || name.length > 12) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Name must be between 1 and 12 characters")),
+      );
+      return;
+    }
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('name', name);
@@ -52,64 +57,51 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         child: Column(
           children: [
-            // Add the status bar here
             ProfileStatusBar(
-              playerName: _nameController.text.isEmpty
-                  ? "Player"
-                  : _nameController.text,
+              playerName: _nameController.text.isEmpty ? "Player" : _nameController.text,
               onEditName: () {
-                // Scroll to textfield or open dialog to edit name (optional)
-                FocusScope.of(context).requestFocus(
-                    FocusNode()); // Remove keyboard focus
-                // Or just focus the TextField below:
-                // _nameFocusNode.requestFocus(); // if you add a FocusNode to TextField
+                FocusScope.of(context).requestFocus(FocusNode());
               },
             ),
-
-            const SizedBox(height: 30),
+            const SizedBox(height: 20),
 
             Expanded(
               child: ListView(
                 children: [
-                  Text(
-                    "Choose your banner:",
+                  const Text(
+                    "Choose Your Banner",
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.deepOrange.shade700,
+                      color: Colors.deepOrange,
                     ),
                   ),
                   const SizedBox(height: 12),
                   SizedBox(
-                    height: 140,
+                    height: 130,
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: xpManager.unlockedBanners.length,
                       itemBuilder: (context, index) {
                         final banner = xpManager.unlockedBanners[index];
-                        final isSelected = xpManager.selectedBannerImage ==
-                            banner;
+                        final isSelected = xpManager.selectedBannerImage == banner;
 
                         return GestureDetector(
-                          onTap: () {
-                            xpManager.selectBannerImage(banner);
-                          },
+                          onTap: () => xpManager.selectBannerImage(banner),
                           child: AnimatedContainer(
                             duration: const Duration(milliseconds: 300),
                             margin: const EdgeInsets.symmetric(horizontal: 10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: isSelected
-                                    ? Colors.deepOrange
-                                    : Colors.grey.shade300,
+                                color: isSelected ? Colors.deepOrange : Colors.grey.shade400,
                                 width: isSelected ? 4 : 2,
                               ),
                               boxShadow: isSelected
                                   ? [
                                 BoxShadow(
                                   color: Colors.deepOrange.withOpacity(0.4),
-                                  blurRadius: 12,
+                                  blurRadius: 8,
                                   spreadRadius: 1,
                                   offset: const Offset(0, 5),
                                 )
@@ -120,8 +112,8 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                               borderRadius: BorderRadius.circular(16),
                               child: Image.asset(
                                 banner,
-                                width: 240,
-                                height: 140,
+                                width: 230,
+                                height: 120,
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -131,44 +123,72 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                     ),
                   ),
 
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 30),
+                  const Text(
+                    "Enter Your Name",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
 
                   TextField(
                     controller: _nameController,
+                    maxLength: 12,
                     decoration: InputDecoration(
                       labelText: tr.name ?? "Your Name",
+                      prefixIcon: const Icon(Icons.person),
+                      counterText: '', // hide default counter
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          _nameController.clear();
+                          setState(() {});
+                        },
+                      ),
+                      filled: true,
+                      fillColor: Colors.orange.shade50,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      prefixIcon: const Icon(Icons.person),
                     ),
                     onChanged: (val) {
-                      // Update status bar instantly
-                      setState(() {});
+                      setState(() {}); // live update ProfileStatusBar
                     },
+                  ),
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: Text(
+                        "${_nameController.text.length}/12",
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: _nameController.text.length > 12 ? Colors.red : Colors.grey,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 30),
-
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
                 onPressed: _saveProfile,
+                icon: const Icon(Icons.save),
+                label: const Text("Save Profile"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepOrange,
-                  padding:
-                  const EdgeInsets.symmetric(vertical: 16, horizontal: 40),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                child: Text(
-                  "Save Profile" ?? "Save Profile",
-                  style:
-                  const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  textStyle: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
               ),
             ),
@@ -177,5 +197,4 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       ),
     );
   }
-
 }

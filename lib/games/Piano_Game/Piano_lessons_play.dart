@@ -87,15 +87,15 @@ class _InteractiveLessonPageState extends State<InteractiveLessonPage> {
 
     if (!lessonCompleted && note == widget.lesson.notes[currentNoteIndex]) {
       // Add XP per correct note
-      xpManager.addXP(10);
+      xpManager.addXP(2, context: context);
 
       setState(() {
         currentNoteIndex++;
         if (currentNoteIndex >= widget.lesson.notes.length) {
           lessonCompleted = true;
           // Bonus for completing lesson
-          xpManager.addXP(50);
-          xpManager.addStars(1);
+          xpManager.addXP(5, context: context);
+          xpManager.addStarBanner(context, 1);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('🎉 Lesson Completed! You earned 50 XP & 1 star!')),
           );

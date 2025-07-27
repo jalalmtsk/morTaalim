@@ -268,34 +268,36 @@ class _PlayTheWordState extends State<PlayTheWord> {
                 ),
               ],
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(18),
-                  child: Image.asset(
-                    word.imagePath,
-                    height: 220,
-                    fit: BoxFit.cover,
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(18),
+                    child: Image.asset(
+                      word.imagePath,
+                      height: 220,
+                      fit: BoxFit.cover,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Text(word.emoji, style: const TextStyle(fontSize: 40)),
-                const SizedBox(height: 8),
-                Text(
-                  word.word,
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.indigo,
+                  const SizedBox(height: 16),
+                  Text(word.emoji, style: const TextStyle(fontSize: 40)),
+                  const SizedBox(height: 8),
+                  Text(
+                    word.word,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.indigo,
+                    ),
                   ),
-                ),
-                if (isLearned)
-                  const Padding(
-                    padding: EdgeInsets.only(top: 10),
-                    child: Icon(Icons.check_circle, color: Colors.green, size: 30),
-                  ),
-              ],
+                  if (isLearned)
+                    const Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: Icon(Icons.check_circle, color: Colors.green, size: 30),
+                    ),
+                ],
+              ),
             ),
           ),
         );

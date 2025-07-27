@@ -5,6 +5,10 @@ import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'ManagerTools/AnimatedSpendingStarBanner.dart';
+import 'ManagerTools/AnimatedSpendingTolimBanner.dart';
+import 'ManagerTools/AnimatedStarBanner.dart';
+import 'ManagerTools/AnimatedTolimBanner.dart';
 import 'ManagerTools/AnimatedXpBanner.dart';
 import 'package:mortaalim/ManagerTools/LevelUpOverlayHelper.dart';
 
@@ -32,7 +36,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   ExperienceManager() {
     WidgetsBinding.instance.addObserver(this);
     _loadData();
-    _startRewardTimer();
   }
 
   // 🔁 Exponential XP System --------------------------
@@ -79,10 +82,9 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
 
 //MUSIC SOUND--------------------------------////
   bool _musicEnabled = true; // Default value
-
   bool get musicEnabled => _musicEnabled;
   double get musicVolume => _musicVolume;
-  double _musicVolume = 0.5; // default volume 50%
+  double _musicVolume = 0.4; // default volume 40%
 
   void setMusicEnabled(bool value) {
     _musicEnabled = value;
@@ -151,29 +153,33 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   /// --------------------------------------------------------------
 
 
-  void _startRewardTimer() {
-    _rewardTimer?.cancel();
-    _rewardTimer = Timer.periodic(rewardCooldown, (_) {
-      _giveReward();
-    });
-  }
 
-  void _stopRewardTimer() {
-    _rewardTimer?.cancel();
-    _rewardTimer = null;
-  }
-
-  void _giveReward() {
-    addTokens(2);
-    addStars(1);
-  }
-
-  void addTokens(int amount) {
+  void addTokenBanner(BuildContext context, int amount) {
     Tolims += amount;
     _recentlyAddedTokens = amount;
     _showTokenFlash = true;
     notifyListeners();
 
+    // Show token banner overlay
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+
+      final overlay = Overlay.of(context);
+      if (overlay == null) return;
+
+      late OverlayEntry entry;
+
+      entry = OverlayEntry(
+        builder: (ctx) => AnimatedTokenBanner(
+          tokenAmount: amount,
+          onDismiss: () => entry.remove(),
+        ),
+      );
+
+      overlay.insert(entry);
+    });
+
+    // Flash animation cleanup
     Future.delayed(const Duration(milliseconds: 300), () {
       _showTokenFlash = false;
       notifyListeners();
@@ -187,24 +193,97 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _saveData();
   }
 
-  void addStars(int amount) {
+  void SpendTokenBanner(BuildContext context, int amount) {
+
+    Tolims += amount;
+    _recentlyAddedTokens = amount;
+    _showTokenFlash = true;
+    notifyListeners();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final overlay = Overlay.of(context);
+      if (overlay == null || !context.mounted) return;
+
+      late OverlayEntry entry;
+      entry = OverlayEntry(
+        builder: (ctx) => AnimatedTokenSpentBanner(
+          tokenAmount: amount,
+          onDismiss: () => entry.remove(),
+        ),
+      );
+
+      overlay.insert(entry);
+    });
+  }
+
+
+
+
+  void addStarBanner(BuildContext context, int amount) {
     _stars += amount;
     _recentlyAddedStars = amount;
     _showStarFlash = true;
     notifyListeners();
 
+    // Animate flash
     Future.delayed(const Duration(milliseconds: 600), () {
       _showStarFlash = false;
       notifyListeners();
     });
 
+    // Reset recently added
     Future.delayed(const Duration(seconds: 1), () {
       _recentlyAddedStars = 0;
       notifyListeners();
     });
 
     _saveData();
+
+    // Show animated star banner
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+
+      final overlay = Overlay.of(context);
+      if (overlay == null) return;
+
+      late OverlayEntry entry;
+
+      entry = OverlayEntry(
+        builder: (ctx) => AnimatedStarBanner(
+          starAmount: amount,
+          onDismiss: () => entry.remove(),
+        ),
+      );
+
+      overlay.insert(entry);
+    });
   }
+
+  void SpendStarBanner(BuildContext context, int amount) {
+    _stars += amount;
+    _recentlyAddedStars = amount;
+    _showStarFlash = true;
+    notifyListeners();
+
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final overlay = Overlay.of(context);
+      if (overlay == null || !context.mounted) return;
+
+      late OverlayEntry entry;
+      entry = OverlayEntry(
+        builder: (ctx) => AnimatedStarSpentBanner(
+          starAmount: amount,
+          onDismiss: () => entry.remove(),
+        ),
+      );
+
+      overlay.insert(entry);
+    });
+  }
+
+
+
 
   void addXP(int amount, {BuildContext? context}) {
     final int oldLevel = level;
@@ -212,7 +291,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     final int newLevel = level;
 
     if (newLevel > oldLevel) {
-      addStars(newLevel - oldLevel);
+      addStarBanner(context!, newLevel - oldLevel);
     }
 
     _saveData();
@@ -384,21 +463,17 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   }
   /////////////////////////////////////////////////////////
 
+  late BuildContext _appContext;
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused || state == AppLifecycleState.inactive) {
-      _stopRewardTimer();
-    } else if (state == AppLifecycleState.resumed) {
-      _stopRewardTimer();
-      _startRewardTimer();
-    }
+  void init(BuildContext context) {
+    _appContext = context;
   }
+  @override
+
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _stopRewardTimer();
     _delayedRestartTimer?.cancel();
     super.dispose();
   }

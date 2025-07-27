@@ -31,7 +31,7 @@ class AdHelper {
   /// ✅ Show an Interstitial Ad
   static Future<void> showInterstitialAd({Function? onDismissed}) async {
     await InterstitialAd.load(
-      adUnitId: 'ca-app-pub-9936922975297046/INTERSTITIAL_AD_ID', // ❗ Replace this with your interstitial ad unit
+      adUnitId: 'ca-app-pub-9936922975297046/8354774722', // ❗ Replace this with your interstitial ad unit
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {

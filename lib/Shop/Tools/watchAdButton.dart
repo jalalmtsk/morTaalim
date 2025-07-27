@@ -12,7 +12,7 @@ class WatchAdButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => AdHelper.showRewardedAdWithLoading(context, (){
-        Provider.of<ExperienceManager>(context, listen: false).addStars(1);
+        Provider.of<ExperienceManager>(context, listen: false).addStarBanner(context ,1);
       }),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),

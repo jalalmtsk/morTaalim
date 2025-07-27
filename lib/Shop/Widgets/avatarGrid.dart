@@ -26,9 +26,10 @@ class AvatarGrid extends StatelessWidget {
               child: const Text("Cancel"),
             ),
             TextButton(
-              onPressed: () {
-                xpManager.addXP(35,context: context);
-                xpManager.addStars(-cost);
+              onPressed: () async{
+                xpManager.addXP(20,context: context);
+                await Future.delayed(Duration(seconds: 1));
+                xpManager.SpendStarBanner(context, -cost);
                 xpManager.unlockAvatar(emoji);
                 xpManager.selectAvatar(emoji);
                 Navigator.pop(context);

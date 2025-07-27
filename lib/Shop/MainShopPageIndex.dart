@@ -48,24 +48,40 @@ class MainShopPageIndex extends StatelessWidget {
 
                     Row(children: [
                       RewardChest(
-                        cooldown: Duration(minutes: 10),
+                        cooldown: Duration(seconds: 5),
                         chestClosedAsset: 'assets/images/UI/utilities/Box.png',
                         chestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
-                        onRewardCollected: () {
-                          Provider.of<ExperienceManager>(context, listen: false).addXP(2, context: context);
+                        rareChestClosedAsset: 'assets/images/UI/utilities/Box.png',
+                        rareChestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
+                        onRewardCollected: ({required bool isRare}) {
+                          if (isRare) {
+                            // Give bigger reward
+                            Provider.of<ExperienceManager>(context, listen: false).addTokenBanner(context, 1);
+                          } else {
+                            // Normal reward
+                            Provider.of<ExperienceManager>(context, listen: false).addXP(2, context: context);
+                          }
                         },
                       ),
+                      RewardChest(
+                        cooldown: Duration(hours: 24),
+                        chestClosedAsset: 'assets/images/UI/utilities/Box.png',
+                        chestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
+                        rareChestClosedAsset: 'assets/images/UI/utilities/Box.png',
+                        rareChestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
+                        onRewardCollected: ({required bool isRare}) {
+                          if (isRare) {
+                            // Give bigger reward
+                            Provider.of<ExperienceManager>(context, listen: false).addStarBanner(context, 2);
+                          } else {
+                            // Normal reward
+                            Provider.of<ExperienceManager>(context, listen: false).addXP(10, context: context);
+                          }
+                        },
+                      ),
+
                       const SizedBox(width: 20,),
 
-                      RewardChest(
-                        cooldown: Duration(minutes: 50),
-                        chestClosedAsset: 'assets/images/UI/utilities/Box.png',
-                        chestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
-                        onRewardCollected: () {
-                          Provider.of<ExperienceManager>(context, listen: false).addXP(2, context: context);
-                          Provider.of<ExperienceManager>(context, listen: false).addTokens(1);
-                        },
-                      ),
                     ],)
 
                   ],
@@ -114,7 +130,7 @@ class MainShopPageIndex extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                 child: GestureDetector(
                   onTap: () => AdHelper.showRewardedAdWithLoading(context, (){
-                    Provider.of<ExperienceManager>(context, listen: false).addStars(1);
+                    Provider.of<ExperienceManager>(context, listen: false).addStarBanner(context,1);
                   }),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,

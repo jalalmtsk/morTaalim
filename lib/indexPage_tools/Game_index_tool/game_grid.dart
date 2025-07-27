@@ -131,7 +131,7 @@ class _GameGridState extends State<GameGrid>
                   ),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () { triggerConfetti();},
                   icon: const Icon(Icons.card_giftcard),
                 )
               ],
@@ -361,21 +361,6 @@ class _GameGridState extends State<GameGrid>
               },
               child: const Text('Reset Purchases (Dev Only)'),
             ),
-            ElevatedButton(
-              onPressed: () {
-                triggerConfetti();
-              },
-              child: const Text("🎉 Trigger Confetti (Debug)"),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                xpManager.addStars(40);
-                xpManager.addTokens(3);
-                xpManager.addXP(30, context: context);
-              },
-              child: const Text("Add Stars and Tolims"),
-            ),
-
 
 
             ///:::::::: BANNER ADS

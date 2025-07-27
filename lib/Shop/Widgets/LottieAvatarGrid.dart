@@ -25,9 +25,10 @@ class LottieAvatarGrid extends StatelessWidget {
               child: const Text("Cancel"),
             ),
             TextButton(
-              onPressed: () {
-                xpManager.addXP(1000,context: context);
-                xpManager.addStars(-cost);
+              onPressed: () async{
+                xpManager.addXP(500,context: context);
+                await Future.delayed(Duration(seconds: 1));
+                xpManager.SpendStarBanner(context, -cost);
                 xpManager.unlockAvatar(lottiePath);
                 xpManager.selectAvatar(lottiePath);
                 Navigator.pop(context);

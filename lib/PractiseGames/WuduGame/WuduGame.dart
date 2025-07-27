@@ -17,13 +17,13 @@ class _WuduGameState extends State<WuduGame> with TickerProviderStateMixin {
   final MusicPlayer player = MusicPlayer();
 
   final Map<String, String> stepImages = {
-    'النية': 'assets/images/PractiseImage/WuduImages/intention.png',
+    'النية': 'assets/images/PractiseImage/WuduImages/intention_wudu.png',
     'غسل اليدين': 'assets/images/PractiseImage/WuduImages/hands_wudu.png',
     'المضمضة': 'assets/images/PractiseImage/WuduImages/mouth_wudu.png',
     'الاستنشاق': 'assets/images/PractiseImage/WuduImages/nose_wudu.png',
     'غسل الوجه': 'assets/images/PractiseImage/WuduImages/face_wudu.png',
     'غسل الذراعين': 'assets/images/PractiseImage/WuduImages/arm_wudu.png',
-    'مسح الرأس': 'assets/images/PractiseImage/WuduImages/hear_wudu.png',
+    'مسح الرأس': 'assets/images/PractiseImage/WuduImages/head_wudu.png',
     'مسح الأذنين': 'assets/images/PractiseImage/WuduImages/ear_wudu.png',
     'غسل الرجلين': 'assets/images/PractiseImage/WuduImages/feet_wudu.png',
   };

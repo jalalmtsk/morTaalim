@@ -148,8 +148,9 @@ class _index1PrimaireState extends State<index1Primaire>
                         ),
                         tabs: [
                           Tab(icon: Icon(Icons.menu_book), text: 'Cours'),
-                          Tab(icon: Icon(Icons.track_changes_rounded), text: 'Pratique'),
                           Tab(icon: Icon(Icons.assignment), text: 'Examens'),
+                          Tab(icon: Icon(Icons.track_changes_rounded), text: 'Exercices'),
+
                         ],
                       ),
                     ],
@@ -161,8 +162,9 @@ class _index1PrimaireState extends State<index1Primaire>
               child: TabBarView(
                 children: [
                   primaire1(key: _keyTab1),
-                  primaire1Pratique(key: _keyTab2),
                   primaire1Exam(key: _keyTab3),
+                  Primaire1Pratique(key: _keyTab2),
+
                 ],
               ),
             ),

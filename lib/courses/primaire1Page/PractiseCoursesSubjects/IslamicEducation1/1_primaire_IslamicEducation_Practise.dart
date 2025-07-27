@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/PractiseGames/MatchTheImage/MatchTheImage.dart';
+import 'package:mortaalim/PractiseGames/WuduGame/PillarOfIslam.dart';
 import 'package:mortaalim/PractiseGames/WuduGame/WuduGame.dart';
 import '../../../../PractiseGames/DragAndDrop/DragAndDrop.dart';
 import '../../../../PractiseGames/PlayTheWord/PlayTheWord.dart';
@@ -10,7 +11,7 @@ class IndexIslamicEducation1Practise extends StatelessWidget {
     PractiseWords(
       word: 'النية',
       emoji: '🧠',
-      imagePath: 'assets/images/PractiseImage/WuduImages/intention.png',
+      imagePath: 'assets/images/PractiseImage/WuduImages/intention_wudu.png',
       audioPath: 'assets/audios/tts_female/Wudu/intention_female.mp3',
     ),
     PractiseWords(
@@ -46,7 +47,7 @@ class IndexIslamicEducation1Practise extends StatelessWidget {
     PractiseWords(
       word: 'مسح الرأس',
       emoji: '🧴',
-      imagePath: 'assets/images/PractiseImage/WuduImages/hear_wudu.png',
+      imagePath: 'assets/images/PractiseImage/WuduImages/head_wudu.png',
       audioPath: 'assets/audios/tts_female/Wudu/head_female.mp3',
     ),
     PractiseWords(
@@ -78,7 +79,7 @@ class IndexIslamicEducation1Practise extends StatelessWidget {
         centerTitle: true,
         backgroundColor: Colors.indigo,
         title: const Text(
-          "📚 French Practise",
+          "📚 Education Islamic Practise",
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -116,7 +117,7 @@ class IndexIslamicEducation1Practise extends StatelessWidget {
                 context,
                 title: "Play the Word",
                 icon: Icons.volume_up_rounded,
-                color: Colors.blueAccent,
+                color: Colors.orangeAccent,
                 onTap: () => navigateTo(context, PlayTheWord(words: wuduStepsList)),
               ),
               _buildExerciseCard(
@@ -125,6 +126,14 @@ class IndexIslamicEducation1Practise extends StatelessWidget {
                 icon: Icons.image_rounded,
                 color: Colors.green,
                 onTap: () => navigateTo(context, MatchWordToImage(words: wuduStepsList)),
+              ),
+
+              _buildExerciseCard(
+                context,
+                title: "Pillar Of Islam",
+                icon: Icons.gradient,
+                color: Colors.pink,
+                onTap: () => navigateTo(context, PillarsGame()),
               ),
 
 

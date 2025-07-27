@@ -38,6 +38,17 @@ final List<Map<String, dynamic>> games = [
     'cost': 120,
     'unlockType': 'iq',
   },
+
+  /*{
+    'title': 'BreakingWalls',
+    'icon': Icons.square_foot_outlined,
+    'routeName': 'BreakingWalls',
+    'image': 'assets/images/GameGridImages/BreakingWalls.png', // ✅ New key
+    'locked': true,
+    'cost': 180,
+    'unlockType': 'puzzle',
+  },
+
   {
     'title': 'SugarSmash',
     'icon': Icons.square_foot_outlined,
@@ -115,5 +126,7 @@ final List<Map<String, dynamic>> games = [
     'cost': 500,
     'unlockType': 'music',
   },
+
+   */
 
 ];

@@ -42,7 +42,7 @@ class _SpinButtonWithAdState extends State<SpinButtonWithAd> {
     if (!isSpinAvailable) return;
 
     // Logic when spin is pressed
-    Provider.of<ExperienceManager>(context, listen: false).addXP(5);
+    Provider.of<ExperienceManager>(context, listen: false).addXP(2, context: context);
 
     // Start cooldown
     startCooldown(seconds: 60); // Set your cooldown duration

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/tools/SettingPanelInGame.dart';
@@ -14,6 +15,8 @@ import 'indexPage_tools/Game_index_tool/game_index.dart';
 import 'indexPage_tools/language_menu.dart';
 import 'tools/audio_tool/audio_tool.dart';
 
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
 class Index extends StatefulWidget {
   final void Function(Locale) onChangeLocale;
   const Index({super.key, required this.onChangeLocale});
@@ -23,7 +26,7 @@ class Index extends StatefulWidget {
 }
 
 class _IndexState extends State<Index>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+    with TickerProviderStateMixin, WidgetsBindingObserver, RouteAware {
   final MusicPlayer _musicPlayer = MusicPlayer();
   final MusicPlayer _clickButton = MusicPlayer();
 
@@ -38,19 +41,18 @@ class _IndexState extends State<Index>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    xpManager.init(context);
     _tabController = TabController(length: 2, vsync: this);
 
     _loadProfile();
 
-    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
 
     if (xpManager.musicEnabled) {
       _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3", loop: true);
       _musicPlayer.setVolume(xpManager.musicVolume);
     }
 
-    // Listen to music state & volume changes in ExperienceManager
     xpManager.addListener(() {
       if (xpManager.musicEnabled) {
         _musicPlayer.setVolume(xpManager.musicVolume);
@@ -83,14 +85,41 @@ class _IndexState extends State<Index>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    routeObserver.unsubscribe(this);
+    _tabController.dispose();
+    _musicPlayer.dispose();
+    _clickButton.dispose();
+    _profileAnimController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    if (xpManager.musicEnabled) {
+      _musicPlayer.stop();
+      _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3", loop: true);
+      _musicPlayer.setVolume(xpManager.musicVolume);
+    }
+  }
+
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
       _musicPlayer.pause();
     } else if (state == AppLifecycleState.resumed) {
-      final musicIsOn = Provider.of<ExperienceManager>(context, listen: false).musicEnabled;
-      if (musicIsOn) {
+      final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+      if (xpManager.musicEnabled) {
         _musicPlayer.resume();
-        final xpManager = Provider.of<ExperienceManager>(context, listen: false);
         _musicPlayer.setVolume(xpManager.musicVolume);
       }
     }
@@ -131,16 +160,6 @@ class _IndexState extends State<Index>
     }
   }
 
-  @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _tabController.dispose();
-    _musicPlayer.dispose();
-    _clickButton.dispose();
-    _profileAnimController.dispose();
-    super.dispose();
-  }
-
   Future<void> simulateLoading() async {
     await Future.delayed(const Duration(seconds: 3));
   }
@@ -165,11 +184,10 @@ class _IndexState extends State<Index>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.deepOrangeAccent.withAlpha(220),
-        leading:    LanguageMenu(
+        leading: LanguageMenu(
           onChangeLocale: widget.onChangeLocale,
           colorButton: Colors.white,
         ),
-        // Removed the leading MusicButton here
         title: Text(tr.welcome, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [
@@ -201,191 +219,175 @@ class _IndexState extends State<Index>
           controller: _tabController,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
-          labelStyle:
-          const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           unselectedLabelColor: Colors.white30,
           unselectedLabelStyle: const TextStyle(fontSize: 13),
           tabs: [
-            Tab(icon: const Icon(Icons.school), text: tr.courses),
+            Tab(icon: const Icon(Icons.school_outlined), text: tr.courses),
             Tab(icon: const Icon(Icons.videogame_asset), text: tr.games),
           ],
         ),
       ),
-      body: Stack(
-        children: [
-          // Background image (optional)
-          // Positioned.fill(
-          //   child: Image.asset(
-          //     'assets/images/Untitled design-2.png',
-          //     fit: BoxFit.cover,
-          //   ),
-          // ),
-
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: SafeArea(
-              child: Column(
-                children: [
-                  SlideTransition(
-                    position: _profileSlideAnimation,
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.asset(
-                            xpManager.selectedBannerImage,
-                            width: double.infinity,
-                            height: 100,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                        Container(
-                          height: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.black.withOpacity(0.15),
-                          ),
-                        ),
-                        Positioned.fill(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Material(
-                                  color: Colors.orange.withOpacity(0.1),
-                                  shape: const CircleBorder(),
-                                  child: InkWell(
-                                    customBorder: const CircleBorder(),
-                                    onTap: () {
-                                      _clickButton.play("assets/audios/pop.mp3");
-                                      Navigator.of(context)
-                                          .push(createFadeRoute(ProfilePage(
-                                        initialName: childName,
-                                        initialAvatar: avatarEmoji,
-                                        initialAge: 13,
-                                        initialColor: Colors.red,
-                                        initialMood: "Happy",
-                                      )))
-                                          .then((_) => _loadProfile());
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(1.0),
-                                      child: ClipOval(child: _buildAvatar(avatarEmoji)),
-                                    ),
-                                  ),
+      body: Padding(
+        padding: const EdgeInsets.all(16),
+        child: SafeArea(
+          child: Column(
+            children: [
+              SlideTransition(
+                position: _profileSlideAnimation,
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Image.asset(
+                        xpManager.selectedBannerImage,
+                        width: double.infinity,
+                        height: 100,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Container(
+                      height: 100,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.black.withOpacity(0.15),
+                      ),
+                    ),
+                    Positioned.fill(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Material(
+                              color: Colors.orange.withOpacity(0.1),
+                              shape: const CircleBorder(),
+                              child: InkWell(
+                                customBorder: const CircleBorder(),
+                                onTap: () {
+                                  _clickButton.play("assets/audios/pop.mp3");
+                                  Navigator.of(context)
+                                      .push(createFadeRoute(ProfilePage(
+                                    initialName: childName,
+                                    initialAvatar: avatarEmoji,
+                                    initialAge: 13,
+                                    initialColor: Colors.red,
+                                    initialMood: "Happy",
+                                  )))
+                                      .then((_) => _loadProfile());
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(1.0),
+                                  child: ClipOval(child: _buildAvatar(avatarEmoji)),
                                 ),
-                                const SizedBox(width: 3),
-                                Expanded(
-                                  flex: 2,
-                                  child: InkWell(
-                                    onTap: () {
-                                      Navigator.of(context)
-                                          .pushNamed('Profile')
-                                          .then((_) => _loadProfile());
-                                    },
-                                    child: Text(
-                                      (childName == "Player" || childName.isEmpty)
-                                          ? "${tr.enterName} ✏️"
-                                          : childName,
-                                      style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                        shadows: [
-                                          Shadow(blurRadius: 3, color: Colors.black)
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 4,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              const Icon(Icons.star,
-                                                  color: Colors.amber),
-                                              const SizedBox(width: 2),
-                                              Text(
-                                                "$stars",
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                          Row(
-                                            children: [
-                                              const Icon(
-                                                  Icons.generating_tokens_rounded,
-                                                  color: Colors.greenAccent),
-                                              const SizedBox(width: 2),
-                                              Text(
-                                                "${xpManager.saveTokenCount}",
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-                                            ],
-                                          )
-                                        ],
-                                      ),
+                              ),
+                            ),
+                            const SizedBox(width: 3),
+                            Expanded(
+                              flex: 2,
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context)
+                                      .pushNamed('Profile')
+                                      .then((_) => _loadProfile());
+                                },
+                                child: Text(
+                                  (childName == "Player" || childName.isEmpty)
+                                      ? "${tr.enterName} ✏️"
+                                      : childName,
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    shadows: [
+                                      Shadow(blurRadius: 3, color: Colors.black)
                                     ],
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                                Column(
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(Icons.mode_edit_sharp,
-                                          color: Colors.white),
-                                      onPressed: () {
-                                        _clickButton.play("assets/audios/pop.mp3");
-                                        Navigator.of(context)
-                                            .pushNamed('Profile')
-                                            .then((_) => _loadProfile());
-                                      },
-                                    ),
-
-                                    IconButton(
-                                      icon: const Icon(Icons.ads_click_outlined,
-                                          color: Colors.white),
-                                      onPressed:() => AdHelper.showRewardedAdWithLoading(context, (){
-                                        Provider.of<ExperienceManager>(context, listen: false).addStars(1);
-                                      }),
-                                    ),
-
-                                  ],
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
+                            Expanded(
+                              flex: 4,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.star, color: Colors.amber),
+                                          const SizedBox(width: 2),
+                                          Text(
+                                            "$stars",
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Icon(Icons.generating_tokens_rounded, color: Colors.greenAccent),
+                                          const SizedBox(width: 2),
+                                          Text(
+                                            "${xpManager.saveTokenCount}",
+                                            style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                  const SizedBox(width: 10),
+
+
+                                  Column(
+                                    children: [
+                                   IconButton(
+                                       onPressed: () {
+                                         Navigator.of(context)
+                                             .pushNamed('Profile')
+                                             .then((_) => _loadProfile());
+                                       },
+                                       icon: Icon(Icons.edit_note,
+                                         color: Colors.white,)),
+                                   IconButton(
+                                       onPressed: () => AdHelper.showRewardedAdWithLoading(context, ()  {
+                                         Provider.of<ExperienceManager>(context, listen: false).addStarBanner(context,1);
+                                       }),
+                                       icon: Icon(Icons.card_giftcard_outlined,
+                                         color: Colors.white,)),
+
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                            ),
+                            const SizedBox(width: 2),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: TabBarView(
-                      controller: _tabController,
-                      children: [
-                        CourseTab(musicPlayer: _musicPlayer),
-                        GamesTab(musicPlayer: _musicPlayer),
-                      ],
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
+              Expanded(
+                child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    CourseTab(musicPlayer: _musicPlayer),
+                    GamesTab(musicPlayer: _musicPlayer),
+                  ],
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }

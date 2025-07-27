@@ -244,8 +244,8 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
       xpManager.addXP(2, context: context);
       score += 1;    // Increment score by 1
 
-      if (score >= 3) {
-        xpManager.addTokens(1);  // Give 1 Tolim
+      if (score >= 10) {
+        xpManager.addTokenBanner(context, 1);  // Give 1 Tolim
         score = 0;    // Reset score to 0
       }
     });

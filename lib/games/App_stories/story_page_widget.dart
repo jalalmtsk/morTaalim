@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'favorite_Word/favorite_word_dictionnary.dart';
@@ -10,6 +12,7 @@ class StoryPageWidget extends StatelessWidget {
   final bool isCurrentPage;
   final Animation<double> bounceAnimation;
   final VoidCallback onCharacterTap;
+  final double textSize;
 
   const StoryPageWidget({
     super.key,
@@ -18,6 +21,7 @@ class StoryPageWidget extends StatelessWidget {
     required this.isCurrentPage,
     required this.bounceAnimation,
     required this.onCharacterTap,
+    required this.textSize,
   });
 
   List<TextSpan> _buildTappableText(BuildContext context) {
@@ -28,47 +32,89 @@ class StoryPageWidget extends StatelessWidget {
       final word = pageData.words[i].replaceAll(RegExp(r'[^\w]'), '');
       final hasDefinition = definitions.containsKey(word);
 
-      // Add your highlighting logic here
       final isHighlighted = isCurrentPage && i <= highlightedWordIndex;
 
       spans.add(
         TextSpan(
           text: pageData.words[i] + ' ',
           style: TextStyle(
-            fontSize: 35, // keep text big and beautiful
-            color: hasDefinition
-                ? Colors.blue
-                : (isHighlighted ? Colors.deepOrange : Colors.black54), // highlight orange if highlighted
+            fontSize: textSize,
+            color: (isHighlighted ? Colors.deepOrange : Colors.deepOrangeAccent.withOpacity(0.6)),
             fontWeight: hasDefinition || isHighlighted ? FontWeight.bold : FontWeight.normal,
-            decoration: hasDefinition ? TextDecoration.underline : TextDecoration.none,
           ),
           recognizer: hasDefinition
               ? (TapGestureRecognizer()
             ..onTap = () {
               showDialog(
                 context: context,
-                builder: (_) => AlertDialog(
-                  title: Text(word),
-                  content: Text(dic.getDefinitionFor(word)),
-                  actions: [
-                    TextButton(
-                      onPressed: () async {
-                        await FavoriteWordsManager.addWord(word, dic.getDefinitionFor(word));
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('"$word" added to favorites'),
-                            backgroundColor: Colors.deepOrange,
-                          ),
-                        );
-                      },
-                      child: const Text('Add to Favorites'),
+                barrierDismissible: true,
+                builder: (_) => Dialog(
+                  backgroundColor: Colors.white.withOpacity(0.1),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(Icons.menu_book_rounded, size: 50, color: Colors.orange.shade300),
+                            const SizedBox(height: 10),
+                            Text(
+                              word,
+                              style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              dic.getDefinitionFor(word),
+                              style: const TextStyle(fontSize: 16, color: Colors.white70),
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 24),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: () async {
+                                    await FavoriteWordsManager.addWord(word, dic.getDefinitionFor(word));
+                                    Navigator.pop(context);
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text('"$word" added to favorites'),
+                                        backgroundColor: Colors.deepOrange,
+                                      ),
+                                    );
+                                  },
+                                  icon: const Icon(Icons.favorite_border),
+                                  label: const Text("Add to Favorites"),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.deepOrangeAccent,
+                                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                                  ),
+                                ),
+                                OutlinedButton.icon(
+                                  onPressed: () => Navigator.pop(context),
+                                  icon: const Icon(Icons.close),
+                                  label: const Text("Close"),
+                                  style: OutlinedButton.styleFrom(
+                                    foregroundColor: Colors.white,
+                                    side: const BorderSide(color: Colors.white54),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                                  ),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
                     ),
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Close'),
-                    ),
-                  ],
+                  ),
                 ),
               );
             })
@@ -79,12 +125,11 @@ class StoryPageWidget extends StatelessWidget {
     return spans;
   }
 
-
-
+  @override
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 5,),
       child: Column(
         children: [
           AnimatedBuilder(
@@ -94,22 +139,53 @@ class StoryPageWidget extends StatelessWidget {
                 offset: Offset(0, bounceAnimation.value),
                 child: GestureDetector(
                   onTap: onCharacterTap,
-                  child: Image.asset(
-                    pageData.imageUrl,
-                    height: 310,
-                    fit: BoxFit.contain,
-                    errorBuilder: (context, error, stackTrace) {
-                      return const Icon(Icons.broken_image, size: 200, color: Colors.grey);
-                    },
+                  child: Card(
+                    elevation: 6,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    clipBehavior: Clip.antiAlias,
+                    child: Image.asset(
+                      pageData.imageUrl,
+                      fit: BoxFit.cover,
+                      width: 200,
+                      height: 150,
+                      errorBuilder: (context, error, stackTrace) {
+                        return const SizedBox(
+                          height: 130,
+                          child: Center(
+                            child: Icon(Icons.broken_image, size: 80, color: Colors.grey),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               );
             },
           ),
-          const SizedBox(height: 30),
-          RichText(
-            text: TextSpan(
-              children: _buildTappableText(context),
+
+
+          // Scrollable text container with blur and rounded background
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.white.withOpacity(0.2)),
+                  ),
+                  child: SingleChildScrollView(
+                    child: RichText(
+                      text: TextSpan(
+                        children: _buildTappableText(context),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ),
         ],

@@ -59,6 +59,7 @@ dependencies:
   google_mobile_ads: ^6.0.0
   percent_indicator: ^4.2.5
   in_app_purchase: ^3.2.3
+  font_awesome_flutter: ^10.8.0
 
 
 flutter_launcher_icons:
@@ -103,6 +104,8 @@ flutter:
   - assets/images/PractiseImage/
   - assets/images/PractiseImage/HeavyLightImages/
   - assets/images/PractiseImage/WuduImages/
+  - assets/images/StoriesImages/InsideStoriesImages/
+  - assets/images/StoriesImages/StoriesCovers/
   - assets/images/SugarSmash/
   - assets/images/FlagImagesForTracingLetters/
   - assets/images/AvatarImage/

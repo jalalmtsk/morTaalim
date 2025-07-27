@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
@@ -8,92 +9,125 @@ class LevelUpOverlayHelper {
 
   static void showOverlayLevelUpBanner(BuildContext context, int newLevel, {GlobalKey? avatarKey}) {
     final overlay = Overlay.of(context);
-    if (overlay == null) return;
+    if (overlay == null || !context.mounted) return;
 
     _lvlUp.play("assets/audios/sound_effects/victory2.mp3");
     _lvlUp2.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
 
     final AnimationController controller = AnimationController(
       vsync: Navigator.of(context),
-      duration: const Duration(milliseconds: 400),
+      duration: const Duration(milliseconds: 500),
     );
 
     late OverlayEntry entry;
 
     entry = OverlayEntry(
-      builder: (ctx) => Positioned(
-        top: MediaQuery.of(context).padding.top + 20,
-        right: 0,
-        child: Material(
-          color: Colors.transparent,
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(1.5, 0),
-              end: Offset.zero,
-            ).animate(CurvedAnimation(parent: controller, curve: Curves.easeOutBack)),
-            child: Container(
-              width: 280,
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.deepOrange.shade600,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.25),
-                    blurRadius: 8,
-                    offset: const Offset(2, 4),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  // 🌟 Lottie Animation
-                  SizedBox(
-                    width: 60,
-                    height: 60,
-                    child: Lottie.asset(
-                      'assets/animations/LvlUnlocked/StarPlus1.json',
-                      repeat: false,
+      builder: (_) => Builder(
+        builder: (ctx) {
+          final topPadding = MediaQuery.of(ctx).padding.top + 20;
+
+          return Positioned(
+            top: topPadding,
+            left: 20,
+            right: 20,
+            child: SafeArea(
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: const Offset(1.2, 0),
+                  end: Offset.zero,
+                ).animate(CurvedAnimation(parent: controller, curve: Curves.easeOutBack)),
+                child: Material(
+                  color: Colors.transparent,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.deepOrange.shade400.withOpacity(0.6),
+                              Colors.deepOrange.shade700.withOpacity(0.6),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 20,
+                              offset: const Offset(0, 6),
+                            ),
+                          ],
+                          border: Border.all(color: Colors.white.withOpacity(0.2)),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Lottie.asset(
+                              'assets/animations/LvlUnlocked/StarPlus1.json',
+                              width: 60,
+                              height: 60,
+                              repeat: false,
+                            ),
+                            const SizedBox(width: 16),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '🎉 Level $newLevel Reached!',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w700,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black45,
+                                        blurRadius: 2,
+                                        offset: Offset(1, 1),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                const Text(
+                                  '+1 ⭐ Star Earned',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 10),
+                            Lottie.asset(
+                              'assets/animations/LvlUnlocked/StarPlus1.json',
+                              width: 40,
+                              height: 40,
+                              repeat: false,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(width: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Level $newLevel!',
-                        style: const TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const Text(
-                        '+1 ⭐ Star',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
 
     overlay.insert(entry);
     controller.forward();
 
-    // Optional avatar sparkle
     if (avatarKey != null) {
       _showAvatarSparkle(context, avatarKey);
     }
 
-    // Auto-remove
     Future.delayed(const Duration(seconds: 4), () {
       entry.remove();
       controller.dispose();
@@ -101,24 +135,24 @@ class LevelUpOverlayHelper {
   }
 
   static void _showAvatarSparkle(BuildContext context, GlobalKey avatarKey) {
-    final RenderBox? renderBox = avatarKey.currentContext?.findRenderObject() as RenderBox?;
+    final renderBox = avatarKey.currentContext?.findRenderObject() as RenderBox?;
     if (renderBox == null) return;
 
-    final Offset avatarOffset = renderBox.localToGlobal(Offset.zero);
-    final Size avatarSize = renderBox.size;
+    final offset = renderBox.localToGlobal(Offset.zero);
+    final size = renderBox.size;
 
     final overlay = Overlay.of(context);
     if (overlay == null) return;
 
-    final OverlayEntry sparkleEntry = OverlayEntry(
+    final sparkleEntry = OverlayEntry(
       builder: (ctx) => Positioned(
-        left: avatarOffset.dx + avatarSize.width / 2 - 30,
-        top: avatarOffset.dy - 10,
+        left: offset.dx + size.width / 2 - 30,
+        top: offset.dy - 10,
         child: SizedBox(
           width: 60,
           height: 60,
           child: Lottie.asset(
-            'assets/animations/sparkle.json', // You can use any sparkle animation
+            'assets/animations/MouthDrop.json',
             repeat: false,
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/PractiseGames/HeavyLight/HeavyLight.dart';
 import 'package:mortaalim/PractiseGames/PlayTheWord/PlayTheWord.dart';
@@ -22,7 +23,6 @@ import 'package:mortaalim/games/Tracing_Alphabet_app/language_selector.dart';
 import 'package:mortaalim/games/WordExplorer/WordExplorerPage.dart';
 import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
-import 'package:mortaalim/games/paitingGame/paint_main.dart';
 import 'package:mortaalim/profileSetupPage.dart';
 import 'package:mortaalim/tools/splashScreen.dart';
 import 'package:mortaalim/testing.dart';
@@ -31,8 +31,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
-import 'package:mortaalim/Settings/setting_Page.dart'; // ✅ Correct
-
 import 'IndexPage.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
@@ -43,6 +41,14 @@ AppLocalizations tr(BuildContext context) => AppLocalizations.of(context)!;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // 🔒 Lock orientation to portrait only
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
+
+  // Hide Navigation Bar
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+
   prefs = await SharedPreferences.getInstance();
   AdHelper.initializeAds();
 
@@ -122,7 +128,7 @@ class _MyAppState extends State<MyApp> {
         'Profile': (context) => const ProfileSetupPage(),
 
 
-        'Shop' : (context) => WuduGame(),
+        'Shop' : (context) => MainShopPageIndex(),
         'Credits' : (context) =>  CreditsPage(),
 
 
@@ -130,8 +136,8 @@ class _MyAppState extends State<MyApp> {
         'Setting' : (context) => SettingsPage(onChangeLocale: _changeLanguage),
         'Splash' : (context) => SplashPage(onChangeLocale: _changeLanguage),
         "Testing" : (context) => TestApp(),
-
       },
+
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
