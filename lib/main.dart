@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/PractiseGames/HeavyLight/HeavyLight.dart';
 import 'package:mortaalim/PractiseGames/PlayTheWord/PlayTheWord.dart';
-import 'package:mortaalim/PractiseGames/WuduGame/WuduGame.dart';
 import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
@@ -26,6 +25,7 @@ import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
 import 'package:mortaalim/profileSetupPage.dart';
 import 'package:mortaalim/tools/splashScreen.dart';
 import 'package:mortaalim/testing.dart';
+import 'package:mortaalim/widgets/ComingSoon.dart';
 import 'package:mortaalim/widgets/CreditsPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -133,6 +133,7 @@ class _MyAppState extends State<MyApp> {
 
 
 
+        'ComingSoon' : (context) => ComingSoonPage(),
         'Setting' : (context) => SettingsPage(onChangeLocale: _changeLanguage),
         'Splash' : (context) => SplashPage(onChangeLocale: _changeLanguage),
         "Testing" : (context) => TestApp(),

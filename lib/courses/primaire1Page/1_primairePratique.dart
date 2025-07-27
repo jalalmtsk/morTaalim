@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mortaalim/l10n/app_localizations.dart';
-import 'package:mortaalim/widgets/shimmerPage.dart';
 
 import 'PractiseCoursesSubjects/French1/1_primaire_French_Practise.dart';
 import 'PractiseCoursesSubjects/Math1/1_primaire_Math_Practise.dart';
@@ -22,27 +20,6 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
     {'title': 'islamicEducation', 'route': 'IndexIslamicEducation1Practise'},
     {'title': 'science', 'route': 'IndexScience1Practise'},
   ];
-
-  Map<String, double> courseProgress = {};
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    loadProgress();
-  }
-
-  Future<void> loadProgress() async {
-    final prefs = await SharedPreferences.getInstance();
-    for (var course in courses) {
-      final saved = prefs.getStringList('progress2_${course['title']}') ?? [];
-      courseProgress[course['title']!] = saved.length / 10;
-    }
-    await Future.delayed(const Duration(milliseconds: 800));
-    setState(() {
-      isLoading = false;
-    });
-  }
 
   IconData getIcon(String key) {
     switch (key) {
@@ -132,13 +109,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
           ),
           const SizedBox(height: 16),
           Expanded(
-            child: isLoading
-                ? ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              itemCount: 4,
-              itemBuilder: (_, __) => const ShimmerCard(),
-            )
-                : GridView.builder(
+            child: GridView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               itemCount: courses.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -153,14 +124,12 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                 final route = course['route']!;
                 final icon = getIcon(title);
                 final label = getLabel(title, tr);
-                final progress = courseProgress[title] ?? 0.0;
 
                 return GestureDetector(
                   onTap: () {
                     final page = getPage(route);
                     if (page != null) {
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => page))
-                          .then((_) => loadProgress());
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => page));
                     }
                   },
                   child: AnimatedContainer(
@@ -193,22 +162,6 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                             fontSize: 16,
                           ),
                         ),
-                        const SizedBox(height: 6),
-                        LinearProgressIndicator(
-                          value: progress,
-                          minHeight: 6,
-                          backgroundColor: Colors.grey[300],
-                          color: Colors.teal,
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          "${(progress * 100).toStringAsFixed(0)}%",
-                          style: const TextStyle(
-                            fontSize: 12,
-                            color: Colors.teal,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        )
                       ],
                     ),
                   ),

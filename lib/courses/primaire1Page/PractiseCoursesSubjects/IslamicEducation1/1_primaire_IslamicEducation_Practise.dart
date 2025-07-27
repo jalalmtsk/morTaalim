@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/PractiseGames/MatchTheImage/MatchTheImage.dart';
-import 'package:mortaalim/PractiseGames/WuduGame/PillarOfIslam.dart';
-import 'package:mortaalim/PractiseGames/WuduGame/WuduGame.dart';
+
 import '../../../../PractiseGames/DragAndDrop/DragAndDrop.dart';
+import '../../../../PractiseGames/IslamExercice/PillarOfIslam.dart';
+import '../../../../PractiseGames/IslamExercice/WuduGame.dart';
 import '../../../../PractiseGames/PlayTheWord/PlayTheWord.dart';
 import '../../../../PractiseGames/practiseWords.dart';
 

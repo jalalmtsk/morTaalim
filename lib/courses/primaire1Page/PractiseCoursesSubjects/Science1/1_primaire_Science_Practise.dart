@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/PractiseGames/ArabicExercice/ArabicLetters.dart';
 import 'package:mortaalim/PractiseGames/ChooseTheColor/ChooseTheColor.dart';
 import 'package:mortaalim/PractiseGames/HeavyLight/HeavyLight.dart';
+import 'package:mortaalim/PractiseGames/ScienceExercice/AnimalSounds.dart';
+import 'package:mortaalim/PractiseGames/ScienceExercice/ColorMixing.dart';
+import 'package:mortaalim/PractiseGames/ScienceExercice/ScienceQuizz.dart';
 
 class IndexScience1Practise extends StatelessWidget {
 
@@ -60,6 +64,29 @@ class IndexScience1Practise extends StatelessWidget {
                 icon: Icons.color_lens,
                 color: Colors.redAccent,
                 onTap: () => navigateTo(context, ColorMatchingGame()),
+              ),
+              _buildExerciseCard(
+                context,
+                title: "Science Quizz",
+                icon: Icons.science,
+                color: Colors.orangeAccent,
+                onTap: () => navigateTo(context, ScienceQuizExercise()),
+              ),
+
+              _buildExerciseCard(
+                context,
+                title: "Color Mixing",
+                icon: Icons.science,
+                color: Colors.green,
+                onTap: () => navigateTo(context, ColorMixingExercise()),
+              ),
+
+              _buildExerciseCard(
+                context,
+                title: "Animal Sounds",
+                icon: Icons.surround_sound,
+                color: Colors.green,
+                onTap: () => navigateTo(context, ArabicLettersExercise()),
               ),
 
               // Add more games here later if needed

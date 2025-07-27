@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/PractiseGames/ChooseTheColor/ChooseTheColor.dart';
 import 'package:mortaalim/PractiseGames/MatchTheImage/MatchTheImage.dart';
+import 'package:mortaalim/PractiseGames/MathExercice/CountObject.dart';
+import 'package:mortaalim/PractiseGames/MathExercice/FindLargestNumber.dart';
+import 'package:mortaalim/PractiseGames/MathExercice/MathAddition.dart';
+import 'package:mortaalim/PractiseGames/MathExercice/MathSubstraction.dart';
+import 'package:mortaalim/PractiseGames/MathExercice/MissingNumber.dart';
+import 'package:mortaalim/PractiseGames/MathExercice/NumberComparison.dart';
+import 'package:mortaalim/PractiseGames/MathExercice/OddNumbers.dart';
+import 'package:mortaalim/PractiseGames/MathExercice/TargetNumber.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
 import '../../../../PractiseGames/DragAndDrop/DragAndDrop.dart';
 import '../../../../PractiseGames/PlayTheWord/PlayTheWord.dart';
 import '../../../../PractiseGames/practiseWords.dart';
@@ -163,42 +172,84 @@ class IndexMath1Practise extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 1,
+          child: Column(
             children: [
-              _buildExerciseCard(
-                context,
-                title: "Play the Word",
-                icon: Icons.volume_up_rounded,
-                color: Colors.blueAccent,
-                onTap: () => navigateTo(context, PlayTheWord(words: wordList)),
-              ),
-              _buildExerciseCard(
-                context,
-                title: "Choose the Image",
-                icon: Icons.image_rounded,
-                color: Colors.green,
-                onTap: () => navigateTo(context, MatchWordToImage(words: wordList)),
-              ),
-              _buildExerciseCard(
-                context,
-                title: "Match the Word",
-                icon: Icons.sync_alt_rounded,
-                color: Colors.orange,
-                onTap: () => navigateTo(context, DragDropGame(items: wordList)),
-              ),
+              Userstatutbar(),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 1,
+                  children: [
 
-              _buildExerciseCard(
-                context,
-                title: "Match the Word",
-                icon: Icons.sync_alt_rounded,
-                color: Colors.orange,
-                onTap: () => navigateTo(context, ColorMatchingGame()),
+                    _buildExerciseCard(
+                      context,
+                      title: "Missing Number",
+                      icon: Icons.line_axis_sharp,
+                      color: Colors.red,
+                      onTap: () => navigateTo(context, MissingNumberExercise()),
+                    ),
+                    _buildExerciseCard(
+                      context,
+                      title: "Find Largest Number",
+                      icon: Icons.line_axis_sharp,
+                      color: Colors.deepPurpleAccent,
+                      onTap: () => navigateTo(context, FindLargestNumberExercise()),
+                    ),
+
+                    _buildExerciseCard(
+                      context,
+                      title: "Math Addition",
+                      icon: Icons.calculate,
+                      color: Colors.blueAccent,
+                      onTap: () => navigateTo(context, MathAdditionExercise()),
+                    ),
+                    _buildExerciseCard(
+                      context,
+                      title: "Math Substraction",
+                      icon: Icons.nature,
+                      color: Colors.green,
+                      onTap: () => navigateTo(context, MathSubtractionExercise()),
+                    ),
+
+
+                    _buildExerciseCard(
+                      context,
+                      title: "CountObject",
+                      icon: Icons.padding,
+                      color: Colors.orangeAccent,
+                      onTap: () => navigateTo(context, CountObject()),
+                    ),
+
+                    _buildExerciseCard(
+                      context,
+                      title: "Number Comparison Game",
+                      icon: Icons.line_axis_sharp,
+                      color: Colors.blue,
+                      onTap: () => navigateTo(context, NumberComparisonGame()),
+                    ),
+
+                    _buildExerciseCard(
+                      context,
+                      title: "Find Largest Number",
+                      icon: Icons.line_axis_sharp,
+                      color: Colors.purple,
+                      onTap: () => navigateTo(context, EvenOddExercise()),
+                    ),
+
+                    _buildExerciseCard(
+                      context,
+                      title: "Target Number",
+                      icon: Icons.line_axis_sharp,
+                      color: Colors.deepPurpleAccent,
+                      onTap: () => navigateTo(context, TargetNumberExercise()),
+                    ),
+
+                    // Add more games here later if needed
+                  ],
+                ),
               ),
-              // Add more games here later if needed
             ],
           ),
         ),

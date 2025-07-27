@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/indexPage_tools/IT_index_toll/iT_index.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/tools/SettingPanelInGame.dart';
 import 'package:mortaalim/tools/loading_page.dart';
+import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
 import 'package:mortaalim/widgets/profile_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,7 +45,7 @@ class _IndexState extends State<Index>
     WidgetsBinding.instance.addObserver(this);
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
     xpManager.init(context);
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 4, vsync: this);
 
     _loadProfile();
 
@@ -225,6 +227,8 @@ class _IndexState extends State<Index>
           tabs: [
             Tab(icon: const Icon(Icons.school_outlined), text: tr.courses),
             Tab(icon: const Icon(Icons.videogame_asset), text: tr.games),
+            Tab(icon: Icon(Icons.computer), text: "IT"),
+            Tab(icon: Icon(Icons.menu_book), text: "Islam"),
           ],
         ),
       ),
@@ -250,7 +254,7 @@ class _IndexState extends State<Index>
                       height: 100,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.black.withOpacity(0.15),
+                        color: Colors.black.withValues(alpha: 0.15),
                       ),
                     ),
                     Positioned.fill(
@@ -260,7 +264,7 @@ class _IndexState extends State<Index>
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Material(
-                              color: Colors.orange.withOpacity(0.1),
+                              color: Colors.orange.withValues(alpha: 0.1),
                               shape: const CircleBorder(),
                               child: InkWell(
                                 customBorder: const CircleBorder(),
@@ -382,6 +386,8 @@ class _IndexState extends State<Index>
                   children: [
                     CourseTab(musicPlayer: _musicPlayer),
                     GamesTab(musicPlayer: _musicPlayer),
+                    ComingSoonNotPage(),
+                    ComingSoonNotPage(),
                   ],
                 ),
               ),
