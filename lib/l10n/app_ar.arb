@@ -196,6 +196,30 @@
     "comeBackin": "ارجع خلال",
     "dailyReward": "مكافأة يومية",
     "watchAd": "شاهد إعلانًا",
-    "earn": "اكسب"
+    "earn": "اكسب",
+
+  "congratulations": "تهانينا!",
+  "youWon": "لقد فزت!",
+  "awesome": "رائع!",
+  "freeSpinUnlocked": "دورة مجانية مفتوحة!",
+  "youEarned": "لقد ربحت",
+  "tryAgain": "حاول مرة أخرى!",
+  "noRewardThisTime": "لا توجد مكافأة هذه المرة.",
+  "dailySpin": "الدورة اليومية",
+  "comeBackIn": "ارجع بعد",
+  "youreReadyToSpin": "أنت جاهز للدوران!",
+
+  "pronunciation": "النطق",
+  "example": "مثال",
+
+  "freeDrawing": "رسم حر",
+  "drawWhateverYouLike": "ارسم ما تريد",
+  "paintOnSketches": "لوّن الرسومات التخطيطية",
+  "colorBeautifulTemplates": "لوّن القوالب الجميلة",
+  "learningProgram": "برنامج تعليمي",
+  "stepByStepPaintingLessons": "دروس رسم خطوة بخطوة",
+  "delete": "حذف",
+  "areYouSureYouWantToDeleteThisDrawing": "هل أنت متأكد أنك تريد حذف هذا الرسم؟",
+  "deleteDrawing": "حذف الرسم"
 
   }

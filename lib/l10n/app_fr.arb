@@ -200,7 +200,31 @@
      "comeBackin": "Reviens dans",
      "dailyReward": "Récompense quotidienne",
      "watchAd": "Regarder une pub",
-     "earn": "Gagner"
+     "earn": "Gagner",
+
+  "congratulations": "Félicitations !",
+  "youWon": "Tu as gagné !",
+  "awesome": "Génial !",
+  "freeSpinUnlocked": "Tour gratuit débloqué !",
+  "youEarned": "Tu as gagné",
+  "tryAgain": "Réessaie !",
+  "noRewardThisTime": "Pas de récompense cette fois.",
+  "dailySpin": "Tour quotidien",
+  "comeBackIn": "Reviens dans",
+  "youreReadyToSpin": "Tu es prêt à tourner !",
+
+  "pronunciation": "Prononciation",
+  "example": "Exemple",
+
+  "freeDrawing": "Dessin libre",
+  "drawWhateverYouLike": "Dessine ce que tu veux",
+  "paintOnSketches": "Peins sur des croquis",
+  "colorBeautifulTemplates": "Colorie de beaux modèles",
+  "learningProgram": "Programme d'apprentissage",
+  "stepByStepPaintingLessons": "Leçons de peinture étape par étape",
+  "delete": "Supprimer",
+  "areYouSureYouWantToDeleteThisDrawing": "Es-tu sûr de vouloir supprimer ce dessin ?",
+  "deleteDrawing": "Supprimer le dessin"
 
 
 

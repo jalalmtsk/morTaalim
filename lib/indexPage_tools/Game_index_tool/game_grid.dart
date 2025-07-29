@@ -11,16 +11,14 @@ import 'package:confetti/confetti.dart';
 import '../../XpSystem.dart';
 import '../../tools/audio_tool/audio_tool.dart';
 import '../../tools/loading_page.dart';
-import '../../widgets/RewardChest.dart';
-import '../../widgets/SpinWheel/SpinTheWheel.dart';
+
 
 final MusicPlayer _victorySound = MusicPlayer();
 
 class GameGrid extends StatefulWidget {
   final List<Map<String, dynamic>> games;
-  final MusicPlayer musicPlayer;
 
-  const GameGrid({super.key, required this.games, required this.musicPlayer});
+  const GameGrid({super.key, required this.games});
 
   @override
   State<GameGrid> createState() => _GameGridState();
@@ -156,7 +154,6 @@ class _GameGridState extends State<GameGrid>
                     onTap: () {
                       if (isUnlocked) {
                         _clickButton.play("assets/audios/pop.mp3");
-                        widget.musicPlayer.stop();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -171,15 +168,15 @@ class _GameGridState extends State<GameGrid>
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title: const Text("Course Locked"),
-                            content: Text("Unlock this course for $cost ⭐?"),
+                            title:  Text(tr.unlock),
+                            content: Text("${tr.unlockThisCourseFor} $cost ⭐?"),
                             actions: [
                               TextButton(
                                 onPressed: () {
                                   _clickButton.play("assets/audios/sound_effects/uiButton.mp3");
                                   Navigator.pop(context);
                                 },
-                                child: const Text("Cancel"),
+                                child:  Text(tr.cancel),
                               ),
                               ElevatedButton(
                                 onPressed: () {
@@ -198,14 +195,14 @@ class _GameGridState extends State<GameGrid>
                                     _clickButton.play("assets/audios/sound_effects/wrong_answer.mp3");
                                     Navigator.pop(context);
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
+                                       SnackBar(
                                         duration: Duration(milliseconds: 1200),
-                                        content: Text("Not enough stars!"),
+                                        content: Text(tr.notEnoughStars),
                                       ),
                                     );
                                   }
                                 },
-                                child: const Text("Unlock"),
+                                child:  Text(tr.unlock),
                               ),
                             ],
                           ),
@@ -304,8 +301,8 @@ class _GameGridState extends State<GameGrid>
                                       color: Colors.green.shade700.withValues(alpha: 0.8),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child: const Text(
-                                      "FREE!",
+                                    child:  Text(
+                                      "${tr.free}!",
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.white,
@@ -341,7 +338,7 @@ class _GameGridState extends State<GameGrid>
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancel'),
+                        child:  Text(tr.cancel),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
@@ -368,7 +365,7 @@ class _GameGridState extends State<GameGrid>
                 ? SafeArea(
               child: Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(
+                child: SizedBox(
                   width: _bannerAd!.size.width.toDouble(),
                   height: _bannerAd!.size.height.toDouble(),
                   child: AdWidget(ad: _bannerAd!),

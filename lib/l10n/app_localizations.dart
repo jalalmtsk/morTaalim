@@ -825,11 +825,401 @@ abstract class AppLocalizations {
   /// **'Not enough stars'**
   String get notEnoughStars;
 
-  /// No description provided for @lol.
+  /// No description provided for @courseLocked.
   ///
   /// In en, this message translates to:
-  /// **'Lole'**
-  String get lol;
+  /// **'Course Locked'**
+  String get courseLocked;
+
+  /// No description provided for @unlockThisCourseFor.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock this course for'**
+  String get unlockThisCourseFor;
+
+  /// No description provided for @gained.
+  ///
+  /// In en, this message translates to:
+  /// **'Gained'**
+  String get gained;
+
+  /// No description provided for @wellDone.
+  ///
+  /// In en, this message translates to:
+  /// **'Well Done'**
+  String get wellDone;
+
+  /// No description provided for @freeDrawing.
+  ///
+  /// In en, this message translates to:
+  /// **'Free Drawing'**
+  String get freeDrawing;
+
+  /// No description provided for @draw.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw'**
+  String get draw;
+
+  /// No description provided for @gallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Gallery'**
+  String get gallery;
+
+  /// No description provided for @noDrawingsSavedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No drawings saved yet'**
+  String get noDrawingsSavedYet;
+
+  /// No description provided for @createSomeAwesomeArt.
+  ///
+  /// In en, this message translates to:
+  /// **'Create some awesome art!'**
+  String get createSomeAwesomeArt;
+
+  /// No description provided for @pickAColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a color'**
+  String get pickAColor;
+
+  /// No description provided for @selectBrushSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Select brush size'**
+  String get selectBrushSize;
+
+  /// No description provided for @drawSomethingBeforeSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw something before saving'**
+  String get drawSomethingBeforeSaving;
+
+  /// No description provided for @drawingSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Drawing saved'**
+  String get drawingSaved;
+
+  /// No description provided for @time.
+  ///
+  /// In en, this message translates to:
+  /// **'Time'**
+  String get time;
+
+  /// No description provided for @chooseYourBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose your banner'**
+  String get chooseYourBanner;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @letter.
+  ///
+  /// In en, this message translates to:
+  /// **'Letter'**
+  String get letter;
+
+  /// No description provided for @secondsLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Seconds left'**
+  String get secondsLeft;
+
+  /// No description provided for @question.
+  ///
+  /// In en, this message translates to:
+  /// **'Question'**
+  String get question;
+
+  /// No description provided for @addtofavorite.
+  ///
+  /// In en, this message translates to:
+  /// **'Add to favorite'**
+  String get addtofavorite;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @favoriteWords.
+  ///
+  /// In en, this message translates to:
+  /// **'Favorite Words'**
+  String get favoriteWords;
+
+  /// No description provided for @noFavoriteWordsYetAddNewWordsHere.
+  ///
+  /// In en, this message translates to:
+  /// **'No favorite words yet. Add new words here.'**
+  String get noFavoriteWordsYetAddNewWordsHere;
+
+  /// No description provided for @free.
+  ///
+  /// In en, this message translates to:
+  /// **'Free'**
+  String get free;
+
+  /// No description provided for @saveProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Profile'**
+  String get saveProfile;
+
+  /// No description provided for @funMoji.
+  ///
+  /// In en, this message translates to:
+  /// **'FunMoji'**
+  String get funMoji;
+
+  /// No description provided for @avatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Avatar'**
+  String get avatar;
+
+  /// No description provided for @beams.
+  ///
+  /// In en, this message translates to:
+  /// **'Beams'**
+  String get beams;
+
+  /// No description provided for @moji.
+  ///
+  /// In en, this message translates to:
+  /// **'Moji'**
+  String get moji;
+
+  /// No description provided for @aliens.
+  ///
+  /// In en, this message translates to:
+  /// **'Aliens'**
+  String get aliens;
+
+  /// No description provided for @animated.
+  ///
+  /// In en, this message translates to:
+  /// **'Animated'**
+  String get animated;
+
+  /// No description provided for @banners.
+  ///
+  /// In en, this message translates to:
+  /// **'Banners'**
+  String get banners;
+
+  /// No description provided for @cute.
+  ///
+  /// In en, this message translates to:
+  /// **'Cute'**
+  String get cute;
+
+  /// No description provided for @joyful.
+  ///
+  /// In en, this message translates to:
+  /// **'Joyful'**
+  String get joyful;
+
+  /// No description provided for @sciFi.
+  ///
+  /// In en, this message translates to:
+  /// **'Sci-Fi'**
+  String get sciFi;
+
+  /// No description provided for @fantasy.
+  ///
+  /// In en, this message translates to:
+  /// **'Fantasy'**
+  String get fantasy;
+
+  /// No description provided for @islamic.
+  ///
+  /// In en, this message translates to:
+  /// **'Islamic'**
+  String get islamic;
+
+  /// No description provided for @store.
+  ///
+  /// In en, this message translates to:
+  /// **'Store'**
+  String get store;
+
+  /// No description provided for @tolims.
+  ///
+  /// In en, this message translates to:
+  /// **'Tolims'**
+  String get tolims;
+
+  /// No description provided for @spinningWheel.
+  ///
+  /// In en, this message translates to:
+  /// **'Spinning Wheel'**
+  String get spinningWheel;
+
+  /// No description provided for @spin.
+  ///
+  /// In en, this message translates to:
+  /// **'Spin'**
+  String get spin;
+
+  /// No description provided for @reroll.
+  ///
+  /// In en, this message translates to:
+  /// **'Reroll'**
+  String get reroll;
+
+  /// No description provided for @comeBackin.
+  ///
+  /// In en, this message translates to:
+  /// **'Come back in'**
+  String get comeBackin;
+
+  /// No description provided for @dailyReward.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Reward'**
+  String get dailyReward;
+
+  /// No description provided for @watchAd.
+  ///
+  /// In en, this message translates to:
+  /// **'Watch Ad'**
+  String get watchAd;
+
+  /// No description provided for @earn.
+  ///
+  /// In en, this message translates to:
+  /// **'Earn'**
+  String get earn;
+
+  /// No description provided for @congratulations.
+  ///
+  /// In en, this message translates to:
+  /// **'Congratulations!'**
+  String get congratulations;
+
+  /// No description provided for @youWon.
+  ///
+  /// In en, this message translates to:
+  /// **'You won!'**
+  String get youWon;
+
+  /// No description provided for @awesome.
+  ///
+  /// In en, this message translates to:
+  /// **'Awesome!'**
+  String get awesome;
+
+  /// No description provided for @freeSpinUnlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Free spin unlocked!'**
+  String get freeSpinUnlocked;
+
+  /// No description provided for @youEarned.
+  ///
+  /// In en, this message translates to:
+  /// **'You earned'**
+  String get youEarned;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try again!'**
+  String get tryAgain;
+
+  /// No description provided for @noRewardThisTime.
+  ///
+  /// In en, this message translates to:
+  /// **'No reward this time.'**
+  String get noRewardThisTime;
+
+  /// No description provided for @dailySpin.
+  ///
+  /// In en, this message translates to:
+  /// **'Daily Spin'**
+  String get dailySpin;
+
+  /// No description provided for @comeBackIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Come back in'**
+  String get comeBackIn;
+
+  /// No description provided for @youreReadyToSpin.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re ready to spin!'**
+  String get youreReadyToSpin;
+
+  /// No description provided for @pronunciation.
+  ///
+  /// In en, this message translates to:
+  /// **'Pronunciation'**
+  String get pronunciation;
+
+  /// No description provided for @example.
+  ///
+  /// In en, this message translates to:
+  /// **'Example'**
+  String get example;
+
+  /// No description provided for @drawWhateverYouLike.
+  ///
+  /// In en, this message translates to:
+  /// **'Draw whatever you like'**
+  String get drawWhateverYouLike;
+
+  /// No description provided for @paintOnSketches.
+  ///
+  /// In en, this message translates to:
+  /// **'Paint on sketches'**
+  String get paintOnSketches;
+
+  /// No description provided for @colorBeautifulTemplates.
+  ///
+  /// In en, this message translates to:
+  /// **'Color beautiful templates'**
+  String get colorBeautifulTemplates;
+
+  /// No description provided for @learningProgram.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Program'**
+  String get learningProgram;
+
+  /// No description provided for @stepByStepPaintingLessons.
+  ///
+  /// In en, this message translates to:
+  /// **'Step-by-step painting lessons'**
+  String get stepByStepPaintingLessons;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @areYouSureYouWantToDeleteThisDrawing.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this drawing?'**
+  String get areYouSureYouWantToDeleteThisDrawing;
+
+  /// No description provided for @deleteDrawing.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Drawing'**
+  String get deleteDrawing;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

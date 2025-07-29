@@ -135,7 +135,7 @@ class AppLocalizationsIt extends AppLocalizations {
   String get name => 'Nome';
 
   @override
-  String get storiesLibrary => 'Biblioteca di storie';
+  String get storiesLibrary => 'Libreria di storie';
 
   @override
   String get selectDifficulty => 'Seleziona la difficoltà';
@@ -372,5 +372,200 @@ class AppLocalizationsIt extends AppLocalizations {
   String get notEnoughStars => 'Stelle insufficienti';
 
   @override
-  String get lol => 'lola';
+  String get courseLocked => 'Corso bloccato';
+
+  @override
+  String get unlockThisCourseFor => 'Sblocca questo corso per';
+
+  @override
+  String get gained => 'Guadagnato';
+
+  @override
+  String get wellDone => 'Ben fatto';
+
+  @override
+  String get freeDrawing => 'Disegno libero';
+
+  @override
+  String get draw => 'Disegna';
+
+  @override
+  String get gallery => 'Galleria';
+
+  @override
+  String get noDrawingsSavedYet => 'Nessun disegno salvato ancora';
+
+  @override
+  String get createSomeAwesomeArt => 'Crea un’opera d’arte fantastica';
+
+  @override
+  String get pickAColor => 'Scegli un colore';
+
+  @override
+  String get selectBrushSize => 'Seleziona la dimensione del pennello';
+
+  @override
+  String get drawSomethingBeforeSaving => 'Disegna qualcosa prima di salvare';
+
+  @override
+  String get drawingSaved => 'Disegno salvato';
+
+  @override
+  String get time => 'Tempo';
+
+  @override
+  String get chooseYourBanner => 'Scegli il tuo banner';
+
+  @override
+  String get retry => 'Riprova';
+
+  @override
+  String get letter => 'Lettera';
+
+  @override
+  String get secondsLeft => 'secondi rimasti';
+
+  @override
+  String get question => 'Domanda';
+
+  @override
+  String get addtofavorite => 'Aggiungi ai preferiti';
+
+  @override
+  String get close => 'Chiudi';
+
+  @override
+  String get favoriteWords => 'Parole preferite';
+
+  @override
+  String get noFavoriteWordsYetAddNewWordsHere => 'Nessuna parola preferita ancora. Aggiungine qui.';
+
+  @override
+  String get free => 'Gratuito';
+
+  @override
+  String get saveProfile => 'Salva profilo';
+
+  @override
+  String get funMoji => 'Emoticon divertenti';
+
+  @override
+  String get avatar => 'Avatar';
+
+  @override
+  String get beams => 'Raggi';
+
+  @override
+  String get moji => 'Emoji';
+
+  @override
+  String get aliens => 'Alieni';
+
+  @override
+  String get animated => 'Animato';
+
+  @override
+  String get banners => 'Banner';
+
+  @override
+  String get cute => 'Carino';
+
+  @override
+  String get joyful => 'Gioioso';
+
+  @override
+  String get sciFi => 'Fantascienza';
+
+  @override
+  String get fantasy => 'Fantasy';
+
+  @override
+  String get islamic => 'Islamico';
+
+  @override
+  String get store => 'Negozio';
+
+  @override
+  String get tolims => 'Tolims';
+
+  @override
+  String get spinningWheel => 'Ruota della fortuna';
+
+  @override
+  String get spin => 'Gira';
+
+  @override
+  String get reroll => 'Riprova';
+
+  @override
+  String get comeBackin => 'Torna tra';
+
+  @override
+  String get dailyReward => 'Ricompensa giornaliera';
+
+  @override
+  String get watchAd => 'Guarda un annuncio';
+
+  @override
+  String get earn => 'Guadagna';
+
+  @override
+  String get congratulations => 'Congratulazioni!';
+
+  @override
+  String get youWon => 'Hai vinto!';
+
+  @override
+  String get awesome => 'Fantastico!';
+
+  @override
+  String get freeSpinUnlocked => 'Giro gratuito sbloccato!';
+
+  @override
+  String get youEarned => 'Hai guadagnato';
+
+  @override
+  String get tryAgain => 'Riprova!';
+
+  @override
+  String get noRewardThisTime => 'Nessuna ricompensa questa volta.';
+
+  @override
+  String get dailySpin => 'Giro quotidiano';
+
+  @override
+  String get comeBackIn => 'Torna tra';
+
+  @override
+  String get youreReadyToSpin => 'Sei pronto a girare!';
+
+  @override
+  String get pronunciation => 'Pronuncia';
+
+  @override
+  String get example => 'Esempio';
+
+  @override
+  String get drawWhateverYouLike => 'Disegna ciò che vuoi';
+
+  @override
+  String get paintOnSketches => 'Dipingi sui bozzetti';
+
+  @override
+  String get colorBeautifulTemplates => 'Colora bellissimi modelli';
+
+  @override
+  String get learningProgram => 'Programma di apprendimento';
+
+  @override
+  String get stepByStepPaintingLessons => 'Lezioni di pittura passo dopo passo';
+
+  @override
+  String get delete => 'Elimina';
+
+  @override
+  String get areYouSureYouWantToDeleteThisDrawing => 'Sei sicuro di voler eliminare questo disegno?';
+
+  @override
+  String get deleteDrawing => 'Elimina disegno';
 }

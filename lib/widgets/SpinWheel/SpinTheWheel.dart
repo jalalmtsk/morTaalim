@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:confetti/confetti.dart';
 
 import '../../XpSystem.dart';
+import '../../main.dart';
 import '../../tools/Ads_Manager.dart';
 import '../../tools/audio_tool.dart';
 import 'WheelUI.dart';
@@ -157,7 +158,7 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
       context: context,
       builder: (_) =>
           AlertDialog(
-            title: const Text('🎉 Congratulations!',
+            title:  Text('🎉 ${tr(context).congratulations}',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
             content: Column(
               mainAxisSize: MainAxisSize.min,
@@ -165,13 +166,13 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
                 Icon(
                     Icons.emoji_events, color: Colors.amber.shade700, size: 40),
                 const SizedBox(height: 10),
-                Text('You won: $reward', style: const TextStyle(fontSize: 18)),
+                Text('${tr(context).youWon} : $reward', style: const TextStyle(fontSize: 18)),
               ],
             ),
             actions: [
               TextButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: const Text('Awesome!'),
+                child:  Text('${tr(context).awesome} !'),
               ),
             ],
           ),
@@ -185,7 +186,7 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
         _timeLeft = Duration.zero;
       });
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('🎁 Free spin unlocked!')),
+         SnackBar(content: Text('🎁 ${tr(context).freeSpinUnlocked}!')),
       );
     });
   }
@@ -195,21 +196,21 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
       final xpAmount = int.tryParse(reward.substring(4)) ?? 0;
       Provider.of<ExperienceManager>(context, listen: false).addXP(
           xpAmount, context: context);
-      _showSnackBar('You earned $xpAmount XP!');
+      _showSnackBar('${tr(context).youEarned} $xpAmount XP!');
     } else if (reward.startsWith('Tolim +')) {
       final tolimAmount = int.tryParse(reward.substring(7)) ?? 0;
       Provider.of<ExperienceManager>(context, listen: false).addTokenBanner(
           context, tolimAmount);
-      _showSnackBar('You earned $tolimAmount Tolims!');
+      _showSnackBar('${tr(context).youEarned} $tolimAmount Tolims!');
     } else if (reward.startsWith('Star +')) {
       final starAmount = int.tryParse(reward.substring(6)) ?? 0;
       Provider.of<ExperienceManager>(context, listen: false).addStarBanner(
           context, starAmount);
-      _showSnackBar('You earned $starAmount Star${starAmount > 1 ? 's' : ''}!');
+      _showSnackBar('${tr(context).youEarned}  $starAmount Star${starAmount > 1 ? 's' : ''}!');
     } else if (reward == 'Try Again') {
-      _showSnackBar('Try again!');
+      _showSnackBar('${tr(context).tryAgain} ');
     } else if (reward == 'Nothing') {
-      _showSnackBar('No reward this time.');
+      _showSnackBar('${tr(context).noRewardThisTime}');
     }
   }
 
@@ -282,8 +283,8 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        "🎁 Daily Spin",
+                       Text(
+                        "🎁 ${tr(context).dailySpin}",
                         style: TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
@@ -294,13 +295,13 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
 
                       if (!_canSpin)
                         Text(
-                          "Come back in: ${_formatDuration(_timeLeft)}",
+                          "${tr(context).comeBackIn}: ${_formatDuration(_timeLeft)}",
                           style: const TextStyle(fontSize: 16, color: Colors
                               .redAccent),
                         )
                       else
-                        const Text(
-                          "You're ready to spin!",
+                         Text(
+                          "${tr(context).youreReadyToSpin}!",
                           style: TextStyle(fontSize: 16, color: Colors
                               .greenAccent),
                         ),
@@ -368,8 +369,8 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
                             ]
                                 : [],
                           ),
-                          child: const Text(
-                            "SPIN",
+                          child:  Text(
+                            tr(context).spin,
                             style: TextStyle(fontSize: 20,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
@@ -383,7 +384,7 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
                         ElevatedButton.icon(
                           onPressed: _rerollWithAd,
                           icon: const Icon(Icons.refresh),
-                          label: const Text("REROLL (Watch Ad)"),
+                          label:  Text("${tr(context).reroll} (${tr(context).watchAd})"),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orangeAccent,
                             padding: const EdgeInsets.symmetric(

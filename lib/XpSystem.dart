@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ManagerTools/AnimatedSpendingStarBanner.dart';
@@ -81,22 +82,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   int get saveTokenCount => Tolims;
 
 //MUSIC SOUND--------------------------------////
-  bool _musicEnabled = true; // Default value
-  bool get musicEnabled => _musicEnabled;
-  double get musicVolume => _musicVolume;
-  double _musicVolume = 0.4; // default volume 40%
-
-  void setMusicEnabled(bool value) {
-    _musicEnabled = value;
-    _saveData();
-    notifyListeners();
-  }
 
 
-  void setMusicVolume(double value) {
-    _musicVolume = value.clamp(0.0, 1.0);
-    notifyListeners();
-  }
 
   ///-------------------------------------------------------------
 
@@ -307,8 +294,10 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
       if (newLevel > oldLevel) {
         Future.delayed(const Duration(milliseconds: 300), () {
           if (context.mounted) {
-            LvlUp.play("assets/audios/sound_effects/correct_anwser.mp3");
-            LvlUp2.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
+            Provider.of<AudioManager>(context, listen: false)
+                .playSfx("assets/audios/sound_effects/correct_anwser.mp3");
+            Provider.of<AudioManager>(context, listen: false)
+                .playSfx("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
             LevelUpOverlayHelper.showOverlayLevelUpBanner(context, newLevel);
           }
         });
@@ -391,8 +380,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _unlockedBanners = prefs.getStringList('unlockedBanners') ?? ['assets/images/Banners/CuteBr/Banner1.png'];
     _selectedAvatarFrame = prefs.getString('selectedAvatarFrame') ?? '';
     _unlockedAvatarFrames = prefs.getStringList('unlockedAvatarFrames') ?? [];
-    _musicEnabled = prefs.getBool('musicEnabled') ?? true;
-    _musicVolume = prefs.getDouble('musicVolume') ?? 0.5;
     _adsEnabled = prefs.getBool('adsEnabled') ?? true;
     notifyListeners();
   }
@@ -410,8 +397,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     await prefs.setStringList('unlockedBanners', _unlockedBanners);
     await prefs.setString('selectedAvatarFrame', _selectedAvatarFrame);
     await prefs.setStringList('unlockedAvatarFrames', _unlockedAvatarFrames);
-    await prefs.setBool('musicEnabled', _musicEnabled);
-    await prefs.setDouble('musicVolume', _musicVolume);
     await prefs.setBool('adsEnabled', _adsEnabled);
   }
 
@@ -426,7 +411,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
       final overlay = Overlay.of(context);
       if (overlay == null) return;
 
-      LvlUp.play("assets/audios/sound_effects/correct_anwser.mp3");
+      Provider.of<AudioManager>(context, listen: false)
+          .playSfx("assets/audios/sound_effects/correct_anwser.mp3");
 
       late OverlayEntry entry;
 
@@ -463,13 +449,18 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   }
   /////////////////////////////////////////////////////////
 
-  late BuildContext _appContext;
+  //MUSIC MANAGER //
+
+
+  ////
+
+
+
+
 
   void init(BuildContext context) {
-    _appContext = context;
-  }
-  @override
 
+  }
 
   @override
   void dispose() {

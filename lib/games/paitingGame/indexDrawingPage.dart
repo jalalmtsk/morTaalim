@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/games/paitingGame/paintOnSketch/paintonSketchPage.dart';
 import 'package:mortaalim/games/paitingGame/paint_main.dart';
+import 'package:mortaalim/widgets/ComingSoon.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
+import '../../main.dart';
 
-import 'CoursePaiting.dart';
-
-void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Drawing App',
-      theme: ThemeData(primarySwatch: Colors.deepPurple),
-      home: DrawingIndex(),
-      debugShowCheckedModeBanner: false,
-    );
+    return DrawingIndex();
   }
 }
 
@@ -22,78 +17,125 @@ class DrawingIndex extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Welcome to Drawing App'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(32.0),
+      backgroundColor: Colors.orange.shade50,
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            ElevatedButton.icon(
-              icon: Icon(Icons.brush, size: 40),
-              label: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text('Free Drawing', style: TextStyle(fontSize: 24)),
-              ),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 100),
-                backgroundColor: Colors.deepPurple,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Coursepaiting(),
-                  ),
-                );
-              },
+            Userstatutbar(),
+            Row(
+              children: [
+                IconButton(
+                  icon: Icon(Icons.arrow_back, color: Colors.orange.shade700),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
             ),
-            SizedBox(height: 40),
-            ElevatedButton.icon(
-              icon: Icon(Icons.school, size: 40),
-              label: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text('Learning Program', style: TextStyle(fontSize: 24)),
+            const SizedBox(height: 50,),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: Column(
+                  children: [
+                    _buildOptionCard(
+                      context,
+                      title: "🎨 ${tr(context).freeDrawing}",
+                      description: "${tr(context).drawWhateverYouLike} !",
+                      icon: Icons.brush,
+                      color: Colors.orangeAccent,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => DrawingApp()),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+
+                    _buildOptionCard(
+                      context,
+                      title: "🖼️ ${tr(context).paintOnSketches}",
+                      description: " ${tr(context).colorBeautifulTemplates}",
+                      icon: Icons.image,
+                      color: Colors.deepOrange.shade400,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SketchSelectorPage()),
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    _buildOptionCard(
+                      context,
+                      title: "📚 ${tr(context).learningProgram}",
+                      description: "${tr(context).stepByStepPaintingLessons}",
+                      icon: Icons.school,
+                      color: Colors.orange.shade300,
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ComingSoonPage()),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 100),
-                backgroundColor: Colors.deepPurple.shade300,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => SketchSelectorPage()
-                  ),
-                );
-              },
             ),
-            SizedBox(height: 40),
-            ElevatedButton.icon(
-              icon: Icon(Icons.image, size: 40),
-              label: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text('Paint on Sketches', style: TextStyle(fontSize: 24)),
-              ),
-              style: ElevatedButton.styleFrom(
-                minimumSize: Size(double.infinity, 100),
-                backgroundColor: Colors.deepPurple.shade200,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
-              ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => Coursepaiting(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildOptionCard(
+      BuildContext context, {
+        required String title,
+        required String description,
+        required IconData icon,
+        required Color color,
+        required VoidCallback onTap,
+      }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(20),
+      child: Container(
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.9),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.3),
+              blurRadius: 10,
+              offset: Offset(0, 6),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.all(20),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundColor: Colors.white.withOpacity(0.2),
+              child: Icon(icon, size: 32, color: Colors.white),
+            ),
+            SizedBox(width: 20),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
-                );
-              },
+                  SizedBox(height: 6),
+                  Text(
+                    description,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white.withOpacity(0.9),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

@@ -164,23 +164,104 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
       return;
     }
 
-
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
 
-    // Check if user has at least 1 star
     if (xpManager.saveTokenCount < 1) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Row(
-          children: [
-            Text("Not enough "),
-            Icon(Icons.generating_tokens_rounded, color: Colors.green,),
-            Text("to save the drawing!"),
-          ],
-        )),
-      );
+      // No tokens, force watching two ads
+      await _watchTwoAdsAndSave(xpManager);
       return;
     }
 
+    // User has tokens, offer choice
+    final choice = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Save Drawing'),
+        content: Text('You can spend 1 tolim to save or watch two ads to save for free.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop('ad'),
+            child: Text('Watch Ads'),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.of(context).pop('spend'),
+            child: Text('Spend 1 Tolim'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(null),
+            child: Text('Cancel'),
+          ),
+        ],
+      ),
+    );
+
+    if (choice == null) {
+      // Cancelled
+      return;
+    } else if (choice == 'ad') {
+      await _watchTwoAdsAndSave(xpManager);
+    } else if (choice == 'spend') {
+      // Confirm spending token
+      final confirm = await showDialog<bool>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('Confirm Spending'),
+          content: Row(
+            children: [
+              Text('This will deduct 1 tolim. Proceed?'),
+              SizedBox(width: 8),
+              Icon(Icons.generating_tokens_rounded, color: Colors.green),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text('Confirm'),
+            ),
+          ],
+        ),
+      );
+
+      if (confirm == true) {
+        await _saveAndDeductToken(xpManager);
+      }
+    }
+  }
+
+  Future<void> _watchTwoAdsAndSave(ExperienceManager xpManager) async {
+    await AdHelper.showRewardedAdWithLoading(context, () async {
+      await AdHelper.showRewardedAdWithLoading(context, () async {
+        await _saveDrawing();
+      });
+    });
+  }
+
+  Future<void> _saveAndDeductToken(ExperienceManager xpManager) async {
+    await _saveDrawing();
+
+    // Deduct 1 token
+    xpManager.SpendTokenBanner(context, -1);
+
+    clearCanvas();
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Row(
+          children: [
+            Text('Drawing saved!  '),
+            Text('-1 ', style: TextStyle(fontWeight: FontWeight.bold, color: CupertinoColors.activeGreen)),
+            Icon(Icons.generating_tokens_rounded, color: CupertinoColors.systemGreen),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Future<void> _saveDrawing() async {
     try {
       RenderRepaintBoundary boundary = canvasKey.currentContext?.findRenderObject() as RenderRepaintBoundary;
       var image = await boundary.toImage(pixelRatio: 3.0);
@@ -195,21 +276,6 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
         );
 
         widget.onSave(savedDrawing);
-
-        // Deduct 1 star for saving
-        xpManager.addTokenBanner(context, -1);
-
-        clearCanvas();
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Row(
-            children: [
-              Text('Drawing saved!  '),
-              Text('-1 ', style: TextStyle(fontWeight: FontWeight.bold, color: CupertinoColors.activeGreen),),
-              Icon(Icons.generating_tokens_rounded, color: CupertinoColors.systemGreen,)
-            ],
-          )),
-        );
       }
     } catch (e) {
       print("Error saving drawing: $e");
@@ -218,6 +284,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
       );
     }
   }
+
 
 
   String _formatDuration(Duration d) {
@@ -457,8 +524,8 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
                     value: tempStroke,
                     label: tempStroke.toStringAsFixed(1),
                     onChanged: (val) => setState(() => tempStroke = val),
-                    activeColor: Colors.deepPurple,
-                    inactiveColor: Colors.deepPurple.withAlpha(80),
+                    activeColor: Colors.deepOrange,
+                    inactiveColor: Colors.deepOrange.withAlpha(80),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,

@@ -4,6 +4,8 @@ import 'package:mortaalim/Shop/BannerTab/IndexBannerPage/CuteBr.dart';
 import 'package:mortaalim/Shop/BannerTab/IndexBannerPage/Islamic.dart';
 import 'package:mortaalim/Shop/BannerTab/IndexBannerPage/Sci_Fi.dart';
 
+import '../../main.dart';
+
 class IndexBanner extends StatelessWidget {
 
   @override
@@ -25,17 +27,17 @@ class IndexBanner extends StatelessWidget {
                 child: DefaultTabController(
                   length: 5,
                   child: Column(
-                    children: const [
+                    children:  [
                       TabBar(
                         labelColor: Colors.white,
                         unselectedLabelColor: Colors.white70,
                         indicatorColor: Colors.white,
                         tabs: [
-                          Tab(text: 'CuteBr',),
-                          Tab(text: 'Joyful'),
-                          Tab(text: 'Sci-Fi'),
-                          Tab(text: 'Fantasy'),
-                          Tab(text: 'Islamic'),
+                          Tab(text: tr(context).cute),
+                          Tab(text: tr(context).joyful),
+                          Tab(text: tr(context).sciFi),
+                          Tab(text: tr(context).fantasy),
+                          Tab(text: tr(context).islamic),
                         ],
                       ),
                       Expanded(

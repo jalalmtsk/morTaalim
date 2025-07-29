@@ -354,7 +354,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                       child: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
                     Text(
-                      'Letter ${_currentLetterIndex + 1}/${_letters.length}',
+                      '${tr(context).letter} ${_currentLetterIndex + 1}/${_letters.length}',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -396,7 +396,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                       ),
                       GestureDetector(
                         onPanStart: (_) {
-                          _drawingSound.play("audios/writting.mp3");
+                          _drawingSound.play("assets/audios/writting.mp3");
                         },
                         onPanUpdate: (details) {
                           final box = _paintKey.currentContext?.findRenderObject() as RenderBox?;
@@ -442,12 +442,12 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                   child: Column(
                     children: [
                       Text(
-                        "🔤 Pronunciation: $pronunciation",
+                        "🔤 ${tr(context).pronunciation}: $pronunciation",
                         style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        "📘 Example: $example",
+                        "📘 ${tr(context).example}: $example",
                         style: const TextStyle(fontSize: 17),
                       ),
                     ],
@@ -466,7 +466,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                           ElevatedButton.icon(
                             onPressed: _clearCanvas,
                             icon: const Icon(Icons.refresh),
-                            label: const Text("Retry"),
+                            label:  Text(tr(context).retry),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.deepOrange.shade300,
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -476,7 +476,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                           ElevatedButton.icon(
                             onPressed: _nextLetter,
                             icon: const Icon(Icons.navigate_next),
-                            label: const Text("Next"),
+                            label:  Text(tr(context).next),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.orangeAccent.shade200,
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -494,7 +494,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                           boxShadow: [BoxShadow(color: Colors.orange.shade100, blurRadius: 10)],
                         ),
                         child: Text(
-                          "🎯 Score: $score",
+                          "🎯 ${tr(context).score}: $score",
                           style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                         ),
                       ),

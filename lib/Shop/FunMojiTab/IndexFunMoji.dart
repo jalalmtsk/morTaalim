@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/Aliens.dart';
 import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/AnimatedAvatars.dart';
 import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/Beams.dart';
-import 'package:mortaalim/widgets/userStatutBar.dart';
-import 'package:mortaalim/tools/Ads_Manager.dart';
-import 'package:provider/provider.dart';
+
 
 import '../../XpSystem.dart';
 
+import '../../main.dart';
 import '../Widgets/avatarGrid.dart';
 import '../Tools/_StarCounter.dart';
 import '../Tools/_TokenAndSection.dart';
@@ -36,7 +35,7 @@ class IndexFunMojiPage extends StatelessWidget {
                 child: DefaultTabController(
                   length: 6,
                   child: Column(
-                    children: const [
+                    children:  [
                       TabBar(
                         labelColor: Colors.black,
                         unselectedLabelColor: Colors.white60,
@@ -44,12 +43,12 @@ class IndexFunMojiPage extends StatelessWidget {
                         isScrollable: true,
 
                         tabs: [
-                          Tab(text: 'Avatar'),
-                          Tab(text: 'Beams',),
-                          Tab(text: 'Moji',),
+                          Tab(text: tr(context).avatar),
+                          Tab(text: tr(context).beams),
+                          Tab(text: tr(context).moji),
                           Tab(text: 'Babies'),
-                          Tab(text: 'Aliens'),
-                          Tab(text: 'Animated'),
+                          Tab(text: tr(context).aliens),
+                          Tab(text: tr(context).animated),
                         ],
                       ),
                       Expanded(

@@ -372,5 +372,200 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notEnoughStars => 'Not enough stars';
 
   @override
-  String get lol => 'Lole';
+  String get courseLocked => 'Course Locked';
+
+  @override
+  String get unlockThisCourseFor => 'Unlock this course for';
+
+  @override
+  String get gained => 'Gained';
+
+  @override
+  String get wellDone => 'Well Done';
+
+  @override
+  String get freeDrawing => 'Free Drawing';
+
+  @override
+  String get draw => 'Draw';
+
+  @override
+  String get gallery => 'Gallery';
+
+  @override
+  String get noDrawingsSavedYet => 'No drawings saved yet';
+
+  @override
+  String get createSomeAwesomeArt => 'Create some awesome art!';
+
+  @override
+  String get pickAColor => 'Pick a color';
+
+  @override
+  String get selectBrushSize => 'Select brush size';
+
+  @override
+  String get drawSomethingBeforeSaving => 'Draw something before saving';
+
+  @override
+  String get drawingSaved => 'Drawing saved';
+
+  @override
+  String get time => 'Time';
+
+  @override
+  String get chooseYourBanner => 'Choose your banner';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get letter => 'Letter';
+
+  @override
+  String get secondsLeft => 'Seconds left';
+
+  @override
+  String get question => 'Question';
+
+  @override
+  String get addtofavorite => 'Add to favorite';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get favoriteWords => 'Favorite Words';
+
+  @override
+  String get noFavoriteWordsYetAddNewWordsHere => 'No favorite words yet. Add new words here.';
+
+  @override
+  String get free => 'Free';
+
+  @override
+  String get saveProfile => 'Save Profile';
+
+  @override
+  String get funMoji => 'FunMoji';
+
+  @override
+  String get avatar => 'Avatar';
+
+  @override
+  String get beams => 'Beams';
+
+  @override
+  String get moji => 'Moji';
+
+  @override
+  String get aliens => 'Aliens';
+
+  @override
+  String get animated => 'Animated';
+
+  @override
+  String get banners => 'Banners';
+
+  @override
+  String get cute => 'Cute';
+
+  @override
+  String get joyful => 'Joyful';
+
+  @override
+  String get sciFi => 'Sci-Fi';
+
+  @override
+  String get fantasy => 'Fantasy';
+
+  @override
+  String get islamic => 'Islamic';
+
+  @override
+  String get store => 'Store';
+
+  @override
+  String get tolims => 'Tolims';
+
+  @override
+  String get spinningWheel => 'Spinning Wheel';
+
+  @override
+  String get spin => 'Spin';
+
+  @override
+  String get reroll => 'Reroll';
+
+  @override
+  String get comeBackin => 'Come back in';
+
+  @override
+  String get dailyReward => 'Daily Reward';
+
+  @override
+  String get watchAd => 'Watch Ad';
+
+  @override
+  String get earn => 'Earn';
+
+  @override
+  String get congratulations => 'Congratulations!';
+
+  @override
+  String get youWon => 'You won!';
+
+  @override
+  String get awesome => 'Awesome!';
+
+  @override
+  String get freeSpinUnlocked => 'Free spin unlocked!';
+
+  @override
+  String get youEarned => 'You earned';
+
+  @override
+  String get tryAgain => 'Try again!';
+
+  @override
+  String get noRewardThisTime => 'No reward this time.';
+
+  @override
+  String get dailySpin => 'Daily Spin';
+
+  @override
+  String get comeBackIn => 'Come back in';
+
+  @override
+  String get youreReadyToSpin => 'You\'re ready to spin!';
+
+  @override
+  String get pronunciation => 'Pronunciation';
+
+  @override
+  String get example => 'Example';
+
+  @override
+  String get drawWhateverYouLike => 'Draw whatever you like';
+
+  @override
+  String get paintOnSketches => 'Paint on sketches';
+
+  @override
+  String get colorBeautifulTemplates => 'Color beautiful templates';
+
+  @override
+  String get learningProgram => 'Learning Program';
+
+  @override
+  String get stepByStepPaintingLessons => 'Step-by-step painting lessons';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get areYouSureYouWantToDeleteThisDrawing => 'Are you sure you want to delete this drawing?';
+
+  @override
+  String get deleteDrawing => 'Delete Drawing';
 }

@@ -15,7 +15,6 @@ import 'XpSystem.dart';
 import 'indexPage_tools/Course_index_tool/course_index.dart';
 import 'indexPage_tools/Game_index_tool/game_index.dart';
 import 'indexPage_tools/language_menu.dart';
-import 'tools/audio_tool/audio_tool.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
@@ -29,8 +28,7 @@ class Index extends StatefulWidget {
 
 class _IndexState extends State<Index>
     with TickerProviderStateMixin, WidgetsBindingObserver, RouteAware {
-  final MusicPlayer _musicPlayer = MusicPlayer();
-  final MusicPlayer _clickButton = MusicPlayer();
+
 
   late TabController _tabController;
   String childName = "Player";
@@ -48,23 +46,6 @@ class _IndexState extends State<Index>
     _tabController = TabController(length: 4, vsync: this);
 
     _loadProfile();
-
-
-    if (xpManager.musicEnabled) {
-      _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3", loop: true);
-      _musicPlayer.setVolume(xpManager.musicVolume);
-    }
-
-    xpManager.addListener(() {
-      if (xpManager.musicEnabled) {
-        _musicPlayer.setVolume(xpManager.musicVolume);
-        if (!_musicPlayer.isPlaying) {
-          _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3", loop: true);
-        }
-      } else {
-        _musicPlayer.stop();
-      }
-    });
 
     _profileAnimController = AnimationController(
       vsync: this,
@@ -97,35 +78,10 @@ class _IndexState extends State<Index>
     WidgetsBinding.instance.removeObserver(this);
     routeObserver.unsubscribe(this);
     _tabController.dispose();
-    _musicPlayer.dispose();
-    _clickButton.dispose();
     _profileAnimController.dispose();
     super.dispose();
   }
 
-  @override
-  void didPopNext() {
-    super.didPopNext();
-    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-    if (xpManager.musicEnabled) {
-      _musicPlayer.stop();
-      _musicPlayer.play("assets/audios/sound_track/backGroundMusic8bit.mp3", loop: true);
-      _musicPlayer.setVolume(xpManager.musicVolume);
-    }
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused) {
-      _musicPlayer.pause();
-    } else if (state == AppLifecycleState.resumed) {
-      final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-      if (xpManager.musicEnabled) {
-        _musicPlayer.resume();
-        _musicPlayer.setVolume(xpManager.musicVolume);
-      }
-    }
-  }
 
   void _loadProfile() async {
     final prefs = await SharedPreferences.getInstance();
@@ -195,7 +151,6 @@ class _IndexState extends State<Index>
         actions: [
           IconButton(
             onPressed: () {
-              _clickButton.play("assets/audios/pop.mp3");
               Navigator.of(context).push(createFadeRoute(
                 LoadingPage(
                   loadingFuture: simulateLoading(),
@@ -208,7 +163,6 @@ class _IndexState extends State<Index>
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.white,),
             onPressed: () {
-              _clickButton.play("assets/audios/pop.mp3");
               showDialog(
                 context: context,
                 builder: (_) => const SettingsDialog(),
@@ -269,7 +223,6 @@ class _IndexState extends State<Index>
                               child: InkWell(
                                 customBorder: const CircleBorder(),
                                 onTap: () {
-                                  _clickButton.play("assets/audios/pop.mp3");
                                   Navigator.of(context)
                                       .push(createFadeRoute(ProfilePage(
                                     initialName: childName,
@@ -384,8 +337,8 @@ class _IndexState extends State<Index>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    CourseTab(musicPlayer: _musicPlayer),
-                    GamesTab(musicPlayer: _musicPlayer),
+                    CourseTab(),
+                    GamesTab(),
                     ComingSoonNotPage(),
                     ComingSoonNotPage(),
                   ],

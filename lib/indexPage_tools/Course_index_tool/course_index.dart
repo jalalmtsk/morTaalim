@@ -5,8 +5,7 @@ import 'package:mortaalim/indexPage_tools/Course_index_tool/course_grid.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 
 class CourseTab extends StatelessWidget {
-  final MusicPlayer musicPlayer;
-  const CourseTab({super.key, required this.musicPlayer});
+  const CourseTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +17,7 @@ class CourseTab extends StatelessWidget {
         Text(tr.chooseLevel, style: TextStyle(fontSize: 20, color: Colors.grey[700])),
         const SizedBox(height: 12),
         Expanded(
-          child: CourseGrid(highCourses: highCourses, musicPlayer: musicPlayer),
+          child: CourseGrid(highCourses: highCourses),
         ),
       ],
     );

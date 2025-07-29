@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../../XpSystem.dart';
 import '../../l10n/app_localizations.dart';
-import 'package:mortaalim/IndexPage.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 
 class CourseGrid extends StatelessWidget {
   final List<Map<String, dynamic>> highCourses;
-  final MusicPlayer musicPlayer;
 
-  const CourseGrid({super.key, required this.highCourses, required this.musicPlayer});
+  const CourseGrid({super.key, required this.highCourses});
 
   @override
   Widget build(BuildContext context) {
@@ -27,9 +23,6 @@ class CourseGrid extends StatelessWidget {
         final course = highCourses[index];
         return GestureDetector(
           onTap: () {
-            musicPlayer.stop();
-            final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-            xpManager.setMusicEnabled(false);
             Navigator.push(context, MaterialPageRoute(
               builder: (_) => course['widget'],
             ));

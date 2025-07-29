@@ -22,6 +22,10 @@ class FindLargestNumberExercise extends StatefulWidget {
 
 class _FindLargestNumberExerciseState extends State<FindLargestNumberExercise> {
   final MusicPlayer player = MusicPlayer();
+  final MusicPlayer player2 = MusicPlayer();      // for layered sounds
+  final MusicPlayer bgmPlayer = MusicPlayer();    // background music player
+  final MusicPlayer bgmVictory = MusicPlayer();   // victory background music player
+
   late List<int> numbers;
   late int correctAnswer;
 
@@ -35,12 +39,15 @@ class _FindLargestNumberExerciseState extends State<FindLargestNumberExercise> {
 
   BannerAd? _bannerAd;
   bool _isBannerAdLoaded = false;
+  bool _isAdLoading = false;       // track ad loading state
+  bool _isBgmPlaying = true;       // track background music playing state
 
   @override
   void initState() {
     super.initState();
     generateNewQuestion();
     _loadBannerAd();
+    _startBackgroundMusic();
   }
 
   void _loadBannerAd() {
@@ -53,9 +60,39 @@ class _FindLargestNumberExerciseState extends State<FindLargestNumberExercise> {
     });
   }
 
+  Future<void> _startBackgroundMusic() async {
+    bgmPlayer.setVolume(0.3);
+    await bgmPlayer.play('assets/audios/sound_track/SakuraGirl_bkG.mp3', loop: true);
+  }
+
+  Future<void> _stopBackgroundMusic() async {
+    await bgmPlayer.stop();
+  }
+
+  Future<void> _playVictoryMusic() async {
+    player2.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
+    bgmVictory.setVolume(0.4);
+    bgmVictory.play("assets/audios/sound_track/SakuraGirlYay_BcG.mp3", loop: true);
+    await player.play('assets/audios/sound_effects/victory1.mp3');
+  }
+
+  void _toggleBackgroundMusic() {
+    if (_isBgmPlaying) {
+      _stopBackgroundMusic();
+    } else {
+      _startBackgroundMusic();
+    }
+    setState(() {
+      _isBgmPlaying = !_isBgmPlaying;
+    });
+  }
+
   @override
   void dispose() {
     player.dispose();
+    player2.dispose();
+    bgmPlayer.dispose();
+    bgmVictory.dispose();
     _bannerAd?.dispose();
     super.dispose();
   }
@@ -78,12 +115,13 @@ class _FindLargestNumberExerciseState extends State<FindLargestNumberExercise> {
         _isAnswerCorrect = true;
       });
 
-      Future.delayed(Duration(milliseconds: 1500), () {
+      Future.delayed(Duration(milliseconds: 1500), () async {
         if (score >= 10) {
           final manager = Provider.of<ExperienceManager>(context, listen: false);
           if (wrong == 0) {
             manager.addTokenBanner(context, 1);
           }
+          await _playVictoryMusic();  // play victory music here
           setState(() {
             showGameOver = true;
             _isAnswerCorrect = null;
@@ -125,7 +163,10 @@ class _FindLargestNumberExerciseState extends State<FindLargestNumberExercise> {
   }
 
   void _onReplayPressed() {
+    setState(() => _isAdLoading = true);
     AdHelper.showInterstitialAd(onDismissed: () {
+      setState(() => _isAdLoading = false);
+      bgmVictory.dispose();
       resetGame();
     });
   }
@@ -138,11 +179,22 @@ class _FindLargestNumberExerciseState extends State<FindLargestNumberExercise> {
       backgroundColor: Colors.deepPurple.shade50,
       appBar: AppBar(
         backgroundColor: themeColor,
+        // No back button as per your request
         title: Center(child: Text('Le Plus Grand Nombre', style: TextStyle(fontWeight: FontWeight.bold))),
+        actions: [
+          IconButton(
+            onPressed: _toggleBackgroundMusic,
+            icon: Icon(
+              _isBgmPlaying ? Icons.volume_up : Icons.volume_off,
+              color: Colors.white,
+            ),
+            tooltip: _isBgmPlaying ? 'Mute Background Music' : 'Play Background Music',
+          ),
+        ],
       ),
       body: Stack(
         children: [
-          Padding(
+          SingleChildScrollView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
             child: showGameOver
                 ? Center(
@@ -154,22 +206,29 @@ class _FindLargestNumberExerciseState extends State<FindLargestNumberExercise> {
                   Text("Score : $score / 10", style: TextStyle(fontSize: 24)),
                   Text("Fautes : $wrong", style: TextStyle(fontSize: 20, color: Colors.redAccent)),
                   SizedBox(height: 24),
-
                   if (_showFinalCelebration)
                     SizedBox(
                       width: 150,
                       height: 150,
                       child: Lottie.asset('assets/animations/QuizzGame_Animation/Champion.json', repeat: false),
                     ),
-
                   ElevatedButton(
-                    onPressed: _onReplayPressed,
+                    onPressed: _isAdLoading ? null : _onReplayPressed,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: themeColor,
                       padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                     ),
-                    child: Text("Rejouer", style: TextStyle(fontSize: 22, color: Colors.white)),
+                    child: _isAdLoading
+                        ? SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 3,
+                      ),
+                    )
+                        : Text("Rejouer", style: TextStyle(fontSize: 22, color: Colors.white)),
                   ),
                 ],
               ),
@@ -186,30 +245,35 @@ class _FindLargestNumberExerciseState extends State<FindLargestNumberExercise> {
                   ],
                 ),
                 SizedBox(height: 40),
-                Text("Quel est le plus grand nombre ?",
-                    style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: themeColor),
-                    textAlign: TextAlign.center),
+                Text(
+                  "Quel est le plus grand nombre ?",
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: themeColor),
+                  textAlign: TextAlign.center,
+                ),
                 SizedBox(height: 16),
                 Wrap(
                   spacing: 14,
                   runSpacing: 14,
                   alignment: WrapAlignment.center,
-                  children: numbers.map((num) => ElevatedButton(
-                    onPressed: () => checkAnswer(num),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: themeColor,
-                      shape: CircleBorder(),
-                      padding: EdgeInsets.all(20),
-                      elevation: 6,
-                      shadowColor: Colors.deepPurple.shade300,
+                  children: numbers
+                      .map(
+                        (num) => ElevatedButton(
+                      onPressed: () => checkAnswer(num),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: themeColor,
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(20),
+                        elevation: 6,
+                        shadowColor: Colors.deepPurple.shade300,
+                      ),
+                      child: Text('$num', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
                     ),
-                    child: Text('$num', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white)),
-                  )).toList(),
+                  )
+                      .toList(),
                 ),
               ],
             ),
           ),
-
           if (_isAnswerCorrect != null)
             Container(
               color: Colors.black.withOpacity(0.4),
@@ -225,6 +289,15 @@ class _FindLargestNumberExerciseState extends State<FindLargestNumberExercise> {
                 ),
               ),
             ),
+          if (_isAdLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              alignment: Alignment.center,
+              child: const CircularProgressIndicator(
+                color: Colors.white,
+                strokeWidth: 4,
+              ),
+            ),
         ],
       ),
       bottomNavigationBar: Provider.of<ExperienceManager>(context).adsEnabled && _bannerAd != null && _isBannerAdLoaded
@@ -234,7 +307,8 @@ class _FindLargestNumberExerciseState extends State<FindLargestNumberExercise> {
           width: _bannerAd!.size.width.toDouble(),
           child: AdWidget(ad: _bannerAd!),
         ),
-      ) : null,
+      )
+          : null,
     );
   }
 

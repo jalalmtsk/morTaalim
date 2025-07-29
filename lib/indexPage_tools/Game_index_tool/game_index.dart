@@ -5,12 +5,11 @@ import 'game_data.dart';
 import 'game_grid.dart';
 
 class GamesTab extends StatelessWidget {
-  final MusicPlayer musicPlayer;
 
-  const GamesTab({super.key, required this.musicPlayer});
+  const GamesTab({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GameGrid(games: games, musicPlayer: musicPlayer);
+    return GameGrid(games: games);
   }
 }

@@ -66,7 +66,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get cancel => 'إلغاء';
 
   @override
-  String get ok => 'موافق';
+  String get ok => 'حسنًا';
 
   @override
   String get pleaseEnterName => 'يرجى إدخال اسم';
@@ -372,5 +372,200 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notEnoughStars => 'لا توجد نجوم كافية';
 
   @override
-  String get lol => 'lol';
+  String get courseLocked => 'الدورة مقفلة';
+
+  @override
+  String get unlockThisCourseFor => 'افتح هذه الدورة مقابل';
+
+  @override
+  String get gained => 'تم الحصول عليه';
+
+  @override
+  String get wellDone => 'أحسنت';
+
+  @override
+  String get freeDrawing => 'رسم حر';
+
+  @override
+  String get draw => 'ارسم';
+
+  @override
+  String get gallery => 'المعرض';
+
+  @override
+  String get noDrawingsSavedYet => 'لم يتم حفظ أي رسومات حتى الآن';
+
+  @override
+  String get createSomeAwesomeArt => 'أنشئ بعض الأعمال الفنية الرائعة';
+
+  @override
+  String get pickAColor => 'اختر لونًا';
+
+  @override
+  String get selectBrushSize => 'اختر حجم الفرشاة';
+
+  @override
+  String get drawSomethingBeforeSaving => 'ارسم شيئًا قبل الحفظ';
+
+  @override
+  String get drawingSaved => 'تم حفظ الرسم';
+
+  @override
+  String get time => 'الوقت';
+
+  @override
+  String get chooseYourBanner => 'اختر رايتك';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get letter => 'حرف';
+
+  @override
+  String get secondsLeft => 'ثوانٍ متبقية';
+
+  @override
+  String get question => 'سؤال';
+
+  @override
+  String get addtofavorite => 'أضف إلى المفضلة';
+
+  @override
+  String get close => 'إغلاق';
+
+  @override
+  String get favoriteWords => 'الكلمات المفضلة';
+
+  @override
+  String get noFavoriteWordsYetAddNewWordsHere => 'لا توجد كلمات مفضلة بعد. أضف كلمات جديدة هنا.';
+
+  @override
+  String get free => 'مجاني';
+
+  @override
+  String get saveProfile => 'حفظ الملف الشخصي';
+
+  @override
+  String get funMoji => 'رموز مرحة';
+
+  @override
+  String get avatar => 'الصورة الرمزية';
+
+  @override
+  String get beams => 'أشعة';
+
+  @override
+  String get moji => 'رموز';
+
+  @override
+  String get aliens => 'كائنات فضائية';
+
+  @override
+  String get animated => 'متحرك';
+
+  @override
+  String get banners => 'رايات';
+
+  @override
+  String get cute => 'لطيف';
+
+  @override
+  String get joyful => 'مبهج';
+
+  @override
+  String get sciFi => 'خيال علمي';
+
+  @override
+  String get fantasy => 'خيال';
+
+  @override
+  String get islamic => 'إسلامي';
+
+  @override
+  String get store => 'المتجر';
+
+  @override
+  String get tolims => 'توليمز';
+
+  @override
+  String get spinningWheel => 'عجلة الحظ';
+
+  @override
+  String get spin => 'دوّر';
+
+  @override
+  String get reroll => 'إعادة التدوير';
+
+  @override
+  String get comeBackin => 'ارجع خلال';
+
+  @override
+  String get dailyReward => 'مكافأة يومية';
+
+  @override
+  String get watchAd => 'شاهد إعلانًا';
+
+  @override
+  String get earn => 'اكسب';
+
+  @override
+  String get congratulations => 'تهانينا!';
+
+  @override
+  String get youWon => 'لقد فزت!';
+
+  @override
+  String get awesome => 'رائع!';
+
+  @override
+  String get freeSpinUnlocked => 'دورة مجانية مفتوحة!';
+
+  @override
+  String get youEarned => 'لقد ربحت';
+
+  @override
+  String get tryAgain => 'حاول مرة أخرى!';
+
+  @override
+  String get noRewardThisTime => 'لا توجد مكافأة هذه المرة.';
+
+  @override
+  String get dailySpin => 'الدورة اليومية';
+
+  @override
+  String get comeBackIn => 'ارجع بعد';
+
+  @override
+  String get youreReadyToSpin => 'أنت جاهز للدوران!';
+
+  @override
+  String get pronunciation => 'النطق';
+
+  @override
+  String get example => 'مثال';
+
+  @override
+  String get drawWhateverYouLike => 'ارسم ما تريد';
+
+  @override
+  String get paintOnSketches => 'لوّن الرسومات التخطيطية';
+
+  @override
+  String get colorBeautifulTemplates => 'لوّن القوالب الجميلة';
+
+  @override
+  String get learningProgram => 'برنامج تعليمي';
+
+  @override
+  String get stepByStepPaintingLessons => 'دروس رسم خطوة بخطوة';
+
+  @override
+  String get delete => 'حذف';
+
+  @override
+  String get areYouSureYouWantToDeleteThisDrawing => 'هل أنت متأكد أنك تريد حذف هذا الرسم؟';
+
+  @override
+  String get deleteDrawing => 'حذف الرسم';
 }

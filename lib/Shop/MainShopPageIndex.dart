@@ -7,6 +7,7 @@ import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 
 import '../XpSystem.dart';
+import '../main.dart';
 import '../tools/Ads_Manager.dart';
 import '../widgets/RewardChest.dart';
 import 'FunMojiTab/IndexFunMoji.dart';
@@ -20,7 +21,7 @@ class MainShopPageIndex extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 5, // 5 tabs
+      length: 4, // 4 tabs
       child: Scaffold(
         backgroundColor: const Color(0xFFff9966),
         body: SafeArea(
@@ -48,7 +49,7 @@ class MainShopPageIndex extends StatelessWidget {
 
                     Row(children: [
                       RewardChest(
-                        cooldown: Duration(seconds: 5),
+                        cooldown: Duration(minutes: 20),
                         chestClosedAsset: 'assets/images/UI/utilities/Box.png',
                         chestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
                         rareChestClosedAsset: 'assets/images/UI/utilities/Box.png',
@@ -64,7 +65,7 @@ class MainShopPageIndex extends StatelessWidget {
                         },
                       ),
                       RewardChest(
-                        cooldown: Duration(hours: 24),
+                        cooldown: Duration(hours: 1),
                         chestClosedAsset: 'assets/images/UI/utilities/Box.png',
                         chestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
                         rareChestClosedAsset: 'assets/images/UI/utilities/Box.png',
@@ -102,12 +103,11 @@ class MainShopPageIndex extends StatelessWidget {
                 child: TabBar(
                   isScrollable: true,
                   indicatorColor: Colors.white,
-                  tabs: const [
-                    Tab(icon: Icon(Icons.face_2_sharp), text: "FunMoji"),
-                    Tab(icon: Icon(Icons.filter_b_and_w_outlined), text: "Banner"),
-                    Tab(icon: Icon(Icons.token), text: "Stars/Tolims"),
-                    Tab(icon: Icon(Icons.card_giftcard), text: "Specials"),
-                    Tab(icon: Icon(Icons.info_outline), text: "Info"),
+                  tabs:  [
+                    Tab(icon: Icon(Icons.face_2_sharp), text: tr(context).funMoji),
+                    Tab(icon: Icon(Icons.filter_b_and_w_outlined), text: tr(context).banners),
+                    Tab(icon: Icon(Icons.token), text: tr(context).stars),
+                    Tab(icon: Icon(Icons.card_giftcard), text: tr(context).spinningWheel),
                   ],
                 ),
               ),
@@ -119,7 +119,6 @@ class MainShopPageIndex extends StatelessWidget {
                     IndexBanner(),
                     IndexStars(),
                     SingleChildScrollView(child: SpinWheelPopup()),
-                    const Center(child: Text("ℹ️ Information", style: TextStyle(fontSize: 18))),
                   ],
                 ),
               ),
@@ -151,9 +150,9 @@ class MainShopPageIndex extends StatelessWidget {
 
                       const SizedBox(width: 10),
 
-                      const Text(
-                        'Watch Ad → Earn 🌟!',
-                        style: TextStyle(
+                      Text(
+                        '${tr(context).watchAd} → ${tr(context).earn} 🌟! ',
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 18,
                           color: Colors.white,

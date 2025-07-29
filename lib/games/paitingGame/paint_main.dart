@@ -13,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../XpSystem.dart';
+import '../../main.dart';
 import '../../tools/Ads_Manager.dart';
 import 'model_logic_page.dart';
 
@@ -183,13 +184,13 @@ class _DrawingAppState extends State<DrawingApp> {
 
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.deepOrange,
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.white70,
         onTap: (idx) => setState(() => _currentIndex = idx),
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.format_paint), label: "Draw"),
-          BottomNavigationBarItem(icon: Icon(Icons.photo_library), label: "Gallery"),
+          BottomNavigationBarItem(icon: Icon(Icons.format_paint), label: tr(context).draw),
+          BottomNavigationBarItem(icon: Icon(Icons.photo_library), label: tr(context).gallery),
         ],
       ),
 
@@ -219,15 +220,15 @@ class GalleryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('🖼️ Gallery', style: TextStyle(fontFamily: 'Comic Sans MS', fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.deepPurple,
+        title: Text('🖼️ ${tr(context).gallery}', style: TextStyle(fontFamily: 'Comic Sans MS', fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.deepOrange,
         centerTitle: true,
         leading: IconButton(icon: Icon(Icons.arrow_back), onPressed: onBack),
       ),
       body: savedDrawings.isEmpty
           ? Center(
         child: Text(
-          'No drawings saved yet!\nCreate some awesome art!',
+          '${tr(context).noDrawingsSavedYet}!\n${tr(context).createSomeAwesomeArt}',
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: 20, fontFamily: 'Comic Sans MS'),
         ),
@@ -251,7 +252,7 @@ class GalleryPage extends StatelessWidget {
                     elevation: 8,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     clipBehavior: Clip.antiAlias,
-                    shadowColor: Colors.deepPurpleAccent,
+                    shadowColor: Colors.deepOrangeAccent,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
@@ -261,7 +262,7 @@ class GalleryPage extends StatelessWidget {
                         Container(
                           padding: EdgeInsets.all(8),
                           decoration: BoxDecoration(
-                            color: Colors.deepPurple.withOpacity(0.85),
+                            color: Colors.deepPurple.withValues(alpha: 0.85),
                             borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
                           ),
                           child: Column(
@@ -291,7 +292,7 @@ class GalleryPage extends StatelessWidget {
                     onPressed: () {
                       _confirmDelete(context, index);
                     },
-                    tooltip: 'Delete Drawing',
+                    tooltip: tr(context).deleteDrawing,
                   ),
                 ),
 
@@ -309,18 +310,18 @@ class GalleryPage extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Delete Drawing?', style: TextStyle(fontFamily: 'Comic Sans MS')),
-        content: Text('Are you sure you want to delete this drawing?', style: TextStyle(fontFamily: 'Comic Sans MS')),
+        title: Text('${tr(context).deleteDrawing}?', style: TextStyle(fontFamily: 'Comic Sans MS')),
+        content: Text("${tr(context).areYouSureYouWantToDeleteThisDrawing}?", style: TextStyle(fontFamily: 'Comic Sans MS')),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         elevation: 8,
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: Text('Cancel')),
+          TextButton(onPressed: () => Navigator.pop(context), child: Text(tr(context).cancel)),
           TextButton(
               onPressed: () {
                 onDelete(index);
                 Navigator.pop(context);
               },
-              child: Text('Delete', style: TextStyle(color: Colors.red))),
+              child: Text(tr(context).delete, style: TextStyle(color: Colors.red))),
         ],
       ),
     );

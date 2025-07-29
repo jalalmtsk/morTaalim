@@ -60,7 +60,6 @@ class _index1PrimaireState extends State<index1Primaire>
   @override
   void initState() {
     super.initState();
-    backGroundIndexMusic.play("assets/audios/sound_track/SugarSprinkle_BcG.mp3", loop: true);
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
@@ -82,7 +81,6 @@ class _index1PrimaireState extends State<index1Primaire>
   @override
   void dispose() {
     _controller.dispose();
-    backGroundIndexMusic.dispose();
     super.dispose();
   }
 

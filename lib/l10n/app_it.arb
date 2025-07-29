@@ -20,8 +20,6 @@
 
   "greatJob": "Ottimo lavoro! Hai completato tutte le sezioni",
   "enterYourName": "Inserisci il tuo nome",
-  "cancel": "Annulla",
-  "ok": "OK",
   "pleaseEnterName": "Per favore inserisci un nome",
 
   "selectGameMode": "Seleziona modalità di gioco",
@@ -45,7 +43,6 @@
 
   "myProfile": "Il mio profilo",
 
-  "stars": "Stelle",
   "lives": "Vite",
   "score": "Punteggio",
   "name": "Nome",
@@ -129,13 +126,9 @@
 
 
   "chooseYourLanguageToStartTracing": "ScegliLaTuaLinguaPerIniziareIlTracciamento!",
-    "nextLetter": "Lettera successiva",
-    "clear": "Cancella",
+
     "languageLocked": "Lingua bloccata",
     "unlockFor": "Sblocca per",
-    "unlock": "Sblocca",
-    "cancel": "Annulla",
-    "storiesLibrary": "Biblioteca di storie",
     "sunnyTheSquirrel": "Sunny lo scoiattolo",
     "flickTheDancingFox": "Flick la volpe danzante",
     "next": "Avanti",
@@ -197,7 +190,32 @@
       "comeBackin": "Torna tra",
       "dailyReward": "Ricompensa giornaliera",
       "watchAd": "Guarda un annuncio",
-      "earn": "Guadagna"
+      "earn": "Guadagna",
+
+
+  "congratulations": "Congratulazioni!",
+  "youWon": "Hai vinto!",
+  "awesome": "Fantastico!",
+  "freeSpinUnlocked": "Giro gratuito sbloccato!",
+  "youEarned": "Hai guadagnato",
+  "tryAgain": "Riprova!",
+  "noRewardThisTime": "Nessuna ricompensa questa volta.",
+  "dailySpin": "Giro quotidiano",
+  "comeBackIn": "Torna tra",
+  "youreReadyToSpin": "Sei pronto a girare!",
+
+  "pronunciation": "Pronuncia",
+  "example": "Esempio",
+
+  "freeDrawing": "Disegno libero",
+  "drawWhateverYouLike": "Disegna ciò che vuoi",
+  "paintOnSketches": "Dipingi sui bozzetti",
+  "colorBeautifulTemplates": "Colora bellissimi modelli",
+  "learningProgram": "Programma di apprendimento",
+  "stepByStepPaintingLessons": "Lezioni di pittura passo dopo passo",
+  "delete": "Elimina",
+  "areYouSureYouWantToDeleteThisDrawing": "Sei sicuro di voler eliminare questo disegno?",
+  "deleteDrawing": "Elimina disegno"
 
 
 

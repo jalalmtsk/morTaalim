@@ -171,14 +171,7 @@ class _SettingsPageState extends State<SettingsPage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // 🎵 Sound Settings
-          SwitchListTile(
-            title: Text(tr.music),
-            value: context.watch<ExperienceManager>().musicEnabled,
-            onChanged: (val) {
-              context.read<ExperienceManager>().setMusicEnabled(val);
-            },
-          ),
+
           ListTile(
             title: Text(tr.musicVolume),
             subtitle: Slider(

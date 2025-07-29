@@ -201,7 +201,31 @@
     "comeBackin": "Come back in",
     "dailyReward": "Daily Reward",
     "watchAd": "Watch Ad",
-    "earn": "Earn"
+    "earn": "Earn",
+
+  "congratulations": "Congratulations!",
+  "youWon": "You won!",
+  "awesome": "Awesome!",
+  "freeSpinUnlocked": "Free spin unlocked!",
+  "youEarned": "You earned",
+  "tryAgain": "Try again!",
+  "noRewardThisTime": "No reward this time.",
+  "dailySpin": "Daily Spin",
+  "comeBackIn": "Come back in",
+  "youreReadyToSpin": "You're ready to spin!",
+
+  "pronunciation": "Pronunciation",
+  "example": "Example",
+
+  "freeDrawing": "Free Drawing",
+  "drawWhateverYouLike": "Draw whatever you like",
+  "paintOnSketches": "Paint on sketches",
+  "colorBeautifulTemplates": "Color beautiful templates",
+  "learningProgram": "Learning Program",
+  "stepByStepPaintingLessons": "Step-by-step painting lessons",
+  "delete": "Delete",
+  "areYouSureYouWantToDeleteThisDrawing": "Are you sure you want to delete this drawing?",
+  "deleteDrawing": "Delete Drawing"
 
 
 }

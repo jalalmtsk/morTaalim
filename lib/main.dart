@@ -23,6 +23,7 @@ import 'package:mortaalim/games/WordExplorer/WordExplorerPage.dart';
 import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
 import 'package:mortaalim/profileSetupPage.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/splashScreen.dart';
 import 'package:mortaalim/testing.dart';
 import 'package:mortaalim/widgets/ComingSoon.dart';
@@ -53,8 +54,13 @@ void main() async {
   AdHelper.initializeAds();
 
   runApp(
-      ChangeNotifierProvider(
-        create: (_) => ExperienceManager(),
+    MultiProvider(providers:
+[
+    ChangeNotifierProvider(
+      create: (_) => ExperienceManager()),
+    ChangeNotifierProvider(create: (_) => AudioManager()),
+
+],
         child:  MyApp(),));
 }
 

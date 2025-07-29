@@ -78,7 +78,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   initState()  {
     super.initState();
     _loadBannerAd();
-    _PlaySounds();
     _questions = _loadQuestions(widget.language)..shuffle();
     _introController = AnimationController(
       vsync: this,
@@ -94,17 +93,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     });
   }
 
-  Future<void> _PlaySounds() async {
-    try {
-      _CountDownRobot.play("assets/audios/QuizGame_Sounds/RoboticCountDown3sec.mp3");
-      await _CountDown.play("assets/audios/QuizGame_Sounds/GameCountDown3Sec.mp3");
-      if (Provider.of<ExperienceManager>(context, listen: false).musicEnabled) {
-        _backgroundMusic.play("assets/audios/QuizGame_Sounds/heyWhistleUkulele30Sec.mp3", loop: true);
-      }
-    } catch (e) {
-      debugPrint('Error playing sound: $e');
-    }
-  }
 
   void _loadBannerAd() {
     _bannerAd?.dispose();

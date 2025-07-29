@@ -34,18 +34,13 @@ class SettingsDialog extends StatelessWidget {
             Row(
               children: [
                 Icon(
-                  xpManager.musicEnabled ? Icons.music_note : Icons.music_off,
+                 Icons.music_note,
                   color: Colors.deepOrange,
                 ),
                 const SizedBox(width: 10),
                 const Text('Music'),
                 const Spacer(),
-                Switch(
-                  value: xpManager.musicEnabled,
-                  onChanged: (val) {
-                    xpManager.setMusicEnabled(val);
-                  },
-                ),
+
               ],
             ),
 
@@ -55,18 +50,7 @@ class SettingsDialog extends StatelessWidget {
             Row(
               children: [
                 const Icon(Icons.volume_down, color: Colors.deepOrange),
-                Expanded(
-                  child: Slider(
-                    value: xpManager.musicVolume,
-                    min: 0.0,
-                    max: 1.0,
-                    divisions: 10,
-                    label: "${(xpManager.musicVolume * 100).round()}%",
-                    onChanged: (val) {
-                      xpManager.setMusicVolume(val);
-                    },
-                  ),
-                ),
+
                 const Icon(Icons.volume_up, color: Colors.deepOrange),
               ],
             ),
