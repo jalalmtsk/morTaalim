@@ -7,6 +7,7 @@ import 'package:mortaalim/widgets/userStatutBar.dart';
 
 import '../../XpSystem.dart';
 import '../../main.dart';
+import '../../tools/audio_tool/Audio_Manager.dart';
 import 'Language_CardsUI.dart';
 
 class LanguageSelectorPage extends StatelessWidget {
@@ -16,7 +17,7 @@ class LanguageSelectorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     final xpManager = Provider.of<ExperienceManager>(context, listen: true);
 
     final languages = [

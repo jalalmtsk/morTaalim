@@ -3,7 +3,12 @@ import 'package:mortaalim/courses/primaire1Page/1_primaireExamenPage.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePage.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePratique.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../tools/audio_tool/Audio_Manager.dart';
+import '../../tools/audio_tool/VolumeSlider/BackgroundVolumeSlider.dart';
+import '../../tools/audio_tool/VolumeSlider/SFXSlider.dart';
 
 class index1Primaire extends StatefulWidget {
   const index1Primaire({super.key});
@@ -86,12 +91,24 @@ class _index1PrimaireState extends State<index1Primaire>
 
   @override
   Widget build(BuildContext context) {
+    final audio = Provider.of<AudioManager>(context, listen: false);
+
     return DefaultTabController(
       length: 3,
       child: Scaffold(
         backgroundColor: Colors.grey[100],
         body: Column(
           children: [
+
+            BgVolumeSlider(),
+            SizedBox(height: 20),
+            SfxVolumeSlider(),
+            IconButton(onPressed: (){
+              audio.playSfx("assets/audios/sound_effects/victory1.mp3");
+              audio.playSfx("assets/audios/sound_effects/victory2.mp3");
+
+            }, icon: Icon(Icons.place)),
+
             SlideTransition(
               position: _slideAnimation,
               child: FadeTransition(

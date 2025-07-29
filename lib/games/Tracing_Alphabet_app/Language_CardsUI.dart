@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../XpSystem.dart';
 import '../../main.dart';
+import '../../tools/audio_tool/Audio_Manager.dart';
 import 'TracingAlphabetPage.dart';
 
 class LanguageOption {
@@ -48,6 +49,8 @@ class _LanguageCardState extends State<LanguageCard> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
+    final audio = Provider.of<AudioManager>(context, listen: false);
+    audio.playBackgroundMusic("assets/audios/sound_track/backGroundMusic8bit.mp3");
     _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
     _scaleAnim = Tween<double>(begin: 0.9, end: 1).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOutBack));
     _controller.forward();

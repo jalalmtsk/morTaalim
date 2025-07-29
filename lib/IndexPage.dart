@@ -4,6 +4,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mortaalim/indexPage_tools/IT_index_toll/iT_index.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/tools/SettingPanelInGame.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
 import 'package:mortaalim/widgets/profile_page.dart';
@@ -43,6 +44,7 @@ class _IndexState extends State<Index>
     WidgetsBinding.instance.addObserver(this);
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
     xpManager.init(context);
+
     _tabController = TabController(length: 4, vsync: this);
 
     _loadProfile();
@@ -70,8 +72,9 @@ class _IndexState extends State<Index>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    routeObserver.subscribe(this, ModalRoute.of(context)!);
+    routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
   }
+
 
   @override
   void dispose() {
@@ -134,6 +137,7 @@ class _IndexState extends State<Index>
 
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     final xpManager = Provider.of<ExperienceManager>(context);
     final tr = AppLocalizations.of(context)!;
     final avatarEmoji = xpManager.selectedAvatar;

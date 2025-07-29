@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/PractiseGames/HeavyLight/HeavyLight.dart';
 import 'package:mortaalim/PractiseGames/PlayTheWord/PlayTheWord.dart';
+import 'package:mortaalim/courses/primaire1Page/index_1PrimairePage.dart';
 import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
@@ -24,6 +25,7 @@ import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
 import 'package:mortaalim/profileSetupPage.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:mortaalim/tools/audio_tool/MusicRouteObserver.dart';
 import 'package:mortaalim/tools/splashScreen.dart';
 import 'package:mortaalim/testing.dart';
 import 'package:mortaalim/widgets/ComingSoon.dart';
@@ -40,9 +42,16 @@ Locale _locale = const Locale('fr'); // default locale
 late SharedPreferences prefs;
 AppLocalizations tr(BuildContext context) => AppLocalizations.of(context)!;
 
+final MusicRouteObserver routeObserver = MusicRouteObserver();
+
+
+// Create ONE AudioManager instance here, globally:
+final AudioManager audioManager = AudioManager();
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // 🔒 Lock orientation to portrait only
+
+  // Lock orientation to portrait only
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -54,14 +63,14 @@ void main() async {
   AdHelper.initializeAds();
 
   runApp(
-    MultiProvider(providers:
-[
-    ChangeNotifierProvider(
-      create: (_) => ExperienceManager()),
-    ChangeNotifierProvider(create: (_) => AudioManager()),
-
-],
-        child:  MyApp(),));
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: audioManager),  // Provide the global instance here
+        ChangeNotifierProvider(create: (_) => ExperienceManager()),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -95,7 +104,6 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
       theme: ThemeData(
         primaryColor: Colors.white,
         appBarTheme: AppBarTheme(
@@ -112,37 +120,37 @@ class _MyAppState extends State<MyApp> {
       ),
       debugShowCheckedModeBanner: true,
 
-
+      navigatorObservers: [routeObserver],
       routes: {
         'Index': (context) => Index(onChangeLocale: _changeLanguage),
 
         //Game Routes
-        'DrawingAlphabet': (context) => LanguageSelectorPage(onChangeLocale: _changeLanguage,),
+        'DrawingAlphabet': (context) => LanguageSelectorPage(onChangeLocale: _changeLanguage),
         'QuizGameApp': (context) => const QuizGameApp(),
-        'AppStories': (context) => StoriesGridPage(stories: stories), // Pass real story list here
+        'AppStories': (context) => StoriesGridPage(stories: stories),
         'ShapeSorter': (context) => const ShapeSorterApp(),
-        'Piano' : (context) => const PianoModeSelector(),
+        'Piano': (context) => const PianoModeSelector(),
         'PlaneDestroyer': (context) => const SpeedBomb(),
         'WordLink': (context) => const WordBoardGame(),
-        'IQGame' : (context) => const IQTestApp(),
-        "MagicPainting" : (context) =>  DrawingIndex(),
+        'IQGame': (context) => const IQTestApp(),
+        "MagicPainting": (context) => DrawingIndex(),
         "JumpingBoard": (context) => const JumpingBoard(),
-        "WordExplorer" : (context) =>  WordExplorer(),
+        "WordExplorer": (context) => WordExplorer(),
         'FavoriteWords': (context) => const FavoriteWordsPage(),
-        "SugarSmash" : (context) => const Sugrasmash(),
-        "BreakingWalls" : (context) => BreakingWalls(),
+        "SugarSmash": (context) => const Sugrasmash(),
+        "BreakingWalls": (context) => BreakingWalls(),
+
+
+
+        'index1Primaire' : (context) => index1Primaire(),
+
         'Profile': (context) => const ProfileSetupPage(),
-
-
-        'Shop' : (context) => MainShopPageIndex(),
-        'Credits' : (context) =>  CreditsPage(),
-
-
-
-        'ComingSoon' : (context) => ComingSoonPage(),
-        'Setting' : (context) => SettingsPage(onChangeLocale: _changeLanguage),
-        'Splash' : (context) => SplashPage(onChangeLocale: _changeLanguage),
-        "Testing" : (context) => TestApp(),
+        'Shop': (context) => MainShopPageIndex(),
+        'Credits': (context) => CreditsPage(),
+        'ComingSoon': (context) => ComingSoonPage(),
+        'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),
+        'Splash': (context) => SplashPage(onChangeLocale: _changeLanguage),
+        "Testing": (context) => TestApp(),
       },
 
       localizationsDelegates: const [
@@ -158,7 +166,7 @@ class _MyAppState extends State<MyApp> {
         Locale("it"),
       ],
       locale: _locale,
-     initialRoute: 'Splash',
+      initialRoute: 'Splash',
     );
   }
 }

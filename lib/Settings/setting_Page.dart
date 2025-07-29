@@ -6,6 +6,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../XpSystem.dart';
+import '../tools/audio_tool/Audio_Manager.dart';
 
 class SettingsPage extends StatefulWidget {
   final void Function(Locale) onChangeLocale;
@@ -162,6 +163,8 @@ class _SettingsPageState extends State<SettingsPage> {
   @override
   Widget build(BuildContext context) {
     final tr = AppLocalizations.of(context)!;
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+
 
     return Scaffold(
       appBar: AppBar(
@@ -172,20 +175,7 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(16),
         children: [
 
-          ListTile(
-            title: Text(tr.musicVolume),
-            subtitle: Slider(
-              value: musicVolume,
-              onChanged: (val) {
-                setState(() => musicVolume = val);
-                _savePref('musicVolume', val);
-              },
-              min: 0,
-              max: 1,
-            ),
-          ),
-
-          // 🌓 Appearance
+        // 🌓 Appearance
           SwitchListTile(
             title: Text(tr.darkMode),
             value: darkMode,
