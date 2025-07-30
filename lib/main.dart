@@ -24,6 +24,7 @@ import 'package:mortaalim/games/WordExplorer/WordExplorerPage.dart';
 import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
 import 'package:mortaalim/profileSetupPage.dart';
+import 'package:mortaalim/tools/NotificationService.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/MusicRouteObserver.dart';
 import 'package:mortaalim/tools/splashScreen.dart';
@@ -46,7 +47,7 @@ final MusicRouteObserver routeObserver = MusicRouteObserver();
 
 
 // Create ONE AudioManager instance here, globally:
-final AudioManager audioManager = AudioManager();
+final AudioManager  audioManager = AudioManager();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

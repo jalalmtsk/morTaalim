@@ -11,11 +11,9 @@ import 'package:confetti/confetti.dart';
 
 import '../../XpSystem.dart';
 import '../../main.dart';
-import '../../tools/audio_tool/audio_tool.dart';
 import '../../tools/loading_page.dart';
 
 
-final MusicPlayer _victorySound = MusicPlayer();
 
 class GameGrid extends StatefulWidget {
   final List<Map<String, dynamic>> games;
@@ -25,51 +23,30 @@ class GameGrid extends StatefulWidget {
   @override
   State<GameGrid> createState() => _GameGridState();
 }
-final MusicPlayer _clickButton = MusicPlayer();
 class _GameGridState extends State<GameGrid>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-  BannerAd? _bannerAd;
 
   late ConfettiController _confettiController;
-  bool _isBannerAdLoaded = false;
+
   @override
   void initState() {
     super.initState();
-    _loadBannerAd();
     WidgetsBinding.instance.addObserver(this);
     _confettiController = ConfettiController(duration: const Duration(seconds: 1));
   }
 
-  void _loadBannerAd() {
-    _bannerAd?.dispose();
-    _isBannerAdLoaded = false;
-
-    _bannerAd = AdHelper.getBannerAd(() {
-      setState(() {
-        _isBannerAdLoaded = true;
-      });
-    });
-  }
 
   Future<void> resetCooldown() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('lastSpinTime'); // Remove the cooldown
   }
 
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _loadBannerAd();
-    }
-  }
+
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _confettiController.dispose();
-    _victorySound.dispose();
-    _clickButton.dispose();
-    _bannerAd?.dispose();
     super.dispose();
   }
 
@@ -80,7 +57,8 @@ class _GameGridState extends State<GameGrid>
   }
 
   void showUnlockAnimation(BuildContext context) {
-    _clickButton.play("assets/audios/sound_effects/unlock_sound.mp3");
+    audioManager.playSfx("assets/audios/sound_effects/unlock_sound.mp3");
+    audioManager.playSfx("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
 
     final overlay = Overlay.of(context);
     late OverlayEntry entry;
@@ -92,7 +70,7 @@ class _GameGridState extends State<GameGrid>
           height: 200,
           repeat: false,
           onLoaded: (composition) {
-            _clickButton.play("assets/audios/sound_effects/validationAfterUnlock.mp3");
+            audioManager.playSfx("assets/audios/sound_effects/validationAfterUnlock.mp3");
             Future.delayed(composition.duration, () {
               entry.remove();
             });
@@ -104,7 +82,8 @@ class _GameGridState extends State<GameGrid>
   }
 
   void triggerConfetti() {
-    _clickButton.play("assets/audios/sound_effects/victory1_SFX.mp3");
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/victory1_SFX.mp3");
     _confettiController.play();
   }
 
@@ -128,7 +107,9 @@ class _GameGridState extends State<GameGrid>
                   ),
                 ),
                 IconButton(
-                  onPressed: () { triggerConfetti();},
+                  onPressed: () {
+                    audioManager.playEventSound('PopButton');
+                    triggerConfetti();},
                   icon: const Icon(Icons.card_giftcard),
                 )
               ],
@@ -152,7 +133,7 @@ class _GameGridState extends State<GameGrid>
                   return GestureDetector(
                     onTap: () {
                       if (isUnlocked) {
-                        _clickButton.play("assets/audios/PopButton_SB.mp3");
+                        audioManager.playEventSound('PopButton');
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -163,7 +144,7 @@ class _GameGridState extends State<GameGrid>
                           ),
                         );
                       } else {
-                        _clickButton.play("assets/audios/PopButton_SB.mp3");
+                        audioManager.playEventSound('clickButton2');
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
@@ -172,7 +153,7 @@ class _GameGridState extends State<GameGrid>
                             actions: [
                               TextButton(
                                 onPressed: () {
-                                  _clickButton.play("assets/audios/sound_effects/uiButton.mp3");
+                                  audioManager.playEventSound('cancelButton');
                                   Navigator.pop(context);
                                 },
                                 child:  Text(tr(context).cancel),
@@ -180,9 +161,9 @@ class _GameGridState extends State<GameGrid>
                               ElevatedButton(
                                 onPressed: () {
                                   if (xpManager.stars >= cost) {
-                                    _victorySound.play("assets/audios/sound_effects/victory2_SFX.mp3");
+                                    audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3");
                                     triggerConfetti();
-                                    _clickButton.play("assets/audios/sound_effects/uiButton.mp3");
+                                    audioManager.playEventSound('clickButton2');
                                     xpManager.unlockCourse(game['title'], cost);
                                     Navigator.pop(context);
                                     if (mounted) {
@@ -191,7 +172,7 @@ class _GameGridState extends State<GameGrid>
                                       showUnlockAnimation(context);
                                     }
                                   } else {
-                                    _clickButton.play("assets/audios/sound_effects/wrong_answer.mp3");
+                                    audioManager.playEventSound('invalid');
                                     Navigator.pop(context);
                                     ScaffoldMessenger.of(context).showSnackBar(
                                        SnackBar(
@@ -357,21 +338,6 @@ class _GameGridState extends State<GameGrid>
               },
               child: const Text('Reset Purchases (Dev Only)'),
             ),
-
-
-            ///:::::::: BANNER ADS
-            (context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded)
-                ? SafeArea(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: SizedBox(
-                  width: _bannerAd!.size.width.toDouble(),
-                  height: _bannerAd!.size.height.toDouble(),
-                  child: AdWidget(ad: _bannerAd!),
-                ),
-              ),
-            )
-                : const SizedBox.shrink(),
           ],
         ),
         Positioned.fill(

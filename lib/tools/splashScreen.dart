@@ -2,10 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/IndexPage.dart';
-import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
-
-final MusicPlayer _musicPlayer = MusicPlayer();
-final MusicPlayer _musicPlayer_wave = MusicPlayer();
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 
 class SplashPage extends StatefulWidget {
   final void Function(Locale) onChangeLocale;
@@ -19,12 +17,11 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   bool _showLogo = false;
   late final AnimationController _fadeController;
   late final AnimationController _scaleController;
+  bool _initialized = false;
 
   @override
   void initState() {
     super.initState();
-
-    _musicPlayer.play("assets/audios/modern_logo.mp3");
 
     // Fade-in controller
     _fadeController = AnimationController(
@@ -40,33 +37,43 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       upperBound: 3.0,
     );
 
-    // Trigger logo animations after 2 seconds
-    Future.delayed(const Duration(seconds: 2), () {
+    // Navigate to next page after 4 seconds
+    Timer(const Duration(seconds: 4), () {
       if (mounted) {
-        setState(() => _showLogo = true);
-        _fadeController.forward();
-        _musicPlayer_wave.play("assets/audios/openingZoom.mp3");
-        _scaleController.forward().then((_) {
-          _scaleController.reverse(); // bounce
-        });
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => Index(onChangeLocale: widget.onChangeLocale)),
+        );
       }
     });
+  }
 
-    // Move to next page after 4 seconds
-    Timer(const Duration(seconds: 4), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => Index(onChangeLocale: widget.onChangeLocale)),
-      );
-    });
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (!_initialized) {
+      final audioManager = Provider.of<AudioManager>(context, listen: false);
+      audioManager.playAlert("assets/audios/SplashScreen_Audio/modern_logo.mp3");
+
+      // Trigger logo animations after 2 seconds
+      Future.delayed(const Duration(seconds: 2), () {
+        if (mounted) {
+          setState(() => _showLogo = true);
+          _fadeController.forward();
+          audioManager.playAlert("assets/audios/SplashScreen_Audio/openingZoom.mp3");
+          _scaleController.forward().then((_) => _scaleController.reverse());
+        }
+      });
+
+      _initialized = true;
+    }
   }
 
   @override
   void dispose() {
     _fadeController.dispose();
     _scaleController.dispose();
-    _musicPlayer.dispose();
-    _musicPlayer_wave.dispose();
     super.dispose();
   }
 
@@ -75,13 +82,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     return Scaffold(
       body: Stack(
         children: [
-          // Background wave animation
-      /* Lottie.asset(
-              'assets/animations/anim.json',
-              fit: BoxFit.cover,
-            ),
-*/
-
           // Logo appearing with fade + scale
           if (_showLogo)
             Center(

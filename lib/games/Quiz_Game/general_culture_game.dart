@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:ffi';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/games/Quiz_Game/Result_QuizPage.dart';
+import 'package:mortaalim/main.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
@@ -52,7 +56,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   final MusicPlayer _player = MusicPlayer();
   final MusicPlayer _backgroundMusic = MusicPlayer();
   final MusicPlayer _CountDown = MusicPlayer();
-  final MusicPlayer _CountDownRobot = MusicPlayer();
   final MusicPlayer _fire = MusicPlayer();
   bool _isBannerAdLoaded = false;
 
@@ -69,16 +72,50 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   bool _showCorrectAnimation = false;
   bool _showWrongAnimation = false;
   bool _showIntro = true;
+  bool _isPaused = false; // PAUSE TIMER FLAG
+
   late Timer _timer;
 
   late AnimationController _introController;
   late Animation<double> _scaleAnimation;
 
+  // Combo UI state
+  String _comboText = "";
+  Color _comboColor = Colors.white;
+  double _comboScale = 1.0;
+  late AnimationController _comboAnimationController;
+  Timer? _comboFadeTimer;
+
+  int _comboCount = 0;
+  final int _comboThresholdStart = 2;
+  final int _comboThresholdMax = 10;
+
+  final List<String> _comboSoundsStage1 = [
+    'assets/audios/UI_Audio/SFX_Audio/ManSaysStunning.mp3',
+    'assets/audios/UI_Audio/SFX_Audio/ManSaysExhilarating.mp3',
+    'assets/audios/UI_Audio/SFX_Audio/ManSaysThrilling.mp3',
+    'assets/audios/UI_Audio/SFX_Audio/ManSaysLegendary_SFX.mp3',
+  ];
+
+  final List<String> _comboSoundsStage2 = [
+    'assets/audios/UI_Audio/SFX_Audio/MarimbaWinA1_SFX.mp3',
+    'assets/audios/UI_Audio/SFX_Audio/MarimbaWinA2_SFX.mp3',
+    'assets/audios/UI_Audio/SFX_Audio/MarimbaWinA3_SFX.mp3',
+  ];
+
+  int _highPitchIndex = 0;
+
   @override
-  initState()  {
+  void initState() {
     super.initState();
     _loadBannerAd();
     _questions = _loadQuestions(widget.language)..shuffle();
+
+    _comboAnimationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    )..addListener(() => setState(() {}));
+
     _introController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 1),
@@ -87,12 +124,30 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
     _introController.forward();
 
+    // After 4s, hide intro and start timer + background music
     Future.delayed(const Duration(seconds: 4), () {
       setState(() => _showIntro = false);
       _startTimer();
+
+      Future.delayed(const Duration(seconds: 0), () {
+        final audioManager = Provider.of<AudioManager>(context, listen: false);
+        audioManager.playBackgroundMusic(
+          "assets/audios/BackGround_Audio/feeling-funny-happy-kids-music-350699.mp3",
+        );
+      });
     });
   }
 
+  @override
+  void dispose() {
+    _timer.cancel();
+    _backgroundMusic.dispose();
+    _CountDown.dispose();
+    _introController.dispose();
+    _comboAnimationController.dispose();
+    _bannerAd?.dispose();
+    super.dispose();
+  }
 
   void _loadBannerAd() {
     _bannerAd?.dispose();
@@ -110,77 +165,122 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   void _startTimer() {
     _timeLeft = 30;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        _timeLeft--;
-        if (_timeLeft == 0) _handleTimeout();
-      });
+      if (!_isPaused) {
+        setState(() {
+          _timeLeft--;
+          if (_timeLeft == 0) _handleTimeout();
+        });
+      }
     });
   }
 
   void _handleTimeout() {
     _timer.cancel();
-    _playSound('assets/audios/sound_effects/wrong_answer.mp3');
-    _fire.play("assets/audios/sound_effects/angry.mp3");
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playSfx('assets/audios/sound_effects/wrong_answer.mp3');
+    audioManager.playSfx("assets/audios/sound_effects/angry.mp3");
     _showWrongFeedback();
+
     if (widget.mode == GameMode.single) {
       _player1Lives--;
     } else {
-      (widget.mode == GameMode.multiplayer && _playerTurn == 1)
-          ? _player1Lives--
-          : _player2Lives--;
+      _playerTurn == 1 ? _player1Lives-- : _player2Lives--;
     }
     _nextTurn();
-  }
-
-  void _playSound(String asset) async {
-    await _player.stop();
-    await _player.play(asset);
   }
 
   void _answerQuestion(int selected) {
     if (_answered) return;
     _timer.cancel();
+
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+
     setState(() {
       _selectedIndex = selected;
       _answered = true;
       final isCorrect = selected == _questions[_currentQuestion].correctIndex;
-      if (isCorrect) {
-        Provider.of<ExperienceManager>(context, listen: false).addXP(30, context: context);
 
-        // Increment score on correct answer
+      if (isCorrect) {
+        _comboCount++;
+
+        // XP calculation: base 2 + (comboCount -1), capped at 5
+        int xpToAdd = 2 + (_comboCount - 1);
+        if (xpToAdd > 5) xpToAdd = 5;
+        Provider.of<ExperienceManager>(context, listen: false).addXP(xpToAdd, context: context);
+
+        // Increment score
         if (widget.mode == GameMode.single) {
           _player1Score++;
         } else {
-          if (_playerTurn == 1) {
-            _player1Score++;
-          } else {
-            _player2Score++;
-          }
+          _playerTurn == 1 ? _player1Score++ : _player2Score++;
         }
 
-        _playSound('assets/audios/QuizGame_Sounds/correct.mp3');
+        if (_comboCount < _comboThresholdStart) {
+          // Normal correct sound
+          audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/CorrectAnwser_SFX.mp3');
+          _comboText = "";
+        } else {
+          // Play random combo sound stage 1
+          final normalComboSound = _comboSoundsStage1[Random().nextInt(_comboSoundsStage1.length)];
+          audioManager.playSfx(normalComboSound);
+
+          // Play deterministic high-pitch sound stage 2 simultaneously
+          final highPitchSound = _comboSoundsStage2[_highPitchIndex];
+          audioManager.playSfx(highPitchSound);
+
+          if (_highPitchIndex < _comboSoundsStage2.length - 1) {
+            _highPitchIndex++;
+          }
+
+          // Combo UI updates
+          _comboText = "Combo X$_comboCount";
+
+          // Scale: base 1.0 + up to 1.0 by combo count capped at 10
+          _comboScale = 1.0 + (_comboCount * 0.1).clamp(0.0, 1.0);
+
+          // Color by combo range
+          if (_comboCount < 4) {
+            _comboColor = Colors.greenAccent;
+          } else if (_comboCount < 7) {
+            _comboColor = Colors.orangeAccent;
+          } else {
+            _comboColor = Colors.redAccent;
+          }
+
+          _comboAnimationController.forward(from: 0);
+
+          // Reset fade timer
+          _comboFadeTimer?.cancel();
+          _comboFadeTimer = Timer(const Duration(seconds: 2), () {
+            setState(() {
+              _comboText = "";
+            });
+          });
+        }
+
         _showCorrectAnimation = true;
-        Future.delayed(const Duration(seconds: 2), () => setState(() => _showCorrectAnimation = false));
+        Future.delayed(const Duration(seconds: 2),
+                () => setState(() => _showCorrectAnimation = false));
       } else {
-        _fire.play("assets/audios/sound_effects/angry.mp3");
-        _playSound('assets/audios/QuizGame_Sounds/incorrect.mp3');
+        // Reset combo and high pitch index on wrong answer
+        _comboCount = 0;
+        _highPitchIndex = 0;
+        _comboText = "";
+        audioManager.playSfx("assets/audios/sound_effects/angry.mp3");
+        audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/WrongAnwser_SFX.mp3');
         _showWrongFeedback();
 
-        // Decrement lives on wrong answer
+        // Decrement lives
         if (widget.mode == GameMode.single) {
           _player1Lives--;
         } else {
-          if (_playerTurn == 1) {
-            _player1Lives--;
-          } else {
-            _player2Lives--;
-          }
+          _playerTurn == 1 ? _player1Lives-- : _player2Lives--;
         }
       }
     });
+
     Future.delayed(const Duration(seconds: 2), _nextTurn);
   }
-
 
   void _showWrongFeedback() {
     setState(() => _showWrongAnimation = true);
@@ -216,22 +316,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     }
   }
 
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      _loadBannerAd();
-    }
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    _backgroundMusic.dispose();
-    _CountDown.dispose();
-    _introController.dispose();
-    _bannerAd?.dispose();
-    super.dispose();
-  }
-
   Widget _buildPlayerInfo({
     required String name,
     required String avatar,
@@ -247,7 +331,10 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
           child: Text(avatar, style: const TextStyle(fontSize: 28)),
         ),
         const SizedBox(height: 4),
-        Text(name, style: TextStyle(fontWeight: FontWeight.bold, color: isActive ? Colors.deepOrange : Colors.grey[700])),
+        Text(name,
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: isActive ? Colors.deepOrange : Colors.grey[700])),
         const SizedBox(height: 4),
         Text("❤️ $lives", style: const TextStyle(fontSize: 16)),
         Text("🧰 $score", style: const TextStyle(fontSize: 16)),
@@ -257,6 +344,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+
     final question = _questions[_currentQuestion];
     final player1Name = widget.player1Name ?? "Player 1";
     final player2Name = widget.player2Name ?? "Player 2";
@@ -276,8 +365,10 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                   color: Colors.orange.shade100,
                   child: Center(
                     child: Lottie.asset(
-                        "assets/animations/QuizzGame_Animation/CountdownGo.json",
-                    width: 450, height: 450),
+                      "assets/animations/QuizzGame_Animation/CountdownGo.json",
+                      width: 450,
+                      height: 450,
+                    ),
                   ),
                 ),
               ),
@@ -288,7 +379,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             body: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.orange.withValues(alpha: 0.1), Colors.orange.shade200],
+                  colors: [Colors.orange.withOpacity(0.1), Colors.orange.shade200],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -300,27 +391,28 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           IconButton(
                             icon: const Icon(
                               Icons.arrow_circle_left,
                               size: 50,
-                              color: Colors.deepOrangeAccent,),
+                              color: Colors.deepOrangeAccent,
+                            ),
                             onPressed: () => Navigator.of(context).pop(),
                             tooltip: 'Back',
                           ),
-
                           IconButton(
                             icon: const Icon(Icons.settings),
-                            onPressed: () {
-                              showDialog(
+                            onPressed: () async {
+                              setState(() => _isPaused = true);
+                              await showDialog(
                                 context: context,
                                 builder: (_) => const SettingsDialog(),
                               );
+                              setState(() => _isPaused = false);
                             },
                           ),
-
-
                         ],
                       ),
                     ),
@@ -342,7 +434,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.orangeAccent),
                           ),
-
                         ],
                       ),
                     ),
@@ -356,15 +447,37 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                             color: Colors.deepOrange,
                           ),
                           const SizedBox(height: 6),
-                          Text(
-                              "⏳ $_timeLeft seconds left",
+                          Text("⏳ $_timeLeft seconds left",
                               style: const TextStyle(
-                                  fontSize: 28,
-                                  color: Colors.deepOrange)),
+                                  fontSize: 28, color: Colors.deepOrange)),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 10),
+
+                    // Combo Text UI here:
+                    if (_comboText.isNotEmpty)
+                      Transform.scale(
+                        scale: 1.0 + 0.3 * _comboAnimationController.value,
+                        child: Text(
+                          _comboText,
+                          style: TextStyle(
+                            fontSize: (40 + (_comboCount * 2).clamp(0, 20)).toDouble(),
+                            fontWeight: FontWeight.bold,
+                            color: _comboColor,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 10,
+                                color: _comboColor.withOpacity(0.8),
+                                offset: const Offset(0, 0),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                    const SizedBox(height: 10),
+
                     // Show scoreboard
                     if (widget.mode == GameMode.multiplayer)
                       Row(
@@ -391,24 +504,29 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                         padding: const EdgeInsets.only(bottom: 12),
                         child: Text(
                           '🧰 $_player1Score | ❤️ $_player1Lives',
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+                          style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepOrange),
                         ),
                       ),
-
-
                     const SizedBox(height: 20),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Card(
                         elevation: 6,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                        shadowColor: Colors.deepOrange.withValues(alpha: 0.4),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16)),
+                        shadowColor: Colors.deepOrange.withOpacity(0.4),
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Text(
                             question.questionText,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.deepOrange),
+                            style: const TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.deepOrange),
                           ),
                         ),
                       ),
@@ -435,19 +553,22 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                               icon = const Icon(Icons.check, color: Colors.white);
                             } else if (isSelected) {
                               bgColor = Colors.red.shade300;
-                              icon = const Icon(Icons.clear_outlined, color: Colors.white);
+                              icon = const Icon(Icons.clear_outlined,
+                                  color: Colors.white);
                             }
                           }
 
                           return ElevatedButton.icon(
                             onPressed: () => _answerQuestion(index),
                             icon: icon ?? const SizedBox.shrink(),
-                            label: Text(question.options[index], style: const TextStyle(fontSize: 18)),
+                            label: Text(question.options[index],
+                                style: const TextStyle(fontSize: 18)),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: bgColor,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16)),
                               elevation: 5,
-                              shadowColor: Colors.deepOrange.withValues(alpha: 0.5),
+                              shadowColor: Colors.deepOrange.withOpacity(0.5),
                             ),
                           );
                         }),
@@ -458,8 +579,9 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
               ),
             ),
             /// ADS BANNER
-            ///
-            bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded
+            bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled &&
+                _bannerAd != null &&
+                _isBannerAdLoaded
                 ? SafeArea(
               child: Container(
                 color: Colors.orange.shade200,
@@ -472,13 +594,16 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
           ),
         if (_showCorrectAnimation)
           Center(
-            child: Lottie.asset('assets/animations/QuizzGame_Animation/DoneAnimation.json', width: 500, repeat: false),
+            child: Lottie.asset('assets/animations/QuizzGame_Animation/DoneAnimation.json',
+                width: 500, repeat: false),
           ),
         if (_showWrongAnimation)
           Center(
-            child: Lottie.asset('assets/animations/QuizzGame_Animation/Fiery Lolo.json', width: 200, repeat: false),
+            child: Lottie.asset('assets/animations/QuizzGame_Animation/Fiery Lolo.json',
+                width: 200, repeat: false),
           ),
       ],
     );
   }
 }
+

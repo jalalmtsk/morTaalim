@@ -106,6 +106,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void selectBannerImage(String path) {
+
     if (_unlockedBanners.contains(path)) {
       _selectedBannerImage = path;
       _saveData();

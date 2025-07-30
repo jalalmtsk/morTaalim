@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/Settings/SettingPanelInGame.dart';
@@ -29,6 +30,9 @@ class Index extends StatefulWidget {
 class _IndexState extends State<Index>
     with TickerProviderStateMixin, WidgetsBindingObserver, RouteAware {
 
+  BannerAd? _bannerAd;
+
+  bool _isBannerAdLoaded = false;
 
   late TabController _tabController;
   String childName = "Player";
@@ -39,8 +43,11 @@ class _IndexState extends State<Index>
   @override
   void initState() {
     super.initState();
+    _loadBannerAd();
     WidgetsBinding.instance.addObserver(this);
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playBackgroundMusic("assets/audios/BackGround_Audio/IndexBackGroundMusic_BCG.mp3");
     xpManager.init(context);
 
     _tabController = TabController(length: 4, vsync: this);
@@ -64,6 +71,24 @@ class _IndexState extends State<Index>
     _profileAnimController.forward();
   }
 
+  void _loadBannerAd() {
+    _bannerAd?.dispose();
+    _isBannerAdLoaded = false;
+
+    _bannerAd = AdHelper.getBannerAd(() {
+      setState(() {
+        _isBannerAdLoaded = true;
+      });
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _loadBannerAd();
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -77,6 +102,7 @@ class _IndexState extends State<Index>
     routeObserver.unsubscribe(this);
     _tabController.dispose();
     _profileAnimController.dispose();
+    _bannerAd?.dispose();
     super.dispose();
   }
 
@@ -167,7 +193,7 @@ class _IndexState extends State<Index>
               showDialog(
                 barrierDismissible: false,
                 context: context,
-                builder: (_) => const SettingsDialog(),
+                builder: (_) => SettingsDialog(),
               );
             },
           ),
@@ -351,10 +377,24 @@ class _IndexState extends State<Index>
                   ],
                 ),
               ),
+              (context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded)
+                  ? SafeArea(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: SizedBox(
+                    width: _bannerAd!.size.width.toDouble(),
+                    height: _bannerAd!.size.height.toDouble(),
+                    child: AdWidget(ad: _bannerAd!),
+                  ),
+                ),
+              )
+                  : const SizedBox.shrink(),
+
             ],
           ),
         ),
       ),
+
     );
   }
 }

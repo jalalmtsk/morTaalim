@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/Shop/BannerTab/IndexBanner.dart';
 import 'package:mortaalim/Shop/StarsTab/IndexStars.dart';
-import 'package:mortaalim/Shop/Tools/watchAdButton.dart';
 import 'package:mortaalim/widgets/SpinWheel/SpinTheWheel.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
@@ -9,170 +8,246 @@ import 'package:provider/provider.dart';
 import '../XpSystem.dart';
 import '../main.dart';
 import '../tools/Ads_Manager.dart';
+import '../tools/NotificationService.dart';
 import '../widgets/RewardChest.dart';
 import 'FunMojiTab/IndexFunMoji.dart';
-import 'Tools/_StarCounter.dart';
-import 'Tools/_TokenAndSection.dart';
-
 
 class MainShopPageIndex extends StatelessWidget {
   const MainShopPageIndex({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final ColorScheme colorScheme = ColorScheme(
+      primary: const Color(0xFFFF6F3C),
+      primaryContainer: const Color(0xFFFFA65C),
+      secondary: const Color(0xFF4A90E2),
+      surface: Colors.white,
+      background: const Color(0xFFFDF6F0),
+      error: Colors.red,
+      onPrimary: Colors.white,
+      onSecondary: Colors.white,
+      onSurface: Colors.black87,
+      onBackground: Colors.black54,
+      onError: Colors.white,
+      brightness: Brightness.light,
+    );
+
     return DefaultTabController(
-      length: 4, // 4 tabs
+      length: 4,
       child: Scaffold(
-        backgroundColor: const Color(0xFFff9966),
+        backgroundColor: colorScheme.background,
         body: SafeArea(
           child: Column(
             children: [
-              const Userstatutbar(),
-              const SizedBox(height: 6),
-
-              // Top Row: Back + Spacer
+              // Top bar: back button + user status
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12),
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepOrange,
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(14),
-                        minimumSize: const Size(50, 50),
+                    // Back button with subtle elevation & splash radius
+                    Material(
+                      shape: const CircleBorder(),
+                      elevation: 5,
+                      shadowColor: colorScheme.primaryContainer.withOpacity(0.25),
+                      color: colorScheme.surface,
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back, color: colorScheme.primary, size: 28),
+                        onPressed: () => Navigator.of(context).pop(),
+                        splashRadius: 26,
                       ),
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
 
-                    Row(children: [
-                      RewardChest(
-                        cooldown: Duration(minutes: 20),
-                        chestClosedAsset: 'assets/images/UI/utilities/Box.png',
-                        chestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
-                        rareChestClosedAsset: 'assets/images/UI/utilities/Box.png',
-                        rareChestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
-                        onRewardCollected: ({required bool isRare}) {
-                          if (isRare) {
-                            // Give bigger reward
-                            Provider.of<ExperienceManager>(context, listen: false).addTokenBanner(context, 1);
-                          } else {
-                            // Normal reward
-                            Provider.of<ExperienceManager>(context, listen: false).addXP(2, context: context);
-                          }
-                        },
-                      ),
-                      RewardChest(
-                        cooldown: Duration(hours: 1),
-                        chestClosedAsset: 'assets/images/UI/utilities/Box.png',
-                        chestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
-                        rareChestClosedAsset: 'assets/images/UI/utilities/Box.png',
-                        rareChestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
-                        onRewardCollected: ({required bool isRare}) {
-                          if (isRare) {
-                            // Give bigger reward
-                            Provider.of<ExperienceManager>(context, listen: false).addStarBanner(context, 2);
-                          } else {
-                            // Normal reward
-                            Provider.of<ExperienceManager>(context, listen: false).addXP(10, context: context);
-                          }
-                        },
-                      ),
+                    const SizedBox(width: 4),
 
-                      const SizedBox(width: 20,),
-
-                    ],)
-
+                    const Expanded(child: Userstatutbar()),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 5),
+              const SizedBox(height: 4),
 
-              // Tabs bar container
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xFFff9966), Color(0xFFff5e62)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+              // TabBar with smooth rounded indicator & gradient background
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.primary.withOpacity(0.12),
+                        blurRadius: 15,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
                   ),
-                ),
-                child: TabBar(
-                  isScrollable: true,
-                  indicatorColor: Colors.white,
-                  tabs:  [
-                    Tab(icon: Icon(Icons.face_2_sharp), text: tr(context).funMoji),
-                    Tab(icon: Icon(Icons.filter_b_and_w_outlined), text: tr(context).banners),
-                    Tab(icon: Icon(Icons.token), text: tr(context).stars),
-                    Tab(icon: Icon(Icons.card_giftcard), text: tr(context).spinningWheel),
-                  ],
-                ),
-              ),
-
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    IndexFunMojiPage(),
-                    IndexBanner(),
-                    IndexStars(),
-                    SingleChildScrollView(child: SpinWheelPopup()),
-                  ],
-                ),
-              ),
-
-              // Rewarded Ad Button fixed at bottom with emphasis
-              Container(
-                color: Color(0xFFff9966),
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                child: GestureDetector(
-                  onTap: () => AdHelper.showRewardedAdWithLoading(context, (){
-                    Provider.of<ExperienceManager>(context, listen: false).addStarBanner(context,1);
-                  }),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // Animated icon or badge
-                      TweenAnimationBuilder<double>(
-                        tween: Tween(begin: 1.0, end: 1.2),
-                        duration: const Duration(seconds: 1),
-                        curve: Curves.easeInOut,
-                        builder: (context, scale, child) => Transform.scale(
-                          scale: scale,
-                          child: child,
-                        ),
-                        onEnd: () => null,
-                        child: const Icon(Icons.ads_click_outlined, color: Colors.white, size: 32),
+                  child: TabBar(
+                    isScrollable: true,
+                    indicator: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      gradient: LinearGradient(
+                        colors: [colorScheme.primary, colorScheme.primaryContainer],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-
-                      const SizedBox(width: 10),
-
-                      Text(
-                        '${tr(context).watchAd} → ${tr(context).earn} 🌟! ',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black,
-                              offset: Offset(1, 1),
-                              blurRadius: 3,
-                            ),
-                          ],
+                      boxShadow: [
+                        BoxShadow(
+                          color: colorScheme.primary.withOpacity(0.3),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
-                      ),
+                      ],
+                    ),
+                    indicatorSize: TabBarIndicatorSize.tab, // full tab width indicator
+                    labelColor: colorScheme.onPrimary,
+                    unselectedLabelColor: colorScheme.primary.withOpacity(0.7),
+                    labelStyle: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 15,
+                      letterSpacing: 0.5,
+                    ),
+                    unselectedLabelStyle: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    tabs: [
+                      Tab(icon: Icon(Icons.face_2_sharp, size: 22), text: tr(context).funMoji),
+                      Tab(icon: Icon(Icons.filter_b_and_w_outlined, size: 22), text: tr(context).banners),
+                      Tab(icon: Icon(Icons.token, size: 22), text: tr(context).stars),
+                      Tab(icon: Icon(Icons.card_giftcard, size: 22), text: tr(context).spinningWheel),
                     ],
                   ),
                 ),
               ),
+
+              const SizedBox(height: 10),
+
+              // Main tab content container
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: colorScheme.primary.withOpacity(0.08),
+                        blurRadius: 18,
+                        offset: const Offset(0, 6),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: TabBarView(
+                      physics: const BouncingScrollPhysics(),
+                      children: [
+                        IndexFunMojiPage(),
+                        IndexBanner(),
+                        IndexStars(),
+                        SingleChildScrollView(child: SpinWheelPopup()),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Reward chests with spacing and shadowed circular backgrounds
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    _buildRewardChest(context, 10, 2, 1, "Quick", colorScheme),
+                    _buildRewardChest(context, 3600, 5, 2, tr(context).medium, colorScheme),
+                    _buildRewardChest(context, 7200, 15, 3, "Rare", colorScheme),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 10), // Leave space for floating button
             ],
           ),
         ),
+    )
+    );
+  }
+
+  Widget _buildRewardChest(BuildContext context, int cooldownSec, int xpReward,
+      int starReward, String label, ColorScheme colorScheme) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(2),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              colors: [colorScheme.primaryContainer.withOpacity(0.4), colorScheme.primary.withOpacity(0.7)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: colorScheme.primary.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
+          ),
+          child: RewardChest(
+            cooldown: Duration(seconds: cooldownSec),
+            chestClosedAsset: 'assets/images/UI/utilities/Box.png',
+            chestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
+            rareChestClosedAsset: 'assets/images/UI/utilities/Box.png',
+            rareChestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
+            onRewardCollected: ({required bool isRare}) {
+              if (isRare) {
+                Provider.of<ExperienceManager>(context, listen: false).addStarBanner(context, starReward);
+              } else {
+                Provider.of<ExperienceManager>(context, listen: false).addXP(xpReward, context: context);
+              }
+            },
+          ),
+        ),
+        Text(
+          label,
+          style: TextStyle(
+            color: colorScheme.primary,
+            fontWeight: FontWeight.w700,
+            fontSize: 14,
+            letterSpacing: 0.4,
+          ),
+        ),
+
+      ],
+    );
+  }
+}
+
+// Extension method to add gradient background to ElevatedButton
+extension GradientButton on Widget {
+  Widget withGradient(Color startColor, Color endColor) {
+    return Ink(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [startColor, endColor],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(40),
+        boxShadow: [
+          BoxShadow(
+            color: startColor.withOpacity(0.5),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
       ),
+      child: this,
     );
   }
 }

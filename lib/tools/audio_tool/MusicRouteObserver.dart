@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../IndexPage.dart';
 import '../../courses/primaire1Page/index_1PrimairePage.dart';
+import '../../games/Quiz_Game/ModeSelectorPage.dart';
 import '../../games/Quiz_Game/general_culture_game.dart';
 import '../../games/paitingGame/indexDrawingPage.dart';
 import 'Audio_Manager.dart';
 
 final Map<Type, String> widgetMusicMap = {
-  Index: 'assets/audios/sound_track/piano.mp3',
-  DrawingIndex: 'assets/audios/sound_track/backGroundMusic8bit.mp3',
-  QuizGameApp: 'assets/audios/sound_track/FoamRubber_BcG.mp3',
-  index1Primaire: 'assets/audios/sound_track/SugarSprinkle_BcG.mp3',
+  Index: 'assets/audios/BackGround_Audio/IndexBackGroundMusic_BCG.mp3',
+  DrawingIndex: 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
+  QuizGameApp: 'assets/audios/BackGround_Audio/feeling-funny-happy-kids-music-350699.mp3',
+  index1Primaire: 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
 };
 
 class MusicRouteObserver extends NavigatorObserver {

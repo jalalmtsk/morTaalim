@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import '../XpSystem.dart';
 import 'package:provider/provider.dart';
 
@@ -28,6 +29,7 @@ class ProfileStatusBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     final banner = xpManager.selectedBannerImage;
     final stars = xpManager.stars;
     final tokens = xpManager.saveTokenCount;
@@ -57,24 +59,16 @@ class ProfileStatusBar extends StatelessWidget {
                 children: [
                   const SizedBox(width: 12),
                   Expanded(
-                    child: InkWell(
-                      onTap: onEditName,
-                      child: Text(
-                        playerName.isEmpty ? "Enter your name ✏️" : playerName,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                          shadows: [Shadow(blurRadius: 3, color: Colors.black)],
-                        ),
+                    child: Text(
+                      playerName.isEmpty ? "Enter your name ✏️" : playerName,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [Shadow(blurRadius: 3, color: Colors.black)],
                       ),
                     ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.mode_edit_sharp, color: Colors.white70),
-                    onPressed: onEditName,
-                  ),
-                  const SizedBox(width: 16),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

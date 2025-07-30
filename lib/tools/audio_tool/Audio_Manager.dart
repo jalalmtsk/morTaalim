@@ -8,10 +8,10 @@ import 'package:vibration/vibration.dart';
 
 import '../../main.dart';
 
-class AudioManager extends ChangeNotifier {
+class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
 
   AudioManager() {
-    WidgetsBinding.instance.addObserver(this as WidgetsBindingObserver); // ✅ Observe lifecycle
+    WidgetsBinding.instance.addObserver(this); // ✅ Observe lifecycle
     _loadSettings();
   }
 
@@ -34,7 +34,7 @@ class AudioManager extends ChangeNotifier {
     'clickButton': 'assets/audios/UI_Audio/ButtonSounds/ClickButton_SB.mp3',
     'clickButton2': 'assets/audios/UI_Audio/ButtonSounds/ClickButton2_SB.mp3',
     'cancelButton': 'assets/audios/UI_Audio/ButtonSounds/CancelButton_SB.mp3',
-    'PopButtonCourseGame': 'assets/audios/UI_Audio/ButtonSounds/PopButton_SB.mp3',
+    'PopButton': 'assets/audios/UI_Audio/ButtonSounds/PopButton_SB.mp3',
     'toggleButton': 'assets/audios/UI_Audio/ButtonSounds/ToggleButton_SB.mp3',
 
     // ------------ SFX Sounds -------------
@@ -42,6 +42,7 @@ class AudioManager extends ChangeNotifier {
     'xpWinSound': 'assets/audios/UI_Audio/SFX_Audio/XPWin.mp3',
     'starSound': 'assets/audios/UI_Audio/SFX_Audio/StarSound.mp3',
     'tolimSound': 'assets/audios/UI_Audio/SFX_Audio/TolimSound.mp3',
+    'invalid': 'assets/audios/UI_Audio/SFX_Audio/Invalid_SFX.mp3',
   };
 
 
@@ -59,10 +60,10 @@ class AudioManager extends ChangeNotifier {
   bool _hapticsEnabled = true;
 
   // Volumes
-  double _bgVolume = 0.3;
-  double _sfxVolume = 1.0;
+  double _bgVolume = 0.1;
+  double _sfxVolume = 0.6;
   double _buttonVolume = 0.7;
-  double _alertVolume = 0.8;
+  double _alertVolume = 0.6;
 
   // SharedPreferences keys
   static const String _prefBgVolumeKey = 'bgVolume';
@@ -122,6 +123,7 @@ class AudioManager extends ChangeNotifier {
     _currentBgMusic = assetPath;
 
     try {
+      await _bgPlayer.stop(); // ✅ Stop any current loading/playing
       await _bgPlayer.setAsset(assetPath);
       await _bgPlayer.setLoopMode(loop ? LoopMode.one : LoopMode.off);
       await _bgPlayer.setVolume(_isBgMuted ? 0 : _bgVolume);
@@ -283,10 +285,10 @@ class AudioManager extends ChangeNotifier {
   // ------------ RESET TO DEFAULT -------------
 
   Future<void> resetAudioSettings() async {
-    _bgVolume = 0.3;
-    _sfxVolume = 1.0;
+    _bgVolume = 0.1;
+    _sfxVolume = 0.6;
     _buttonVolume = 0.7;
-    _alertVolume = 0.8;
+    _alertVolume = 0.6;
     _isBgMuted = false;
     _isSfxMuted = false;
     _isButtonMuted = false;
@@ -314,7 +316,7 @@ class AudioManager extends ChangeNotifier {
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this as WidgetsBindingObserver); // ✅ Remove observer
+    WidgetsBinding.instance.removeObserver(this); // ✅ Remove observer
     _bgPlayer.dispose();
     for (final p in _sfxPlayers) {
       p.dispose();

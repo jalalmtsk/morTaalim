@@ -180,7 +180,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     color: Colors.blue,
                     type: 'sfx',
                     showTestButton: true,
-                    onTest: () => audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/victory1_SFX.mp3'),
+                    onTest: () => audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/MarimbaWin_SFX.mp3'),
                   ),
 
                   // Button Sounds
