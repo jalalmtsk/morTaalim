@@ -1,8 +1,50 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:vibration/vibration.dart';
+
+import '../../main.dart';
 
 class AudioManager extends ChangeNotifier {
+
+  AudioManager() {
+    WidgetsBinding.instance.addObserver(this as WidgetsBindingObserver); // ✅ Observe lifecycle
+    _loadSettings();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {
+      _bgPlayer.pause();
+      if (kDebugMode) print('[AudioManager] App paused → Music paused');
+    } else if (state == AppLifecycleState.resumed && !_isBgMuted) {
+      _bgPlayer.play();
+      if (kDebugMode) print('[AudioManager] App resumed → Music resumed');
+    }
+  }
+
+  // Map sound event keys to asset paths
+  static const Map<String, String> eventSoundMap = {
+
+    // ------------ ButtonSounds -------------
+
+    'clickButton': 'assets/audios/UI_Audio/ButtonSounds/ClickButton_SB.mp3',
+    'clickButton2': 'assets/audios/UI_Audio/ButtonSounds/ClickButton2_SB.mp3',
+    'cancelButton': 'assets/audios/UI_Audio/ButtonSounds/CancelButton_SB.mp3',
+    'PopButtonCourseGame': 'assets/audios/UI_Audio/ButtonSounds/PopButton_SB.mp3',
+    'toggleButton': 'assets/audios/UI_Audio/ButtonSounds/ToggleButton_SB.mp3',
+
+    // ------------ SFX Sounds -------------
+
+    'xpWinSound': 'assets/audios/UI_Audio/SFX_Audio/XPWin.mp3',
+    'starSound': 'assets/audios/UI_Audio/SFX_Audio/StarSound.mp3',
+    'tolimSound': 'assets/audios/UI_Audio/SFX_Audio/TolimSound.mp3',
+  };
+
+
   // Players
   final AudioPlayer _bgPlayer = AudioPlayer();
   final List<AudioPlayer> _sfxPlayers = List.generate(8, (_) => AudioPlayer());
@@ -37,9 +79,6 @@ class AudioManager extends ChangeNotifier {
 
   SharedPreferences? _prefs;
 
-  AudioManager() {
-    _loadSettings();
-  }
 
   Future<void> _loadSettings() async {
     _prefs = await SharedPreferences.getInstance();
@@ -119,6 +158,24 @@ class AudioManager extends ChangeNotifier {
     notifyListeners();
   }
 
+
+  // ------------ EVENT SOUND -------------
+
+  Future<void> playEventSound(String key) async {
+    final path = eventSoundMap[key];
+    if (path == null) {
+      if (kDebugMode) print('[AudioManager] Sound key not found: $key');
+      return;
+    }
+
+    if (key == 'clickButton' || key == 'cancelButton' || key == 'toggleButton') {
+      await playButtonSound(path);
+    } else {
+      await playSfx(path);
+    }
+  }
+
+
   // ------------ SFX -------------
 
   Future<void> playSfx(String assetPath) async {
@@ -164,6 +221,12 @@ class AudioManager extends ChangeNotifier {
       if (kDebugMode) print('[AudioManager] Playing button sound: $assetPath');
     } catch (e) {
       if (kDebugMode) print('[AudioManager] Error playing button sound: $e');
+    }
+  }
+
+  Future<void> triggerHaptic() async {
+    if (_hapticsEnabled && await Vibration.hasVibrator() ?? false) {
+      Vibration.vibrate(duration: 50);
     }
   }
 
@@ -248,8 +311,10 @@ class AudioManager extends ChangeNotifier {
     notifyListeners();
   }
 
+
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this as WidgetsBindingObserver); // ✅ Remove observer
     _bgPlayer.dispose();
     for (final p in _sfxPlayers) {
       p.dispose();

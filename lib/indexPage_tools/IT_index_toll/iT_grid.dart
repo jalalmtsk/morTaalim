@@ -39,7 +39,7 @@ class _GameGridState extends State<ITGrid>
     _loadBannerAd();
     WidgetsBinding.instance.addObserver(this);
     _clickButton = MusicPlayer();
-    _clickButton.preload("assets/audios/pop.mp3");
+    _clickButton.preload("assets/audios/PopButton_SB.mp3");
     _confettiController = ConfettiController(duration: const Duration(seconds: 1));
   }
 
@@ -85,7 +85,7 @@ class _GameGridState extends State<ITGrid>
 
 
   void triggerConfetti() {
-    _clickButton.play("assets/audios/sound_effects/victory1.mp3");
+    _clickButton.play("assets/audios/sound_effects/victory1_SFX.mp3");
     _confettiController.play();
   }
 
@@ -133,7 +133,7 @@ class _GameGridState extends State<ITGrid>
                   return GestureDetector(
                     onTap: () {
                       if (isUnlocked) {
-                        _clickButton.play("assets/audios/pop.mp3");
+                        _clickButton.play("assets/audios/PopButton_SB.mp3");
                         widget.musicPlayer.stop();
                         Navigator.push(
                           context,
@@ -145,7 +145,7 @@ class _GameGridState extends State<ITGrid>
                           ),
                         );
                       } else {
-                        _clickButton.play("assets/audios/pop.mp3");
+                        _clickButton.play("assets/audios/PopButton_SB.mp3");
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(

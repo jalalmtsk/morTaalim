@@ -9,7 +9,7 @@ import 'package:lottie/lottie.dart';
 
 import '../../XpSystem.dart';
 import '../../tools/Ads_Manager.dart';
-import '../../tools/SettingPanelInGame.dart';
+import '../../Settings/SettingPanelInGame.dart';
 import 'Questions.dart';
 import 'question_model.dart';
 import 'ModeSelectorPage.dart';

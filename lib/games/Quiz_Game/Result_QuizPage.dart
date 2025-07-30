@@ -70,7 +70,7 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
     try {
        _PeopleCheering.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3",loop: true);
        _Ukulele4sec.play("assets/audios/QuizGame_Sounds/skaWhistleukulele30Sec.mp3", loop: true);
-       _musicPlayer.play('assets/audios/sound_effects/victory1.mp3');
+       _musicPlayer.play('assets/audios/sound_effects/victory1_SFX.mp3');
     } catch (e) {
       debugPrint('Error playing sound: $e');
     }

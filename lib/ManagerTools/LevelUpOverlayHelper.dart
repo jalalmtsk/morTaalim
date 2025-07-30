@@ -11,7 +11,7 @@ class LevelUpOverlayHelper {
     final overlay = Overlay.of(context);
     if (overlay == null || !context.mounted) return;
 
-    _lvlUp.play("assets/audios/sound_effects/victory2.mp3");
+    _lvlUp.play("assets/audios/sound_effects/victory2_SFX.mp3");
     _lvlUp2.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
 
     final AnimationController controller = AnimationController(

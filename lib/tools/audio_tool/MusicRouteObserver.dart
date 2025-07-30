@@ -21,7 +21,11 @@ class MusicRouteObserver extends NavigatorObserver {
 
       if (musicPath != null) {
         final audio = Provider.of<AudioManager>(route.navigator!.context, listen: false);
-        audio.playBackgroundMusic(musicPath);
+
+        // ✅ Only play if music is different
+        if (audio.currentBgMusic != musicPath) {
+          audio.playBackgroundMusic(musicPath);
+        }
       }
     }
   }
@@ -35,6 +39,6 @@ class MusicRouteObserver extends NavigatorObserver {
   @override
   void didPop(Route route, Route? previousRoute) {
     super.didPop(route, previousRoute);
-    _handleMusic(previousRoute); // Return to previous screen music
+    _handleMusic(previousRoute); // Resume previous screen music without restarting
   }
 }

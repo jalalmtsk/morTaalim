@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
 
 import '../../XpSystem.dart';
+import '../../main.dart';
 import '../../tools/audio_tool/audio_tool.dart';
 import '../../tools/loading_page.dart';
 
@@ -23,12 +25,11 @@ class GameGrid extends StatefulWidget {
   @override
   State<GameGrid> createState() => _GameGridState();
 }
-
+final MusicPlayer _clickButton = MusicPlayer();
 class _GameGridState extends State<GameGrid>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   BannerAd? _bannerAd;
 
-  late MusicPlayer _clickButton;
   late ConfettiController _confettiController;
   bool _isBannerAdLoaded = false;
   @override
@@ -36,8 +37,6 @@ class _GameGridState extends State<GameGrid>
     super.initState();
     _loadBannerAd();
     WidgetsBinding.instance.addObserver(this);
-    _clickButton = MusicPlayer();
-    _clickButton.preload("assets/audios/pop.mp3");
     _confettiController = ConfettiController(duration: const Duration(seconds: 1));
   }
 
@@ -105,14 +104,14 @@ class _GameGridState extends State<GameGrid>
   }
 
   void triggerConfetti() {
-    _clickButton.play("assets/audios/sound_effects/victory1.mp3");
+    _clickButton.play("assets/audios/sound_effects/victory1_SFX.mp3");
     _confettiController.play();
   }
 
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
-    final tr = AppLocalizations.of(context)!;
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     return Stack(
       children: [
@@ -124,7 +123,7 @@ class _GameGridState extends State<GameGrid>
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    tr.chooseGame,
+                    tr(context).chooseGame,
                     style: TextStyle(fontSize: 20, color: Colors.grey[700]),
                   ),
                 ),
@@ -153,7 +152,7 @@ class _GameGridState extends State<GameGrid>
                   return GestureDetector(
                     onTap: () {
                       if (isUnlocked) {
-                        _clickButton.play("assets/audios/pop.mp3");
+                        _clickButton.play("assets/audios/PopButton_SB.mp3");
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -164,24 +163,24 @@ class _GameGridState extends State<GameGrid>
                           ),
                         );
                       } else {
-                        _clickButton.play("assets/audios/pop.mp3");
+                        _clickButton.play("assets/audios/PopButton_SB.mp3");
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title:  Text(tr.unlock),
-                            content: Text("${tr.unlockThisCourseFor} $cost ⭐?"),
+                            title:  Text(tr(context).unlock),
+                            content: Text("${tr(context).unlockThisCourseFor} $cost ⭐?"),
                             actions: [
                               TextButton(
                                 onPressed: () {
                                   _clickButton.play("assets/audios/sound_effects/uiButton.mp3");
                                   Navigator.pop(context);
                                 },
-                                child:  Text(tr.cancel),
+                                child:  Text(tr(context).cancel),
                               ),
                               ElevatedButton(
                                 onPressed: () {
                                   if (xpManager.stars >= cost) {
-                                    _victorySound.play("assets/audios/sound_effects/victory2.mp3");
+                                    _victorySound.play("assets/audios/sound_effects/victory2_SFX.mp3");
                                     triggerConfetti();
                                     _clickButton.play("assets/audios/sound_effects/uiButton.mp3");
                                     xpManager.unlockCourse(game['title'], cost);
@@ -197,12 +196,12 @@ class _GameGridState extends State<GameGrid>
                                     ScaffoldMessenger.of(context).showSnackBar(
                                        SnackBar(
                                         duration: Duration(milliseconds: 1200),
-                                        content: Text(tr.notEnoughStars),
+                                        content: Text(tr(context).notEnoughStars),
                                       ),
                                     );
                                   }
                                 },
-                                child:  Text(tr.unlock),
+                                child:  Text(tr(context).unlock),
                               ),
                             ],
                           ),
@@ -253,7 +252,7 @@ class _GameGridState extends State<GameGrid>
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  _getCourseTitle(tr, game['title']),
+                                  _getCourseTitle(tr(context), game['title']),
                                   style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.white,
@@ -302,7 +301,7 @@ class _GameGridState extends State<GameGrid>
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child:  Text(
-                                      "${tr.free}!",
+                                      "${tr(context).free}!",
                                       style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.white,
@@ -338,7 +337,7 @@ class _GameGridState extends State<GameGrid>
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child:  Text(tr.cancel),
+                        child:  Text(tr(context).cancel),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),

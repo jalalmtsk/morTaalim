@@ -78,7 +78,7 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise> {
     player2.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
     bgmVictory.setVolume(0.4);
     bgmVictory.play("assets/audios/sound_track/SakuraGirlYay_BcG.mp3", loop: true);
-    await player.play('assets/audios/sound_effects/victory1.mp3');
+    await player.play('assets/audios/sound_effects/victory1_SFX.mp3');
   }
 
   void _toggleBackgroundMusic() {

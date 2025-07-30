@@ -211,7 +211,7 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
                       style: const TextStyle(fontFamily: 'ComicNeue', fontSize: 20, fontWeight: FontWeight.w700),
                     ),
                     onPressed: () {
-                      _musicPlayer.play('assets/audios/pop.mp3');
+                      _musicPlayer.play('assets/audios/PopButton_SB.mp3');
                       Navigator.pop(context);
                       Navigator.push(context, _createRoute(sub, widget.node['title']));
                     },
@@ -416,7 +416,7 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
                               side: BorderSide(color: Colors.pinkAccent.shade400, width: 2),
                             ),
                             onTap: () {
-                              _musicPlayer.play('assets/audios/pop.mp3');
+                              _musicPlayer.play('assets/audios/PopButton_SB.mp3');
                               if (hasSub) {
                                 showSubsectionsModal(item['subsections']);
                               } else {

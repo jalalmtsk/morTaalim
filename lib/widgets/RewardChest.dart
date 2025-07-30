@@ -136,7 +136,7 @@ class _RewardChestState extends State<RewardChest> {
 
     // Then play sound and confetti
     _confettiController.play();
-    _audioPlayer.play('assets/audios/sound_effects/victory2.mp3');
+    _audioPlayer.play('assets/audios/sound_effects/victory2_SFX.mp3');
     _player.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
     _player1.play("assets/audios/QuizGame_Sounds/whistleUkulele4Sec.mp3");
 

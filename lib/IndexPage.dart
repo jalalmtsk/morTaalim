@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mortaalim/indexPage_tools/IT_index_toll/iT_index.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
-import 'package:mortaalim/tools/SettingPanelInGame.dart';
+import 'package:mortaalim/Settings/SettingPanelInGame.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
@@ -11,11 +10,11 @@ import 'package:mortaalim/widgets/profile_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../l10n/app_localizations.dart';
 import 'XpSystem.dart';
 import 'indexPage_tools/Course_index_tool/course_index.dart';
 import 'indexPage_tools/Game_index_tool/game_index.dart';
 import 'indexPage_tools/language_menu.dart';
+import 'main.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
@@ -36,7 +35,6 @@ class _IndexState extends State<Index>
 
   late final AnimationController _profileAnimController;
   late final Animation<Offset> _profileSlideAnimation;
-  late final Animation<double> _profileFadeAnimation;
 
   @override
   void initState() {
@@ -62,9 +60,6 @@ class _IndexState extends State<Index>
       curve: Curves.easeOut,
     ));
 
-    _profileFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _profileAnimController, curve: Curves.easeIn),
-    );
 
     _profileAnimController.forward();
   }
@@ -139,7 +134,6 @@ class _IndexState extends State<Index>
   Widget build(BuildContext context) {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     final xpManager = Provider.of<ExperienceManager>(context);
-    final tr = AppLocalizations.of(context)!;
     final avatarEmoji = xpManager.selectedAvatar;
     final stars = xpManager.stars;
 
@@ -150,11 +144,12 @@ class _IndexState extends State<Index>
           onChangeLocale: widget.onChangeLocale,
           colorButton: Colors.white,
         ),
-        title: Text(tr.welcome, style: const TextStyle(color: Colors.white)),
+        title: Text(tr(context).welcome, style: const TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [
           IconButton(
             onPressed: () {
+              audioManager.playEventSound('clickButton');
               Navigator.of(context).push(createFadeRoute(
                 LoadingPage(
                   loadingFuture: simulateLoading(),
@@ -162,12 +157,15 @@ class _IndexState extends State<Index>
                 ),
               ));
             },
+            tooltip: 'Shop',
             icon: const Icon(Icons.storefront_outlined, color: Colors.white),
           ),
           IconButton(
             icon: const Icon(Icons.settings, color: Colors.white,),
             onPressed: () {
+              audioManager.playEventSound('clickButton');
               showDialog(
+                barrierDismissible: false,
                 context: context,
                 builder: (_) => const SettingsDialog(),
               );
@@ -183,8 +181,8 @@ class _IndexState extends State<Index>
           unselectedLabelColor: Colors.white30,
           unselectedLabelStyle: const TextStyle(fontSize: 13),
           tabs: [
-            Tab(icon: const Icon(Icons.school_outlined), text: tr.courses),
-            Tab(icon: const Icon(Icons.videogame_asset), text: tr.games),
+            Tab(icon: const Icon(Icons.school_outlined), text: tr(context).courses),
+            Tab(icon: const Icon(Icons.videogame_asset), text: tr(context).games),
             Tab(icon: Icon(Icons.computer), text: "IT"),
             Tab(icon: Icon(Icons.menu_book), text: "Islam"),
           ],
@@ -227,6 +225,7 @@ class _IndexState extends State<Index>
                               child: InkWell(
                                 customBorder: const CircleBorder(),
                                 onTap: () {
+                                  audioManager.playEventSound('clickButton');
                                   Navigator.of(context)
                                       .push(createFadeRoute(ProfilePage(
                                     initialName: childName,
@@ -248,13 +247,14 @@ class _IndexState extends State<Index>
                               flex: 2,
                               child: InkWell(
                                 onTap: () {
+                                  audioManager.playEventSound('clickButton');
                                   Navigator.of(context)
                                       .pushNamed('Profile')
                                       .then((_) => _loadProfile());
                                 },
                                 child: Text(
                                   (childName == "Player" || childName.isEmpty)
-                                      ? "${tr.enterName} ✏️"
+                                      ? "${tr(context).enterName} ✏️"
                                       : childName,
                                   style: const TextStyle(
                                     fontSize: 20,
@@ -305,11 +305,11 @@ class _IndexState extends State<Index>
                                   ),
                                   const SizedBox(width: 10),
 
-
                                   Column(
                                     children: [
                                    IconButton(
                                        onPressed: () {
+                                         audioManager.playEventSound('clickButton');
                                          Navigator.of(context)
                                              .pushNamed('Profile')
                                              .then((_) => _loadProfile());
@@ -317,9 +317,12 @@ class _IndexState extends State<Index>
                                        icon: Icon(Icons.edit_note,
                                          color: Colors.white,)),
                                    IconButton(
-                                       onPressed: () => AdHelper.showRewardedAdWithLoading(context, ()  {
+                                       onPressed: () {
+                                         audioManager.playEventSound('clickButton');
+                                        AdHelper.showRewardedAdWithLoading(context, ()  {
                                          Provider.of<ExperienceManager>(context, listen: false).addStarBanner(context,1);
-                                       }),
+                                       });
+                                        },
                                        icon: Icon(Icons.card_giftcard_outlined,
                                          color: Colors.white,)),
 

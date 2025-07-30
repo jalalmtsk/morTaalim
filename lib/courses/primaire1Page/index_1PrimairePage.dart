@@ -7,8 +7,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../tools/audio_tool/Audio_Manager.dart';
-import '../../tools/audio_tool/VolumeSlider/BackgroundVolumeSlider.dart';
-import '../../tools/audio_tool/VolumeSlider/SFXSlider.dart';
 
 class index1Primaire extends StatefulWidget {
   const index1Primaire({super.key});
@@ -99,16 +97,6 @@ class _index1PrimaireState extends State<index1Primaire>
         backgroundColor: Colors.grey[100],
         body: Column(
           children: [
-
-            BgVolumeSlider(),
-            SizedBox(height: 20),
-            SfxVolumeSlider(),
-            IconButton(onPressed: (){
-              audio.playSfx("assets/audios/sound_effects/victory1.mp3");
-              audio.playSfx("assets/audios/sound_effects/victory2.mp3");
-
-            }, icon: Icon(Icons.place)),
-
             SlideTransition(
               position: _slideAnimation,
               child: FadeTransition(

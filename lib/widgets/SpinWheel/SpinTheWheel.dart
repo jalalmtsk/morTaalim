@@ -139,7 +139,7 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
           _applyReward(_rewards[_selectedIndex]);
 
           // 🎉 Show reward
-          audioTool.play("assets/audios/sound_effects/victory2.mp3");
+          audioTool.play("assets/audios/sound_effects/victory2_SFX.mp3");
           audioTool1.play("assets/audios/sound_effects/unlock_sound.mp3");
           audioTool2.play(
               "assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
