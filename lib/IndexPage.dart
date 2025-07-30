@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/Settings/setting_Page.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/Settings/SettingPanelInGame.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
@@ -190,11 +191,8 @@ class _IndexState extends State<Index>
             icon: const Icon(Icons.settings, color: Colors.white,),
             onPressed: () {
               audioManager.playEventSound('clickButton');
-              showDialog(
-                barrierDismissible: false,
-                context: context,
-                builder: (_) => SettingsDialog(),
-              );
+            Navigator.pushNamed(context, "Setting");
+
             },
           ),
           const SizedBox(width: 4),

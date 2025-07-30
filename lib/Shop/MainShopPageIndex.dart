@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import '../XpSystem.dart';
 import '../main.dart';
 import '../tools/Ads_Manager.dart';
-import '../tools/NotificationService.dart';
 import '../widgets/RewardChest.dart';
 import 'FunMojiTab/IndexFunMoji.dart';
 
@@ -22,12 +21,10 @@ class MainShopPageIndex extends StatelessWidget {
       primaryContainer: const Color(0xFFFFA65C),
       secondary: const Color(0xFF4A90E2),
       surface: Colors.white,
-      background: const Color(0xFFFDF6F0),
       error: Colors.red,
       onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: Colors.black87,
-      onBackground: Colors.black54,
       onError: Colors.white,
       brightness: Brightness.light,
     );
@@ -35,7 +32,7 @@ class MainShopPageIndex extends StatelessWidget {
     return DefaultTabController(
       length: 4,
       child: Scaffold(
-        backgroundColor: colorScheme.background,
+        backgroundColor: colorScheme.surface,
         body: SafeArea(
           child: Column(
             children: [
@@ -48,7 +45,7 @@ class MainShopPageIndex extends StatelessWidget {
                     Material(
                       shape: const CircleBorder(),
                       elevation: 5,
-                      shadowColor: colorScheme.primaryContainer.withOpacity(0.25),
+                      shadowColor: colorScheme.primaryContainer.withValues(alpha: 0.25),
                       color: colorScheme.surface,
                       child: IconButton(
                         icon: Icon(Icons.arrow_back, color: colorScheme.primary, size: 28),
@@ -100,7 +97,7 @@ class MainShopPageIndex extends StatelessWidget {
                     ),
                     indicatorSize: TabBarIndicatorSize.tab, // full tab width indicator
                     labelColor: colorScheme.onPrimary,
-                    unselectedLabelColor: colorScheme.primary.withOpacity(0.7),
+                    unselectedLabelColor: colorScheme.primary.withValues(alpha: 0.7),
                     labelStyle: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 15,
@@ -132,7 +129,7 @@ class MainShopPageIndex extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: colorScheme.primary.withOpacity(0.08),
+                        color: colorScheme.primary.withValues(alpha: 0.08),
                         blurRadius: 18,
                         offset: const Offset(0, 6),
                       ),
@@ -153,22 +150,22 @@ class MainShopPageIndex extends StatelessWidget {
                 ),
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 6),
 
               // Reward chests with spacing and shadowed circular backgrounds
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     _buildRewardChest(context, 10, 2, 1, "Quick", colorScheme),
-                    _buildRewardChest(context, 3600, 5, 2, tr(context).medium, colorScheme),
-                    _buildRewardChest(context, 7200, 15, 3, "Rare", colorScheme),
+                    _buildRewardChest(context, 30, 5, 2, tr(context).medium, colorScheme),
+                    _buildRewardChest(context, 60, 15, 3, "Rare", colorScheme),
                   ],
                 ),
               ),
 
-              const SizedBox(height: 10), // Leave space for floating button
+              const SizedBox(height: 2), // Leave space for floating button
             ],
           ),
         ),
@@ -186,20 +183,20 @@ class MainShopPageIndex extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: LinearGradient(
-              colors: [colorScheme.primaryContainer.withOpacity(0.4), colorScheme.primary.withOpacity(0.7)],
+              colors: [colorScheme.primaryContainer.withValues(alpha: 0.4), colorScheme.primary.withOpacity(0.7)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
             boxShadow: [
               BoxShadow(
-                color: colorScheme.primary.withOpacity(0.3),
+                color: colorScheme.primary.withValues(alpha: 0.3),
                 blurRadius: 8,
                 offset: const Offset(0, 4),
               ),
             ],
           ),
           child: RewardChest(
-            cooldown: Duration(seconds: cooldownSec),
+            cooldown: Duration(minutes: cooldownSec),
             chestClosedAsset: 'assets/images/UI/utilities/Box.png',
             chestOpenAnimationAsset: 'assets/animations/LvlUnlocked/BoxQuest.json',
             rareChestClosedAsset: 'assets/images/UI/utilities/Box.png',
@@ -241,7 +238,7 @@ extension GradientButton on Widget {
         borderRadius: BorderRadius.circular(40),
         boxShadow: [
           BoxShadow(
-            color: startColor.withOpacity(0.5),
+            color: startColor.withValues(alpha: 0.5),
             blurRadius: 12,
             offset: const Offset(0, 6),
           ),

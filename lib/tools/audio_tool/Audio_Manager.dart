@@ -160,6 +160,15 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
     notifyListeners();
   }
 
+  Future<void> stopMusic() async {
+    try {
+      await _bgPlayer.stop();
+      if (kDebugMode) print('[AudioManager] Background music stopped');
+    } catch (e) {
+      if (kDebugMode) print('[AudioManager] Error stopping music: $e');
+    }
+    notifyListeners();
+  }
 
   // ------------ EVENT SOUND -------------
 

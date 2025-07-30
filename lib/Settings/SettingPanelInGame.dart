@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../main.dart';
 import '../tools/audio_tool/Audio_Manager.dart';
 
 String appVersion = "1.0.0";
@@ -13,7 +12,7 @@ class SettingsDialog extends StatefulWidget {
 }
 
 class _SettingsDialogState extends State<SettingsDialog> {
-  bool bgExpanded = false;
+  bool bgExpanded = true;
   bool sfxExpanded = false;
   bool buttonExpanded = false;
   bool alertExpanded = false;
@@ -22,37 +21,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
   Widget build(BuildContext context) {
     final audioManager = Provider.of<AudioManager>(context);
 
-    // Helper to change volume by +/- 10%
-    void changeVolume({
-      required String type,
-      required bool increase,
-    }) {
-      const double step = 0.1;
-      switch (type) {
-        case 'bg':
-          audioManager.playEventSound('clickButton2');
-          audioManager.setBgVolume(
-              (audioManager.bgVolume + (increase ? step : -step)).clamp(0.0, 1.0));
-          break;
-        case 'sfx':
-          audioManager.playEventSound('clickButton2');
-          audioManager.setSfxVolume(
-              (audioManager.sfxVolume + (increase ? step : -step)).clamp(0.0, 1.0));
-          break;
-        case 'button':
-          audioManager.playEventSound('clickButton2');
-          audioManager.setButtonVolume(
-              (audioManager.buttonVolume + (increase ? step : -step)).clamp(0.0, 1.0));
-          break;
-        case 'alert':
-          audioManager.playEventSound('clickButton2');
-          audioManager.setAlertVolume(
-              (audioManager.alertVolume + (increase ? step : -step)).clamp(0.0, 1.0));
-          break;
-      }
-    }
-
-    // Widget to build each sound section
     Widget buildVolumeControl({
       required String title,
       required bool expanded,
@@ -67,93 +35,94 @@ class _SettingsDialogState extends State<SettingsDialog> {
       bool showTestButton = false,
       VoidCallback? onTest,
     }) {
-      return ExpansionTile(
-        initiallyExpanded: expanded,
-        onExpansionChanged: (expanded) {
-          audioManager.playEventSound('clickButton');
-          onExpandChanged(expanded);
-        },
-        leading: Icon(icon, color: color),
-        title: Text(title),
-        trailing: Switch(
-          value: isMuted,
-          onChanged: (_) {
-            audioManager.playEventSound('toggleButton');
-            toggleMute();
-          },
-          activeColor: color,
-        ),
-        children: [
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(Icons.volume_down, color: color),
-                onPressed: isMuted ? null : () => changeVolume(type: type, increase: false),
-              ),
-              Expanded(
-                child: Slider(
-                  value: volume,
-                  onChanged: isMuted
-                      ? null
-                      : (value) {
-                    final stepped = (value * 10).round() / 10;
-                    onVolumeChanged(stepped);
-                  },
-                  min: 0,
-                  max: 1,
-                  divisions: 10,
-                  activeColor: isMuted ? Colors.grey : color,
-                  inactiveColor: Colors.grey[300],
-                ),
-              ),
-              Text("${(volume * 100).round()}%",
-                  style: TextStyle(
-                      color: isMuted ? Colors.grey : color,
-                      fontWeight: FontWeight.bold)),
-              IconButton(
-                icon: Icon(Icons.volume_up, color: color),
-                onPressed: isMuted ? null : () => changeVolume(type: type, increase: true),
-              ),
-              if (showTestButton)
-                IconButton(
-                  icon: Icon(Icons.play_arrow, color: color),
-                  tooltip: "Test",
-                  onPressed: isMuted ? null : onTest,
-                ),
-            ],
+      return Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        elevation: 2,
+        child: ExpansionTile(
+          initiallyExpanded: expanded,
+          onExpansionChanged: onExpandChanged,
+          leading: Icon(icon, color: color),
+          title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+          trailing: Switch(
+            value: !isMuted,
+            onChanged: (_) {
+              audioManager.playEventSound('toggleButton');
+              toggleMute();
+            },
+            activeColor: color,
           ),
-        ],
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                children: [
+                  IconButton(
+                    icon: Icon(Icons.volume_down, color: color),
+                    onPressed: isMuted
+                        ? null
+                        : () => onVolumeChanged((volume - 0.1).clamp(0.0, 1.0)),
+                  ),
+                  Expanded(
+                    child: Slider(
+                      value: volume,
+                      min: 0,
+                      max: 1,
+                      divisions: 10,
+                      activeColor: color,
+                      onChanged: isMuted ? null : (v) => onVolumeChanged(v),
+                    ),
+                  ),
+                  Text("${(volume * 100).round()}%",
+                      style: TextStyle(color: isMuted ? Colors.grey : color)),
+                  IconButton(
+                    icon: Icon(Icons.volume_up, color: color),
+                    onPressed: isMuted
+                        ? null
+                        : () => onVolumeChanged((volume + 0.1).clamp(0.0, 1.0)),
+                  ),
+                  if (showTestButton)
+                    IconButton(
+                      icon: Icon(Icons.play_arrow, color: color),
+                      onPressed: isMuted ? null : onTest,
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+        ),
       );
     }
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      insetPadding: const EdgeInsets.symmetric(horizontal: 40, vertical: 120),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 35, vertical: 80),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Title & Close Button
+            // Header
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Settings', style: Theme.of(context).textTheme.titleMedium),
+                const Text("Settings",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                 IconButton(
                   onPressed: () {
                     audioManager.playEventSound('cancelButton');
                     Navigator.pop(context);
                   },
-                  icon: const Icon(Icons.cancel, size: 30),
+                  icon: const Icon(Icons.close, size: 28),
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            const Divider(),
 
-            // Settings List
+            // Content
             Expanded(
               child: ListView(
                 children: [
-                  // Background Music
                   buildVolumeControl(
                     title: "Background Music",
                     expanded: bgExpanded,
@@ -166,10 +135,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     color: Colors.deepOrange,
                     type: 'bg',
                   ),
-
-                  // SFX
                   buildVolumeControl(
-                    title: "SFX",
+                    title: "Sound Effects",
                     expanded: sfxExpanded,
                     onExpandChanged: (v) => setState(() => sfxExpanded = v),
                     isMuted: audioManager.isSfxMuted,
@@ -180,10 +147,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     color: Colors.blue,
                     type: 'sfx',
                     showTestButton: true,
-                    onTest: () => audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/MarimbaWin_SFX.mp3'),
+                    onTest: () => audioManager.playSfx(
+                        'assets/audios/UI_Audio/SFX_Audio/MarimbaWin_SFX.mp3'),
                   ),
-
-                  // Button Sounds
                   buildVolumeControl(
                     title: "Button Sounds",
                     expanded: buttonExpanded,
@@ -195,10 +161,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     icon: Icons.touch_app,
                     color: Colors.green,
                     type: 'button',
-                    showTestButton: false,
                   ),
-
-                  // Alerts
                   buildVolumeControl(
                     title: "Alerts & Notifications",
                     expanded: alertExpanded,
@@ -210,30 +173,28 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     icon: Icons.notifications,
                     color: Colors.purple,
                     type: 'alert',
-                    showTestButton: false,
                   ),
+                  const SizedBox(height: 10),
 
-                  const Divider(),
-
-                  // Reset Audio
+                  // Reset Button
                   ElevatedButton.icon(
                     icon: const Icon(Icons.refresh),
                     label: const Text("Reset Audio Settings"),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.grey[700],
-                      minimumSize: const Size(double.infinity, 40),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12)),
+                      minimumSize: const Size(double.infinity, 45),
                     ),
                     onPressed: () => audioManager.resetAudioSettings(),
                   ),
 
-                  const Divider(height: 30),
-
+                  const SizedBox(height: 20),
                   ListTile(
-                    title: Text(tr(context).aboutApp),
-                    subtitle: Text(appVersion),
                     leading: const Icon(Icons.info_outline, color: Colors.blueGrey),
+                    title: const Text("About App"),
+                    subtitle: Text("Version $appVersion"),
                   ),
-
                   const SizedBox(height: 10),
 
                   ElevatedButton.icon(
@@ -241,10 +202,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     label: const Text('Close'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.redAccent,
-                      minimumSize: const Size(double.infinity, 40),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
+                          borderRadius: BorderRadius.circular(12)),
+                      minimumSize: const Size(double.infinity, 45),
                     ),
                     onPressed: () => Navigator.of(context).pop(),
                   ),

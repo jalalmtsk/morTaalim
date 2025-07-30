@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../l10n/app_localizations.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import '../../l10n/app_localizations.dart';
 import '../XpSystem.dart';
 import '../tools/audio_tool/Audio_Manager.dart';
 
@@ -18,18 +17,12 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
-  bool musicOn = true;
-  double musicVolume = 0.5;
   bool darkMode = false;
   bool notificationsOn = true;
   String username = "Player";
   String appVersion = "Loading...";
-
-  // New parental lock variables
   bool parentalLockEnabled = false;
   String parentalPin = '';
-
-  // Screen time limit in minutes (0 = no limit)
   int screenTimeLimitMinutes = 0;
 
   @override
@@ -42,8 +35,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
-      musicOn = prefs.getBool('musicOn') ?? true;
-      musicVolume = prefs.getDouble('musicVolume') ?? 0.5;
       darkMode = prefs.getBool('darkMode') ?? false;
       notificationsOn = prefs.getBool('notificationsOn') ?? true;
       username = prefs.getString('username') ?? 'Player';
@@ -55,15 +46,10 @@ class _SettingsPageState extends State<SettingsPage> {
 
   Future<void> _savePref(String key, dynamic value) async {
     final prefs = await SharedPreferences.getInstance();
-    if (value is bool) {
-      await prefs.setBool(key, value);
-    } else if (value is double) {
-      await prefs.setDouble(key, value);
-    } else if (value is int) {
-      await prefs.setInt(key, value);
-    } else if (value is String) {
-      await prefs.setString(key, value);
-    }
+    if (value is bool) await prefs.setBool(key, value);
+    if (value is double) await prefs.setDouble(key, value);
+    if (value is int) await prefs.setInt(key, value);
+    if (value is String) await prefs.setString(key, value);
   }
 
   Future<void> _loadAppInfo() async {
@@ -92,22 +78,14 @@ class _SettingsPageState extends State<SettingsPage> {
           title: Text(AppLocalizations.of(context)!.setParentalPin),
           content: TextField(
             controller: controller,
-            decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.enterPin,
-            ),
+            decoration: InputDecoration(hintText: AppLocalizations.of(context)!.enterPin),
             obscureText: true,
             keyboardType: TextInputType.number,
             maxLength: 6,
           ),
           actions: [
-            TextButton(
-              child: Text(AppLocalizations.of(context)!.cancel),
-              onPressed: () => Navigator.pop(context),
-            ),
-            TextButton(
-              child: Text(AppLocalizations.of(context)!.save),
-              onPressed: () => Navigator.pop(context, controller.text),
-            ),
+            TextButton(child: Text(AppLocalizations.of(context)!.cancel), onPressed: () => Navigator.pop(context)),
+            TextButton(child: Text(AppLocalizations.of(context)!.save), onPressed: () => Navigator.pop(context, controller.text)),
           ],
         );
       },
@@ -129,23 +107,15 @@ class _SettingsPageState extends State<SettingsPage> {
         final controller = TextEditingController(
             text: screenTimeLimitMinutes == 0 ? '' : screenTimeLimitMinutes.toString());
         return AlertDialog(
-          title: Text("SettScreen Limit"),
+          title: Text("Set Screen Limit"),
           content: TextField(
             controller: controller,
-            decoration: InputDecoration(
-              hintText: "Enter Minutes",
-            ),
+            decoration: InputDecoration(hintText: "Enter Minutes"),
             keyboardType: TextInputType.number,
           ),
           actions: [
-            TextButton(
-              child: Text(AppLocalizations.of(context)!.cancel),
-              onPressed: () => Navigator.pop(context),
-            ),
-            TextButton(
-              child: Text(AppLocalizations.of(context)!.save),
-              onPressed: () => Navigator.pop(context, controller.text),
-            ),
+            TextButton(child: Text(AppLocalizations.of(context)!.cancel), onPressed: () => Navigator.pop(context)),
+            TextButton(child: Text(AppLocalizations.of(context)!.save), onPressed: () => Navigator.pop(context, controller.text)),
           ],
         );
       },
@@ -153,18 +123,22 @@ class _SettingsPageState extends State<SettingsPage> {
 
     if (input != null) {
       final minutes = int.tryParse(input) ?? 0;
-      setState(() {
-        screenTimeLimitMinutes = minutes;
-      });
+      setState(() => screenTimeLimitMinutes = minutes);
       await _savePref('screenTimeLimitMinutes', minutes);
     }
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 20, bottom: 8),
+      child: Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final tr = AppLocalizations.of(context)!;
     final audioManager = Provider.of<AudioManager>(context, listen: false);
-
 
     return Scaffold(
       appBar: AppBar(
@@ -175,7 +149,8 @@ class _SettingsPageState extends State<SettingsPage> {
         padding: const EdgeInsets.all(16),
         children: [
 
-        // 🌓 Appearance
+          _buildSectionTitle('general'),
+
           SwitchListTile(
             title: Text(tr.darkMode),
             value: darkMode,
@@ -185,7 +160,6 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
 
-          // 🔔 Notifications
           SwitchListTile(
             title: Text(tr.notifications),
             value: notificationsOn,
@@ -195,7 +169,6 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
 
-          // 🌐 Language
           ListTile(
             title: Text(tr.language),
             trailing: DropdownButton<Locale>(
@@ -212,7 +185,6 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
 
-          // 👤 Username
           ListTile(
             title: Text('${tr.username}: $username'),
             trailing: IconButton(
@@ -243,18 +215,43 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
 
-          //TODO: DROP ADS
+          _buildSectionTitle("Audio"),
 
-          SwitchListTile(
-            title: const Text('Enable Ads'),
-            value: context.watch<ExperienceManager>().adsEnabled,
-            onChanged: (value) {
-              context.read<ExperienceManager>().setAdsEnabled(value);
-            },
+          ListTile(
+            leading: const Icon(Icons.music_note, color: Colors.deepOrange),
+            title: const Text("Background Music"),
+            subtitle: Slider(
+              value: audioManager.bgVolume,
+              onChanged: (v) {
+                audioManager.setBgVolume(v);
+                _savePref('musicVolume', v);
+              },
+              min: 0,
+              max: 1,
+            ),
+            trailing: IconButton(
+              icon: Icon(audioManager.isBgMuted ? Icons.volume_off : Icons.volume_up),
+              onPressed: audioManager.toggleBgMute,
+            ),
           ),
-          const Divider(height: 40),
 
-          // 🔐 Parental Lock
+          ListTile(
+            leading: const Icon(Icons.speaker, color: Colors.blue),
+            title: const Text("SFX"),
+            subtitle: Slider(
+              value: audioManager.sfxVolume,
+              onChanged: (v) => audioManager.setSfxVolume(v),
+              min: 0,
+              max: 1,
+            ),
+            trailing: IconButton(
+              icon: Icon(audioManager.isSfxMuted ? Icons.volume_off : Icons.volume_up),
+              onPressed: audioManager.toggleSfxMute,
+            ),
+          ),
+
+          _buildSectionTitle("Security & Parental Controls"),
+
           SwitchListTile(
             title: Text(tr.parentalLock),
             subtitle: parentalLockEnabled
@@ -263,10 +260,8 @@ class _SettingsPageState extends State<SettingsPage> {
             value: parentalLockEnabled,
             onChanged: (val) async {
               if (val) {
-                // enable parental lock - ask for PIN
                 await _setParentalPin();
               } else {
-                // disable parental lock - ask for PIN confirmation
                 final confirmed = await showDialog<bool>(
                   context: context,
                   builder: (context) {
@@ -310,7 +305,6 @@ class _SettingsPageState extends State<SettingsPage> {
             },
           ),
 
-          // ⏳ Screen Time Limit
           ListTile(
             title: Text(tr.screenTimeLimit),
             subtitle: screenTimeLimitMinutes == 0
@@ -322,22 +316,8 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
 
-          // 📊 Progress Reports (placeholder)
-          ListTile(
-            title: Text(tr.progressReports),
-            leading: const Icon(Icons.insert_chart),
-            trailing: Icon(Icons.arrow_forward_ios, size: 18),
-            onTap: () {
-              // TODO: connect this to your reports page or functionality
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(tr.progressReportsComingSoon)),
-              );
-            },
-          ),
+          _buildSectionTitle("About & Support"),
 
-          const Divider(height: 40),
-
-          // 📦 About and Support
           ListTile(
             title: Text(tr.aboutApp),
             subtitle: Text(appVersion),
@@ -362,11 +342,6 @@ class _SettingsPageState extends State<SettingsPage> {
             title: Text(tr.rateApp),
             leading: const Icon(Icons.star_rate, color: Colors.amber),
             onTap: () => _launchURL("https://play.google.com/store/apps/details?id=com.example.mortaalim"),
-          ),
-          ListTile(
-            title: Text("Credit"),
-            leading: const Icon(Icons.info_outlined, color: Colors.amber),
-            onTap: () => Navigator.of(context).pushNamed("Credits"),
           ),
         ],
       ),

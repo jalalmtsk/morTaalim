@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:mortaalim/widgets/AboutMoorTaalim/AboutMoorTaalim.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
@@ -108,9 +109,11 @@ class _GameGridState extends State<GameGrid>
                 ),
                 IconButton(
                   onPressed: () {
+
                     audioManager.playEventSound('PopButton');
-                    triggerConfetti();},
-                  icon: const Icon(Icons.card_giftcard),
+                    Navigator.push(context, MaterialPageRoute(builder: (_) =>AboutMoorTaalimPage() ));
+                  },
+                  icon: const Icon(Icons.info_outlined),
                 )
               ],
             ),

@@ -24,6 +24,7 @@ import 'package:mortaalim/games/WordExplorer/WordExplorerPage.dart';
 import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
 import 'package:mortaalim/profileSetupPage.dart';
+import 'package:mortaalim/tools/LifeCycleManager.dart';
 import 'package:mortaalim/tools/NotificationService.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/MusicRouteObserver.dart';
@@ -42,7 +43,7 @@ import 'games/JumpingBoard/JumpingBoard.dart';
 Locale _locale = const Locale('fr'); // default locale
 late SharedPreferences prefs;
 AppLocalizations tr(BuildContext context) => AppLocalizations.of(context)!;
-
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final MusicRouteObserver routeObserver = MusicRouteObserver();
 
 
@@ -69,7 +70,8 @@ void main() async {
         ChangeNotifierProvider.value(value: audioManager),  // Provide the global instance here
         ChangeNotifierProvider(create: (_) => ExperienceManager()),
       ],
-      child: MyApp(),
+        child: AppLifecycleManager( child: MyApp(),
+        )
     ),
   );
 }
@@ -105,6 +107,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey, // ✅ Add this
       theme: ThemeData(
         primaryColor: Colors.white,
         appBarTheme: AppBarTheme(
