@@ -188,11 +188,17 @@ class _IndexState extends State<Index>
             icon: const Icon(Icons.storefront_outlined, color: Colors.white),
           ),
           IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white,),
+            icon: const Icon(Icons.settings, color: Colors.white),
             onPressed: () {
               audioManager.playEventSound('clickButton');
-            Navigator.pushNamed(context, "Setting");
-
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                barrierColor: Colors.black.withOpacity(0.3), // Semi-transparent overlay
+                builder: (BuildContext context) {
+                  return const SettingsDialog();
+                },
+              );
             },
           ),
           const SizedBox(width: 4),

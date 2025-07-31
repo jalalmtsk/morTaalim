@@ -6,6 +6,7 @@ import 'package:mortaalim/PractiseGames/PlayTheWord/PlayTheWord.dart';
 import 'package:mortaalim/courses/primaire1Page/index_1PrimairePage.dart';
 import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
+import 'package:mortaalim/tasbiheTest.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 
 import 'package:mortaalim/Settings/setting_Page.dart';
@@ -149,7 +150,7 @@ class _MyAppState extends State<MyApp> {
         'index1Primaire' : (context) => index1Primaire(),
 
         'Profile': (context) => const ProfileSetupPage(),
-        'Shop': (context) => MainShopPageIndex(),
+        'Shop': (context) => TasbihApp(),
         'Credits': (context) => CreditsPage(),
         'ComingSoon': (context) => ComingSoonPage(),
         'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

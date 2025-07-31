@@ -336,7 +336,6 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
                           ),
                         ],
                       ),
-
                       const SizedBox(height: 24),
 
                       // Glowing Spin Button
