@@ -139,7 +139,7 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                   Card(
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                     elevation: 6,
-                    shadowColor: Colors.deepOrange.withOpacity(0.3),
+                    shadowColor: Colors.deepOrange.withValues(alpha: 0.3),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
                       child: Column(

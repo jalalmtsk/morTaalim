@@ -239,7 +239,7 @@ class _QuoridorBoardState extends State<QuoridorBoard> {
             behavior: HitTestBehavior.translucent,
             child: Container(
               color: selectedWallType == WallType.vertical && !vOccupied
-                  ? Colors.orange.withOpacity(0.3)
+                  ? Colors.orange.withValues(alpha: 0.3)
                   : Colors.transparent,
             ),
           ),

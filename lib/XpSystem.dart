@@ -18,8 +18,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   int _stars = 5;
   int Tolims = 20;
 
-  List<String> _unlockedAvatars = ['😀'];
-  String _selectedAvatar = '😀';
+  List<String> _unlockedAvatars = ["🐱", "🐻"];
+  String _selectedAvatar = '🐱';
   List<String> _unlockedCourses = [];
   List<String> _unlockedLanguages = ['arabic', 'french'];
 
@@ -81,18 +81,16 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   bool get showStarFlash => _showStarFlash;
   int get saveTokenCount => Tolims;
 
-//MUSIC SOUND--------------------------------////
-
-
 
   ///-------------------------------------------------------------
 
   //Banner
-  List<String> _unlockedBanners = [''
+  List<String> _unlockedBanners = [
       'assets/images/Banners/CuteBr/Banner1.png',
       'assets/images/Banners/CuteBr/Banner2.png',
+      'assets/images/Banners/CuteBr/Banner3.png',
   ];
-  String _selectedBannerImage = 'assets/images/Banners/CuteBr/Banner1.png';
+  String _selectedBannerImage = 'assets/images/Banners/CuteBr/Banner3.png';
 
   List<String> get unlockedBanners => _unlockedBanners;
   String get selectedBannerImage => _selectedBannerImage;
@@ -360,8 +358,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _xp = 0;
     _stars = 0;
     Tolims = 20;
-    _unlockedAvatars = ['😀'];
-    _selectedAvatar = '😀';
+    _unlockedAvatars = ["🐱", "🐻"];
+    _selectedAvatar ='🐱';
     _unlockedCourses = [];
     _unlockedLanguages = ['arabic', 'french'];
     _saveData();
@@ -373,12 +371,12 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _xp = prefs.getInt('xp') ?? 0;
     _stars = prefs.getInt('stars') ?? 5;
     Tolims = prefs.getInt('saveTokens') ?? 20;
-    _selectedAvatar = prefs.getString('selectedAvatar') ?? '😀';
-    _unlockedAvatars = prefs.getStringList('unlockedAvatars') ?? ['😀'];
+    _selectedAvatar = prefs.getString('selectedAvatar') ?? '🐱';
+    _unlockedAvatars = prefs.getStringList('unlockedAvatars') ?? ["🐱", "🐻"];
     _unlockedCourses = prefs.getStringList('unlockedCourses') ?? [];
     _unlockedLanguages = prefs.getStringList('unlockedLanguages') ?? ['arabic', 'french'];
-    _selectedBannerImage = prefs.getString('selectedBannerImage') ?? 'assets/images/Banners/CuteBr/Banner1.png';
-    _unlockedBanners = prefs.getStringList('unlockedBanners') ?? ['assets/images/Banners/CuteBr/Banner1.png'];
+    _selectedBannerImage = prefs.getString('selectedBannerImage') ?? 'assets/images/Banners/CuteBr/Banner3.png';
+    _unlockedBanners = prefs.getStringList('unlockedBanners') ?? ['assets/images/Banners/CuteBr/Banner1.png', 'assets/images/Banners/CuteBr/Banner2.png', 'assets/images/Banners/CuteBr/Banner3.png'];
     _selectedAvatarFrame = prefs.getString('selectedAvatarFrame') ?? '';
     _unlockedAvatarFrames = prefs.getStringList('unlockedAvatarFrames') ?? [];
     _adsEnabled = prefs.getBool('adsEnabled') ?? true;

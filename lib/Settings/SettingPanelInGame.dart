@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../main.dart';
 import '../tools/audio_tool/Audio_Manager.dart';
 
-String appVersion = "1.0.0";
 
 class SettingsDialog extends StatefulWidget {
   const SettingsDialog({super.key});
@@ -42,9 +42,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
           data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
           child: ExpansionTile(
             initiallyExpanded: expanded,
-            onExpansionChanged: onExpandChanged,
+            onExpansionChanged:(_) {
+              audioManager.playEventSound("PopClick");
+              onExpandChanged;
+            },
             leading: CircleAvatar(
-              backgroundColor: color.withOpacity(0.15),
+              backgroundColor: color.withValues(alpha: 0.15),
               child: Icon(icon, color: color),
             ),
             title: Text(
@@ -65,10 +68,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 child: Row(
                   children: [
                     IconButton(
-                      icon: Icon(Icons.volume_down, color: color),
+                      icon: Icon(Icons.volume_down, color: isMuted ? Colors.grey : color),
                       onPressed: isMuted
                           ? null
-                          : () => onVolumeChanged((volume - 0.1).clamp(0.0, 1.0)),
+                          : () {
+                        audioManager.playEventSound('clickButton2');
+                        onVolumeChanged((volume - 0.1).clamp(0.0, 1.0));}
                     ),
                     Expanded(
                       child: Slider(
@@ -87,10 +92,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
                           fontWeight: FontWeight.w500),
                     ),
                     IconButton(
-                      icon: Icon(Icons.volume_up, color: color),
+                      icon: Icon(Icons.volume_up, color:isMuted ? Colors.grey : color),
                       onPressed: isMuted
                           ? null
-                          : () => onVolumeChanged((volume + 0.1).clamp(0.0, 1.0)),
+                          : () {
+                        audioManager.playEventSound('clickButton2');
+                        onVolumeChanged((volume + 0.1).clamp(0.0, 1.0));
+                      },
                     ),
                     if (showTestButton)
                       IconButton(
@@ -116,7 +124,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 15,
               offset: const Offset(0, 6),
             ),
@@ -218,15 +226,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
                     const SizedBox(height: 16),
 
-                    ListTile(
-                      leading:
-                      const Icon(Icons.info_outline, color: Colors.blueGrey),
-                      title: const Text("About App"),
-                      subtitle: Text("Version $appVersion"),
-                    ),
-
-                    const SizedBox(height: 12),
-
                     ElevatedButton.icon(
                       icon: const Icon(Icons.exit_to_app),
                       label: const Text('Close'),
@@ -243,6 +242,11 @@ class _SettingsDialogState extends State<SettingsDialog> {
                         Navigator.of(context).pop();
                       }
                     ),
+                    const SizedBox(height: 12),
+
+                    Text("Version $appVersion"),
+
+
                   ],
                 ),
               ),

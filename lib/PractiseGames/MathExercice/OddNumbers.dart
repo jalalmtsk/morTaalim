@@ -246,7 +246,7 @@ class _EvenOddExerciseState extends State<EvenOddExercise> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
         padding: EdgeInsets.symmetric(horizontal: 30, vertical: 16),
         elevation: 6,
-        shadowColor: themeColor.withOpacity(0.5),
+        shadowColor: themeColor.withValues(alpha: 0.5),
       ),
       child: Text(label, style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.white)),
     );

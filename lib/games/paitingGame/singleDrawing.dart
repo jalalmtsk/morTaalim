@@ -357,7 +357,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
             left: 16,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.deepPurple.withOpacity(0.85),
+                color: Colors.deepPurple.withValues(alpha: 0.85),
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),

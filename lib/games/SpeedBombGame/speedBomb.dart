@@ -227,7 +227,7 @@ class _speedBombState extends State<SpeedBomb> {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.orangeAccent.withOpacity(0.7),
+                    color: Colors.orangeAccent.withValues(alpha: 0.7),
                     blurRadius: 12,
                     spreadRadius: 3,
                   ),
@@ -254,7 +254,7 @@ class _speedBombState extends State<SpeedBomb> {
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: _colorForType(item.type).withOpacity(0.7),
+                      color: _colorForType(item.type).withValues(alpha: 0.7),
                       blurRadius: 8,
                       spreadRadius: 1,
                     ),
@@ -322,9 +322,9 @@ class _speedBombState extends State<SpeedBomb> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-          color: color.withOpacity(0.85),
+          color: color.withValues(alpha: 0.85),
           borderRadius: BorderRadius.circular(20),
-          boxShadow: [BoxShadow(color: color.withOpacity(0.6), blurRadius: 8, spreadRadius: 1)]),
+          boxShadow: [BoxShadow(color: color.withValues(alpha: 0.6), blurRadius: 8, spreadRadius: 1)]),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -343,7 +343,7 @@ class _speedBombState extends State<SpeedBomb> {
         decoration: BoxDecoration(
           color: Colors.orangeAccent,
           shape: BoxShape.circle,
-          boxShadow: [BoxShadow(color: Colors.orangeAccent.withOpacity(0.8), blurRadius: 10)],
+          boxShadow: [BoxShadow(color: Colors.orangeAccent.withValues(alpha: 0.8), blurRadius: 10)],
         ),
         padding: const EdgeInsets.all(14),
         child: Icon(icon, size: 40, color: Colors.white),

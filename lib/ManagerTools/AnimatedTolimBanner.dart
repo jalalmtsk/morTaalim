@@ -62,7 +62,7 @@ class _AnimatedTokenBannerState extends State<AnimatedTokenBanner>
           child: Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.1),
+              color: Colors.white.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(

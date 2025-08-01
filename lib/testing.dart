@@ -271,7 +271,7 @@ class _OnboardingChatPageState extends State<OnboardingChatPage> {
                             borderRadius: BorderRadius.circular(22),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.blue.withOpacity(0.3),
+                                color: Colors.blue.withValues(alpha: 0.3),
                                 blurRadius: 10,
                                 offset: const Offset(2, 4),
                               ),

@@ -24,7 +24,7 @@ class WatchAdButton extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.green.withOpacity(0.4),
+              color: Colors.green.withValues(alpha: 0.4),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),

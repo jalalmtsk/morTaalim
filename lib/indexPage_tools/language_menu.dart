@@ -25,7 +25,7 @@ class LanguageMenu extends StatelessWidget {
         PopupMenuItem(value: Locale("en"), child: _LangRow("🇺🇸", "English")),
         PopupMenuItem(value: Locale("ar"), child: _LangRow("🇲🇦", "العربية")),
         PopupMenuItem(value: Locale("fr"), child: _LangRow("🇫🇷", "Français")),
-        PopupMenuItem(value: Locale("it"), child: _LangRow("🇮🇹", "Italiano")),
+        PopupMenuItem(value: Locale("de"), child: _LangRow("🇩🇪", "Deutsch")),
       ],
     );
   }

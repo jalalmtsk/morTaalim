@@ -47,7 +47,7 @@ class ProfileStatusBar extends StatelessWidget {
           Container(
             height: 110,
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
             ),
           ),
           Padding(

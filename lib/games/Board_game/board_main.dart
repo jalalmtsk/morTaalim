@@ -238,7 +238,7 @@ class _BoardGamePageState extends State<BoardGamePage>
               boxShadow: [
                 if (board[index])
                   BoxShadow(
-                    color: Colors.greenAccent.shade100.withOpacity(0.6),
+                    color: Colors.greenAccent.shade100.withValues(alpha: 0.6),
                     blurRadius: 12,
                     spreadRadius: 1,
                     offset: const Offset(0, 4),
@@ -297,7 +297,7 @@ class _BoardGamePageState extends State<BoardGamePage>
         title:  Text(tr.funBoardGame),
         backgroundColor: Colors.deepOrange,
         elevation: 8,
-        shadowColor: Colors.deepOrangeAccent.withOpacity(0.8),
+        shadowColor: Colors.deepOrangeAccent.withValues(alpha: 0.8),
       ),
       body: Container(
         decoration: BoxDecoration(
@@ -353,7 +353,7 @@ class _BoardGamePageState extends State<BoardGamePage>
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(30)),
                   elevation: 6,
-                  shadowColor: Colors.deepOrangeAccent.withOpacity(0.9),
+                  shadowColor: Colors.deepOrangeAccent.withValues(alpha: 0.9),
                 ),
                 child:  Text(
                   tr.startGame,

@@ -61,7 +61,7 @@ class _AnimatedTokenSpentBannerState extends State<AnimatedTokenSpentBanner>
           child: Container(
             padding: const EdgeInsets.all(6),
             decoration: BoxDecoration(
-              color: Colors.red.withOpacity(0.2),
+              color: Colors.red.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
@@ -70,7 +70,7 @@ class _AnimatedTokenSpentBannerState extends State<AnimatedTokenSpentBanner>
                   offset: const Offset(0, 6),
                 ),
               ],
-              border: Border.all(color: Colors.redAccent.withOpacity(0.3)),
+              border: Border.all(color: Colors.redAccent.withValues(alpha: 0.3)),
             ),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),

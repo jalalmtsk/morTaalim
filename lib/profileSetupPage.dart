@@ -133,7 +133,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                                       boxShadow: isSelected
                                           ? [
                                         BoxShadow(
-                                          color: Colors.deepOrange.withOpacity(0.5),
+                                          color: Colors.deepOrange.withValues(alpha: 0.5),
                                           blurRadius: 12,
                                           spreadRadius: 1,
                                           offset: const Offset(0, 4),

@@ -95,7 +95,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.pinkAccent.withOpacity(0.3),
+            color: Colors.pinkAccent.withValues(alpha: 0.3),
             blurRadius: 18,
             spreadRadius: 4,
           ),
@@ -134,7 +134,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
       border: Border.all(color: borderColor, width: 4),
       boxShadow: [
         BoxShadow(
-          color: borderColor.withOpacity(0.5),
+          color: borderColor.withValues(alpha: 0.5),
           blurRadius: 10,
           spreadRadius: 2,
         ),
@@ -234,7 +234,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                   height: 200,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.black.withOpacity(0.2),
+                    color: Colors.black.withValues(alpha: 0.2),
                   ),
                 ),
                 Positioned.fill(
@@ -302,7 +302,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16),
-                    color: favoriteColor.withOpacity(0.1),
+                    color: favoriteColor.withValues(alpha: 0.1),
                   ),
                   child: Text(
                     "$age",
@@ -334,7 +334,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                 builder: (_, value, __) => LinearProgressIndicator(
                   value: value,
                   minHeight: 18,
-                  backgroundColor: favoriteColor.withOpacity(0.25),
+                  backgroundColor: favoriteColor.withValues(alpha: 0.25),
                   color: favoriteColor,
                 ),
               ),
@@ -471,7 +471,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
-                              color: isUnlocked ? favoriteColor.withOpacity(0.3) : Colors.grey.shade300,
+                              color: isUnlocked ? favoriteColor.withValues(alpha: 0.3) : Colors.grey.shade300,
                               blurRadius: 6,
                               spreadRadius: 1,
                             )

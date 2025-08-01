@@ -139,7 +139,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                       borderRadius: BorderRadius.circular(18),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.teal.withOpacity(0.2),
+                          color: Colors.teal.withValues(alpha: 0.2),
                           blurRadius: 8,
                           offset: const Offset(0, 4),
                         ),

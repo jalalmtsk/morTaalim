@@ -39,7 +39,7 @@ class StoryPageWidget extends StatelessWidget {
           text: pageData.words[i] + ' ',
           style: TextStyle(
             fontSize: textSize,
-            color: (isHighlighted ? Colors.deepOrange : Colors.deepOrangeAccent.withOpacity(0.6)),
+            color: (isHighlighted ? Colors.deepOrange : Colors.deepOrangeAccent.withValues(alpha: 0.6)),
             fontWeight: hasDefinition || isHighlighted ? FontWeight.bold : FontWeight.normal,
           ),
           recognizer: hasDefinition
@@ -49,7 +49,7 @@ class StoryPageWidget extends StatelessWidget {
                 context: context,
                 barrierDismissible: true,
                 builder: (_) => Dialog(
-                  backgroundColor: Colors.white.withOpacity(0.1),
+                  backgroundColor: Colors.white.withValues(alpha: 0.1),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20),
@@ -173,9 +173,9 @@ class StoryPageWidget extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.1),
+                    color: Colors.white.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: Colors.white.withOpacity(0.2)),
+                    border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
                   ),
                   child: SingleChildScrollView(
                     child: RichText(

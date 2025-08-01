@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:mortaalim/PractiseGames/HeavyLight/HeavyLight.dart';
-import 'package:mortaalim/PractiseGames/PlayTheWord/PlayTheWord.dart';
 import 'package:mortaalim/courses/primaire1Page/index_1PrimairePage.dart';
 import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
@@ -14,7 +12,6 @@ import 'package:mortaalim/Shop/MainShopPageIndex.dart';
 import 'package:mortaalim/games/App_stories/Story_Grid_Main_Page.dart';
 import 'package:mortaalim/games/App_stories/favorite_Word/favorite_Page.dart';
 import 'package:mortaalim/games/App_stories/story_data.dart';  // Import your story list here
-import 'package:mortaalim/games/IQTest_game/Section_Selector.dart';
 import 'package:mortaalim/games/IQTest_game/iqGame_data.dart';
 import 'package:mortaalim/games/Piano_Game/Piano_main_page.dart';
 import 'package:mortaalim/games/Quiz_Game/general_culture_game.dart';
@@ -26,10 +23,9 @@ import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
 import 'package:mortaalim/profileSetupPage.dart';
 import 'package:mortaalim/tools/LifeCycleManager.dart';
-import 'package:mortaalim/tools/NotificationService.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/MusicRouteObserver.dart';
-import 'package:mortaalim/tools/splashScreen.dart';
+import 'package:mortaalim/tools/SplashPage/splashScreen.dart';
 import 'package:mortaalim/testing.dart';
 import 'package:mortaalim/widgets/ComingSoon.dart';
 import 'package:mortaalim/widgets/CreditsPage.dart';
@@ -40,6 +36,9 @@ import '../../l10n/app_localizations.dart';
 import 'IndexPage.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
+
+
+final String appVersion = "1.0.0 (Build 1)";
 
 Locale _locale = const Locale('fr'); // default locale
 late SharedPreferences prefs;
@@ -150,7 +149,7 @@ class _MyAppState extends State<MyApp> {
         'index1Primaire' : (context) => index1Primaire(),
 
         'Profile': (context) => const ProfileSetupPage(),
-        'Shop': (context) => TasbihApp(),
+        'Shop': (context) => MainShopPageIndex(),
         'Credits': (context) => CreditsPage(),
         'ComingSoon': (context) => ComingSoonPage(),
         'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),
@@ -168,7 +167,7 @@ class _MyAppState extends State<MyApp> {
         Locale("fr"),
         Locale("ar"),
         Locale("en"),
-        Locale("it"),
+        Locale("de"),
       ],
       locale: _locale,
       initialRoute: 'Splash',

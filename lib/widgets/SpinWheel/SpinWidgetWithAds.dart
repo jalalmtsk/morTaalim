@@ -79,7 +79,7 @@ class _SpinButtonWithAdState extends State<SpinButtonWithAd> {
               boxShadow: isSpinAvailable
                   ? [
                 BoxShadow(
-                  color: Colors.orangeAccent.withOpacity(0.8),
+                  color: Colors.orangeAccent.withValues(alpha: 0.8),
                   blurRadius: 20,
                   spreadRadius: 3,
                 )

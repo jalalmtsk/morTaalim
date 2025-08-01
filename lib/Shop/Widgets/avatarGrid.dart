@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,9 +13,9 @@ class AvatarGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
 
-    void showPurchaseDialog(String emoji, int cost) {
+    void showPurchaseDialog(BuildContext parentContext, String emoji, int cost) {
       showDialog(
-        context: context,
+        context: parentContext,
         builder: (context) => AlertDialog(
           title: const Text("Confirm Purchase"),
           content: Text("Do you want to unlock $emoji for $cost ⭐?"),
@@ -27,29 +26,24 @@ class AvatarGrid extends StatelessWidget {
             ),
             TextButton(
               onPressed: () async{
-                xpManager.addXP(20,context: context);
-                await Future.delayed(Duration(seconds: 1));
-                xpManager.SpendStarBanner(context, -cost);
+                Navigator.pop(context);
+                await Future.delayed(Duration(milliseconds: 300));
+                xpManager.addXP(20, context: parentContext);
+                await Future.delayed(Duration(milliseconds: 1800));
+                xpManager.SpendStarBanner(parentContext, -cost);
                 xpManager.unlockAvatar(emoji);
                 xpManager.selectAvatar(emoji);
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('$emoji Unlocked! Enjoy!'),
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: Colors.deepOrangeAccent,
-                  ),
+                ScaffoldMessenger.of(parentContext).showSnackBar(
+                  SnackBar(content: Text('$emoji Unlocked! Enjoy!')),
                 );
               },
-              child: const Text(
-                "Buy",
-                style: TextStyle(color: Colors.deepOrange),
-              ),
+              child: const Text("Buy", style: TextStyle(color: Colors.deepOrange)),
             ),
           ],
         ),
       );
     }
+
 
     return GridView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -74,7 +68,7 @@ class AvatarGrid extends StatelessWidget {
           selected: selected,
           userStars: xpManager.stars,
           onSelect: () => xpManager.selectAvatar(emoji),
-          onBuy: () => showPurchaseDialog(emoji, cost),
+          onBuy: () => showPurchaseDialog(context, emoji, cost), // Pass parent context
         );
       },
     );

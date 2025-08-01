@@ -47,8 +47,8 @@ class LevelUpOverlayHelper {
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             colors: [
-                              Colors.deepOrange.shade400.withOpacity(0.6),
-                              Colors.deepOrange.shade700.withOpacity(0.6),
+                              Colors.deepOrange.shade400.withValues(alpha: 0.6),
+                              Colors.deepOrange.shade700.withValues(alpha: 0.6),
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -61,7 +61,7 @@ class LevelUpOverlayHelper {
                               offset: const Offset(0, 6),
                             ),
                           ],
-                          border: Border.all(color: Colors.white.withOpacity(0.2)),
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,

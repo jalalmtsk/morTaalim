@@ -210,14 +210,14 @@ class _WhiteKey extends StatelessWidget {
           boxShadow: pressed
               ? [
             BoxShadow(
-              color: Colors.deepPurple.withOpacity(0.5),
+              color: Colors.deepPurple.withValues(alpha: 0.5),
               blurRadius: 12,
               offset: const Offset(0, 5),
             ),
           ]
               : [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 8,
               offset: const Offset(3, 6),
             ),
@@ -277,7 +277,7 @@ class _BlackKey extends StatelessWidget {
             boxShadow: pressed
                 ? [
               BoxShadow(
-                color: Colors.deepPurple.withOpacity(0.9),
+                color: Colors.deepPurple.withValues(alpha: 0.9),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               )

@@ -79,7 +79,7 @@ class _DrawingOnBackgroundPageState extends State<DrawingOnBackgroundPage> {
       points.add(DrawPoint(
         point: point,
         paint: Paint()
-          ..color = (isErasing ? Colors.white : selectedColor).withOpacity(0.4)
+          ..color = (isErasing ? Colors.white : selectedColor).withValues(alpha: 0.4)
           ..strokeWidth = strokeWidth
           ..strokeCap = StrokeCap.round,
       ));

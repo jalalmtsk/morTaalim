@@ -13,9 +13,9 @@ class ImageAvatarGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
 
-    void showPurchaseDialog(String imagePath, int cost) {
+    void showPurchaseDialog(BuildContext parentContext, String imagePath, int cost) {
       showDialog(
-        context: context,
+        context: parentContext,
         builder: (context) => AlertDialog(
           title: const Text("Confirm Purchase"),
           content: Text("Do you want to unlock this avatar for $cost ⭐?"),
@@ -25,14 +25,17 @@ class ImageAvatarGrid extends StatelessWidget {
               child: const Text("Cancel"),
             ),
             TextButton(
-              onPressed: () async{
-                xpManager.addXP(20,context: context);
-               await Future.delayed(Duration(seconds: 1));
-                xpManager.SpendStarBanner(context, -cost);
+              onPressed: () async {
+                Navigator.pop(context); // close dialog first
+                xpManager.addXP(20, context: parentContext);
+
+                await Future.delayed(const Duration(milliseconds: 1500));
+
+                xpManager.SpendStarBanner(parentContext, -cost);
                 xpManager.unlockAvatar(imagePath);
                 xpManager.selectAvatar(imagePath);
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
+
+                ScaffoldMessenger.of(parentContext).showSnackBar(
                   const SnackBar(
                     content: Text('Avatar Unlocked! Enjoy!'),
                     backgroundColor: Colors.deepOrange,
@@ -46,6 +49,7 @@ class ImageAvatarGrid extends StatelessWidget {
         ),
       );
     }
+
 
     return GridView.builder(
       padding: const EdgeInsets.all(16),
@@ -70,7 +74,7 @@ class ImageAvatarGrid extends StatelessWidget {
           selected: selected,
           userStars: xpManager.stars,
           onSelect: () => xpManager.selectAvatar(imagePath),
-          onBuy: () => showPurchaseDialog(imagePath, cost),
+          onBuy: () => showPurchaseDialog(context ,imagePath, cost),
         );
       },
     );

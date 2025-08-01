@@ -45,11 +45,11 @@ class AvatarItemWidget extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 350),
         decoration: BoxDecoration(
-          color: unlocked ? Colors.white.withOpacity(0.9) : Colors.white.withOpacity(0.4),
+          color: unlocked ? Colors.white.withValues(alpha: 0.9) : Colors.white.withValues(alpha: 0.4),
           borderRadius: BorderRadius.circular(18),
           boxShadow: [
             BoxShadow(
-              color: selected ? Colors.greenAccent.withOpacity(0.7) : Colors.black26,
+              color: selected ? Colors.greenAccent.withValues(alpha: 0.7) : Colors.black26,
               blurRadius: selected ? 15 : 7,
               spreadRadius: selected ? 3 : 1,
               offset: const Offset(0, 5),
@@ -74,7 +74,7 @@ class AvatarItemWidget extends StatelessWidget {
                   shadows: selected
                       ? [
                     Shadow(
-                      color: Colors.greenAccent.withOpacity(0.7),
+                      color: Colors.greenAccent.withValues(alpha: 0.7),
                       blurRadius: 15,
                       offset: const Offset(0, 0),
                     )
@@ -162,7 +162,7 @@ class _RibbonBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.7),
+            color: color.withValues(alpha: 0.7),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),

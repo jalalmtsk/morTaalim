@@ -194,7 +194,7 @@ class _IndexState extends State<Index>
               showDialog(
                 barrierDismissible: false,
                 context: context,
-                barrierColor: Colors.black.withOpacity(0.3), // Semi-transparent overlay
+                barrierColor: Colors.black.withValues(alpha: 0.3), // Semi-transparent overlay
                 builder: (BuildContext context) {
                   return const SettingsDialog();
                 },

@@ -379,7 +379,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             body: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.orange.withOpacity(0.1), Colors.orange.shade200],
+                  colors: [Colors.orange.withValues(alpha: 0.1), Colors.orange.shade200],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -468,7 +468,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                             shadows: [
                               Shadow(
                                 blurRadius: 10,
-                                color: _comboColor.withOpacity(0.8),
+                                color: _comboColor.withValues(alpha: 0.8),
                                 offset: const Offset(0, 0),
                               ),
                             ],
@@ -517,7 +517,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                         elevation: 6,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16)),
-                        shadowColor: Colors.deepOrange.withOpacity(0.4),
+                        shadowColor: Colors.deepOrange.withValues(alpha: 0.4),
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Text(
@@ -568,7 +568,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16)),
                               elevation: 5,
-                              shadowColor: Colors.deepOrange.withOpacity(0.5),
+                              shadowColor: Colors.deepOrange.withValues(alpha: 0.5),
                             ),
                           );
                         }),

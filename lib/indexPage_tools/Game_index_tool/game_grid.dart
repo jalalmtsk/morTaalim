@@ -12,6 +12,7 @@ import 'package:confetti/confetti.dart';
 
 import '../../XpSystem.dart';
 import '../../main.dart';
+import '../../tools/AnimatedGridItem.dart';
 import '../../tools/loading_page.dart';
 
 
@@ -133,7 +134,9 @@ class _GameGridState extends State<GameGrid>
                   final cost = game['cost'] ?? 10;
                   final isLocked = game['locked'] && !isUnlocked;
 
-                  return GestureDetector(
+                  return AnimatedGridItem(
+                    index: index,
+                    columnCount: 2,
                     onTap: () {
                       if (isUnlocked) {
                         audioManager.playEventSound('PopButton');
@@ -151,7 +154,7 @@ class _GameGridState extends State<GameGrid>
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
-                            title:  Text(tr(context).unlock),
+                            title: Text(tr(context).unlock),
                             content: Text("${tr(context).unlockThisCourseFor} $cost ⭐?"),
                             actions: [
                               TextButton(
@@ -159,7 +162,7 @@ class _GameGridState extends State<GameGrid>
                                   audioManager.playEventSound('cancelButton');
                                   Navigator.pop(context);
                                 },
-                                child:  Text(tr(context).cancel),
+                                child: Text(tr(context).cancel),
                               ),
                               ElevatedButton(
                                 onPressed: () {
@@ -170,7 +173,7 @@ class _GameGridState extends State<GameGrid>
                                     xpManager.unlockCourse(game['title'], cost);
                                     Navigator.pop(context);
                                     if (mounted) {
-                                      xpManager.addXP(10,context: context);
+                                      xpManager.addXP(10, context: context);
                                       triggerConfetti();
                                       showUnlockAnimation(context);
                                     }
@@ -178,14 +181,14 @@ class _GameGridState extends State<GameGrid>
                                     audioManager.playEventSound('invalid');
                                     Navigator.pop(context);
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                       SnackBar(
-                                        duration: Duration(milliseconds: 1200),
+                                      SnackBar(
+                                        duration: const Duration(milliseconds: 1200),
                                         content: Text(tr(context).notEnoughStars),
                                       ),
                                     );
                                   }
                                 },
-                                child:  Text(tr(context).unlock),
+                                child: Text(tr(context).unlock),
                               ),
                             ],
                           ),
@@ -200,7 +203,7 @@ class _GameGridState extends State<GameGrid>
                             child: Image.asset(
                               game['image'] ?? 'assets/images/AvatarImage/Avatar2.png',
                               fit: BoxFit.cover,
-                              color: isLocked ? Colors.black.withValues(alpha: 0.5) : null,
+                              color: isLocked ? Colors.black.withOpacity(0.5) : null,
                               colorBlendMode: isLocked ? BlendMode.darken : null,
                             ),
                           ),
@@ -209,8 +212,8 @@ class _GameGridState extends State<GameGrid>
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Colors.black.withValues(alpha: 0.3),
-                                    Colors.black.withValues(alpha: 0),
+                                    Colors.black.withOpacity(0.3),
+                                    Colors.black.withOpacity(0),
                                   ],
                                   begin: Alignment.bottomCenter,
                                   end: Alignment.topCenter,
@@ -237,10 +240,12 @@ class _GameGridState extends State<GameGrid>
                                 const SizedBox(height: 10),
                                 Text(
                                   _getCourseTitle(tr(context), game['title']),
+                                  textAlign: TextAlign.center,
                                   style: const TextStyle(
-                                    fontSize: 15,
+                                    fontSize: 12, // smaller text size
                                     color: Colors.white,
-                                    fontWeight: FontWeight.w800,
+                                    fontWeight: FontWeight.w600,
+                                    height: 1.2, // tighter line height for better centering
                                     shadows: [
                                       Shadow(
                                         color: Colors.black,
@@ -250,6 +255,7 @@ class _GameGridState extends State<GameGrid>
                                     ],
                                   ),
                                 ),
+
                                 if (isLocked)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 2),
@@ -281,12 +287,12 @@ class _GameGridState extends State<GameGrid>
                                     margin: const EdgeInsets.only(top: 6),
                                     padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                     decoration: BoxDecoration(
-                                      color: Colors.green.shade700.withValues(alpha: 0.8),
+                                      color: Colors.green.shade700.withOpacity(0.8),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    child:  Text(
+                                    child: Text(
                                       "${tr(context).free}!",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         fontSize: 12,
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,

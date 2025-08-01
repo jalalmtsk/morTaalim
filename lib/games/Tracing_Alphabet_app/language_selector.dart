@@ -90,7 +90,7 @@ class LanguageSelectorPage extends StatelessWidget {
             Container(
               height: double.infinity,
               padding: const EdgeInsets.all(10),
-              color: Colors.black.withOpacity(0.25), // optional: dark overlay for readability
+              color: Colors.black.withValues(alpha: 0.25), // optional: dark overlay for readability
               child: Column(
                 children: [
                   Userstatutbar(),
@@ -108,7 +108,7 @@ class LanguageSelectorPage extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () async {
                           // Add XP first
-                          xpManager.addXP(3, context: context);
+                          xpManager.addXP(500, context: context);
 
                           // Wait before showing the star banner
                           await Future.delayed(const Duration(milliseconds: 2000));
@@ -116,7 +116,7 @@ class LanguageSelectorPage extends StatelessWidget {
 
                           // Wait before showing the token banner
                           await Future.delayed(const Duration(milliseconds: 2500));
-                          xpManager.addTokenBanner(context, 2);
+                          xpManager.addTokenBanner(context, 1000);
                         }, child: Text("Add"),
                       ),
                     ],

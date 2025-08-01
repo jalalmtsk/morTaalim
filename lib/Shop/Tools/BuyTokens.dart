@@ -33,7 +33,7 @@ class BuyTokenButton extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.orangeAccent.withOpacity(0.4),
+              color: Colors.orangeAccent.withValues(alpha: 0.4),
               blurRadius: 12,
               offset: const Offset(0, 6),
             ),

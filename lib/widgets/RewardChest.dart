@@ -127,97 +127,87 @@ class _RewardChestState extends State<RewardChest> with SingleTickerProviderStat
   }
 
   void _showRewardPopup() {
-    showDialog(
+    showGeneralDialog(
       context: context,
-      barrierDismissible: false,
-      builder: (context) {
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          child: TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0.7, end: 1.0),
-            duration: const Duration(milliseconds: 400),
-            curve: Curves.elasticOut,
-            builder: (context, scale, child) {
-              return Transform.scale(
-                scale: scale,
-                child: Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    Container(
-                      width: 300,
-                      height: 300,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: RadialGradient(
-                          colors: _isRare
-                              ? [Colors.amber.withOpacity(0.4), Colors.transparent]
-                              : [Colors.orangeAccent.withOpacity(0.4), Colors.transparent],
-                        ),
-                      ),
+      barrierDismissible: true,
+      barrierLabel: "Reward Screen",
+      barrierColor: Colors.black.withOpacity(0.9),
+      transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return GestureDetector(
+          behavior: HitTestBehavior.opaque, // tap anywhere to dismiss
+          onTap: () => Navigator.pop(context),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            body: Stack(
+              children: [
+                // Confetti Background
+                Positioned.fill(
+                  child: IgnorePointer(
+                    child: ConfettiWidget(
+                      confettiController: _confettiController,
+                      blastDirectionality: BlastDirectionality.explosive,
+                      shouldLoop: false,
+                      colors: const [Colors.amber, Colors.orange, Colors.purple],
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade900.withOpacity(0.95),
-                        borderRadius: BorderRadius.circular(24),
-                        border: Border.all(
-                          color: _isRare ? Colors.amber : Colors.orangeAccent,
-                          width: 2,
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            _isRare ? "🌟 Rare Star Collected!" : "🔥 XP Collected!",
-                            style: TextStyle(
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              color: _isRare ? Colors.amber : Colors.orangeAccent,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          Lottie.asset(
-                            _isRare
-                                ? 'assets/animations/GiftStar.json'
-                                : 'assets/animations/girl_jumping.json',
-                            height: 150,
-                          ),
-                          const SizedBox(height: 20),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: _isRare ? Colors.amber : Colors.orangeAccent,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            onPressed: () => Navigator.pop(context),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                              child: Text("Awesome!", style: TextStyle(fontSize: 18, color: Colors.black)),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: IgnorePointer(
-                        child: Lottie.asset(
-                          'assets/animations/LvlUnlocked/StarSpark.json',
-                          repeat: false,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              );
-            },
+
+                // Reward Content Centered
+                Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        _isRare ? "🌟 RARE STAR COLLECTED!" : "🔥 XP COLLECTED!",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
+                          color: _isRare ? Colors.amber : Colors.orangeAccent,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black.withOpacity(0.8),
+                              blurRadius: 10,
+                              offset: const Offset(2, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+
+                      // Centered Lottie animation for both rewards
+                      Center(
+                        child: Lottie.asset(
+                          _isRare
+                              ? 'assets/animations/GiftStar.json'
+                              : 'assets/animations/girl_jumping.json',
+                          height: 250,
+                          repeat: true,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+
+                      const SizedBox(height: 20),
+                      const Text(
+                        "Tap anywhere to continue",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white70,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },
     );
   }
+
 
   int _dayOfYear(DateTime date) {
     final start = DateTime(date.year, 1, 1);
@@ -306,7 +296,7 @@ class _RewardChestState extends State<RewardChest> with SingleTickerProviderStat
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                             decoration: BoxDecoration(
-                              color: Colors.black.withOpacity(0.6),
+                              color: Colors.black.withValues(alpha: 0.6),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(

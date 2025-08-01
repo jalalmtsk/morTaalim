@@ -144,7 +144,7 @@ class _LanguageCardState extends State<LanguageCard> with SingleTickerProviderSt
                 borderRadius: BorderRadius.circular(20),
                 child: ColorFiltered(
                   colorFilter: ColorFilter.mode(
-                    lang.locked && !isUnlocked ? Colors.black.withOpacity(0.4) : Colors.transparent,
+                    lang.locked && !isUnlocked ? Colors.black.withValues(alpha: 0.4) : Colors.transparent,
                     BlendMode.darken,
                   ),
                   child: Image.asset(
@@ -167,7 +167,7 @@ class _LanguageCardState extends State<LanguageCard> with SingleTickerProviderSt
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withOpacity(0.7), width: 2),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.7), width: 2),
                     ),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,

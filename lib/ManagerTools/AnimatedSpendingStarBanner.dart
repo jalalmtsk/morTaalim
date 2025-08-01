@@ -63,7 +63,7 @@ class _AnimatedStarSpentBannerState extends State<AnimatedStarSpentBanner>
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Colors.redAccent.withOpacity(0.2),
+                color: Colors.redAccent.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
@@ -95,7 +95,7 @@ class _AnimatedStarSpentBannerState extends State<AnimatedStarSpentBanner>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '-${widget.starAmount} Star${widget.starAmount > 1 ? 's' : ''} spent',
+                              ' ${widget.starAmount} ⭐ ${widget.starAmount > 1 ? 's' : ''} spent',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 17,

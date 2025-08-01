@@ -263,7 +263,7 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
             constraints: const BoxConstraints(maxHeight: 600),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(30),
-              color: Colors.white.withOpacity(0.15),
+              color: Colors.white.withValues(alpha: 0.15),
               border: Border.all(color: Colors.white.withOpacity(0.3)),
               boxShadow: [
                 BoxShadow(

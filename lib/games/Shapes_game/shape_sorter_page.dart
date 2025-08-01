@@ -167,7 +167,7 @@ class _ShapeSorterPageState extends State<ShapeSorterPage> with SingleTickerProv
                           width: matched ? (isHard ? 70 : 90) : (isHard ? 60 : 80),
                           height: matched ? (isHard ? 70 : 90) : (isHard ? 60 : 80),
                           decoration: BoxDecoration(
-                            color: matched ? shape.color.withOpacity(0.3) : Colors.transparent,
+                            color: matched ? shape.color.withValues(alpha: 0.3) : Colors.transparent,
                             borderRadius: shape.name == 'Circle' ? BorderRadius.circular(45) : BorderRadius.circular(8),
                             border: Border.all(
                               color: candidateData.isNotEmpty ? Colors.deepOrange : Colors.grey,
@@ -176,7 +176,7 @@ class _ShapeSorterPageState extends State<ShapeSorterPage> with SingleTickerProv
                             boxShadow: matched
                                 ? [
                               BoxShadow(
-                                color: shape.color.withOpacity(0.5),
+                                color: shape.color.withValues(alpha: 0.5),
                                 blurRadius: 10,
                                 spreadRadius: 2,
                               ),

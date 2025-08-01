@@ -23,7 +23,7 @@ class CustomPrimaireAppBar extends StatelessWidget implements PreferredSizeWidge
         ),
         boxShadow: [
           BoxShadow(
-            color: deepOrange.withOpacity(0.6),
+            color: deepOrange.withValues(alpha: 0.6),
             blurRadius: 15,
             offset: const Offset(0, 6),
           ),

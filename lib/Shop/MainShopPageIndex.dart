@@ -72,7 +72,7 @@ class MainShopPageIndex extends StatelessWidget {
                     borderRadius: BorderRadius.circular(14),
                     boxShadow: [
                       BoxShadow(
-                        color: colorScheme.primary.withOpacity(0.12),
+                        color: colorScheme.primary.withValues(alpha: 0.12),
                         blurRadius: 15,
                         offset: const Offset(0, 6),
                       ),
@@ -89,7 +89,7 @@ class MainShopPageIndex extends StatelessWidget {
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: colorScheme.primary.withOpacity(0.3),
+                          color: colorScheme.primary.withValues(alpha: 0.3),
                           blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
@@ -158,7 +158,7 @@ class MainShopPageIndex extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildRewardChest(context, 10, 2, 1, "Quick", colorScheme),
+                    _buildRewardChest(context, 15, 2, 1, "Quick", colorScheme),
                     _buildRewardChest(context, 30, 5, 2, tr(context).medium, colorScheme),
                     _buildRewardChest(context, 60, 15, 3, "Rare", colorScheme),
                   ],
@@ -183,7 +183,7 @@ class MainShopPageIndex extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: LinearGradient(
-              colors: [colorScheme.primaryContainer.withValues(alpha: 0.4), colorScheme.primary.withOpacity(0.7)],
+              colors: [colorScheme.primaryContainer.withValues(alpha: 0.4), colorScheme.primary.withValues(alpha: 0.7)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),

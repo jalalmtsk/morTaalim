@@ -268,8 +268,8 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: isNightMode
-                          ? [Colors.black.withOpacity(0.7), Colors.black.withOpacity(0.3)]
-                          : [Colors.white.withOpacity(0.6), Colors.transparent],
+                          ? [Colors.black.withValues(alpha: 0.7), Colors.black.withValues(alpha: 0.3)]
+                          : [Colors.white.withValues(alpha: 0.6), Colors.transparent],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
@@ -309,8 +309,8 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(24),
                           color: isNightMode
-                              ? Colors.white.withOpacity(0.1)
-                              : Colors.white.withOpacity(0.95),
+                              ? Colors.white.withValues(alpha: 0.1)
+                              : Colors.white.withValues(alpha: 0.95),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black12,
@@ -365,7 +365,7 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
                   decoration: BoxDecoration(
-                    color: isNightMode ? Colors.white.withOpacity(0.1) : Colors.white,
+                    color: isNightMode ? Colors.white.withValues(alpha: 0.1) : Colors.white,
                     borderRadius: BorderRadius.circular(16),
                     boxShadow: isNightMode
                         ? [
@@ -377,7 +377,7 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
                     ]
                         : [
                       BoxShadow(
-                        color: Colors.deepOrange.withOpacity(0.3),
+                        color: Colors.deepOrange.withValues(alpha: 0.3),
                         blurRadius: 12,
                         offset: const Offset(0, 6),
                       )
@@ -412,7 +412,7 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
                                 boxShadow: isPlaying
                                     ? [
                                   BoxShadow(
-                                    color: Colors.deepOrange.withOpacity(0.5),
+                                    color: Colors.deepOrange.withValues(alpha: 0.5),
                                     blurRadius: 12,
                                     spreadRadius: 2,
                                   )

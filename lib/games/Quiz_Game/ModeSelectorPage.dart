@@ -220,7 +220,7 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
               ],
             ),
           ),
-          Positioned.fill(child: Container(color: Colors.black.withOpacity(0.3))),
+          Positioned.fill(child: Container(color: Colors.black.withValues(alpha: 0.3))),
           SafeArea(
             child: Stack(
               children: [
@@ -286,7 +286,7 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                             ),
                             selected: isSelected,
                             selectedColor: Colors.deepOrange,
-                            backgroundColor: Colors.orange.withOpacity(0.6),
+                            backgroundColor: Colors.orange.withValues(alpha: 0.6),
                             elevation: 3,
                             pressElevation: 6,
                             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
@@ -322,7 +322,7 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.zero,
         backgroundColor: Colors.transparent,
-        shadowColor: Colors.black.withOpacity(0.2),
+        shadowColor: Colors.black.withValues(alpha: 0.2),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20)),
       ),

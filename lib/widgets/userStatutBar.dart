@@ -40,7 +40,7 @@ class _UserStatutBar extends State<Userstatutbar>
         AnimationController(duration: const Duration(milliseconds: 800), vsync: this);
     _tokenColorAnimation = ColorTween(
       begin: Colors.transparent,
-      end: Colors.greenAccent.withOpacity(0.5),
+      end: Colors.greenAccent.withValues(alpha: 0.5),
     ).animate(CurvedAnimation(parent: _tokenFlashController, curve: Curves.easeInOut));
 
     _tokenScaleController = AnimationController(
@@ -50,7 +50,7 @@ class _UserStatutBar extends State<Userstatutbar>
         AnimationController(duration: const Duration(milliseconds: 800), vsync: this);
     _starColorAnimation = ColorTween(
       begin: Colors.transparent,
-      end: Colors.yellowAccent.withOpacity(0.5),
+      end: Colors.yellowAccent.withValues(alpha: 0.5),
     ).animate(CurvedAnimation(parent: _starFlashController, curve: Curves.easeInOut));
 
     _starScaleController = AnimationController(
@@ -131,7 +131,7 @@ class _UserStatutBar extends State<Userstatutbar>
       onTap: () => setState(() => showAvatarXp = !showAvatarXp),
       child: Container(
         margin: const EdgeInsets.all(10),
-        height: 60,
+        height: 70,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
@@ -153,7 +153,7 @@ class _UserStatutBar extends State<Userstatutbar>
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
-                color: Colors.black.withOpacity(0.2),
+                color: Colors.black.withValues(alpha: 0.2),
               ),
             ),
             Padding(
@@ -210,7 +210,7 @@ class _UserStatutBar extends State<Userstatutbar>
                           decoration: BoxDecoration(
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.orange.withOpacity(0.3),
+                                color: Colors.orange.withValues(alpha: 0.3),
                                 blurRadius: 6,
                                 spreadRadius: showSparkle ? 2 : 0,
                               )
@@ -226,18 +226,28 @@ class _UserStatutBar extends State<Userstatutbar>
                     ),
                   ),
                   const SizedBox(width: 10),
-                  Row(
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.star, color: Colors.amber, size: 20),
-                      Text(" ${xpManager.stars}",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.white)),
-                      const SizedBox(width: 8),
-                      const Icon(Icons.generating_tokens,
-                          color: Colors.green, size: 20),
-                      Text(" ${xpManager.saveTokenCount}",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.white)),
+                      Row(
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 20),
+                          Text(" ${xpManager.stars}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, color: Colors.white)),
+
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.generating_tokens,
+                              color: Colors.green, size: 20),
+                          Text(" ${xpManager.saveTokenCount}",
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, color: Colors.white)),
+                        ],
+                      ),
+
                     ],
                   )
                 ],

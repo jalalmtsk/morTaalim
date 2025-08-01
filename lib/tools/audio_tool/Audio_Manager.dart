@@ -6,8 +6,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:vibration/vibration.dart';
 
-import '../../main.dart';
-
 class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
 
   AudioManager() {
@@ -35,6 +33,7 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
     'clickButton2': 'assets/audios/UI_Audio/ButtonSounds/ClickButton2_SB.mp3',
     'cancelButton': 'assets/audios/UI_Audio/ButtonSounds/CancelButton_SB.mp3',
     'PopButton': 'assets/audios/UI_Audio/ButtonSounds/PopButton_SB.mp3',
+    'PopClick' : 'assets/audios/UI_Audio/ButtonSounds/PopClick_SB.mp3',
     'toggleButton': 'assets/audios/UI_Audio/ButtonSounds/ToggleButton_SB.mp3',
 
     // ------------ SFX Sounds -------------
@@ -61,9 +60,9 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
 
   // Volumes
   double _bgVolume = 0.1;
-  double _sfxVolume = 0.6;
-  double _buttonVolume = 0.7;
-  double _alertVolume = 0.6;
+  double _sfxVolume = 0.5;
+  double _buttonVolume = 0.3;
+  double _alertVolume = 0.4;
 
   // SharedPreferences keys
   static const String _prefBgVolumeKey = 'bgVolume';
@@ -295,9 +294,9 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
 
   Future<void> resetAudioSettings() async {
     _bgVolume = 0.1;
-    _sfxVolume = 0.6;
-    _buttonVolume = 0.7;
-    _alertVolume = 0.6;
+    _sfxVolume = 0.5;
+    _buttonVolume = 0.3;
+    _alertVolume = 0.4;
     _isBgMuted = false;
     _isSfxMuted = false;
     _isButtonMuted = false;

@@ -265,7 +265,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
-              color: Colors.deepOrangeAccent.withOpacity(0.9),
+              color: Colors.deepOrangeAccent.withValues(alpha: 0.9),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Center(
@@ -376,7 +376,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                     borderRadius: BorderRadius.circular(20),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.orange.withOpacity(0.3),
+                        color: Colors.orange.withValues(alpha: 0.3),
                         blurRadius: 12,
                         offset: const Offset(4, 4),
                       )

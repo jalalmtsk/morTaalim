@@ -292,7 +292,7 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.pink.shade100.withOpacity(0.75),
+                          color: Colors.pink.shade100.withValues(alpha: 0.75),
                           offset: const Offset(0, 6),
                           blurRadius: 14,
                         ),

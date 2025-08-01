@@ -44,7 +44,7 @@ class LottieAvatarItemWidget extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
-          color: unlocked ? Colors.white : Colors.white.withOpacity(0.3),
+          color: unlocked ? Colors.white : Colors.white.withValues(alpha: 0.3),
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
             color: selected
@@ -56,7 +56,7 @@ class LottieAvatarItemWidget extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: selected ? Colors.greenAccent.withOpacity(0.6) : Colors.black26,
+              color: selected ? Colors.greenAccent.withValues(alpha: 0.6) : Colors.black26,
               blurRadius: selected ? 12 : 6,
               offset: const Offset(0, 4),
             ),
@@ -125,7 +125,7 @@ class LottieAvatarItemWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.7),
+            color: color.withValues(alpha: 0.7),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
