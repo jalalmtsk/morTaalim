@@ -568,4 +568,49 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get deleteDrawing => 'حذف الرسم';
+
+  @override
+  String get howToPlay => 'كيفية اللعب';
+
+  @override
+  String get readyToPlay => 'هل أنت مستعد للعب؟';
+
+  @override
+  String get chooseYourLanguage => 'اختر لغتك';
+
+  @override
+  String get pickSingleOrMultiplayer => 'اختر لاعب واحد أو متعدد اللاعبين';
+
+  @override
+  String get rules => 'القواعد';
+
+  @override
+  String get treeCorrectAnswersEqualOnestar => 'ثلاث إجابات صحيحة تساوي نجمة واحدة';
+
+  @override
+  String get everyCorrectAnswerEqualPlusTwoXP => 'كل إجابة صحيحة تعادل نقطتي خبرة';
+
+  @override
+  String get competeOrPlaySolo => 'تنافس أو العب منفردًا';
+
+  @override
+  String get haveFunAndLearnSomethingNew => 'استمتع وتعلم شيئًا جديدًا!';
+
+  @override
+  String get back => 'عودة';
+
+  @override
+  String get adFailedToLoadOrWasNotCompletedPleaseTryAgainLater => 'فشل تحميل الإعلان أو لم يُكمل. يرجى المحاولة لاحقًا.';
+
+  @override
+  String get outOfHearts => 'نفدت القلوب!';
+
+  @override
+  String get pay => 'ادفع';
+
+  @override
+  String get allCorrectAnwsersEqualOneTolim => 'كل الإجابات الصحيحة تساوي توليم واحد';
+
+  @override
+  String get youHaveNoHeartsLeftWhatWouldYouLikeToDo => 'لم يعد لديك أي قلوب. ماذا تريد أن تفعل؟';
 }

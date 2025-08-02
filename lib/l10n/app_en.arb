@@ -225,7 +225,26 @@
   "stepByStepPaintingLessons": "Step-by-step painting lessons",
   "delete": "Delete",
   "areYouSureYouWantToDeleteThisDrawing": "Are you sure you want to delete this drawing?",
-  "deleteDrawing": "Delete Drawing"
+  "deleteDrawing": "Delete Drawing",
+
+
+  "howToPlay": "How to Play",
+  "readyToPlay": "Ready to Play?",
+  "chooseYourLanguage": "Choose Your Language",
+  "pickSingleOrMultiplayer": "Pick Single or Multiplayer",
+  "rules": "Rules",
+  "treeCorrectAnswersEqualOnestar": "Three Correct Answers Equal One Star",
+  "everyCorrectAnswerEqualPlusTwoXP": "Every Correct Answer Equals Plus Two XP",
+  "competeOrPlaySolo": "Compete or Play Solo",
+  "haveFunAndLearnSomethingNew": "Have Fun and Learn Something New!",
+  "back": "Back",
+  "adFailedToLoadOrWasNotCompletedPleaseTryAgainLater": "Ad failed to load or was not completed. Please try again later.",
+  "outOfHearts": "Out of Hearts!",
+  "pay": "Pay",
+  "allCorrectAnwsersEqualOneTolim": "All correct answers equal one Tolim",
+  "youHaveNoHeartsLeftWhatWouldYouLikeToDo": "You have no hearts left. What would you like to do?"
+
+
 
 
 }

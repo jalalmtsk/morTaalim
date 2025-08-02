@@ -1,8 +1,10 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shimmer/shimmer.dart';
 
-class AvatarItemWidget extends StatelessWidget {
+class AvatarItemWidget extends StatefulWidget {
   final String emoji;
   final int cost;
   final bool unlocked;
@@ -23,146 +25,233 @@ class AvatarItemWidget extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<AvatarItemWidget> createState() => _AvatarItemWidgetState();
+}
+
+class _AvatarItemWidgetState extends State<AvatarItemWidget>
+    with TickerProviderStateMixin {
+  double _scale = 1.0;
+  late AnimationController _glowController;
+  late AnimationController _sparkleController;
+
+  @override
+  void initState() {
+    super.initState();
+    _glowController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 2),
+    )..repeat(reverse: true);
+
+    _sparkleController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _glowController.dispose();
+    _sparkleController.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(_) => setState(() => _scale = 0.93);
+  void _onTapUp(_) => setState(() => _scale = 1.0);
+
+  @override
   Widget build(BuildContext context) {
-    final canBuy = !unlocked && (userStars >= cost);
-    final isExpensive = cost >= 30;
+    final canBuy = !widget.unlocked && (widget.userStars >= widget.cost);
+    final isExpensive = widget.cost >= 30;
 
     return GestureDetector(
+      onTapDown: _onTapDown,
+      onTapUp: (details) {
+        HapticFeedback.lightImpact();
+        setState(() => _scale = 1.0);
+      },
+      onTapCancel: () => setState(() => _scale = 1.0),
       onTap: () {
-        if (unlocked) {
-          onSelect();
+        if (widget.unlocked) {
+          widget.onSelect();
         } else if (canBuy) {
-          onBuy();
+          widget.onBuy();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('Not enough stars! Keep playing to earn more.'),
+              content: Text('Not enough stars! Earn more to unlock this avatar.'),
               behavior: SnackBarBehavior.floating,
             ),
           );
         }
       },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 350),
-        decoration: BoxDecoration(
-          color: unlocked ? Colors.white.withValues(alpha: 0.9) : Colors.white.withValues(alpha: 0.4),
-          borderRadius: BorderRadius.circular(18),
-          boxShadow: [
-            BoxShadow(
-              color: selected ? Colors.greenAccent.withValues(alpha: 0.7) : Colors.black26,
-              blurRadius: selected ? 15 : 7,
-              spreadRadius: selected ? 3 : 1,
-              offset: const Offset(0, 5),
-            ),
-          ],
-          border: Border.all(
-            color: selected
-                ? Colors.greenAccent
-                : unlocked
-                ? Colors.orange
-                : Colors.grey.shade400,
-            width: selected ? 4 : 2,
-          ),
-        ),
-        child: Stack(
-          children: [
-            Center(
-              child: Text(
-                emoji,
-                style: TextStyle(
-                  fontSize: 52,
-                  shadows: selected
-                      ? [
-                    Shadow(
-                      color: Colors.greenAccent.withValues(alpha: 0.7),
-                      blurRadius: 15,
-                      offset: const Offset(0, 0),
+      child: AnimatedScale(
+        scale: _scale,
+        duration: const Duration(milliseconds: 150),
+        curve: Curves.easeOutBack,
+        child: AnimatedBuilder(
+          animation: _glowController,
+          builder: (context, child) {
+            final glow = (0.5 + 0.5 * sin(_glowController.value * 2 * pi)) * 15;
+            return Container(
+              decoration: BoxDecoration(
+                color: widget.unlocked
+                    ? Colors.white.withOpacity(0.95)
+                    : Colors.white.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: widget.selected
+                      ? Colors.greenAccent
+                      : widget.unlocked
+                      ? Colors.orange
+                      : Colors.grey.shade500,
+                  width: widget.selected ? 3 : 2,
+                ),
+                boxShadow: [
+                  if (widget.selected)
+                    BoxShadow(
+                      color: Colors.greenAccent.withOpacity(0.7),
+                      blurRadius: glow,
+                      spreadRadius: 2,
                     )
-                  ]
-                      : null,
-                ),
+                  else
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                ],
               ),
-            ),
-            if (selected)
-              Positioned(
-                top: 10,
-                right: 10,
-                child: _RibbonBadge(
-                  text: 'SELECTED',
-                  color: Colors.greenAccent.shade700,
-                ),
-              )
-            else if (unlocked)
-              Positioned(
-                top: 10,
-                right: 10,
-                child: _RibbonBadge(
-                  text: 'UNLOCKED',
-                  color: Colors.orange.shade700,
-                ),
-              ),
-            if (!unlocked)
-              Positioned(
-                bottom: 10,
-                left: 0,
-                right: 0,
-                child: Center(
-                  child: isExpensive
-                      ? Shimmer.fromColors(
-                    baseColor: Colors.deepOrange.shade700,
-                    highlightColor: Colors.yellow.shade400,
-                    child: Text(
-                      '$cost ⭐',
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        color: Colors.white,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 4,
-                            color: Colors.black54,
-                            offset: Offset(0, 0),
-                          )
-                        ],
+              child: Stack(
+                children: [
+                  // Glass effect for locked avatars
+                  if (!widget.unlocked)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                        child: Container(color: Colors.transparent),
                       ),
                     ),
-                  )
-                      : Text(
-                    '$cost ⭐',
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.black87,
+
+                  // Sparkle animation for selected avatars
+                  if (widget.selected)
+                    ...List.generate(6, (index) {
+                      final angle = (index / 6) * 2 * pi;
+                      final offset = Offset(
+                        30 * cos(angle + _sparkleController.value * 2 * pi),
+                        30 * sin(angle + _sparkleController.value * 2 * pi),
+                      );
+                      return Positioned(
+                        top: 45 + offset.dy,
+                        left: 45 + offset.dx,
+                        child: Opacity(
+                          opacity: 0.8,
+                          child: Icon(Icons.star,
+                              size: 12, color: Colors.yellow.shade600),
+                        ),
+                      );
+                    }),
+
+                  // Avatar Emoji
+                  Center(
+                    child: Text(
+                      widget.emoji,
+                      style: TextStyle(
+                        fontSize: 65,
+                        shadows: widget.selected
+                            ? [
+                          Shadow(
+                            color: Colors.greenAccent.withOpacity(0.9),
+                            blurRadius: 20,
+                          )
+                        ]
+                            : [],
+                      ),
                     ),
                   ),
-                ),
+
+                  // Badges
+                  if (widget.selected)
+                    Positioned(
+                      top: 6,
+                      right: 6,
+                      child: _GradientBadge(
+                        text: 'SELECTED',
+                        colors: [Colors.greenAccent, Colors.green],
+                      ),
+                    )
+                  else if (widget.unlocked)
+                    Positioned(
+                      top: 6,
+                      right: 6,
+                      child: _GradientBadge(
+                        text: 'UNLOCKED',
+                        colors: [Colors.orangeAccent, Colors.deepOrange],
+                      ),
+                    ),
+
+                  // Cost for locked avatars
+                  if (!widget.unlocked)
+                    Positioned(
+                      bottom: 8,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (isExpensive)
+                              Shimmer.fromColors(
+                                baseColor: Colors.deepOrange,
+                                highlightColor: Colors.yellow,
+                                child: const Icon(Icons.star,
+                                    color: Colors.amber, size: 24),
+                              )
+                            else
+                              const Icon(Icons.star,
+                                  color: Colors.amber, size: 22),
+                            const SizedBox(width: 4),
+                            Text(
+                              '${widget.cost}',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: isExpensive
+                                    ? Colors.deepOrange
+                                    : Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                ],
               ),
-          ],
+            );
+          },
         ),
       ),
     );
   }
 }
 
-class _RibbonBadge extends StatelessWidget {
+class _GradientBadge extends StatelessWidget {
   final String text;
-  final Color color;
+  final List<Color> colors;
 
-  const _RibbonBadge({
-    required this.text,
-    required this.color,
-  });
+  const _GradientBadge({required this.text, required this.colors, Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color,
+        gradient: LinearGradient(colors: colors),
         borderRadius: BorderRadius.circular(14),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.7),
+            color: colors.first.withOpacity(0.6),
             blurRadius: 6,
             offset: const Offset(0, 3),
           ),
@@ -173,7 +262,8 @@ class _RibbonBadge extends StatelessWidget {
         style: const TextStyle(
           fontWeight: FontWeight.bold,
           color: Colors.white,
-          letterSpacing: 1.1,
+          fontSize: 11,
+          letterSpacing: 1,
         ),
       ),
     );

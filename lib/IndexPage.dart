@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
+
 import 'package:mortaalim/Settings/setting_Page.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/Settings/SettingPanelInGame.dart';
@@ -46,12 +47,20 @@ class _IndexState extends State<Index>
     super.initState();
     _loadBannerAd();
     WidgetsBinding.instance.addObserver(this);
+
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     audioManager.playBackgroundMusic("assets/audios/BackGround_Audio/IndexBackGroundMusic_BCG.mp3");
     xpManager.init(context);
 
     _tabController = TabController(length: 4, vsync: this);
+
+    // Add listener to detect tab changes
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        audioManager.playEventSound('clickButton'); // Play sound on tab change
+      }
+    });
 
     _loadProfile();
 
@@ -68,9 +77,9 @@ class _IndexState extends State<Index>
       curve: Curves.easeOut,
     ));
 
-
     _profileAnimController.forward();
   }
+
 
   void _loadBannerAd() {
     _bannerAd?.dispose();
@@ -333,6 +342,7 @@ class _IndexState extends State<Index>
                                       )
                                     ],
                                   ),
+
                                   const SizedBox(width: 10),
 
                                   Column(
@@ -345,16 +355,16 @@ class _IndexState extends State<Index>
                                              .then((_) => _loadProfile());
                                        },
                                        icon: Icon(Icons.edit_note,
-                                         color: Colors.white,)),
+                                         color: Colors.white,size: 30,)),
                                    IconButton(
                                        onPressed: () {
                                          audioManager.playEventSound('clickButton');
                                         AdHelper.showRewardedAdWithLoading(context, ()  {
-                                         Provider.of<ExperienceManager>(context, listen: false).addStarBanner(context,1);
+                                         Provider.of<ExperienceManager>(context, listen: false).addTokenBanner(context,2);
                                        });
                                         },
-                                       icon: Icon(Icons.card_giftcard_outlined,
-                                         color: Colors.white,)),
+                                       icon: Icon(Icons.ads_click,
+                                         color: Colors.white,size: 32,)),
 
                                     ],
                                   ),

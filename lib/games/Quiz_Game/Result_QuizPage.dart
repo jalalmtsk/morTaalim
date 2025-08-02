@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
+import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../main.dart';
 import 'ModeSelectorPage.dart';
-import 'general_culture_game.dart';
+import 'quiz_Page.dart';
 
 class ResultPage extends StatefulWidget {
   final int player1Score;
@@ -30,9 +32,6 @@ class ResultPage extends StatefulWidget {
 class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _fadeInAnimation;
-  final MusicPlayer _musicPlayer = MusicPlayer();
-  final MusicPlayer _PeopleCheering = MusicPlayer();
-  final MusicPlayer _Ukulele4sec = MusicPlayer();
 
   String get winner {
     if (widget.mode == GameMode.single) {
@@ -67,10 +66,11 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
   }
 
   Future<void> _playVictorySound() async {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     try {
-       _PeopleCheering.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3",loop: true);
-       _Ukulele4sec.play("assets/audios/QuizGame_Sounds/skaWhistleukulele30Sec.mp3", loop: true);
-       _musicPlayer.play('assets/audios/sound_effects/victory1_SFX.mp3');
+       audioManager.playSfx("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
+       audioManager.playSfx("assets/audios/QuizGame_Sounds/skaWhistleukulele30Sec.mp3");
+       audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/VictoryOrchestral_SFX.mp3');
     } catch (e) {
       debugPrint('Error playing sound: $e');
     }
@@ -79,9 +79,6 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
   @override
   void dispose() {
     _controller.dispose();
-    _musicPlayer.dispose();
-    _Ukulele4sec.dispose();
-    _PeopleCheering.dispose();
     super.dispose();
   }
 

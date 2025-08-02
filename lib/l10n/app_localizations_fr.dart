@@ -568,4 +568,49 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get deleteDrawing => 'Supprimer le dessin';
+
+  @override
+  String get howToPlay => 'Comment Jouer';
+
+  @override
+  String get readyToPlay => 'Prêt à Jouer ?';
+
+  @override
+  String get chooseYourLanguage => 'Choisissez Votre Langue';
+
+  @override
+  String get pickSingleOrMultiplayer => 'Choisissez Solo ou Multijoueur';
+
+  @override
+  String get rules => 'Règles';
+
+  @override
+  String get treeCorrectAnswersEqualOnestar => 'Trois bonnes réponses égalent une étoile';
+
+  @override
+  String get everyCorrectAnswerEqualPlusTwoXP => 'Chaque bonne réponse rapporte 2 XP';
+
+  @override
+  String get competeOrPlaySolo => 'Compétition ou Jeu Solo';
+
+  @override
+  String get haveFunAndLearnSomethingNew => 'Amusez-vous et Apprenez Quelque Chose de Nouveau !';
+
+  @override
+  String get back => 'Retour';
+
+  @override
+  String get adFailedToLoadOrWasNotCompletedPleaseTryAgainLater => 'La publicité n\'a pas pu être chargée ou n\'a pas été terminée. Veuillez réessayer plus tard.';
+
+  @override
+  String get outOfHearts => 'Plus de vies !';
+
+  @override
+  String get pay => 'Payer';
+
+  @override
+  String get allCorrectAnwsersEqualOneTolim => 'Toutes les réponses correctes équivalent à un Tolim';
+
+  @override
+  String get youHaveNoHeartsLeftWhatWouldYouLikeToDo => 'Vous n\'avez plus de cœurs. Que souhaitez-vous faire ?';
 }

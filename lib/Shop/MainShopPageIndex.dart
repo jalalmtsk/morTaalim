@@ -38,7 +38,7 @@ class MainShopPageIndex extends StatelessWidget {
             children: [
               // Top bar: back button + user status
               Padding(
-                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                padding: const EdgeInsets.fromLTRB(0, 2, 2, 2),
                 child: Row(
                   children: [
                     // Back button with subtle elevation & splash radius
@@ -53,8 +53,6 @@ class MainShopPageIndex extends StatelessWidget {
                         splashRadius: 26,
                       ),
                     ),
-
-                    const SizedBox(width: 4),
 
                     const Expanded(child: Userstatutbar()),
                   ],
@@ -109,10 +107,10 @@ class MainShopPageIndex extends StatelessWidget {
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                     tabs: [
+                      Tab(icon: Icon(Icons.card_giftcard, size: 22), text: tr(context).spinningWheel),
                       Tab(icon: Icon(Icons.face_2_sharp, size: 22), text: tr(context).funMoji),
                       Tab(icon: Icon(Icons.filter_b_and_w_outlined, size: 22), text: tr(context).banners),
                       Tab(icon: Icon(Icons.token, size: 22), text: tr(context).stars),
-                      Tab(icon: Icon(Icons.card_giftcard, size: 22), text: tr(context).spinningWheel),
                     ],
                   ),
                 ),
@@ -140,10 +138,10 @@ class MainShopPageIndex extends StatelessWidget {
                     child: TabBarView(
                       physics: const BouncingScrollPhysics(),
                       children: [
+                        SingleChildScrollView(child: SpinWheelPopup()),
                         IndexFunMojiPage(),
                         IndexBanner(),
                         IndexStars(),
-                        SingleChildScrollView(child: SpinWheelPopup()),
                       ],
                     ),
                   ),

@@ -14,7 +14,7 @@ import 'package:mortaalim/games/App_stories/favorite_Word/favorite_Page.dart';
 import 'package:mortaalim/games/App_stories/story_data.dart';  // Import your story list here
 import 'package:mortaalim/games/IQTest_game/iqGame_data.dart';
 import 'package:mortaalim/games/Piano_Game/Piano_main_page.dart';
-import 'package:mortaalim/games/Quiz_Game/general_culture_game.dart';
+import 'package:mortaalim/games/Quiz_Game/quiz_Page.dart';
 import 'package:mortaalim/games/Shapes_game/Shapes_main.dart';
 import 'package:mortaalim/games/SpeedBombGame/speedBomb.dart';
 import 'package:mortaalim/games/Tracing_Alphabet_app/language_selector.dart';

@@ -28,7 +28,7 @@ class LottieAvatarGrid extends StatelessWidget {
               onPressed: () async{
                 xpManager.addXP(500,context: context);
                 await Future.delayed(Duration(seconds: 1));
-                xpManager.SpendStarBanner(context, -cost);
+                xpManager.SpendStarBanner(context, cost);
                 xpManager.unlockAvatar(lottiePath);
                 xpManager.selectAvatar(lottiePath);
                 Navigator.pop(context);

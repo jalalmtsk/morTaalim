@@ -220,6 +220,25 @@
   "stepByStepPaintingLessons": "دروس رسم خطوة بخطوة",
   "delete": "حذف",
   "areYouSureYouWantToDeleteThisDrawing": "هل أنت متأكد أنك تريد حذف هذا الرسم؟",
-  "deleteDrawing": "حذف الرسم"
+  "deleteDrawing": "حذف الرسم",
 
-  }
+  "howToPlay": "كيفية اللعب",
+  "readyToPlay": "هل أنت مستعد للعب؟",
+  "chooseYourLanguage": "اختر لغتك",
+  "pickSingleOrMultiplayer": "اختر لاعب واحد أو متعدد اللاعبين",
+  "rules": "القواعد",
+  "treeCorrectAnswersEqualOnestar": "ثلاث إجابات صحيحة تساوي نجمة واحدة",
+  "everyCorrectAnswerEqualPlusTwoXP": "كل إجابة صحيحة تعادل نقطتي خبرة",
+  "competeOrPlaySolo": "تنافس أو العب منفردًا",
+  "haveFunAndLearnSomethingNew": "استمتع وتعلم شيئًا جديدًا!",
+  "back": "عودة",
+  "adFailedToLoadOrWasNotCompletedPleaseTryAgainLater": "فشل تحميل الإعلان أو لم يُكمل. يرجى المحاولة لاحقًا.",
+  "outOfHearts": "نفدت القلوب!",
+  "pay": "ادفع",
+  "allCorrectAnwsersEqualOneTolim": "كل الإجابات الصحيحة تساوي توليم واحد",
+  "youHaveNoHeartsLeftWhatWouldYouLikeToDo": "لم يعد لديك أي قلوب. ماذا تريد أن تفعل؟"
+
+
+
+
+}

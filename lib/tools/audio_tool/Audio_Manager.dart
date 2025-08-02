@@ -42,6 +42,9 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
     'starSound': 'assets/audios/UI_Audio/SFX_Audio/StarSound.mp3',
     'tolimSound': 'assets/audios/UI_Audio/SFX_Audio/TolimSound.mp3',
     'invalid': 'assets/audios/UI_Audio/SFX_Audio/Invalid_SFX.mp3',
+
+    // ------------ Alert Sounds -------------
+
   };
 
 
@@ -178,7 +181,7 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
       return;
     }
 
-    if (key == 'clickButton' || key == 'cancelButton' || key == 'toggleButton') {
+    if (key == 'clickButton' || key == 'cancelButton' || key == 'toggleButton' || key == 'clickButton2' || key == 'PopButton' || key == 'PopClick' ) {
       await playButtonSound(path);
     } else {
       await playSfx(path);

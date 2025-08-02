@@ -244,7 +244,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
     await _saveDrawing();
 
     // Deduct 1 token
-    xpManager.SpendTokenBanner(context, -1);
+    xpManager.SpendTokenBanner(context, 1);
 
     clearCanvas();
 

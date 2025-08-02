@@ -1,13 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
+import 'package:provider/provider.dart';
 import '../../main.dart';
-import 'general_culture_game.dart';
+import 'quiz_Page.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:mortaalim/games/Quiz_Game/game_mode.dart' hide GameMode;
 
-enum QuizLanguage { english, french, arabic }
+enum QuizLanguage { english, french, arabic, deutch }
 
 class ModeSelectorPage extends StatefulWidget {
   const ModeSelectorPage({super.key});
@@ -22,7 +24,6 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
   bool _languageWarning = false;
   late AnimationController _animationController;
   late Animation<Color?> _colorAnimation;
-  final MusicPlayer _transition = MusicPlayer();
 
   @override
   void initState() {
@@ -40,12 +41,12 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
   @override
   void dispose() {
     _animationController.dispose();
-    _transition.dispose();
     super.dispose();
   }
 
   Future<Map<String, String>?> showAvatarPickerDialog(
       BuildContext context, int playerNumber) async {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     final TextEditingController nameController = TextEditingController();
     String selectedEmoji = '😀';
     final emojis = [
@@ -55,55 +56,62 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
     ];
 
     return showDialog<Map<String, String>>(
-      context: context,
+    context: context,
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
               title: Text('${tr(context).player} $playerNumber'),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Wrap(
-                    spacing: 6,
-                    runSpacing: 10,
-                    children: emojis.map((emoji) {
-                      final isSelected = selectedEmoji == emoji;
-                      return ChoiceChip(
-                        label: Text(emoji, style: const TextStyle(fontSize: 24)),
-                        selected: isSelected,
-                        selectedColor: Colors.deepOrange.shade200,
-                        backgroundColor: Colors.orange.shade50,
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              selectedEmoji = emoji;
-                            });
-                          }
-                        },
-                        elevation: isSelected ? 6 : 2,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
-                      );
-                    }).toList(),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Name',
-                      hintText: 'Enter your name',
-                      border: OutlineInputBorder(),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Wrap(
+                      spacing: 6,
+                      runSpacing: 10,
+                      children: emojis.map((emoji) {
+                        final isSelected = selectedEmoji == emoji;
+                        return ChoiceChip(
+                          label: Text(emoji, style: const TextStyle(fontSize: 20)),
+                          selected: isSelected,
+                          selectedColor: Colors.deepOrange.shade400,
+                          backgroundColor: Colors.orange.shade50,
+                          onSelected: (selected) {
+                            audioManager.playEventSound('PopButton');
+                            if (selected) {
+                              setState(() {
+                                selectedEmoji = emoji;
+                              });
+                            }
+                          },
+                          elevation: isSelected ? 6 : 2,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16)),
+                        );
+                      }).toList(),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    TextField(
+                      controller: nameController,
+                      decoration:  InputDecoration(
+                        labelText: tr(context).name,
+                        hintText: tr(context).enterName,
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
               actions: [
                 TextButton(
-                    onPressed: () => Navigator.pop(context, null),
-                    child: const Text('Cancel')),
+                    onPressed: () {
+                      audioManager.playEventSound('cancelButton');
+                      Navigator.pop(context, null);
+                    },
+                    child:  Text(tr(context).cancel)),
                 ElevatedButton(
                   onPressed: () {
+                    audioManager.playEventSound('clickButton2');
                     final name = nameController.text.trim();
                     // If name is empty, assign default name based on playerNumber
                     final finalName = name.isEmpty ? 'Player$playerNumber' : name;
@@ -112,7 +120,7 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                       'emoji': selectedEmoji,
                     });
                   },
-                  child: const Text('OK'),
+                  child:  Text(tr(context).ok),
                 ),
               ],
             );
@@ -168,6 +176,8 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
   }
 
   void _showInstructionsDialog(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playEventSound('clickButton2');
     showDialog(
       context: context,
       builder: (ctx) {
@@ -175,27 +185,30 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
           backgroundColor: Colors.deepOrange.shade50,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           title: Row(
-            children: const [
+            children:  [
               Icon(Icons.info_outline, color: Colors.deepOrange),
               SizedBox(width: 10),
-              Text("How to Play", style: TextStyle(color: Colors.deepOrange)),
+              Text(tr(context).howToPlay, style: TextStyle(color: Colors.deepOrange)),
             ],
           ),
-          content: const Text(
-            "🎯 Ready to play?\n\n"
-                "✅ Choose your language.\n"
-                "✅ Pick single or multiplayer.\n\n"
-                "🌟 Rules:\n"
-                "- 3 correct answers = 1 star\n"
-                "- Every correct answer = +2 XP\n"
-                "- Compete or play solo\n\n"
-                "🎉 Have fun and learn something new!",
+          content:  Text(
+            "🎯 ${tr(context).readyToPlay}?\n\n"
+                "✅ ${tr(context).chooseYourLanguage}.\n"
+                "✅ ${tr(context).pickSingleOrMultiplayer}.\n\n"
+                "🌟 ${tr(context).rules}:\n"
+                "- ${tr(context).allCorrectAnwsersEqualOneTolim}\n"
+                "- ${tr(context).everyCorrectAnswerEqualPlusTwoXP}\n"
+                "- ${tr(context).competeOrPlaySolo}\n\n"
+                "🎉 ${tr(context).haveFunAndLearnSomethingNew}!",
             style: TextStyle(fontSize: 16),
           ),
           actions: [
             TextButton(
-              child: const Text("Got it!", style: TextStyle(color: Colors.deepOrange)),
-              onPressed: () => Navigator.of(ctx).pop(),
+              child:  Text(tr(context).awesome, style: TextStyle(color: Colors.deepOrange)),
+              onPressed: () {
+          audioManager.playEventSound('cancelButton');
+          Navigator.of(ctx).pop();
+        }
             ),
           ],
         );
@@ -205,6 +218,7 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
 
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Scaffold(
       body: Stack(
         children: [
@@ -239,7 +253,10 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                               shape: const CircleBorder(),
                               padding: const EdgeInsets.all(12),
                             ),
-                            onPressed: () => Navigator.of(context).pop(),
+                            onPressed: () {
+                              audioManager.playEventSound('cancelButton');
+                              Navigator.of(context).pop();
+                            },
                             child: const Icon(Icons.arrow_back, color: Colors.white),
                           ),
                           ElevatedButton(
@@ -274,6 +291,7 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                             QuizLanguage.english: '🇬🇧 English',
                             QuizLanguage.french: '🇫🇷 Français',
                             QuizLanguage.arabic: '🇲🇦 العربية',
+                            QuizLanguage.deutch: '🇩🇪 Deutch',
                           }[lang]!;
 
                           return ChoiceChip(
@@ -292,13 +310,13 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                             onSelected: (_) {
-                              _transition.play("assets/audios/sound_effects/buttonPressed.mp3");
+                              audioManager.playEventSound("toggleButton");
                               setState(() => _selectedLanguage = lang);
                             },
                           );
                         }).toList(),
                       ),
-                      const SizedBox(height: 60),
+                      const SizedBox(height: 40),
                       _buildModeButton(context, mode: GameMode.single, assetPath: 'assets/images/UI/Buttons/1Player.png'),
                       const SizedBox(height: 20),
                       _buildModeButton(context, mode: GameMode.multiplayer, assetPath: 'assets/images/UI/Buttons/2Player.png'),
@@ -316,7 +334,7 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
   Widget _buildModeButton(BuildContext context, {required GameMode mode, required String assetPath}) {
     return ElevatedButton(
       onPressed: () {
-        _transition.play("assets/audios/sound_effects/buttonPressed.mp3");
+        audioManager.playEventSound("clickButton");
         _startGame(mode);
       },
       style: ElevatedButton.styleFrom(

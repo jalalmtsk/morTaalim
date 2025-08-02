@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +22,6 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
   late List<String> _letters;
   late Map<String, Map<String, String>> _letterDetails;
   int _currentLetterIndex = 0;
-  final MusicPlayer _drawingSound = MusicPlayer();
   final GlobalKey _paintKey = GlobalKey();
   List<Offset?> _points = [];
   Set<int> _rewardedLetterIndexes = {};
@@ -226,12 +226,16 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
   }
 
   void _clearCanvas() {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+      audioManager.playEventSound('cancelButton');
     setState(() {
       _points = []; // assign new list, not just _points.clear()
     });
   }
 
   void _nextLetter() {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playEventSound('clickButton');
     setState(() {
       _currentLetterIndex = (_currentLetterIndex + 1) % _letters.length;
       _points.clear();
@@ -317,6 +321,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
+    final audioManager = Provider.of<AudioManager>(context);
     final currentLetter = _letters[_currentLetterIndex];
     final details = _letterDetails[currentLetter];
     final pronunciation = details?['pronunciation'] ?? '';
@@ -350,7 +355,10 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                         padding: const EdgeInsets.all(12),
                         backgroundColor: Colors.deepOrange,
                       ),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () {
+                        audioManager.playEventSound('cancelButton');
+                        Navigator.of(context).pop();
+                      } ,
                       child: const Icon(Icons.arrow_back, color: Colors.white),
                     ),
                     Text(
@@ -396,7 +404,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                       ),
                       GestureDetector(
                         onPanStart: (_) {
-                          _drawingSound.play("assets/audios/writting.mp3");
+                          audioManager.playSfx("assets/audios/writting.mp3");
                         },
                         onPanUpdate: (details) {
                           final box = _paintKey.currentContext?.findRenderObject() as RenderBox?;
@@ -408,7 +416,6 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                           }
                         },
                         onPanEnd: (_) {
-                          _drawingSound.stop();
                           setState(() {
                             _points = List.from(_points)..add(null);
                           });

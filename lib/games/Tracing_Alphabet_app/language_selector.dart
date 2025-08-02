@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
-import '../../l10n/app_localizations.dart';
+import '../../AppGlobal.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
-
-
 import '../../XpSystem.dart';
 import '../../main.dart';
 import '../../tools/audio_tool/Audio_Manager.dart';
@@ -12,7 +9,6 @@ import 'Language_CardsUI.dart';
 
 class LanguageSelectorPage extends StatelessWidget {
   final void Function(Locale) onChangeLocale;
-
   const LanguageSelectorPage({super.key, required this.onChangeLocale});
 
   @override
@@ -35,7 +31,6 @@ class LanguageSelectorPage extends StatelessWidget {
         imagePath: 'assets/images/FlagImagesForTracingLetters/ArabicLetters.png',
         locked: false,
       ),
-      
       LanguageOption(
         name: 'Русс Russian',
         languageCode: 'russian',
@@ -52,7 +47,6 @@ class LanguageSelectorPage extends StatelessWidget {
         locked: true,
         cost: 50,
       ),
-
       LanguageOption(
         name: '한글 Korean',
         languageCode: 'korean',
@@ -61,7 +55,6 @@ class LanguageSelectorPage extends StatelessWidget {
         locked: true,
         cost: 15,
       ),
-
       LanguageOption(
         name: '汉字 Chinese',
         languageCode: 'chinese',
@@ -72,74 +65,108 @@ class LanguageSelectorPage extends StatelessWidget {
       ),
     ];
 
-
     return Scaffold(
-
       body: SafeArea(
         child: Stack(
           children: [
-            // Background Image
+            // BACKGROUND with gradient overlay
             Positioned.fill(
               child: Image.asset(
-                'assets/images/UI/BackGrounds/bg9.jpg', // <-- replace with your image path
+                'assets/images/UI/BackGrounds/bg9.jpg',
                 fit: BoxFit.cover,
               ),
             ),
-
-            // Content with padding and scrollable GridView
             Container(
-              height: double.infinity,
-              padding: const EdgeInsets.all(10),
-              color: Colors.black.withValues(alpha: 0.25), // optional: dark overlay for readability
-              child: Column(
-                children: [
-                  Userstatutbar(),
-                  Row(
+              color: Colors.black.withOpacity(0.4),
+            ),
+
+            // CONTENT
+            Column(
+              children: [
+                const SizedBox(height: 10),
+                Userstatutbar(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Row(
                     children: [
                       IconButton(
                         icon: const Icon(
                           Icons.arrow_circle_left,
-                          size: 50,
-                        color: Colors.deepOrangeAccent,),
-                        onPressed: () => Navigator.of(context).pop(),
+                          size: 45,
+                          color: Colors.deepOrangeAccent,
+                        ),
+                        onPressed: () {
+                          audioManager.playEventSound('cancelButton'); // Play your sound
+                          Navigator.pop(context); // Go back
+                        },
                         tooltip: 'Back',
                       ),
-
-                      ElevatedButton(
+                      const Spacer(),
+                      // XP & ADD BUTTON (for testing)
+                      ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepOrange.withOpacity(0.9),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                          elevation: 6,
+                        ),
                         onPressed: () async {
-                          // Add XP first
-                          xpManager.addXP(500, context: context);
+                          xpManager.addXP(200, context: context);
+                          await Future.delayed(const Duration(milliseconds: 1000));
+                          xpManager.addTokenBanner(context, 20);
 
-                          // Wait before showing the star banner
-                          await Future.delayed(const Duration(milliseconds: 2000));
-                          xpManager.addStarBanner(context, 1000);
-
-                          // Wait before showing the token banner
-                          await Future.delayed(const Duration(milliseconds: 2500));
-                          xpManager.addTokenBanner(context, 1000);
-                        }, child: Text("Add"),
+                          await Future.delayed(const Duration(milliseconds: 500));
+                          xpManager.addStarBanner(
+                            context,
+                            300,
+                            starIconKey: AppGlobals.starIconKey,
+                            animationFrom: const Offset(100, 600),
+                            animationTo: const Offset(300, 100),
+                          );
+                        },
+                        icon: const Icon(Icons.add, color: Colors.white),
+                        label: const Text(
+                          "Add",
+                          style: TextStyle(color: Colors.white),
+                        ),
                       ),
                     ],
                   ),
-                   // Fun top header with icon and welcome text
-                  Text(
-                    tr(context).chooseYourLanguageToStartTracing,
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.deepOrange.shade50, // adjusted for contrast on image
-                    ),
+                ),
+                const SizedBox(height: 10),
+
+                // TITLE with glowing effect
+                Text(
+                  tr(context).chooseYourLanguageToStartTracing,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.orange.shade50,
+                    shadows: [
+                      Shadow(
+                        color: Colors.deepOrange.withValues(alpha: 0.9),
+                        blurRadius: 12,
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 10),
-                  Expanded(
+                ),
+                const SizedBox(height: 15),
+
+                // LANGUAGES GRID
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: GridView.builder(
                       itemCount: languages.length,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2, // 2 per row
-                        crossAxisSpacing: 20,
-                        mainAxisSpacing: 20,
-                        childAspectRatio: 1.1,
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 18,
+                        mainAxisSpacing: 18,
+                        childAspectRatio: 0.95,
                       ),
                       itemBuilder: (context, index) {
                         final lang = languages[index];
@@ -147,14 +174,13 @@ class LanguageSelectorPage extends StatelessWidget {
                       },
                     ),
                   ),
-                ],
-              ),
+                ),
+
+              ],
             ),
           ],
         ),
       ),
-
     );
   }
 }
-

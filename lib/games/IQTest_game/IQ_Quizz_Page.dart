@@ -10,10 +10,10 @@ class QuizPage extends StatefulWidget {
   const QuizPage({super.key, required this.section});
 
   @override
-  State<QuizPage> createState() => _QuizPageState();
+  State<QuizPage> createState() => QuizPageState();
 }
 
-class _QuizPageState extends State<QuizPage> {
+class QuizPageState extends State<QuizPage> {
   int questionIndex = 0;
   int score = 0;
   bool showHint = false;

@@ -30,7 +30,7 @@ class AvatarGrid extends StatelessWidget {
                 await Future.delayed(Duration(milliseconds: 300));
                 xpManager.addXP(20, context: parentContext);
                 await Future.delayed(Duration(milliseconds: 1800));
-                xpManager.SpendStarBanner(parentContext, -cost);
+                xpManager.SpendStarBanner(parentContext, cost);
                 xpManager.unlockAvatar(emoji);
                 xpManager.selectAvatar(emoji);
                 ScaffoldMessenger.of(parentContext).showSnackBar(

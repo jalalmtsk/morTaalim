@@ -53,10 +53,6 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   BannerAd? _bannerAd;
-  final MusicPlayer _player = MusicPlayer();
-  final MusicPlayer _backgroundMusic = MusicPlayer();
-  final MusicPlayer _CountDown = MusicPlayer();
-  final MusicPlayer _fire = MusicPlayer();
   bool _isBannerAdLoaded = false;
 
   late List<Question> _questions;
@@ -69,10 +65,11 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   int _timeLeft = 30;
   int? _selectedIndex;
   bool _answered = false;
+
+  bool _showIntro = true;
+  bool _isPaused = false;
   bool _showCorrectAnimation = false;
   bool _showWrongAnimation = false;
-  bool _showIntro = true;
-  bool _isPaused = false; // PAUSE TIMER FLAG
 
   late Timer _timer;
 
@@ -108,8 +105,16 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playAlert('assets/audios/QuizGame_Sounds/GameCountDown3Sec.mp3');
+    audioManager.playSfx('assets/audios/QuizGame_Sounds/RoboticCountDown3sec.mp3');
     _loadBannerAd();
     _questions = _loadQuestions(widget.language)..shuffle();
+
+    // Limit questions to max 15
+    if (_questions.length > 15) {
+      _questions = _questions.sublist(0, 15);
+    }
 
     _comboAnimationController = AnimationController(
       vsync: this,
@@ -124,25 +129,21 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
     _introController.forward();
 
-    // After 4s, hide intro and start timer + background music
+    // After 4 seconds, hide intro, start timer and background music
     Future.delayed(const Duration(seconds: 4), () {
+      audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/CinematicStart_SFX.mp3');
       setState(() => _showIntro = false);
       _startTimer();
 
-      Future.delayed(const Duration(seconds: 0), () {
-        final audioManager = Provider.of<AudioManager>(context, listen: false);
-        audioManager.playBackgroundMusic(
-          "assets/audios/BackGround_Audio/feeling-funny-happy-kids-music-350699.mp3",
-        );
-      });
+      audioManager.playBackgroundMusic(
+        "assets/audios/BackGround_Audio/FunnyHappyMusic.mp3",
+      );
     });
   }
 
   @override
   void dispose() {
     _timer.cancel();
-    _backgroundMusic.dispose();
-    _CountDown.dispose();
     _introController.dispose();
     _comboAnimationController.dispose();
     _bannerAd?.dispose();
@@ -152,7 +153,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   void _loadBannerAd() {
     _bannerAd?.dispose();
     _isBannerAdLoaded = false;
-
     _bannerAd = AdHelper.getBannerAd(() {
       setState(() {
         _isBannerAdLoaded = true;
@@ -186,7 +186,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     } else {
       _playerTurn == 1 ? _player1Lives-- : _player2Lives--;
     }
-    _nextTurn();
+
+    _checkLivesAndProceed();
   }
 
   void _answerQuestion(int selected) {
@@ -202,29 +203,23 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
       if (isCorrect) {
         _comboCount++;
-
-        // XP calculation: base 2 + (comboCount -1), capped at 5
         int xpToAdd = 2 + (_comboCount - 1);
         if (xpToAdd > 5) xpToAdd = 5;
         Provider.of<ExperienceManager>(context, listen: false).addXP(xpToAdd, context: context);
 
-        // Increment score
         if (widget.mode == GameMode.single) {
           _player1Score++;
         } else {
           _playerTurn == 1 ? _player1Score++ : _player2Score++;
         }
 
-        if (_comboCount < _comboThresholdStart) {
-          // Normal correct sound
+        if (_comboCount < 2) {
           audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/CorrectAnwser_SFX.mp3');
           _comboText = "";
         } else {
-          // Play random combo sound stage 1
           final normalComboSound = _comboSoundsStage1[Random().nextInt(_comboSoundsStage1.length)];
           audioManager.playSfx(normalComboSound);
 
-          // Play deterministic high-pitch sound stage 2 simultaneously
           final highPitchSound = _comboSoundsStage2[_highPitchIndex];
           audioManager.playSfx(highPitchSound);
 
@@ -232,13 +227,9 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             _highPitchIndex++;
           }
 
-          // Combo UI updates
           _comboText = "Combo X$_comboCount";
-
-          // Scale: base 1.0 + up to 1.0 by combo count capped at 10
           _comboScale = 1.0 + (_comboCount * 0.1).clamp(0.0, 1.0);
 
-          // Color by combo range
           if (_comboCount < 4) {
             _comboColor = Colors.greenAccent;
           } else if (_comboCount < 7) {
@@ -248,13 +239,9 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
           }
 
           _comboAnimationController.forward(from: 0);
-
-          // Reset fade timer
           _comboFadeTimer?.cancel();
           _comboFadeTimer = Timer(const Duration(seconds: 2), () {
-            setState(() {
-              _comboText = "";
-            });
+            setState(() => _comboText = "");
           });
         }
 
@@ -262,7 +249,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         Future.delayed(const Duration(seconds: 2),
                 () => setState(() => _showCorrectAnimation = false));
       } else {
-        // Reset combo and high pitch index on wrong answer
         _comboCount = 0;
         _highPitchIndex = 0;
         _comboText = "";
@@ -270,7 +256,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/WrongAnwser_SFX.mp3');
         _showWrongFeedback();
 
-        // Decrement lives
         if (widget.mode == GameMode.single) {
           _player1Lives--;
         } else {
@@ -279,15 +264,120 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       }
     });
 
-    Future.delayed(const Duration(seconds: 2), _nextTurn);
+    // ✅ FIXED: check lives before proceeding
+    Future.delayed(const Duration(seconds: 2), _checkLivesAndProceed);
   }
+
+
+  Future<void> _checkLivesAndProceed() async {
+    bool outOfLives = false;
+
+    if (widget.mode == GameMode.single) {
+      if (_player1Lives <= 0) outOfLives = true;
+    } else {
+      // Multiplayer: if either player has 0 lives → game ends (no dialog)
+      if ((_playerTurn == 1 && _player1Lives <= 0) ||
+          (_playerTurn == 2 && _player2Lives <= 0)) {
+        _endGame();
+        return;
+      }
+    }
+
+    if (outOfLives) {
+      // Single player → Show pay/ad dialog
+      bool continueGame = await _showPayOrAdDialog();
+      if (!continueGame) {
+        _endGame();
+        return;
+      }
+    } else {
+      _nextTurn();
+    }
+  }
+
 
   void _showWrongFeedback() {
     setState(() => _showWrongAnimation = true);
     Future.delayed(const Duration(seconds: 2), () => setState(() => _showWrongAnimation = false));
   }
 
+  Future<bool> _showPayOrAdDialog() async {
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+
+    return await showDialog<bool>(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          title:  Text(tr(context).outOfHearts),
+          content:  Text(tr(context).youHaveNoHeartsLeftWhatWouldYouLikeToDo),
+          actions: [
+            if (xpManager.Tolims > 0)
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                  xpManager.SpendTokenBanner(context, 1);
+                  setState(() {
+                    _player1Lives = 1;
+                  });
+                  _nextTurn(); // ✅ FIX: Move to the next question
+                },
+                child:  Text("${tr(context).pay} 1 Tolim"),
+              ),
+            TextButton(
+              onPressed: () async {
+                bool success = await AdHelper.showRewardedAd(context);
+                if (!mounted) return;
+                if (success) {
+                  setState(() {
+                    _player1Lives = 1;
+                  });
+                  Navigator.pop(context, true); // pop only after success & UI update
+                  _nextTurn();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                     SnackBar(content: Text(tr(context).adFailedToLoadOrWasNotCompletedPleaseTryAgainLater)),
+                  );
+                  // Keep dialog open or handle retry
+                }
+              },
+              child:  Text(tr(context).watchAd),
+            ),
+
+
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context, false);
+              },
+              child: const Text("Quit"),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+  }
+
+
+
+  void _endGame() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ResultPage(
+          player1Score: _player1Score,
+          player2Score: _player2Score,
+          mode: widget.mode,
+          language: widget.language,
+        ),
+      ),
+    );
+  }
+
   void _nextTurn() {
+    if (_currentQuestion + 1 >= _questions.length) {
+      _endGame();
+      return;
+    }
     setState(() {
       _currentQuestion++;
       _selectedIndex = null;
@@ -297,24 +387,9 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       }
     });
 
-    if (_currentQuestion >= _questions.length ||
-        (widget.mode == GameMode.single && _player1Lives == 0) ||
-        (widget.mode == GameMode.multiplayer && (_player1Lives == 0 || _player2Lives == 0))) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => ResultPage(
-            player1Score: _player1Score,
-            player2Score: _player2Score,
-            mode: widget.mode,
-            language: widget.language,
-          ),
-        ),
-      );
-    } else {
-      _startTimer();
-    }
+    _startTimer();
   }
+
 
   Widget _buildPlayerInfo({
     required String name,
@@ -325,19 +400,24 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   }) {
     return Column(
       children: [
-        CircleAvatar(
-          radius: 30,
-          backgroundColor: isActive ? Colors.deepOrange : Colors.grey.shade300,
-          child: Text(avatar, style: const TextStyle(fontSize: 28)),
-        ),
-        const SizedBox(height: 4),
         Text(name,
             style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: isActive ? Colors.deepOrange : Colors.grey[700])),
-        const SizedBox(height: 4),
-        Text("❤️ $lives", style: const TextStyle(fontSize: 16)),
-        Text("🧰 $score", style: const TextStyle(fontSize: 16)),
+        Row(
+          children: [
+            CircleAvatar(
+              radius: 30,
+              backgroundColor: isActive ? Colors.deepOrange : Colors.grey.shade300,
+              child: Text(avatar, style: const TextStyle(fontSize: 28)),
+            ),
+            const SizedBox(height: 4),
+            Text("❤️ $lives", style: const TextStyle(fontSize: 16)),
+            Text("🏆 $score", style: const TextStyle(fontSize: 16)),
+          ],
+        ),
+
+
       ],
     );
   }
@@ -347,8 +427,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     final question = _questions[_currentQuestion];
-    final player1Name = widget.player1Name ?? "Player 1";
-    final player2Name = widget.player2Name ?? "Player 2";
+    final player1Name = widget.player1Name ?? tr(context).player1;
+    final player2Name = widget.player2Name ?? tr(context).player2;
     final player1Avatar = widget.player1Emoji ?? "😀";
     final player2Avatar = widget.player2Emoji ?? "😎";
 
@@ -379,7 +459,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             body: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.orange.withValues(alpha: 0.1), Colors.orange.shade200],
+                  colors: [Colors.orange.withOpacity(0.1), Colors.orange.shade200],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -399,12 +479,16 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                               size: 50,
                               color: Colors.deepOrangeAccent,
                             ),
-                            onPressed: () => Navigator.of(context).pop(),
-                            tooltip: 'Back',
+                            onPressed: () {
+                              audioManager.playEventSound('cancelButton');
+                              Navigator.of(context).pop();
+                            },
+                            tooltip: tr(context).back,
                           ),
                           IconButton(
                             icon: const Icon(Icons.settings),
                             onPressed: () async {
+                              audioManager.playEventSound('clickButton');
                               setState(() => _isPaused = true);
                               await showDialog(
                                 context: context,
@@ -447,7 +531,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                             color: Colors.deepOrange,
                           ),
                           const SizedBox(height: 6),
-                          Text("⏳ $_timeLeft seconds left",
+                          Text("⏳ $_timeLeft ${tr(context).secondsLeft}",
                               style: const TextStyle(
                                   fontSize: 28, color: Colors.deepOrange)),
                         ],
@@ -468,7 +552,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                             shadows: [
                               Shadow(
                                 blurRadius: 10,
-                                color: _comboColor.withValues(alpha: 0.8),
+                                color: _comboColor.withOpacity(0.8),
                                 offset: const Offset(0, 0),
                               ),
                             ],
@@ -503,7 +587,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                       Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         child: Text(
-                          '🧰 $_player1Score | ❤️ $_player1Lives',
+                          '🏆 $_player1Score | ❤️ $_player1Lives',
                           style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -517,7 +601,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                         elevation: 6,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(16)),
-                        shadowColor: Colors.deepOrange.withValues(alpha: 0.4),
+                        shadowColor: Colors.deepOrange.withOpacity(0.4),
                         child: Padding(
                           padding: const EdgeInsets.all(20),
                           child: Text(
@@ -568,7 +652,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(16)),
                               elevation: 5,
-                              shadowColor: Colors.deepOrange.withValues(alpha: 0.5),
+                              shadowColor: Colors.deepOrange.withOpacity(0.5),
                             ),
                           );
                         }),
@@ -606,4 +690,3 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     );
   }
 }
-

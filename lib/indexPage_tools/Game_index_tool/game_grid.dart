@@ -1,7 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/AboutMoorTaalim/AboutMoorTaalim.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,8 +13,6 @@ import '../../main.dart';
 import '../../tools/AnimatedGridItem.dart';
 import '../../tools/loading_page.dart';
 
-
-
 class GameGrid extends StatefulWidget {
   final List<Map<String, dynamic>> games;
 
@@ -25,10 +21,12 @@ class GameGrid extends StatefulWidget {
   @override
   State<GameGrid> createState() => _GameGridState();
 }
+
 class _GameGridState extends State<GameGrid>
     with TickerProviderStateMixin, WidgetsBindingObserver {
-
   late ConfettiController _confettiController;
+
+  bool _isUnlocking = false; // 🔥 Blocks screen when true
 
   @override
   void initState() {
@@ -37,13 +35,10 @@ class _GameGridState extends State<GameGrid>
     _confettiController = ConfettiController(duration: const Duration(seconds: 1));
   }
 
-
   Future<void> resetCooldown() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove('lastSpinTime'); // Remove the cooldown
+    await prefs.remove('lastSpinTime');
   }
-
-
 
   @override
   void dispose() {
@@ -58,29 +53,12 @@ class _GameGridState extends State<GameGrid>
     await Future.delayed(Duration(seconds: seconds));
   }
 
-  void showUnlockAnimation(BuildContext context) {
+  void showUnlockAnimation() {
+    setState(() => _isUnlocking = true);
+
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     audioManager.playSfx("assets/audios/sound_effects/unlock_sound.mp3");
     audioManager.playSfx("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
-
-    final overlay = Overlay.of(context);
-    late OverlayEntry entry;
-    entry = OverlayEntry(
-      builder: (_) => Center(
-        child: Lottie.asset(
-          'assets/animations/unlock_key.json',
-          width: 200,
-          height: 200,
-          repeat: false,
-          onLoaded: (composition) {
-            audioManager.playSfx("assets/audios/sound_effects/validationAfterUnlock.mp3");
-            Future.delayed(composition.duration, () {
-              entry.remove();
-            });
-          },
-        ),
-      ),
-    );
-    overlay.insert(entry);
   }
 
   void triggerConfetti() {
@@ -110,12 +88,11 @@ class _GameGridState extends State<GameGrid>
                 ),
                 IconButton(
                   onPressed: () {
-
                     audioManager.playEventSound('PopButton');
-                    Navigator.push(context, MaterialPageRoute(builder: (_) =>AboutMoorTaalimPage() ));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => AboutMoorTaalimPage()));
                   },
                   icon: const Icon(Icons.info_outlined),
-                )
+                ),
               ],
             ),
             Expanded(
@@ -169,13 +146,12 @@ class _GameGridState extends State<GameGrid>
                                   if (xpManager.stars >= cost) {
                                     audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3");
                                     triggerConfetti();
-                                    audioManager.playEventSound('clickButton2');
                                     xpManager.unlockCourse(game['title'], cost);
+                                    xpManager.addXP(10, context: context);
                                     Navigator.pop(context);
+
                                     if (mounted) {
-                                      xpManager.addXP(10, context: context);
-                                      triggerConfetti();
-                                      showUnlockAnimation(context);
+                                      showUnlockAnimation();
                                     }
                                   } else {
                                     audioManager.playEventSound('invalid');
@@ -203,7 +179,7 @@ class _GameGridState extends State<GameGrid>
                             child: Image.asset(
                               game['image'] ?? 'assets/images/AvatarImage/Avatar2.png',
                               fit: BoxFit.cover,
-                              color: isLocked ? Colors.black.withOpacity(0.5) : null,
+                              color: isLocked ? Colors.black.withValues(alpha: 0.4) : null,
                               colorBlendMode: isLocked ? BlendMode.darken : null,
                             ),
                           ),
@@ -212,8 +188,8 @@ class _GameGridState extends State<GameGrid>
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
                                   colors: [
-                                    Colors.black.withOpacity(0.3),
-                                    Colors.black.withOpacity(0),
+                                    Colors.black.withValues(alpha: 0.2),
+                                    Colors.black.withValues(alpha: 0),
                                   ],
                                   begin: Alignment.bottomCenter,
                                   end: Alignment.topCenter,
@@ -242,10 +218,10 @@ class _GameGridState extends State<GameGrid>
                                   _getCourseTitle(tr(context), game['title']),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
-                                    fontSize: 12, // smaller text size
+                                    fontSize: 12,
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600,
-                                    height: 1.2, // tighter line height for better centering
+                                    height: 1.2,
                                     shadows: [
                                       Shadow(
                                         color: Colors.black,
@@ -255,7 +231,6 @@ class _GameGridState extends State<GameGrid>
                                     ],
                                   ),
                                 ),
-
                                 if (isLocked)
                                   Padding(
                                     padding: const EdgeInsets.only(top: 2),
@@ -327,7 +302,7 @@ class _GameGridState extends State<GameGrid>
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),
-                        child:  Text(tr(context).cancel),
+                        child: Text(tr(context).cancel),
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
@@ -370,6 +345,27 @@ class _GameGridState extends State<GameGrid>
             ),
           ),
         ),
+
+        // 🔥 FULL-SCREEN BLOCKER
+        if (_isUnlocking)
+          Positioned.fill(
+            child: Container(
+              color: Colors.black.withValues(alpha: 0.1),
+              child: Center(
+                child: Lottie.asset(
+                  'assets/animations/unlock_key.json',
+                  width: 200,
+                  height: 200,
+                  repeat: false,
+                  onLoaded: (composition) {
+                    Future.delayed(composition.duration, () {
+                      if (mounted) setState(() => _isUnlocking = false);
+                    });
+                  },
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }
@@ -398,9 +394,6 @@ class _GameGridState extends State<GameGrid>
         return tr.jumpingBoard;
       case 'boardGame':
         return tr.boardGame;
-
-
-
       default:
         return key;
     }

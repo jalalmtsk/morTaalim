@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:mortaalim/tools/StarCountPulse.dart';
+import 'package:mortaalim/tools/StarDeductionOverlay.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
@@ -139,12 +141,33 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   /// --------------------------------------------------------------
 
 
+  bool _tokenBannerVisible = false;
 
   void addTokenBanner(BuildContext context, int amount) {
+    if (_tokenBannerVisible) return; // Prevent multiple banners overlapping
+
     Tolims += amount;
     _recentlyAddedTokens = amount;
+    _recentlyAddedStars = 0; // Reset stars flash
     _showTokenFlash = true;
     notifyListeners();
+
+    _tokenBannerVisible = true;
+
+    // Flash animation cleanup
+    Future.delayed(const Duration(milliseconds: 300), () {
+      _showTokenFlash = false;
+      notifyListeners();
+    });
+
+    // Reset recently added tokens and banner flag
+    Future.delayed(const Duration(seconds: 1), () {
+      _recentlyAddedTokens = 0;
+      _tokenBannerVisible = false;  // Allow future banners
+      notifyListeners();
+    });
+
+    _saveData();
 
     // Show token banner overlay
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -154,36 +177,25 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
       if (overlay == null) return;
 
       late OverlayEntry entry;
-
       entry = OverlayEntry(
         builder: (ctx) => AnimatedTokenBanner(
           tokenAmount: amount,
-          onDismiss: () => entry.remove(),
+          onDismiss: () {
+            entry.remove();
+            _tokenBannerVisible = false; // Reset if dismissed early
+          },
         ),
       );
-
       overlay.insert(entry);
     });
-
-    // Flash animation cleanup
-    Future.delayed(const Duration(milliseconds: 300), () {
-      _showTokenFlash = false;
-      notifyListeners();
-    });
-
-    Future.delayed(const Duration(seconds: 2), () {
-      _recentlyAddedTokens = 0;
-      notifyListeners();
-    });
-
-    _saveData();
   }
+
 
   void SpendTokenBanner(BuildContext context, int amount) {
 
-    Tolims += amount;
-    _recentlyAddedTokens = amount;
-    _showTokenFlash = true;
+    Tolims -= amount;
+    _recentlyAddedTokens = -amount;
+    _showTokenFlash = false;
     notifyListeners();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -202,22 +214,31 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     });
   }
 
+  bool _starBannerVisible = false;
 
 
+  void addStarBanner(
+      BuildContext context,
+      int amount, {
+        GlobalKey? starIconKey,
+        Offset? animationFrom,
+        Offset? animationTo,
+      }) {
+    if (amount <= 0) return;
 
-  void addStarBanner(BuildContext context, int amount) {
+    final oldStars = _stars;
     _stars += amount;
     _recentlyAddedStars = amount;
+    _recentlyAddedTokens = 0;
     _showStarFlash = true;
     notifyListeners();
 
-    // Animate flash
+    // Flash cleanup
     Future.delayed(const Duration(milliseconds: 600), () {
       _showStarFlash = false;
       notifyListeners();
     });
 
-    // Reset recently added
     Future.delayed(const Duration(seconds: 1), () {
       _recentlyAddedStars = 0;
       notifyListeners();
@@ -225,32 +246,74 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
 
     _saveData();
 
-    // Show animated star banner
+    // 1. Show StarCountPulse overlay on the star icon (if key provided)
+    if (starIconKey != null && starIconKey.currentContext != null) {
+      final overlay = Overlay.of(context);
+      if (overlay != null) {
+        final box = starIconKey.currentContext!.findRenderObject() as RenderBox;
+        final position = box.localToGlobal(Offset.zero);
+        final size = box.size;
+
+        const animationSize = 26.0; // Star animation size
+        final adjustedPosition = Offset(
+          position.dx + size.width / 2 - animationSize / 2,
+          position.dy + size.height / 2 - animationSize / 2,
+        );
+
+        late OverlayEntry pulseEntry;
+        pulseEntry = OverlayEntry(
+          builder: (_) => Positioned(
+            top: adjustedPosition.dy - 7,
+            left: adjustedPosition.dx +15,
+            child: Material(
+              color: Colors.transparent,
+              child: StarCountPulse(
+                oldStars: oldStars,
+                deduction: -amount,
+                onFinish: () => pulseEntry.remove(),
+              ),
+            ),
+          ),
+        );
+        overlay.insert(pulseEntry);
+      }
+    }
+
+    // 2. Show StarDeductionOverlay if from/to positions are provided
+    if (animationFrom != null && animationTo != null) {
+      StarDeductionOverlay.showStarAnimation(
+        context,
+        from: animationFrom,
+        to: animationTo,
+        starCount: amount,
+        onComplete: () {
+          // Optionally do something after animation
+        },
+      );
+    }
+
+    // 3. Show the usual AnimatedStarBanner
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!context.mounted) return;
-
       final overlay = Overlay.of(context);
       if (overlay == null) return;
 
-      late OverlayEntry entry;
-
-      entry = OverlayEntry(
+      late OverlayEntry bannerEntry;
+      bannerEntry = OverlayEntry(
         builder: (ctx) => AnimatedStarBanner(
           starAmount: amount,
-          onDismiss: () => entry.remove(),
+          onDismiss: () => bannerEntry.remove(),
         ),
       );
-
-      overlay.insert(entry);
+      overlay.insert(bannerEntry);
     });
   }
 
   void SpendStarBanner(BuildContext context, int amount) {
-    _stars += amount;
-    _recentlyAddedStars = amount;
-    _showStarFlash = true;
+    _stars -= amount;
+    _recentlyAddedStars = -amount; // 👈 Use negative to indicate spending
+    _showStarFlash = false;        // No flash for spending
     notifyListeners();
-
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final overlay = Overlay.of(context);
@@ -263,7 +326,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
           onDismiss: () => entry.remove(),
         ),
       );
-
       overlay.insert(entry);
     });
   }

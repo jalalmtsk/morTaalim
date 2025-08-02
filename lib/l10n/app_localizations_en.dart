@@ -568,4 +568,49 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get deleteDrawing => 'Delete Drawing';
+
+  @override
+  String get howToPlay => 'How to Play';
+
+  @override
+  String get readyToPlay => 'Ready to Play?';
+
+  @override
+  String get chooseYourLanguage => 'Choose Your Language';
+
+  @override
+  String get pickSingleOrMultiplayer => 'Pick Single or Multiplayer';
+
+  @override
+  String get rules => 'Rules';
+
+  @override
+  String get treeCorrectAnswersEqualOnestar => 'Three Correct Answers Equal One Star';
+
+  @override
+  String get everyCorrectAnswerEqualPlusTwoXP => 'Every Correct Answer Equals Plus Two XP';
+
+  @override
+  String get competeOrPlaySolo => 'Compete or Play Solo';
+
+  @override
+  String get haveFunAndLearnSomethingNew => 'Have Fun and Learn Something New!';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get adFailedToLoadOrWasNotCompletedPleaseTryAgainLater => 'Ad failed to load or was not completed. Please try again later.';
+
+  @override
+  String get outOfHearts => 'Out of Hearts!';
+
+  @override
+  String get pay => 'Pay';
+
+  @override
+  String get allCorrectAnwsersEqualOneTolim => 'All correct answers equal one Tolim';
+
+  @override
+  String get youHaveNoHeartsLeftWhatWouldYouLikeToDo => 'You have no hearts left. What would you like to do?';
 }

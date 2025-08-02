@@ -35,7 +35,7 @@ class _AnimatedStarSpentBannerState extends State<AnimatedStarSpentBanner>
 
     _controller.forward();
 
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(milliseconds: 1400), () {
       if (mounted) _controller.reverse().then((_) => widget.onDismiss());
     });
   }
@@ -95,7 +95,7 @@ class _AnimatedStarSpentBannerState extends State<AnimatedStarSpentBanner>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              ' ${widget.starAmount} ⭐ ${widget.starAmount > 1 ? 's' : ''} spent',
+                              '- ${widget.starAmount} ⭐ ${widget.starAmount > 1 ? 's' : ''} spent',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 17,

@@ -224,7 +224,23 @@
   "stepByStepPaintingLessons": "Leçons de peinture étape par étape",
   "delete": "Supprimer",
   "areYouSureYouWantToDeleteThisDrawing": "Es-tu sûr de vouloir supprimer ce dessin ?",
-  "deleteDrawing": "Supprimer le dessin"
+  "deleteDrawing": "Supprimer le dessin",
+
+  "howToPlay": "Comment Jouer",
+  "readyToPlay": "Prêt à Jouer ?",
+  "chooseYourLanguage": "Choisissez Votre Langue",
+  "pickSingleOrMultiplayer": "Choisissez Solo ou Multijoueur",
+  "rules": "Règles",
+  "treeCorrectAnswersEqualOnestar": "Trois bonnes réponses égalent une étoile",
+  "everyCorrectAnswerEqualPlusTwoXP": "Chaque bonne réponse rapporte 2 XP",
+  "competeOrPlaySolo": "Compétition ou Jeu Solo",
+  "haveFunAndLearnSomethingNew": "Amusez-vous et Apprenez Quelque Chose de Nouveau !",
+  "back": "Retour",
+  "adFailedToLoadOrWasNotCompletedPleaseTryAgainLater": "La publicité n'a pas pu être chargée ou n'a pas été terminée. Veuillez réessayer plus tard.",
+  "outOfHearts": "Plus de vies !",
+  "pay": "Payer",
+  "allCorrectAnwsersEqualOneTolim": "Toutes les réponses correctes équivalent à un Tolim",
+  "youHaveNoHeartsLeftWhatWouldYouLikeToDo": "Vous n'avez plus de cœurs. Que souhaitez-vous faire ?"
 
 
 

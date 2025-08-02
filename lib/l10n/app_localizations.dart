@@ -1220,6 +1220,96 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Delete Drawing'**
   String get deleteDrawing;
+
+  /// No description provided for @howToPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'How to Play'**
+  String get howToPlay;
+
+  /// No description provided for @readyToPlay.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to Play?'**
+  String get readyToPlay;
+
+  /// No description provided for @chooseYourLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Language'**
+  String get chooseYourLanguage;
+
+  /// No description provided for @pickSingleOrMultiplayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick Single or Multiplayer'**
+  String get pickSingleOrMultiplayer;
+
+  /// No description provided for @rules.
+  ///
+  /// In en, this message translates to:
+  /// **'Rules'**
+  String get rules;
+
+  /// No description provided for @treeCorrectAnswersEqualOnestar.
+  ///
+  /// In en, this message translates to:
+  /// **'Three Correct Answers Equal One Star'**
+  String get treeCorrectAnswersEqualOnestar;
+
+  /// No description provided for @everyCorrectAnswerEqualPlusTwoXP.
+  ///
+  /// In en, this message translates to:
+  /// **'Every Correct Answer Equals Plus Two XP'**
+  String get everyCorrectAnswerEqualPlusTwoXP;
+
+  /// No description provided for @competeOrPlaySolo.
+  ///
+  /// In en, this message translates to:
+  /// **'Compete or Play Solo'**
+  String get competeOrPlaySolo;
+
+  /// No description provided for @haveFunAndLearnSomethingNew.
+  ///
+  /// In en, this message translates to:
+  /// **'Have Fun and Learn Something New!'**
+  String get haveFunAndLearnSomethingNew;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @adFailedToLoadOrWasNotCompletedPleaseTryAgainLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Ad failed to load or was not completed. Please try again later.'**
+  String get adFailedToLoadOrWasNotCompletedPleaseTryAgainLater;
+
+  /// No description provided for @outOfHearts.
+  ///
+  /// In en, this message translates to:
+  /// **'Out of Hearts!'**
+  String get outOfHearts;
+
+  /// No description provided for @pay.
+  ///
+  /// In en, this message translates to:
+  /// **'Pay'**
+  String get pay;
+
+  /// No description provided for @allCorrectAnwsersEqualOneTolim.
+  ///
+  /// In en, this message translates to:
+  /// **'All correct answers equal one Tolim'**
+  String get allCorrectAnwsersEqualOneTolim;
+
+  /// No description provided for @youHaveNoHeartsLeftWhatWouldYouLikeToDo.
+  ///
+  /// In en, this message translates to:
+  /// **'You have no hearts left. What would you like to do?'**
+  String get youHaveNoHeartsLeftWhatWouldYouLikeToDo;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

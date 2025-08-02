@@ -31,7 +31,7 @@ class ImageAvatarGrid extends StatelessWidget {
 
                 await Future.delayed(const Duration(milliseconds: 1500));
 
-                xpManager.SpendStarBanner(parentContext, -cost);
+                xpManager.SpendStarBanner(parentContext, cost);
                 xpManager.unlockAvatar(imagePath);
                 xpManager.selectAvatar(imagePath);
 

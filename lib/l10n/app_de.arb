@@ -210,5 +210,23 @@
   "stepByStepPaintingLessons": "Schritt-für-Schritt-Malkurse",
   "delete": "Löschen",
   "areYouSureYouWantToDeleteThisDrawing": "Bist du sicher, dass du diese Zeichnung löschen möchtest?",
-  "deleteDrawing": "Zeichnung löschen"
+  "deleteDrawing": "Zeichnung löschen",
+
+  "howToPlay": "Wie man spielt",
+  "readyToPlay": "Bereit zu spielen?",
+  "chooseYourLanguage": "Wähle deine Sprache",
+  "pickSingleOrMultiplayer": "Einzelspieler oder Mehrspieler wählen",
+  "rules": "Regeln",
+  "treeCorrectAnswersEqualOnestar": "Drei richtige Antworten ergeben einen Stern",
+  "everyCorrectAnswerEqualPlusTwoXP": "Jede richtige Antwort bringt zwei XP",
+  "competeOrPlaySolo": "Wetteifere oder spiele alleine",
+  "haveFunAndLearnSomethingNew": "Viel Spaß und lerne etwas Neues!",
+  "back": "Zurück",
+  "adFailedToLoadOrWasNotCompletedPleaseTryAgainLater": "Anzeige konnte nicht geladen werden oder wurde nicht abgeschlossen. Bitte versuche es später erneut.",
+  "outOfHearts": "Keine Herzen mehr!",
+  "pay": "Bezahlen",
+  "allCorrectAnwsersEqualOneTolim": "Alle richtigen Antworten ergeben einen Tolim",
+  "youHaveNoHeartsLeftWhatWouldYouLikeToDo": "Du hast keine Leben mehr. Was möchtest du tun?"
+
+
 }

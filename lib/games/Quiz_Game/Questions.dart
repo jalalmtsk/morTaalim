@@ -55,24 +55,55 @@ final Map<QuizLanguage, List<Question>> questionsByLanguage = {
 
     // ... add the rest of English questions here
   ],
-  QuizLanguage.french: [
-    Question('🌤️ Quelle est la couleur du ciel ?', ['Bleu', 'Vert', 'Rouge', 'Jaune'], 0),
-    Question('🕷️ Combien de pattes a une araignée ?', ['6', '8', '10', '4'], 1),
-    Question('🐶 Quel animal aboie ?', ['Chat', 'Vache', 'Chien', 'Oiseau'], 2),
-    Question('🧮 Combien font 2 + 2 ?', ['3', '4', '5'], 1),
-    Question('🍌 Lequel est un fruit ?', ['Carotte', 'Banane', 'Pomme de terre', 'Oignon'], 1),
-    Question('🐶 Lequel est un animal ?', ['Voiture', 'Chien', 'Table', 'Chaise'], 1),
-    Question('🌈 Quelle est la couleur du ciel ?', ['Vert', 'Bleu', 'Rouge', 'Jaune'], 1),
-    Question('🚗 Lequel peut voler ?', ['Voiture', 'Bateau', 'Avion', 'Vélo'], 2),
-    Question('🍎 Lequel est rouge ?', ['Banane', 'Pomme', 'Raisin', 'Orange'], 1),
-    Question('🌻 Lequel est une fleur ?', ['Rose', 'Arbre', 'Herbe', 'Roche'], 0),
-    Question('🐸 Lequel vit dans l’eau ?', ['Chien', 'Grenouille', 'Chat', 'Cheval'], 1),
-    Question('🍪 Lequel est une douceur ?', ['Pain', 'Cookie', 'Riz', 'Pomme de terre'], 1),
-    Question('🎵 Lequel est un instrument de musique ?', ['Piano', 'Livre', 'Chaise', 'Stylo'], 0),
-    Question('⚽ Qu’utilisez-vous pour jouer au football ?', ['Balle', 'Batte', 'Gant', 'Raquette'], 0),
-    Question('🌟 Lequel brille dans le ciel nocturne ?', ['Lune', 'Soleil', 'Nuage', 'Arbre'], 0),
-    // ... add the rest of French questions here
-  ],
+QuizLanguage.french: [
+Question('🌤️ Quelle est la couleur du ciel ?', ['Bleu', 'Vert', 'Rouge', 'Jaune'], 0),
+Question('🕷️ Combien de pattes a une araignée ?', ['6', '8', '10', '4'], 1),
+Question('🐶 Quel animal aboie ?', ['Chat', 'Vache', 'Chien', 'Oiseau'], 2),
+Question('🧮 Combien font 2 + 2 ?', ['3', '4', '5'], 1),
+Question('🍌 Lequel est un fruit ?', ['Carotte', 'Banane', 'Pomme de terre', 'Oignon'], 1),
+Question('🐶 Lequel est un animal ?', ['Voiture', 'Chien', 'Table', 'Chaise'], 1),
+Question('🌈 Quelle est la couleur du ciel ?', ['Vert', 'Bleu', 'Rouge', 'Jaune'], 1),
+Question('🚗 Lequel peut voler ?', ['Voiture', 'Bateau', 'Avion', 'Vélo'], 2),
+Question('🍎 Lequel est rouge ?', ['Banane', 'Pomme', 'Raisin', 'Orange'], 1),
+Question('🌻 Lequel est une fleur ?', ['Rose', 'Arbre', 'Herbe', 'Roche'], 0),
+Question('🐸 Lequel vit dans l’eau ?', ['Chien', 'Grenouille', 'Chat', 'Cheval'], 1),
+Question('🍪 Lequel est une douceur ?', ['Pain', 'Cookie', 'Riz', 'Pomme de terre'], 1),
+Question('🎵 Lequel est un instrument de musique ?', ['Piano', 'Livre', 'Chaise', 'Stylo'], 0),
+Question('⚽ Qu’utilisez-vous pour jouer au football ?', ['Balle', 'Batte', 'Gant', 'Raquette'], 0),
+Question('🌟 Lequel brille dans le ciel nocturne ?', ['Lune', 'Soleil', 'Nuage', 'Arbre'], 0),
+
+// Nouvelles questions :
+Question('🦁 Quel est le roi des animaux ?', ['Tigre', 'Éléphant', 'Lion', 'Ours'], 2),
+Question('🍉 Lequel est un fruit d’été ?', ['Citrouille', 'Pastèque', 'Pomme', 'Carotte'], 1),
+Question('🌍 Quelle planète habitons-nous ?', ['Mars', 'Venus', 'Terre', 'Jupiter'], 2),
+Question('🚀 Quel véhicule va dans l’espace ?', ['Avion', 'Bateau', 'Fusée', 'Voiture'], 2),
+Question('📚 Où lit-on des livres ?', ['Bibliothèque', 'Restaurant', 'Garage', 'Piscine'], 0),
+Question('🐦 Quel animal peut voler ?', ['Chien', 'Poisson', 'Oiseau', 'Serpent'], 2),
+Question('🌧️ Que tombe du ciel quand il pleut ?', ['Neige', 'Pluie', 'Sable', 'Vent'], 1),
+Question('🥚 Que trouve-t-on dans un nid ?', ['Nourriture', 'Œufs', 'Feuilles', 'Pierres'], 1),
+Question('🍫 Quel aliment est sucré ?', ['Chocolat', 'Pain', 'Fromage', 'Tomate'], 0),
+Question('⏰ Que montre une horloge ?', ['Le temps', 'La température', 'La vitesse', 'La distance'], 0),
+Question('🏠 Où vit une famille ?', ['École', 'Maison', 'Hôpital', 'Magasin'], 1),
+Question('🐟 Où vit un poisson ?', ['Terre', 'Air', 'Eau', 'Feu'], 2),
+Question('🎨 Quel objet utilise un peintre ?', ['Pinceau', 'Clé', 'Livre', 'Couteau'], 0),
+Question('🚴 Quel moyen de transport a deux roues ?', ['Voiture', 'Bateau', 'Avion', 'Vélo'], 3),
+Question('🎂 Que célèbre-t-on avec un gâteau ?', ['Noël', 'Anniversaire', 'Pâques', 'Halloween'], 1),
+Question('🌲 Quel est un arbre commun ?', ['Pin', 'Tulipe', 'Rose', 'Marguerite'], 0),
+Question('🐝 Quel insecte produit du miel ?', ['Mouche', 'Fourmi', 'Abeille', 'Papillon'], 2),
+Question('❄️ Que trouve-t-on en hiver ?', ['Soleil', 'Neige', 'Pluie', 'Feuilles'], 1),
+Question('📱 Quel objet sert à téléphoner ?', ['Télévision', 'Téléphone', 'Ordinateur', 'Radio'], 1),
+Question('🚒 Quel véhicule sert à éteindre le feu ?', ['Camion', 'Voiture', 'Ambulance', 'Camion de pompiers'], 3),
+Question('🐇 Quel animal est un rongeur ?', ['Lapin', 'Chat', 'Chien', 'Poisson'], 0),
+Question('🍞 Quel aliment vient du blé ?', ['Pain', 'Fromage', 'Viande', 'Fruits'], 0),
+Question('👓 Que porte-t-on pour mieux voir ?', ['Casquette', 'Lunettes', 'Chaussures', 'Montre'], 1),
+Question('🛏️ Où dort-on ?', ['Chaise', 'Canapé', 'Lit', 'Table'], 2),
+Question('🦒 Quel animal a un long cou ?', ['Girafe', 'Zèbre', 'Lion', 'Éléphant'], 0),
+Question('🎤 Que fait un chanteur ?', ['Danser', 'Peindre', 'Chanter', 'Cuisiner'], 2),
+Question('🎬 Où voit-on des films ?', ['Bibliothèque', 'Cinéma', 'École', 'Hôpital'], 1),
+Question('🏖️ Où va-t-on pour se baigner ?', ['Montagne', 'Plage', 'Forêt', 'Désert'], 1),
+],
+
+// ... add the rest of French questions here
   QuizLanguage.arabic: [
     Question('🌤️ ما لون السماء؟', ['أزرق', 'أخضر', 'أحمر', 'أصفر'], 0),
     Question('🕷️ كم عدد أرجل العنكبوت؟', ['6', '8', '10', '4'], 1),
@@ -91,4 +122,43 @@ final Map<QuizLanguage, List<Question>> questionsByLanguage = {
     Question('🌟 أيهما يلمع في السماء ليلاً؟', ['قمر', 'شمس', 'سحاب', 'شجرة'], 0),
     // ... add the rest of Arabic questions here
   ],
+
+
+
+  QuizLanguage.deutch: [
+    Question('🚗 Welche Farbe hat ein typisches Polizeiauto in Deutschland?', ['Blau', 'Rot', 'Grün', 'Gelb'], 0),
+    Question('🏰 Wie nennt man ein großes, altes Schloss?', ['Palast', 'Burg', 'Hütte', 'Haus'], 1),
+    Question('🎄 Welches Fest feiern wir am 24. Dezember?', ['Ostern', 'Weihnachten', 'Pfingsten', 'Silvester'], 1),
+    Question('🌾 Was wächst auf einem Bauernhof?', ['Weizen', 'Computer', 'Auto', 'Buch'], 0),
+    Question('🚴 Was braucht man für eine Fahrradtour?', ['Helm', 'Anzug', 'Regenschirm', 'Schuhe'], 0),
+    Question('🌳 Wie nennt man den Platz, wo viele Bäume wachsen?', ['Wald', 'Park', 'Strand', 'Berg'], 0),
+    Question('🧀 Was ist eine berühmte deutsche Spezialität?', ['Pizza', 'Käse', 'Sushi', 'Tacos'], 1),
+    Question('🏫 Wo lernen Kinder?', ['Haus', 'Schule', 'Supermarkt', 'Theater'], 1),
+    Question('📅 Wie viele Monate hat ein Jahr?', ['10', '12', '14', '8'], 1),
+    Question('🚂 Was fährt auf Schienen?', ['Auto', 'Fahrrad', 'Zug', 'Boot'], 2),
+    Question('🍎 Was kann man essen?', ['Stein', 'Apfel', 'Stuhl', 'Buch'], 1),
+    Question('🌞 Wann ist es meistens warm?', ['Winter', 'Sommer', 'Herbst', 'Frühling'], 1),
+    Question('🕰️ Wie nennt man eine Zeitspanne von 60 Minuten?', ['Tag', 'Stunde', 'Sekunde', 'Woche'], 1),
+    Question('🏠 Wo wohnt man?', ['Haus', 'Laden', 'Park', 'Kino'], 0),
+    Question('🛒 Wo kauft man Lebensmittel?', ['Bibliothek', 'Supermarkt', 'Schule', 'Tankstelle'], 1),
+    Question('🐴 Was kann man reiten?', ['Pferd', 'Auto', 'Fahrrad', 'Boot'], 0),
+    Question('🥖 Welches Essen ist typisch französisch?', ['Baguette', 'Sushi', 'Pizza', 'Burger'], 0),
+    Question('📺 Was schaut man im Fernsehen?', ['Buch', 'Film', 'Stuhl', 'Radio'], 1),
+    Question('⚡ Was braucht man für Strom?', ['Kabel', 'Wasser', 'Holz', 'Sand'], 0),
+    Question('🛩️ Welches Fahrzeug fliegt am Himmel?', ['Auto', 'Schiff', 'Flugzeug', 'Fahrrad'], 2),
+    Question('🌹 Welche Blume ist ein Symbol der Liebe?', ['Rose', 'Tulpe', 'Lilie', 'Sonnenblume'], 0),
+    Question('🍦 Was isst man im Sommer gerne?', ['Eis', 'Kuchen', 'Suppe', 'Brot'], 0),
+    Question('🌕 Wie heißt der Himmelskörper, der nachts leuchtet?', ['Sonne', 'Mond', 'Stern', 'Wolke'], 1),
+    Question('🚿 Wofür benutzt man eine Dusche?', ['Waschen', 'Kochen', 'Schlafen', 'Lesen'], 0),
+    Question('📖 Was macht man mit einem Buch?', ['Lesen', 'Schreiben', 'Kochen', 'Malen'], 0),
+    Question('🎁 Was gibt man zu Geburtstagen?', ['Geschenk', 'Stuhl', 'Lampe', 'Teller'], 0),
+    Question('🐕 Welches Tier ist ein Haustier?', ['Hund', 'Löwe', 'Tiger', 'Elefant'], 0),
+    Question('🌈 Wie viele Farben hat ein Regenbogen?', ['5', '7', '9', '11'], 1),
+    Question('🎂 Was isst man zu einer Feier?', ['Kuchen', 'Reis', 'Salat', 'Fleisch'], 0),
+  ]
+
+
+
+
+
 };

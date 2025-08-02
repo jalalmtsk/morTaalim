@@ -1,19 +1,17 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:provider/provider.dart';
-
-import '../XpSystem.dart';
 
 class AdHelper {
-  /// ✅ Call this in your `main()` function to initialize ads
+  /// Initialize Ads
   static void initializeAds() {
     MobileAds.instance.initialize();
   }
 
-  /// ✅ Get a BannerAd instance
+  /// Banner Ad
   static BannerAd getBannerAd(Function onAdLoaded) {
     final BannerAd banner = BannerAd(
-      adUnitId: 'ca-app-pub-9936922975297046/2736323402', // ✅ Replace with real banner ad unit
+      adUnitId: 'ca-app-pub-9936922975297046/2736323402', // ✅ Replace with your real ID
       request: const AdRequest(),
       size: AdSize.banner,
       listener: BannerAdListener(
@@ -28,17 +26,17 @@ class AdHelper {
     return banner;
   }
 
-  /// ✅ Show an Interstitial Ad
+  /// Interstitial Ad
   static Future<void> showInterstitialAd({Function? onDismissed}) async {
     await InterstitialAd.load(
-      adUnitId: 'ca-app-pub-9936922975297046/8354774722', // ❗ Replace this with your interstitial ad unit
+      adUnitId: 'ca-app-pub-9936922975297046/8354774722', // ✅ Replace with your real ID
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
               ad.dispose();
-              if (onDismissed != null) onDismissed();
+              onDismissed?.call();
             },
             onAdFailedToShowFullScreenContent: (ad, error) {
               ad.dispose();
@@ -54,7 +52,7 @@ class AdHelper {
     );
   }
 
-  /// ✅ Show Rewarded Ad with loading spinner
+  /// Rewarded Ad with Loading UI
   static Future<void> showRewardedAdWithLoading(
       BuildContext context,
       VoidCallback onRewardEarned,
@@ -68,14 +66,16 @@ class AdHelper {
     );
 
     await RewardedAd.load(
-      adUnitId: 'ca-app-pub-9936922975297046/5494650006', // ✅ Replace with your real unit ID
+      adUnitId: 'ca-app-pub-9936922975297046/5494650006', // ✅  Real ID
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (RewardedAd ad) {
           Navigator.of(context).pop(); // close loading dialog
 
           ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) => ad.dispose(),
+            onAdDismissedFullScreenContent: (ad) {
+              ad.dispose();
+            },
             onAdFailedToShowFullScreenContent: (ad, error) {
               ad.dispose();
               debugPrint('❌ RewardedAd failed to show: ${error.message}');
@@ -84,12 +84,12 @@ class AdHelper {
 
           ad.show(
             onUserEarnedReward: (ad, reward) {
-              onRewardEarned(); // ✅ Callback for reward earned
+              onRewardEarned();
             },
           );
         },
         onAdFailedToLoad: (LoadAdError error) {
-          Navigator.of(context).pop(); // close loading
+          Navigator.of(context).pop(); // close loading dialog
           debugPrint('❌ RewardedAd failed to load: ${error.message}');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Ad failed to load. Try again later.')),
@@ -98,5 +98,59 @@ class AdHelper {
       ),
     );
   }
+
+
+
+
+  static Future<bool> showRewardedAd(BuildContext context) {
+    Completer<bool> completer = Completer<bool>();
+
+    // Show loading spinner dialog while loading ad
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(color: Colors.deepOrange),
+      ),
+    );
+
+    RewardedAd.load(
+      adUnitId: 'ca-app-pub-9936922975297046/5494650006',
+      request: const AdRequest(),
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (RewardedAd ad) {
+          Navigator.of(context).pop(); // Close loading dialog
+
+          ad.fullScreenContentCallback = FullScreenContentCallback(
+            onAdDismissedFullScreenContent: (ad) {
+              if (!completer.isCompleted) completer.complete(false);
+              ad.dispose();
+            },
+            onAdFailedToShowFullScreenContent: (ad, error) {
+              if (!completer.isCompleted) completer.complete(false);
+              ad.dispose();
+              debugPrint('❌ RewardedAd failed to show: ${error.message}');
+            },
+          );
+
+          ad.show(onUserEarnedReward: (ad, reward) {
+            if (!completer.isCompleted) completer.complete(true);
+          });
+        },
+        onAdFailedToLoad: (LoadAdError error) {
+          Navigator.of(context).pop(); // Close loading dialog
+          if (!completer.isCompleted) completer.complete(false);
+          debugPrint('❌ RewardedAd failed to load: ${error.message}');
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Ad failed to load. Try again later.')),
+          );
+        },
+      ),
+    );
+
+    return completer.future;
+  }
+
+
 
 }

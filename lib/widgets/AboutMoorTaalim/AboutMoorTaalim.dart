@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/AboutMoorTaalim/FeedbackPage.dart';
 import 'package:mortaalim/widgets/AboutMoorTaalim/PrivacyPolicyPage.dart';
 import 'package:mortaalim/widgets/AboutMoorTaalim/TermsOfUsePage.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AboutMoorTaalimPage extends StatefulWidget {
@@ -169,6 +171,7 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
 
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: Colors.deepOrange,
@@ -181,168 +184,196 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
         backgroundColor: Colors.deepOrange,
         centerTitle: true,
         elevation: 2,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            audioManager.playEventSound('cancelButton'); // Play your sound
+            Navigator.pop(context); // Go back
+          },
+        ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(20),
+
+      body: Column(
         children: [
-          // Header Section
-          Center(
-            child: Column(
+          CircleAvatar(
+            radius: 80,
+            backgroundImage: const AssetImage("assets/icons/logo3.png"),
+            backgroundColor: Colors.transparent,
+          ),
+          const SizedBox(height: 15),
+          const Text(
+            "MoorTaalim",
+            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 5),
+          Text(
+            "Version $appVersion",
+            style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+          ),
+          const SizedBox(height: 15),
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(20),
               children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundImage: const AssetImage("assets/icons/logo3.png"),
-                  backgroundColor: Colors.transparent,
+                // Header Section
+                Center(
+                  child: Column(
+                    children: [
+                      const Text(
+                        "An innovative educational platform blending learning, games, and culture "
+                            "to make education fun and engaging for students in Morocco and beyond.",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16, height: 1.4),
+                      ),
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 15),
+
+                const SizedBox(height: 20),
+
+                _buildExpandableCard(
+                  title: "Our Mission",
+                  icon: Icons.flag,
+                  content:
+                  "MoorTaalim aims to empower students by providing interactive educational content "
+                      "that respects Moroccan culture and promotes a love of learning. We believe education "
+                      "should be enjoyable, accessible, and culturally relevant.",
+                  expanded: _expandedMission,
+                  onToggle: () {
+                    audioManager.playEventSound("PopClick");
+                    setState(() => _expandedMission = !_expandedMission);
+                  },
+                ),
+
+                const SizedBox(height: 12),
+
+                _buildExpandableCard(
+                  title: "Future Plans",
+                  icon: Icons.upcoming,
+                  content:
+                  "We're continuously working to add new courses, exciting multiplayer games, "
+                      "and advanced features like personalized learning paths and community forums "
+                      "to connect learners and educators.",
+                  expanded: _expandedFuture,
+                  onToggle: () {
+                    audioManager.playEventSound("PopClick");
+                    setState(() => _expandedFuture = !_expandedFuture);
+                  },
+                ),
+
+                const SizedBox(height: 20),
+
+                const Divider(),
+
+                const SizedBox(height: 10),
+
+                // Social Media Section
                 const Text(
-                  "MoorTaalim",
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  "Version $appVersion",
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                ),
-                const SizedBox(height: 15),
-                const Text(
-                  "An innovative educational platform blending learning, games, and culture "
-                      "to make education fun and engaging for students in Morocco and beyond.",
+                  "Follow us on",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 16, height: 1.4),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildSocialIcon(
+                      FontAwesomeIcons.facebookF,
+                      Colors.blue,
+                          () {
+                            audioManager.playEventSound("clickButton");
+                            _launchURL("https://facebook.com/moortaalim");
+                          }
+                    ),
+                    const SizedBox(width: 15),
+                    _buildSocialIcon(
+                      FontAwesomeIcons.instagram,
+                      Colors.purple,
+                          ()  {
+                            audioManager.playEventSound("clickButton");
+                            _launchURL("https://instagram.com/moortaalim");
+                          }
+                    ),
+                    const SizedBox(width: 15),
+                    _buildSocialIcon(
+                      FontAwesomeIcons.tiktok,
+                      Colors.black,
+                          ()  {
+                            audioManager.playEventSound("clickButton");
+                            _launchURL("https://tiktok.com/moortaalim");
+                          }
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 15),
+
+                const Divider(),
+
+                const SizedBox(height: 10),
+
+                // Contact Info
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: ListTile(
+                    leading: const Icon(Icons.email, color: Colors.deepOrange),
+                    title: const Text("Contact Us"),
+                    subtitle: const Text("moortaalim@gmail.com"),
+                    onTap: () => _launchURL("mailto:moortaalim@gmail.com"),
+                  ),
+                ),
+
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: ListTile(
+                    leading: const Icon(Icons.privacy_tip, color: Colors.blueGrey),
+                    title: const Text("Privacy Policy"),
+                    onTap: () {
+                      audioManager.playEventSound("clickButton");
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (_) => PrivacyPolicyPage()));
+                    }
+                  ),
+                ),
+
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: ListTile(
+                    leading: const Icon(Icons.gavel, color: Colors.brown),
+                    title: const Text("Terms of Use"),
+                    onTap: () {
+                      audioManager.playEventSound("clickButton");
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (_) => TermsOfUsePage()));
+                    }
+                  ),
+                ),
+
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: ListTile(
+                    leading: const Icon(Icons.people, color: Colors.green),
+                    title: const Text("Credits"),
+                    onTap: () {
+                      audioManager.playEventSound("clickButton");
+                      Navigator.of(context).pushNamed("Credits");
+                    }
+                  ),
                 ),
               ],
             ),
           ),
-
-          const SizedBox(height: 20),
-
-          _buildExpandableCard(
-            title: "Our Mission",
-            icon: Icons.flag,
-            content:
-            "MoorTaalim aims to empower students by providing interactive educational content "
-                "that respects Moroccan culture and promotes a love of learning. We believe education "
-                "should be enjoyable, accessible, and culturally relevant.",
-            expanded: _expandedMission,
-            onToggle: () {
-              setState(() => _expandedMission = !_expandedMission);
-            },
-          ),
-
-          const SizedBox(height: 12),
-
-          _buildExpandableCard(
-            title: "Future Plans",
-            icon: Icons.upcoming,
-            content:
-            "We're continuously working to add new courses, exciting multiplayer games, "
-                "and advanced features like personalized learning paths and community forums "
-                "to connect learners and educators.",
-            expanded: _expandedFuture,
-            onToggle: () {
-              setState(() => _expandedFuture = !_expandedFuture);
-            },
-          ),
-
-          const SizedBox(height: 20),
-
-          const Divider(),
-
-          const SizedBox(height: 10),
-
-          // Social Media Section
-          const Text(
-            "Follow us on",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              _buildSocialIcon(
-                FontAwesomeIcons.facebook,
-                Colors.blue,
-                    () => _launchURL("https://facebook.com/moortaalim"),
-              ),
-              const SizedBox(width: 15),
-              _buildSocialIcon(
-                FontAwesomeIcons.instagram,
-                Colors.purple,
-                    () => _launchURL("https://instagram.com/moortaalim"),
-              ),
-              const SizedBox(width: 15),
-              _buildSocialIcon(
-                FontAwesomeIcons.tiktok,
-                Colors.black,
-                    () => _launchURL("https://tiktok.com/@moortaalim"),
-              ),
-              const SizedBox(width: 15),
-              _buildSocialIcon(
-                FontAwesomeIcons.youtube,
-                Colors.red,
-                    () => _launchURL("https://youtube.com/moortaalim"),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 15),
-
-          const Divider(),
-
-          const SizedBox(height: 10),
-
-          // Contact Info
-          Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: ListTile(
-              leading: const Icon(Icons.email, color: Colors.deepOrange),
-              title: const Text("Contact Us"),
-              subtitle: const Text("moortaalim@gmail.com"),
-              onTap: () => _launchURL("mailto:moortaalim@gmail.com"),
-            ),
-          ),
-
-          Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: ListTile(
-              leading: const Icon(Icons.privacy_tip, color: Colors.blueGrey),
-              title: const Text("Privacy Policy"),
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => PrivacyPolicyPage())),
-            ),
-          ),
-
-          Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: ListTile(
-              leading: const Icon(Icons.gavel, color: Colors.brown),
-              title: const Text("Terms of Use"),
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => TermsOfUsePage())),
-            ),
-          ),
-
-          Card(
-            elevation: 2,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-            child: ListTile(
-              leading: const Icon(Icons.people, color: Colors.green),
-              title: const Text("Credits"),
-              onTap: () => Navigator.of(context).pushNamed("Credits"),
-            ),
-          ),
-
-          const SizedBox(height: 30),
-
           Center(
             child: Text(
               "© ${DateTime.now().year} MoorTaalim. All rights reserved.",
               style: TextStyle(color: Colors.grey[600], fontSize: 12),
             ),
           ),
+          const SizedBox(height: 8),
         ],
       ),
     );

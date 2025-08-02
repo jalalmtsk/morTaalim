@@ -63,8 +63,8 @@ class _CompanyLogoScreenState extends State<CompanyLogoScreen>
                   opacity: _fadeAnimation,
                   child: Image.asset(
                     'assets/icons/lo2.png',
-                    width: 350,
-                    height: 350,
+                    width: 380,
+                    height: 380,
                     fit: BoxFit.cover,
                   ),
                 ),
