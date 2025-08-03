@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ffi';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/games/Quiz_Game/Result_QuizPage.dart';
 import 'package:mortaalim/main.dart';
@@ -52,6 +53,12 @@ class QuizPage extends StatefulWidget {
 }
 
 class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
+
+  // TTS----------------------------------
+  final FlutterTts flutterTts = FlutterTts();
+  bool _isTtsMuted = false; // Track if TTS is muted
+
+  // ADS
   BannerAd? _bannerAd;
   bool _isBannerAdLoaded = false;
 
@@ -102,16 +109,28 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   int _highPitchIndex = 0;
 
+  late String player1Name;
+  late String player2Name;
+  late String player1Emoji;
+  late String player2Emoji;
+
   @override
   void initState() {
     super.initState();
+
+    // Save passed values or fallback to defaults
+    player1Name = widget.player1Name ?? 'Player1';
+    player2Name = widget.player2Name ?? 'Player2';
+    player1Emoji = widget.player1Emoji ?? '😀';
+    player2Emoji = widget.player2Emoji ?? '😎';
+
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     audioManager.playAlert('assets/audios/QuizGame_Sounds/GameCountDown3Sec.mp3');
     audioManager.playSfx('assets/audios/QuizGame_Sounds/RoboticCountDown3sec.mp3');
+    _configureTts();
     _loadBannerAd();
     _questions = _loadQuestions(widget.language)..shuffle();
 
-    // Limit questions to max 15
     if (_questions.length > 15) {
       _questions = _questions.sublist(0, 15);
     }
@@ -129,26 +148,68 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
     _introController.forward();
 
-    // After 4 seconds, hide intro, start timer and background music
     Future.delayed(const Duration(seconds: 4), () {
       audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/CinematicStart_SFX.mp3');
       setState(() => _showIntro = false);
       _startTimer();
-
-      audioManager.playBackgroundMusic(
-        "assets/audios/BackGround_Audio/FunnyHappyMusic.mp3",
-      );
+      _readQuestion(_questions[_currentQuestion]);
+      audioManager.playBackgroundMusic("assets/audios/BackGround_Audio/FunnyHappyMusic.mp3");
     });
   }
 
+
+
+  Future<void> _configureTts() async {
+    await flutterTts.setSpeechRate(0.5);
+    await flutterTts.setPitch(1.0);
+    _setTtsLanguage(widget.language);
+  }
+
+  void _setTtsLanguage(QuizLanguage lang) async {
+    switch (lang) {
+      case QuizLanguage.english:
+        await flutterTts.setLanguage("en-US");
+        break;
+      case QuizLanguage.french:
+        await flutterTts.setLanguage("fr-FR");
+        break;
+      case QuizLanguage.arabic:
+        await flutterTts.setLanguage("ar-SA");
+        break;
+      case QuizLanguage.deutch:
+        await flutterTts.setLanguage("de-DE");
+        break;
+      case QuizLanguage.spanish:
+        await flutterTts.setLanguage("es-ES");
+        break;
+    }
+  }
+
+  Future<void> _readQuestion(Question question) async {
+    if (_isTtsMuted) return; // ✅ Don't read if muted
+
+    String text = "${question.questionText}. Options: ";
+    for (int i = 0; i < question.options.length; i++) {
+      text += "${i + 1}. ${question.options[i]}. ";
+    }
+    await flutterTts.stop();
+    await flutterTts.speak(text);
+  }
+
+
+
   @override
   void dispose() {
-    _timer.cancel();
+    if (_timer.isActive) {
+      _timer.cancel();
+    }
     _introController.dispose();
     _comboAnimationController.dispose();
     _bannerAd?.dispose();
+    flutterTts.stop(); // ✅ Stop TTS when leaving the page
     super.dispose();
   }
+
 
   void _loadBannerAd() {
     _bannerAd?.dispose();
@@ -163,7 +224,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   List<Question> _loadQuestions(QuizLanguage lang) => questionsByLanguage[lang] ?? [];
 
   void _startTimer() {
-    _timeLeft = 30;
+    _timeLeft = 40;
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!_isPaused) {
         setState(() {
@@ -190,8 +251,11 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     _checkLivesAndProceed();
   }
 
-  void _answerQuestion(int selected) {
+  void _answerQuestion(int selected) async {
     if (_answered) return;
+
+    // Stop reading immediately
+    await flutterTts.stop();
     _timer.cancel();
 
     final audioManager = Provider.of<AudioManager>(context, listen: false);
@@ -202,56 +266,60 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       final isCorrect = selected == _questions[_currentQuestion].correctIndex;
 
       if (isCorrect) {
-        _comboCount++;
-        int xpToAdd = 2 + (_comboCount - 1);
-        if (xpToAdd > 5) xpToAdd = 5;
-        Provider.of<ExperienceManager>(context, listen: false).addXP(xpToAdd, context: context);
-
         if (widget.mode == GameMode.single) {
+          // Combo logic only for single player
+          _comboCount++;
+          int xpToAdd = 2 + (_comboCount - 1);
+          if (xpToAdd > 5) xpToAdd = 5;
+          Provider.of<ExperienceManager>(context, listen: false).addXP(xpToAdd, context: context);
+
           _player1Score++;
-        } else {
-          _playerTurn == 1 ? _player1Score++ : _player2Score++;
-        }
 
-        if (_comboCount < 2) {
-          audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/CorrectAnwser_SFX.mp3');
-          _comboText = "";
-        } else {
-          final normalComboSound = _comboSoundsStage1[Random().nextInt(_comboSoundsStage1.length)];
-          audioManager.playSfx(normalComboSound);
-
-          final highPitchSound = _comboSoundsStage2[_highPitchIndex];
-          audioManager.playSfx(highPitchSound);
-
-          if (_highPitchIndex < _comboSoundsStage2.length - 1) {
-            _highPitchIndex++;
-          }
-
-          _comboText = "Combo X$_comboCount";
-          _comboScale = 1.0 + (_comboCount * 0.1).clamp(0.0, 1.0);
-
-          if (_comboCount < 4) {
-            _comboColor = Colors.greenAccent;
-          } else if (_comboCount < 7) {
-            _comboColor = Colors.orangeAccent;
+          if (_comboCount < 2) {
+            audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/CorrectAnwser_SFX.mp3');
+            _comboText = "";
           } else {
-            _comboColor = Colors.redAccent;
-          }
+            final normalComboSound = _comboSoundsStage1[Random().nextInt(_comboSoundsStage1.length)];
+            audioManager.playSfx(normalComboSound);
 
-          _comboAnimationController.forward(from: 0);
-          _comboFadeTimer?.cancel();
-          _comboFadeTimer = Timer(const Duration(seconds: 2), () {
-            setState(() => _comboText = "");
-          });
+            final highPitchSound = _comboSoundsStage2[_highPitchIndex];
+            audioManager.playSfx(highPitchSound);
+
+            if (_highPitchIndex < _comboSoundsStage2.length - 1) {
+              _highPitchIndex++;
+            }
+
+            _comboText = "Combo X$_comboCount";
+            _comboScale = 1.0 + (_comboCount * 0.1).clamp(0.0, 1.0);
+
+            if (_comboCount < 4) {
+              _comboColor = Colors.greenAccent;
+            } else if (_comboCount < 7) {
+              _comboColor = Colors.orangeAccent;
+            } else {
+              _comboColor = Colors.redAccent;
+            }
+
+            _comboAnimationController.forward(from: 0);
+            _comboFadeTimer?.cancel();
+            _comboFadeTimer = Timer(const Duration(seconds: 2), () {
+              setState(() => _comboText = "");
+            });
+          }
+        } else {
+          // Multiplayer: No combo logic, just add score to current player
+          _playerTurn == 1 ? _player1Score++ : _player2Score++;
         }
 
         _showCorrectAnimation = true;
         Future.delayed(const Duration(seconds: 2),
                 () => setState(() => _showCorrectAnimation = false));
       } else {
+        // Wrong answer resets combo for single player; no combo for multiplayer anyway
         _comboCount = 0;
         _highPitchIndex = 0;
         _comboText = "";
+
         audioManager.playSfx("assets/audios/sound_effects/angry.mp3");
         audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/WrongAnwser_SFX.mp3');
         _showWrongFeedback();
@@ -264,7 +332,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       }
     });
 
-    // ✅ FIXED: check lives before proceeding
+    // Check lives after 2 seconds
     Future.delayed(const Duration(seconds: 2), _checkLivesAndProceed);
   }
 
@@ -303,63 +371,104 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
 
   Future<bool> _showPayOrAdDialog() async {
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    await flutterTts.stop();
+
+    int countdown = 15; // ⏱ 15 seconds
+    late StateSetter dialogSetState;
+    Timer? timer;
 
     return await showDialog<bool>(
       context: context,
       barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          title:  Text(tr(context).outOfHearts),
-          content:  Text(tr(context).youHaveNoHeartsLeftWhatWouldYouLikeToDo),
-          actions: [
-            if (xpManager.Tolims > 0)
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context, true);
-                  xpManager.SpendTokenBanner(context, 1);
-                  setState(() {
-                    _player1Lives = 1;
-                  });
-                  _nextTurn(); // ✅ FIX: Move to the next question
-                },
-                child:  Text("${tr(context).pay} 1 Tolim"),
+        return StatefulBuilder(
+          builder: (context, setState) {
+            dialogSetState = setState;
+
+            // Start timer only once
+            timer ??= Timer.periodic(const Duration(seconds: 1), (t) {
+              if (countdown > 0) {
+                dialogSetState(() => countdown--);
+              } else {
+                t.cancel();
+                Navigator.pop(context, false); // Auto-quit
+              }
+            });
+
+            return AlertDialog(
+              title: Text(tr(context).outOfHearts),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(tr(context).youHaveNoHeartsLeftWhatWouldYouLikeToDo),
+                  const SizedBox(height: 10),
+                  Text(
+                    "⏳ $countdown seconds remaining",
+                    style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red),
+                  ),
+                ],
               ),
-            TextButton(
-              onPressed: () async {
-                bool success = await AdHelper.showRewardedAd(context);
-                if (!mounted) return;
-                if (success) {
-                  setState(() {
-                    _player1Lives = 1;
-                  });
-                  Navigator.pop(context, true); // pop only after success & UI update
-                  _nextTurn();
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                     SnackBar(content: Text(tr(context).adFailedToLoadOrWasNotCompletedPleaseTryAgainLater)),
-                  );
-                  // Keep dialog open or handle retry
-                }
-              },
-              child:  Text(tr(context).watchAd),
-            ),
-
-
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-              child: const Text("Quit"),
-            ),
-          ],
+              actions: [
+                if (xpManager.Tolims > 0)
+                  TextButton(
+                    onPressed: () {
+                      timer?.cancel();
+                      Navigator.pop(context, true);
+                      xpManager.SpendTokenBanner(context, 1);
+                      setState(() {
+                        _player1Lives = 1;
+                      });
+                      _nextTurn();
+                    },
+                    child: Text("${tr(context).pay} 1 Tolim"),
+                  ),
+                TextButton(
+                  onPressed: () async {
+                    timer?.cancel();
+                    bool success = await AdHelper.showRewardedAd(context);
+                    if (!mounted) return;
+                    if (success) {
+                      setState(() {
+                        _player1Lives = 1;
+                      });
+                      Navigator.pop(context, true);
+                      _nextTurn();
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                              tr(context).adFailedToLoadOrWasNotCompletedPleaseTryAgainLater),
+                        ),
+                      );
+                    }
+                  },
+                  child: Text(tr(context).watchAd),
+                ),
+                TextButton(
+                  onPressed: () {
+                    timer?.cancel();
+                    Navigator.pop(context, false);
+                  },
+                  child: const Text("Quit"),
+                ),
+              ],
+            );
+          },
         );
       },
-    ) ?? false;
+    ).whenComplete(() {
+      timer?.cancel();
+    }) ?? false;
   }
 
 
 
-  void _endGame() {
+
+  void _endGame() async{
+    await flutterTts.stop();
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
@@ -368,6 +477,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
           player2Score: _player2Score,
           mode: widget.mode,
           language: widget.language,
+          player1Name: widget.player1Name,
+          player2Name: widget.player2Name,
         ),
       ),
     );
@@ -388,6 +499,8 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     });
 
     _startTimer();
+
+    _readQuestion(_questions[_currentQuestion]);
   }
 
 
@@ -398,29 +511,99 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     required int lives,
     required bool isActive,
   }) {
-    return Column(
-      children: [
-        Text(name,
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: isActive ? Colors.deepOrange : Colors.grey[700])),
-        Row(
-          children: [
-            CircleAvatar(
-              radius: 30,
-              backgroundColor: isActive ? Colors.deepOrange : Colors.grey.shade300,
-              child: Text(avatar, style: const TextStyle(fontSize: 28)),
-            ),
-            const SizedBox(height: 4),
-            Text("❤️ $lives", style: const TextStyle(fontSize: 16)),
-            Text("🏆 $score", style: const TextStyle(fontSize: 16)),
+    return Container(
+      width: 120,
+      height: 120,
+      padding: const EdgeInsets.symmetric( horizontal: 4),
+      decoration: BoxDecoration(
+        gradient: isActive
+            ? LinearGradient(
+          colors: [
+            Colors.deepOrange.shade400.withOpacity(0.6),
+            Colors.orange.shade200.withOpacity(0.3),
           ],
-        ),
-
-
-      ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        )
+            : null,
+        color: isActive ? null : Colors.orange.shade50,
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: isActive
+            ? [
+          BoxShadow(
+            color: Colors.deepOrange.withOpacity(0.4),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ]
+            : [
+          BoxShadow(
+            color: Colors.grey.shade300,
+            blurRadius: 5,
+            offset: const Offset(0, 3),
+          ),
+        ],
+        border: isActive
+            ? Border.all(color: Colors.deepOrange, width: 2)
+            : Border.all(color: Colors.transparent),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            name,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+              color: isActive ? Colors.deepOrange.shade900 : Colors.grey.shade700,
+              letterSpacing: 0.5,
+            ),
+          ),
+          const SizedBox(height: 2),
+          CircleAvatar(
+            radius: 26,
+            backgroundColor: isActive ? Colors.deepOrange : Colors.orange.shade100,
+            child: Text(
+              avatar,
+              style: TextStyle(
+                fontSize: 32,
+                color: isActive ? Colors.white : Colors.deepOrange.shade300,
+                shadows: isActive
+                    ? [
+                  Shadow(
+                    color: Colors.deepOrange.shade700,
+                    blurRadius: 4,
+                    offset: const Offset(0, 1),
+                  ),
+                ]
+                    : null,
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.favorite, color: Colors.red.shade400, size: 20),
+              const SizedBox(width: 2),
+              Text(
+                '$lives',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(width: 8),
+              Icon(Icons.emoji_events, color: Colors.amber.shade600, size: 20),
+              const SizedBox(width: 3),
+              Text(
+                '$score',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -459,7 +642,10 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             body: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.orange.withOpacity(0.1), Colors.orange.shade200],
+                  colors: [
+                    Colors.orange.withOpacity(0.1),
+                    Colors.orange.shade200,
+                  ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
@@ -468,160 +654,244 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                 child: Column(
                   children: [
                     Userstatutbar(),
+
+                    // Top navigation row with back and settings buttons
                     Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          IconButton(
-                            icon: const Icon(
-                              Icons.arrow_circle_left,
-                              size: 50,
-                              color: Colors.deepOrangeAccent,
+                          // Back button styled as a circular elevated button
+                          Material(
+                            color: Colors.deepOrangeAccent,
+                            shape: const CircleBorder(),
+                            elevation: 6,
+                            child: IconButton(
+                              iconSize: 30,
+                              icon: const Icon(Icons.arrow_circle_left, color: Colors.white),
+                              onPressed: () {
+                                audioManager.playEventSound('cancelButton');
+                                Navigator.of(context).pop();
+                              },
+                              tooltip: tr(context).back,
                             ),
-                            onPressed: () {
-                              audioManager.playEventSound('cancelButton');
-                              Navigator.of(context).pop();
-                            },
-                            tooltip: tr(context).back,
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.settings),
-                            onPressed: () async {
-                              audioManager.playEventSound('clickButton');
-                              setState(() => _isPaused = true);
-                              await showDialog(
-                                context: context,
-                                builder: (_) => const SettingsDialog(),
-                              );
-                              setState(() => _isPaused = false);
-                            },
+
+                          // Settings button with subtle elevation and rounded rectangle
+                          Material(
+                            color: Colors.orange.shade300,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            elevation: 4,
+                            child: IconButton(
+                              iconSize: 30,
+                              icon: const Icon(Icons.settings, color: Colors.deepOrange),
+                              onPressed: () async {
+                                audioManager.playEventSound('clickButton');
+                                setState(() => _isPaused = true);
+                                await showDialog(
+                                  context: context,
+                                  builder: (_) => const SettingsDialog(),
+                                );
+                                setState(() => _isPaused = false);
+                              },
+                            ),
                           ),
                         ],
                       ),
                     ),
+
+                    // Question number indicator
                     Padding(
-                      padding: const EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                       child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(
-                            "Question ${_currentQuestion + 1}/",
-                            style: const TextStyle(
+                          RichText(
+                            text: TextSpan(
+                              text: 'Question ',
+                              style: const TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.deepOrange),
+                                color: Colors.deepOrange,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: '${_currentQuestion + 1}/',
+                                  style: const TextStyle(color: Colors.orangeAccent),
+                                ),
+                                TextSpan(text: '${_questions.length}'),
+                              ],
+                            ),
                           ),
-                          Text(
-                            "${_questions.length}",
-                            style: const TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.orangeAccent),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Column(
-                        children: [
-                          LinearProgressIndicator(
-                            value: _timeLeft / 30,
-                            backgroundColor: Colors.orange.shade100,
-                            color: Colors.deepOrange,
-                          ),
-                          const SizedBox(height: 6),
-                          Text("⏳ $_timeLeft ${tr(context).secondsLeft}",
-                              style: const TextStyle(
-                                  fontSize: 28, color: Colors.deepOrange)),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 10),
 
-                    // Combo Text UI here:
-                    if (_comboText.isNotEmpty)
-                      Transform.scale(
-                        scale: 1.0 + 0.3 * _comboAnimationController.value,
-                        child: Text(
-                          _comboText,
-                          style: TextStyle(
-                            fontSize: (40 + (_comboCount * 2).clamp(0, 20)).toDouble(),
-                            fontWeight: FontWeight.bold,
-                            color: _comboColor,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 10,
-                                color: _comboColor.withOpacity(0.8),
-                                offset: const Offset(0, 0),
+                          // TTS and Replay controls with consistent style
+                          Row(
+                            children: [
+                              _buildCircleIconButton(
+                                icon: Icons.replay_circle_filled,
+                                tooltip: "Replay Question",
+                                onPressed: () async {
+                                  await flutterTts.stop();
+                                  await _readQuestion(question);
+                                },
+                                color: Colors.deepOrange,
+                              ),
+                              _buildCircleIconButton(
+                                icon: _isTtsMuted ? Icons.volume_mute_outlined : Icons.volume_down_outlined,
+                                tooltip: _isTtsMuted ?  "Unmute" :  "Mute",
+                                onPressed: () async {
+                                  setState(() => _isTtsMuted = !_isTtsMuted);
+                                  if (_isTtsMuted) {
+                                    await flutterTts.stop();
+                                  } else {
+                                    await _readQuestion(question);
+                                  }
+                                },
+                                color: Colors.deepOrange,
                               ),
                             ],
                           ),
-                        ),
-                      ),
-
-                    const SizedBox(height: 10),
-
-                    // Show scoreboard
-                    if (widget.mode == GameMode.multiplayer)
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          _buildPlayerInfo(
-                            name: player1Name,
-                            avatar: player1Avatar,
-                            score: _player1Score,
-                            lives: _player1Lives,
-                            isActive: _playerTurn == 1,
-                          ),
-                          _buildPlayerInfo(
-                            name: player2Name,
-                            avatar: player2Avatar,
-                            score: _player2Score,
-                            lives: _player2Lives,
-                            isActive: _playerTurn == 2,
-                          ),
                         ],
+                      ),
+                    ),
+
+                    // Show scoreboard or linear progress for single player
+                    if (widget.mode == GameMode.multiplayer)
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            _buildPlayerInfo(
+                              name: player1Name,
+                              avatar: player1Avatar,
+                              score: _player1Score,
+                              lives: _player1Lives,
+                              isActive: _playerTurn == 1,
+                            ),
+
+                            Row(
+                              children: [
+                                const Icon(Icons.hourglass_bottom, color: Colors.deepOrange),
+                                const SizedBox(width: 2),
+                                Text(
+                                  "$_timeLeft ${tr(context).secondsLeft}",
+                                  style: const TextStyle(
+                                    fontSize: 28,
+                                    color: Colors.deepOrange,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            _buildPlayerInfo(
+                              name: player2Name,
+                              avatar: player2Avatar,
+                              score: _player2Score,
+                              lives: _player2Lives,
+                              isActive: _playerTurn == 2,
+                            ),
+                          ],
+                        ),
                       )
                     else
                       Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Text(
-                          '🏆 $_player1Score | ❤️ $_player1Lives',
-                          style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepOrange),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                        child: LinearProgressIndicator(
+                          value: _timeLeft / 40,
+                          backgroundColor: Colors.orange.shade100,
+                          color: Colors.deepOrange,
+                          minHeight: 10,
                         ),
                       ),
-                    const SizedBox(height: 20),
+
+                    // Timer and score row for single player mode
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const SizedBox(width: 10),
+                          if (widget.mode == GameMode.single)
+                            Row(
+                              children: [
+                                Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Icon(Icons.hourglass_bottom, color: Colors.deepOrange),
+                                    const SizedBox(width: 2),
+                                    Text(
+                                      "$_timeLeft ${tr(context).secondsLeft}",
+                                      style: const TextStyle(
+                                        fontSize: 28,
+                                        color: Colors.deepOrange,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(width: 40),
+
+                                const Icon(Icons.emoji_events, color: Colors.amber),
+                                const SizedBox(width: 4),
+                                Text(
+                                  '$_player1Score',
+                                  style: const TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepOrange,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                const Icon(Icons.favorite, color: Colors.redAccent),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '$_player1Lives',
+                                  style: const TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.deepOrange,
+                                  ),
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+                    ),
+
+                    // Question card
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
                       child: Card(
-                        elevation: 6,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16)),
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         shadowColor: Colors.deepOrange.withOpacity(0.4),
                         child: Padding(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(24),
                           child: Text(
                             question.questionText,
                             textAlign: TextAlign.center,
                             style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.deepOrange),
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepOrange,
+                              height: 1.3,
+                            ),
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 20),
+
+                    const SizedBox(height: 10),
+
+                    // Answer options grid
                     Expanded(
                       child: GridView.count(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 12,
-                        mainAxisSpacing: 12,
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
                         childAspectRatio: 3,
                         children: List.generate(question.options.length, (index) {
                           final isCorrect = index == question.correctIndex;
@@ -637,31 +907,57 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                               icon = const Icon(Icons.check, color: Colors.white);
                             } else if (isSelected) {
                               bgColor = Colors.red.shade300;
-                              icon = const Icon(Icons.clear_outlined,
-                                  color: Colors.white);
+                              icon = const Icon(Icons.clear_outlined, color: Colors.white);
                             }
                           }
 
                           return ElevatedButton.icon(
                             onPressed: () => _answerQuestion(index),
                             icon: icon ?? const SizedBox.shrink(),
-                            label: Text(question.options[index],
-                                style: const TextStyle(fontSize: 18)),
+                            label: Text(
+                              question.options[index],
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                            ),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: bgColor,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16)),
-                              elevation: 5,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                              elevation: 8,
                               shadowColor: Colors.deepOrange.withOpacity(0.5),
+                              padding: const EdgeInsets.symmetric(vertical: 10),
                             ),
                           );
                         }),
                       ),
                     ),
+
+                    // Combo text effect
+                    if (_comboText.isNotEmpty)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Transform.scale(
+                          scale: 1.0 + 0.2 * _comboAnimationController.value,
+                          child: Text(
+                            _comboText,
+                            style: TextStyle(
+                              fontSize: (28 + (_comboCount * 2).clamp(0, 20)).toDouble(),
+                              fontWeight: FontWeight.bold,
+                              color: _comboColor,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 10,
+                                  color: _comboColor.withOpacity(0.8),
+                                  offset: const Offset(0, 0),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
             ),
+
             /// ADS BANNER
             bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled &&
                 _bannerAd != null &&
@@ -676,17 +972,43 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
             )
                 : null,
           ),
+
+        // Correct and wrong answer animations overlay
         if (_showCorrectAnimation)
           Center(
-            child: Lottie.asset('assets/animations/QuizzGame_Animation/DoneAnimation.json',
-                width: 500, repeat: false),
+            child: Lottie.asset(
+              'assets/animations/QuizzGame_Animation/DoneAnimation.json',
+              width: 500,
+              repeat: false,
+            ),
           ),
         if (_showWrongAnimation)
           Center(
-            child: Lottie.asset('assets/animations/QuizzGame_Animation/Fiery Lolo.json',
-                width: 200, repeat: false),
+            child: Lottie.asset(
+              'assets/animations/QuizzGame_Animation/Fiery Lolo.json',
+              width: 200,
+              repeat: false,
+            ),
           ),
       ],
+    );
+  }
+
+  Widget _buildCircleIconButton({
+    required IconData icon,
+    required VoidCallback onPressed,
+    required String tooltip,
+    Color color = Colors.deepOrange,
+  }) {
+    return Material(
+      color: color.withOpacity(0.1),
+      shape: const CircleBorder(),
+      child: IconButton(
+        icon: Icon(icon, color: color),
+        iconSize: 30,
+        onPressed: onPressed,
+        tooltip: tooltip,
+      ),
     );
   }
 }

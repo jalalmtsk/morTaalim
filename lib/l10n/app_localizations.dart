@@ -930,7 +930,7 @@ abstract class AppLocalizations {
   /// No description provided for @secondsLeft.
   ///
   /// In en, this message translates to:
-  /// **'Seconds left'**
+  /// **'S'**
   String get secondsLeft;
 
   /// No description provided for @question.
@@ -1298,6 +1298,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Pay'**
   String get pay;
+
+  /// No description provided for @chooseALanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose A Language'**
+  String get chooseALanguage;
 
   /// No description provided for @allCorrectAnwsersEqualOneTolim.
   ///

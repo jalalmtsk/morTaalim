@@ -2,6 +2,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:provider/provider.dart';
+
+import '../tools/audio_tool/Audio_Manager.dart';
 
 class AnimatedStarBanner extends StatefulWidget {
   final int starAmount;
@@ -21,14 +24,14 @@ class _AnimatedStarBannerState extends State<AnimatedStarBanner>
   late AnimationController _controller;
 
   @override
-  final MusicPlayer _audioPlayer = MusicPlayer();
 
   @override
   void initState() {
     super.initState();
 
     // 🎵 Play sound
-    _audioPlayer.play('assets/audios/sound_effects/retro-coin.mp3');
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playAlert('assets/audios/sound_effects/retro-coin.mp3');
 
     _controller = AnimationController(
       vsync: this,
@@ -85,14 +88,14 @@ class _AnimatedStarBannerState extends State<AnimatedStarBanner>
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: 80,
+                        height: 80,
                         child: Lottie.asset(
-                          'assets/animations/LvlUnlocked/StarPlus1.json',
+                          'assets/animations/UIBannerAnimations/AddStar.json',
                           repeat: false,
                         ),
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 6),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -123,10 +126,10 @@ class _AnimatedStarBannerState extends State<AnimatedStarBanner>
                         ),
                       ),
                       SizedBox(
-                        width: 60,
-                        height: 60,
+                        width: 80,
+                        height: 80,
                         child: Lottie.asset(
-                          'assets/animations/LvlUnlocked/StarPlus1.json',
+                          'assets/animations/UIBannerAnimations/AddStar.json',
                           repeat: false,
                         ),
                       ),

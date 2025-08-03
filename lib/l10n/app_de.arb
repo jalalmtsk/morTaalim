@@ -158,7 +158,7 @@
   "chooseYourBanner": "Wähle dein Banner",
   "retry": "Erneut versuchen",
   "letter": "Buchstabe",
-  "secondsLeft": "Sekunden übrig",
+  "secondsLeft": "S",
   "question": "Frage",
   "addtofavorite": "Zu Favoriten hinzufügen",
   "close": "Schließen",
@@ -225,6 +225,7 @@
   "adFailedToLoadOrWasNotCompletedPleaseTryAgainLater": "Anzeige konnte nicht geladen werden oder wurde nicht abgeschlossen. Bitte versuche es später erneut.",
   "outOfHearts": "Keine Herzen mehr!",
   "pay": "Bezahlen",
+  "chooseALanguage": "Wähle eine Sprache",
   "allCorrectAnwsersEqualOneTolim": "Alle richtigen Antworten ergeben einen Tolim",
   "youHaveNoHeartsLeftWhatWouldYouLikeToDo": "Du hast keine Leben mehr. Was möchtest du tun?"
 

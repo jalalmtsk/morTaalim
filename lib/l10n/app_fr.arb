@@ -170,7 +170,7 @@
      "next": "Suivant",
      "letter": "Lettre",
      "": "secondes restantes",
-     "secondsLeft": "secondes restantes",
+     "secondsLeft": "S",
      "question": "Question",
      "addtofavorite": "Ajouter aux favoris",
      "close": "Fermer",
@@ -239,6 +239,7 @@
   "adFailedToLoadOrWasNotCompletedPleaseTryAgainLater": "La publicité n'a pas pu être chargée ou n'a pas été terminée. Veuillez réessayer plus tard.",
   "outOfHearts": "Plus de vies !",
   "pay": "Payer",
+  "chooseALanguage": "Choisissez une langue",
   "allCorrectAnwsersEqualOneTolim": "Toutes les réponses correctes équivalent à un Tolim",
   "youHaveNoHeartsLeftWhatWouldYouLikeToDo": "Vous n'avez plus de cœurs. Que souhaitez-vous faire ?"
 

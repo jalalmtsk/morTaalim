@@ -1,15 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:flutter/services.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import '../../main.dart';
+import 'VsScreen.dart';
 import 'quiz_Page.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:mortaalim/games/Quiz_Game/game_mode.dart' hide GameMode;
 
-enum QuizLanguage { english, french, arabic, deutch }
+enum QuizLanguage { english, french, arabic, deutch, spanish }
 
 class ModeSelectorPage extends StatefulWidget {
   const ModeSelectorPage({super.key});
@@ -93,12 +93,16 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                     const SizedBox(height: 8),
                     TextField(
                       controller: nameController,
-                      decoration:  InputDecoration(
+                      inputFormatters: [
+                        LengthLimitingTextInputFormatter(8), // limit to 8 characters
+                      ],
+                      decoration: InputDecoration(
                         labelText: tr(context).name,
                         hintText: tr(context).enterName,
                         border: OutlineInputBorder(),
                       ),
                     ),
+
                   ],
                 ),
               ),
@@ -146,18 +150,23 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
     if (mode == GameMode.multiplayer) {
       final player1 = await showAvatarPickerDialog(context, 1);
       if (player1 == null) return;
+
+      // 🎬 Show transition for Player 2
+      await _showPlayerTransition(context, 2);
+
       final player2 = await showAvatarPickerDialog(context, 2);
       if (player2 == null) return;
 
+      // 🎯 Show VS screen before starting the quiz
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => QuizPage(
-            mode: mode,
+          builder: (_) => VsScreen(
             player1Name: player1['name']!,
             player1Emoji: player1['emoji']!,
             player2Name: player2['name']!,
             player2Emoji: player2['emoji']!,
+            mode: mode,
             language: _selectedLanguage!,
           ),
         ),
@@ -174,6 +183,43 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
       );
     }
   }
+
+  Future<void> _showPlayerTransition(BuildContext context, int playerNumber) async {
+    final overlay = Overlay.of(context);
+    final entry = OverlayEntry(
+      builder: (_) => Material(
+        color: Colors.black.withOpacity(0.6),
+        child: Center(
+          child: AnimatedOpacity(
+            opacity: 1,
+            duration: const Duration(milliseconds: 300),
+            child: Text(
+              '🎮 Player $playerNumber',
+              style: const TextStyle(
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                shadows: [
+                  Shadow(
+                    blurRadius: 10,
+                    color: Colors.deepOrange,
+                    offset: Offset(0, 2),
+                  )
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    overlay.insert(entry);
+
+    await Future.delayed(const Duration(seconds: 1)); // show for 1 second
+    entry.remove();
+  }
+
+
 
   void _showInstructionsDialog(BuildContext context) {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
@@ -270,11 +316,11 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                           ),
                         ],
                       ),
-                      const SizedBox(height: 50),
+                      const SizedBox(height: 20),
                       AnimatedBuilder(
                         animation: _colorAnimation,
                         builder: (context, child) => Text(
-                          tr(context).chooseGame,
+                          tr(context).chooseALanguage,
                           style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
@@ -282,9 +328,10 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                           ),
                         ),
                       ),
-                      const SizedBox(height: 5),
                       Wrap(
-                        spacing: 3,
+                        spacing: 10,
+                        runSpacing: 12,
+                        alignment: WrapAlignment.center,
                         children: QuizLanguage.values.map((lang) {
                           final isSelected = _selectedLanguage == lang;
                           final label = {
@@ -292,27 +339,45 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                             QuizLanguage.french: '🇫🇷 Français',
                             QuizLanguage.arabic: '🇲🇦 العربية',
                             QuizLanguage.deutch: '🇩🇪 Deutch',
-                          }[lang]!;
+                            QuizLanguage.spanish: '🇪🇸 Spanish'
+                          }[lang] ?? lang.name;
 
-                          return ChoiceChip(
-                            label: Text(
-                              label,
-                              style: TextStyle(
-                                color: isSelected ? Colors.white : Colors.black87,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          return AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(18),
+                              boxShadow: isSelected
+                                  ? [
+                                BoxShadow(
+                                  color: Colors.deepOrange.withOpacity(0.8),
+                                  blurRadius: 30,
+                                  spreadRadius: 2,
+                                ),
+                              ]
+                                  : null,
                             ),
-                            selected: isSelected,
-                            selectedColor: Colors.deepOrange,
-                            backgroundColor: Colors.orange.withValues(alpha: 0.6),
-                            elevation: 3,
-                            pressElevation: 6,
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                            onSelected: (_) {
-                              audioManager.playEventSound("toggleButton");
-                              setState(() => _selectedLanguage = lang);
-                            },
+                            child: ChoiceChip(
+                              label: Text(
+                                label,
+                                style: TextStyle(
+                                  color: isSelected ? Colors.white : Colors.black87,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              selected: isSelected,
+                              selectedColor: Colors.deepOrange,
+                              backgroundColor: Colors.orange.withOpacity(0.6),
+                              elevation: 4,
+                              pressElevation: 8,
+                              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                              onSelected: (_) {
+                                audioManager.playEventSound("toggleButton");
+                                setState(() => _selectedLanguage = lang);
+                              },
+                            ),
                           );
                         }).toList(),
                       ),
@@ -344,15 +409,38 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20)),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(30),
-        child: Image.asset(
-          assetPath,
-          width: 290,
-          height: 150,
-          fit: BoxFit.cover,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          gradient: LinearGradient(
+            colors: [Colors.deepOrange, Colors.orangeAccent],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.deepOrange.withOpacity(0.8),
+              blurRadius: 20,
+              spreadRadius: 3,
+            ),
+            BoxShadow(
+              color: Colors.deepOrange.withOpacity(0.4),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
         ),
-      ),
+        padding: const EdgeInsets.all(4), // Border thickness
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(26),
+          child: Image.asset(
+            assetPath,
+            width: 260,
+            height: 120,
+            fit: BoxFit.cover,
+          ),
+        ),
+      )
     );
   }
 }

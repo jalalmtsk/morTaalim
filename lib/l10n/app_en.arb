@@ -171,7 +171,7 @@
     "retry": "Retry",
     "next": "Next",
     "letter": "Letter",
-    "secondsLeft": "Seconds left",
+    "secondsLeft": "S",
     "question": "Question",
     "addtofavorite": "Add to favorite",
     "close": "Close",
@@ -241,6 +241,7 @@
   "adFailedToLoadOrWasNotCompletedPleaseTryAgainLater": "Ad failed to load or was not completed. Please try again later.",
   "outOfHearts": "Out of Hearts!",
   "pay": "Pay",
+  "chooseALanguage": "Choose A Language",
   "allCorrectAnwsersEqualOneTolim": "All correct answers equal one Tolim",
   "youHaveNoHeartsLeftWhatWouldYouLikeToDo": "You have no hearts left. What would you like to do?"
 

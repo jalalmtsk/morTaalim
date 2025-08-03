@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/Aliens.dart';
 import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/AnimatedAvatars.dart';
 import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/Beams.dart';
+import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/FantasyAvatar.dart';
+import 'package:mortaalim/Shop/FunMojiTab/IndexFunMojiPage/RoyaltyAvatar.dart';
 
 
 import '../../XpSystem.dart';
@@ -33,7 +35,7 @@ class IndexFunMojiPage extends StatelessWidget {
               // 👇👇👇 TAB BAR SECTION HERE
               Expanded(
                 child: DefaultTabController(
-                  length: 6,
+                  length: 8,
                   child: Column(
                     children:  [
                       TabBar(
@@ -46,7 +48,9 @@ class IndexFunMojiPage extends StatelessWidget {
                           Tab(text: tr(context).avatar),
                           Tab(text: tr(context).beams),
                           Tab(text: tr(context).moji),
+                          Tab(text: 'Royalty'),
                           Tab(text: 'Babies'),
+                          Tab(text: 'Fantasy',),
                           Tab(text: tr(context).aliens),
                           Tab(text: tr(context).animated),
                         ],
@@ -57,7 +61,9 @@ class IndexFunMojiPage extends StatelessWidget {
                             AvatarCr(),
                             Beams(),
                             Moji(),  // 👈 You can define each tab's content
+                            Royalties(),
                             Babies(),
+                            FantasyAvatar(),
                             Aliens(),
                             AnimatedAvatars(),
                           ],

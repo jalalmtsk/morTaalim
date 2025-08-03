@@ -82,7 +82,7 @@ class _AnimatedXPBannerState extends State<AnimatedXPBanner>
                         width: 60,
                         height: 60,
                         child: Lottie.asset(
-                          'assets/animations/LvlUnlocked/MedalUnlocked.json',
+                          'assets/animations/UIBannerAnimations/XP.json',
                           repeat: false,
                         ),
                       ),
@@ -120,7 +120,7 @@ class _AnimatedXPBannerState extends State<AnimatedXPBanner>
                         width: 60,
                         height: 60,
                         child: Lottie.asset(
-                          'assets/animations/LvlUnlocked/MedalUnlocked.json',
+                          'assets/animations/UIBannerAnimations/XP.json',
                           repeat: false,
                         ),
                       ),

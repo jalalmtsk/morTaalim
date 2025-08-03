@@ -166,7 +166,7 @@
     "retry": "إعادة المحاولة",
     "next": "التالي",
     "letter": "حرف",
-    "secondsLeft": "ثوانٍ متبقية",
+    "secondsLeft": "ثٍ",
     "question": "سؤال",
     "addtofavorite": "أضف إلى المفضلة",
     "close": "إغلاق",
@@ -235,6 +235,7 @@
   "adFailedToLoadOrWasNotCompletedPleaseTryAgainLater": "فشل تحميل الإعلان أو لم يُكمل. يرجى المحاولة لاحقًا.",
   "outOfHearts": "نفدت القلوب!",
   "pay": "ادفع",
+  "chooseALanguage": "اختر لغة",
   "allCorrectAnwsersEqualOneTolim": "كل الإجابات الصحيحة تساوي توليم واحد",
   "youHaveNoHeartsLeftWhatWouldYouLikeToDo": "لم يعد لديك أي قلوب. ماذا تريد أن تفعل؟"
 

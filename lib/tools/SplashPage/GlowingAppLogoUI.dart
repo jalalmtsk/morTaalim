@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
 
 class GlowingLogo extends StatefulWidget {
   final String imagePath;
@@ -12,226 +13,141 @@ class GlowingLogo extends StatefulWidget {
 
 class _GlowingLogoState extends State<GlowingLogo>
     with SingleTickerProviderStateMixin {
-  late AnimationController _pulseController;
-  late Animation<double> _glowAnimation;
-  late Animation<double> _scaleAnimation;
+  late AnimationController _controller;
 
   @override
   void initState() {
     super.initState();
-
-    _pulseController = AnimationController(
+    _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 4),
     )..repeat(reverse: true);
-
-    _glowAnimation = Tween<double>(begin: 0.4, end: 1.0).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
-
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.05).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
   }
 
   @override
   void dispose() {
-    _pulseController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final baseSize = widget.size;
+    final size = widget.size;
 
     return AnimatedBuilder(
-      animation: _pulseController,
-      builder: (context, child) {
-        final glowOpacity = _glowAnimation.value;
-        final scale = _scaleAnimation.value;
+      animation: _controller,
+      builder: (context, _) {
+        final glowIntensity = 0.5 + 0.5 * _controller.value;
 
-        return Transform.scale(
-          scale: scale,
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              // Soft outer glow (modern aura effect)
-              Container(
-                width: baseSize * 1.8,
-                height: baseSize * 1.8,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.orangeAccent.withOpacity(glowOpacity * 0.4),
-                      blurRadius: 60,
-                      spreadRadius: 20,
-                    ),
-                    BoxShadow(
-                      color: Colors.deepOrange.withOpacity(glowOpacity * 0.2),
-                      blurRadius: 90,
-                      spreadRadius: 35,
-                    ),
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            // Smooth pulsing glow
+            Container(
+              width: size * 2,
+              height: size * 2,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    Colors.orange.withOpacity(glowIntensity * 0.3),
+                    Colors.deepOrange.withOpacity(0.0),
                   ],
+                  stops: const [0.5, 1.0],
                 ),
               ),
+            ),
 
-              // Logo image with subtle shadow (no ugly circles)
-              Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.orangeAccent.withOpacity(0.4),
-                      blurRadius: 20,
-                      spreadRadius: 5,
-                    ),
-                  ],
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    widget.imagePath,
-                    width: baseSize,
-                    height: baseSize,
-                    fit: BoxFit.cover,
+            // Subtle rotating particles (elegant effect)
+            ...List.generate(4, (i) {
+              final angle = (2 * pi / 4) * i + _controller.value * pi;
+              return Positioned(
+                left: size + cos(angle) * size * 0.9,
+                top: size + sin(angle) * size * 0.9,
+                child: Container(
+                  width: 6,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: Colors.orangeAccent.withOpacity(0.6),
+                    shape: BoxShape.circle,
                   ),
                 ),
+              );
+            }),
+
+            // Logo image
+            ClipOval(
+              child: Image.asset(
+                widget.imagePath,
+                width: size,
+                height: size,
+                fit: BoxFit.cover,
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );
   }
 }
 
-
-/// --- Elegant Progress Bar with shimmer & animated dots ---
-
-class ElegantProgressBar extends StatefulWidget {
+class ElegantProgressBar extends StatelessWidget {
   final double progress;
+  final String label;
 
-  const ElegantProgressBar({super.key, required this.progress});
-
-  @override
-  State<ElegantProgressBar> createState() => _ElegantProgressBarState();
-}
-
-class _ElegantProgressBarState extends State<ElegantProgressBar>
-    with TickerProviderStateMixin {
-  late AnimationController _dotsController;
-
-  @override
-  void initState() {
-    super.initState();
-    _dotsController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 900),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _dotsController.dispose();
-    super.dispose();
-  }
+  const ElegantProgressBar({
+    super.key,
+    required this.progress,
+    this.label = "Loading...",
+  });
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisSize: MainAxisSize.min,
       children: [
-        // Bouncing dots loader
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: List.generate(5, (index) {
-            return AnimatedBuilder(
-              animation: _dotsController,
-              builder: (context, child) {
-                double t = (_dotsController.value * 3 - index).clamp(0.0, 1.0);
-
-                // Bounce effect
-                double scale =
-                    0.7 + (0.4 * (1 - (t - 0.5).abs() * 2).clamp(0, 1));
-
-                // Fade effect
-                double opacity = (1 - (t - 0.5).abs() * 2).clamp(0, 1);
-
-                return Opacity(
-                  opacity: opacity,
-                  child: Transform.scale(
-                    scale: scale,
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
-                      width: 10,
-                      height: 10,
-                      decoration: const BoxDecoration(
-                        color: Colors.orange,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          }),
+        // Title Label
+        Text(
+          label,
+          style: const TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.orange,
+          ),
         ),
-
         const SizedBox(height: 10),
 
-        // Clean progress bar
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final progressWidth = constraints.maxWidth * widget.progress;
-
-            return Stack(
-              children: [
-                // Background track
-                Container(
-                  height: 22,
-                  decoration: BoxDecoration(
-                    color: Colors.orange.shade200.withValues(alpha: 0.25),
-                    borderRadius: BorderRadius.circular(50),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.orange.shade900.withValues(alpha: 0.15),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      )
-                    ],
-                  ),
-                ),
-
-                // Progress fill
-                AnimatedContainer(
+        // Progress Bar
+        Stack(
+          children: [
+            Container(
+              height: 22,
+              decoration: BoxDecoration(
+                color: Colors.orange.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(50),
+              ),
+            ),
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final width = constraints.maxWidth * progress;
+                return AnimatedContainer(
                   duration: const Duration(milliseconds: 400),
-                  width: progressWidth,
+                  width: width,
                   height: 22,
                   decoration: BoxDecoration(
                     gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFFFFA726),
-                        Color(0xFFF57C00),
-                      ],
+                      colors: [Color(0xFFFF9800), Color(0xFFF57C00)],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
                     ),
                     borderRadius: BorderRadius.circular(50),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.orangeAccent.withValues(alpha: 0.6),
-                        blurRadius: 15,
-                        spreadRadius: 1,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
                   ),
-                ),
-              ],
-            );
-          },
+                );
+              },
+            ),
+          ],
         ),
       ],
     );
   }
 }
+

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:mortaalim/FirstTouch/Testing.dart';
 import 'package:mortaalim/courses/primaire1Page/index_1PrimairePage.dart';
 import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
+import 'package:mortaalim/games/PuzzzleGame/Puzzle_Game.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
 import 'package:mortaalim/tasbiheTest.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
@@ -149,7 +151,7 @@ class _MyAppState extends State<MyApp> {
         'index1Primaire' : (context) => index1Primaire(),
 
         'Profile': (context) => const ProfileSetupPage(),
-        'Shop': (context) => MainShopPageIndex(),
+        'Shop': (context) => OnboardingFlow(),
         'Credits': (context) => CreditsPage(),
         'ComingSoon': (context) => ComingSoonPage(),
         'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

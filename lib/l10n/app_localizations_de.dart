@@ -423,7 +423,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get letter => 'Buchstabe';
 
   @override
-  String get secondsLeft => 'Sekunden übrig';
+  String get secondsLeft => 'S';
 
   @override
   String get question => 'Frage';
@@ -607,6 +607,9 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get pay => 'Bezahlen';
+
+  @override
+  String get chooseALanguage => 'Wähle eine Sprache';
 
   @override
   String get allCorrectAnwsersEqualOneTolim => 'Alle richtigen Antworten ergeben einen Tolim';

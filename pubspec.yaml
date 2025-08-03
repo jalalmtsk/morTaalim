@@ -63,6 +63,8 @@ dependencies:
   vibration: ^3.1.3
   gsheets: ^0.5.0
   flutter_staggered_animations: ^1.1.1
+  cloud_firestore: ^6.0.0
+  firebase_core: ^4.0.0
 
 
 flutter_launcher_icons:
@@ -116,15 +118,21 @@ flutter:
   - assets/images/AvatarImage/Beams/
   - assets/images/AvatarImage/Aliens/
   - assets/images/AvatarImage/Babies/
+  - assets/images/AvatarImage/OnlyAvatar/
+  - assets/images/AvatarImage/FantasyAvatars/
+  - assets/images/AvatarImage/RoyaltyAvatar/
   - assets/images/badges/
   - assets/images/Banners/
   - assets/images/Banners/Sci_FI_Banners/
   - assets/images/Banners/Islamic/
   - assets/images/Banners/CuteBr/
-  - assets/images/Banners/Joyful/
+  - assets/images/Banners/FantasyBanners/
+  - assets/images/Banners/RoyalBanners/
   - assets/images/UI/Buttons/
   - assets/images/UI/BackGrounds/
   - assets/images/UI/utilities/
+  - assets/images/Puzz/PuzzMainImages/
+  - assets/images/Puzz/Puzz1/Puzz1_3x3/
 
     #Videos
   - assets/videos/
@@ -149,6 +157,7 @@ flutter:
   - assets/animations/AnimatedAvatars/
   - assets/animations/QuizzGame_Animation/
   - assets/animations/LvlUnlocked/
+  - assets/animations/UIBannerAnimations/
 
 
   #   - images/a_dot_ham.jpeg
