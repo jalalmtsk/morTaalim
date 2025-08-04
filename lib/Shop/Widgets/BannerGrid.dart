@@ -98,18 +98,20 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
                           onFinish: () async {
                             overlayEntry?.remove();
 
-                            // Save the xpManager before any await to avoid issues
                             final localXpManager = xpManager;
 
-                            // Call these immediately, no await involved
+                            // Deduct stars
                             localXpManager.SpendStarBanner(context, cost);
+
+                            // Then unlock and select banner
                             localXpManager.unlockBanner(path);
                             localXpManager.selectBannerImage(path);
 
-                            // Delay without using context
+                            // Force save once to ensure correct state
+                            await localXpManager.syncWithFirebaseIfOnline();
+
                             await Future.delayed(const Duration(seconds: 1));
 
-                            // After await, check if still mounted before using context-dependent calls
                             if (!mounted) return;
 
                             localXpManager.addXP(25, context: context);
@@ -130,6 +132,7 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
                               if (mounted) setState(() => recentlyUnlockedIndex = null);
                             });
                           },
+
 
                           // Remove starIconKey parameter entirely here
                         ),

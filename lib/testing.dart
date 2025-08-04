@@ -13,7 +13,6 @@ class TestApp extends StatelessWidget {
       home: const GenderSelectionPage(),
       routes: {
         '/onboarding': (_) => const OnboardingChatPage(selectedGender: '',),
-        '/Index': (_) => Index(onChangeLocale: (local){ Locale('en');}),
       },
       debugShowCheckedModeBanner: false,
     );

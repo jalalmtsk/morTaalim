@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:mortaalim/XpSystem.dart'; // for ExperienceManager
 
 class LanguageMenu extends StatelessWidget {
-  final void Function(Locale) onChangeLocale;
   final Color colorButton;
 
-   LanguageMenu({super.key, required this.onChangeLocale, required this.colorButton});
+  const LanguageMenu({
+    super.key,
+    required this.colorButton,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +24,11 @@ class LanguageMenu extends StatelessWidget {
       color: Colors.white,
       elevation: 8,
       tooltip: 'Change Language',
-      onSelected: onChangeLocale,
+      onSelected: (locale) {
+        // ✅ Update locale via ExperienceManager
+        Provider.of<ExperienceManager>(context, listen: false)
+            .changeLanguage(locale);
+      },
       itemBuilder: (BuildContext context) => const [
         PopupMenuItem(value: Locale("en"), child: _LangRow("🇺🇸", "English")),
         PopupMenuItem(value: Locale("ar"), child: _LangRow("🇲🇦", "العربية")),

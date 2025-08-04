@@ -1,5 +1,3 @@
-// SplashPage.dart
-
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,14 +6,14 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/IndexPage.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:mortaalim/XpSystem.dart';
 import 'package:provider/provider.dart';
 
 import 'CompanyLogoScreen.dart';
 import 'LoadingScreen.dart';
 
 class SplashPage extends StatefulWidget {
-  final void Function(Locale) onChangeLocale;
-  const SplashPage({super.key, required this.onChangeLocale});
+  const SplashPage({super.key}); // ❌ Removed onChangeLocale
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -61,7 +59,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
     _logoFadeController.forward();
 
-    // Wait 3 seconds BEFORE showing the loading screen and starting loading tasks
     await Future.delayed(const Duration(seconds: 4));
 
     if (mounted) {
@@ -69,7 +66,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       _initializeApp();
     }
   }
-
 
   Future<void> _initializeApp() async {
     for (var i = 0; i < _tasks.length; i++) {
@@ -80,17 +76,21 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     if (mounted) {
       setState(() => _loadingComplete = true);
       await Future.delayed(const Duration(milliseconds: 500));
+
+      // ✅ Get language from ExperienceManager
+      final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+      debugPrint("Loaded language: ${xpManager.preferredLanguage}");
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => Index(onChangeLocale: widget.onChangeLocale),
+          builder: (_) => const Index(), // ✅ No callback needed
         ),
       );
     }
   }
 
-  Future<void> _runWithTimeout(String name,
-      Future<void> Function() action) async {
+  Future<void> _runWithTimeout(String name, Future<void> Function() action) async {
     debugPrint("Starting $name...");
     try {
       await action().timeout(const Duration(seconds: 4));
@@ -123,11 +123,17 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     controller.dispose();
   }
 
+  @override
+  void dispose() {
+    _logoFadeController.dispose();
+    _tts.stop();
+    super.dispose();
+  }
+
   Future<void> _preloadAssets() async {
     await precacheImage(const AssetImage('assets/icons/app_icon.png'), context);
     await rootBundle.load('assets/audios/SplashScreen_Audio/openingZoom.mp3');
-    await rootBundle.load(
-        'assets/audios/UI_Audio/SFX_Audio/CinematicStart_SFX.mp3');
+    await rootBundle.load('assets/audios/UI_Audio/SFX_Audio/CinematicStart_SFX.mp3');
     await rootBundle.load('assets/audios/AppLogoSound.mp3');
     await precacheImage(const AssetImage('assets/icons/logo3.png'), context);
   }
@@ -167,8 +173,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   }
 }
 
-
-  class _PreloadTask {
+class _PreloadTask {
   final String name;
   final Future<void> Function() action;
   _PreloadTask(this.name, this.action);

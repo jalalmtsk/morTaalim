@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -392,7 +393,19 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
                                 borderRadius: BorderRadius.circular(20)),
                           ),
                         ),
-                    ],
+
+    ElevatedButton(
+    onPressed: () async {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    if (userId != null) {
+    await Provider.of<ExperienceManager>(context, listen: false).onAppClose();
+    }
+    await FirebaseAuth.instance.signOut();
+    },
+    child: const Text("Se déconnecter"),
+    ),
+
+    ],
                   ),
                 ),
               ),

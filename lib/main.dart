@@ -1,11 +1,18 @@
+import 'package:cloud_firestore/cloud_firestore.dart' hide Index;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/FirstTouch/Testing.dart';
+import 'package:mortaalim/FirstTouch/UserInfoForm_Introduction.dart';
+import 'package:mortaalim/UserDataProfileEntering.dart';
 import 'package:mortaalim/courses/primaire1Page/index_1PrimairePage.dart';
+import 'package:mortaalim/firebase_options.dart';
 import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
 import 'package:mortaalim/games/PuzzzleGame/Puzzle_Game.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
+import 'package:mortaalim/loginTest.dart';
 import 'package:mortaalim/tasbiheTest.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 
@@ -24,6 +31,7 @@ import 'package:mortaalim/games/WordExplorer/WordExplorerPage.dart';
 import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
 import 'package:mortaalim/profileSetupPage.dart';
+import 'package:mortaalim/tools/ConnectivityManager/Connectivity_Manager.dart';
 import 'package:mortaalim/tools/LifeCycleManager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/MusicRouteObserver.dart';
@@ -39,10 +47,10 @@ import 'IndexPage.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
 
+import 'package:mortaalim/loginTest.dart'; // Ajoute cet import
 
 final String appVersion = "1.0.0 (Build 1)";
 
-Locale _locale = const Locale('fr'); // default locale
 late SharedPreferences prefs;
 AppLocalizations tr(BuildContext context) => AppLocalizations.of(context)!;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -51,10 +59,16 @@ final MusicRouteObserver routeObserver = MusicRouteObserver();
 
 // Create ONE AudioManager instance here, globally:
 final AudioManager  audioManager = AudioManager();
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+
+  // Firebase Initialisation
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
   // Lock orientation to portrait only
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
@@ -66,11 +80,16 @@ void main() async {
   prefs = await SharedPreferences.getInstance();
   AdHelper.initializeAds();
 
+  final xpManager = ExperienceManager();
+
+  await xpManager.loadData();
+  await xpManager.initUser();
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: audioManager),  // Provide the global instance here
-        ChangeNotifierProvider(create: (_) => ExperienceManager()),
+        ChangeNotifierProvider.value(value: xpManager),
+        ChangeNotifierProvider(create: (_) => ConnectivityService()),
       ],
         child: AppLifecycleManager( child: MyApp(),
         )
@@ -84,95 +103,112 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Future<void> _loadSavedLocale() async {
-    final savedCode = prefs.getString('locale_code');
-    if (savedCode != null) {
-      setState(() {
-        _locale = Locale(savedCode);
-      });
-    }
-  }
 
-  void _changeLanguage(Locale locale) async {
-    await prefs.setString('locale_code', locale.languageCode);
-    setState(() {
-      _locale = locale;
-    });
-  }
+
 
   @override
   void initState() {
     super.initState();
-    _loadSavedLocale();
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorKey: navigatorKey, // ✅ Add this
-      theme: ThemeData(
-        primaryColor: Colors.white,
-        appBarTheme: AppBarTheme(
-          backgroundColor: Colors.orangeAccent.shade100.withAlpha(80),
-        ),
-        cardColor: Colors.orangeAccent.withAlpha(230),
-        textTheme: const TextTheme(
-          titleLarge: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-          titleMedium: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-        ),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(backgroundColor: Colors.orangeAccent),
-        ),
-      ),
-      debugShowCheckedModeBanner: true,
+    return Consumer<ExperienceManager>(
+      builder: (context, xpManager, child) {
+        final currentLocale = Locale(xpManager.preferredLanguage);
 
-      navigatorObservers: [routeObserver],
-      routes: {
-        'Index': (context) => Index(onChangeLocale: _changeLanguage),
-
-        //Game Routes
-        'DrawingAlphabet': (context) => LanguageSelectorPage(onChangeLocale: _changeLanguage),
-        'QuizGameApp': (context) => const QuizGameApp(),
-        'AppStories': (context) => StoriesGridPage(stories: stories),
-        'ShapeSorter': (context) => const ShapeSorterApp(),
-        'Piano': (context) => const PianoModeSelector(),
-        'PlaneDestroyer': (context) => const SpeedBomb(),
-        'WordLink': (context) => const WordBoardGame(),
-        'IQGame': (context) => const IQTestApp(),
-        "MagicPainting": (context) => DrawingIndex(),
-        "JumpingBoard": (context) => const JumpingBoard(),
-        "WordExplorer": (context) => WordExplorer(),
-        'FavoriteWords': (context) => const FavoriteWordsPage(),
-        "SugarSmash": (context) => const Sugrasmash(),
-        "BreakingWalls": (context) => BreakingWalls(),
-
-
-
-        'index1Primaire' : (context) => index1Primaire(),
-
-        'Profile': (context) => const ProfileSetupPage(),
-        'Shop': (context) => OnboardingFlow(),
-        'Credits': (context) => CreditsPage(),
-        'ComingSoon': (context) => ComingSoonPage(),
-        'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),
-        'Splash': (context) => SplashPage(onChangeLocale: _changeLanguage),
-        "Testing": (context) => TestApp(),
+        return MaterialApp(
+          navigatorKey: navigatorKey,
+          theme: ThemeData(
+            primaryColor: Colors.white,
+            appBarTheme: AppBarTheme(
+              backgroundColor: Colors.orangeAccent.shade100.withAlpha(80),
+            ),
+            cardColor: Colors.orangeAccent.withAlpha(230),
+            textTheme: const TextTheme(
+              titleLarge: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+              titleMedium: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.orangeAccent),
+            ),
+          ),
+          debugShowCheckedModeBanner: true,
+          navigatorObservers: [routeObserver],
+          routes: {
+            'Index': (context) => Index(),
+            'DrawingAlphabet': (context) => LanguageSelectorPage(onChangeLocale: _changeLanguage),
+            'QuizGameApp': (context) => const QuizGameApp(),
+            'AppStories': (context) => StoriesGridPage(stories: stories),
+            'ShapeSorter': (context) => const ShapeSorterApp(),
+            'Piano': (context) => const PianoModeSelector(),
+            'PlaneDestroyer': (context) => const SpeedBomb(),
+            'WordLink': (context) => const WordBoardGame(),
+            'IQGame': (context) => const IQTestApp(),
+            "MagicPainting": (context) => DrawingIndex(),
+            "JumpingBoard": (context) => const JumpingBoard(),
+            "WordExplorer": (context) => WordExplorer(),
+            'FavoriteWords': (context) => const FavoriteWordsPage(),
+            "SugarSmash": (context) => const Sugrasmash(),
+            "BreakingWalls": (context) => BreakingWalls(),
+            'index1Primaire': (context) => index1Primaire(),
+            'Profile': (context) => const ProfileSetupPage(),
+            'Shop': (context) => MainShopPageIndex(),
+            'Credits': (context) => CreditsPage(),
+            'ComingSoon': (context) => ComingSoonPage(),
+            'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),
+            'Splash': (context) => SplashPage(),
+            "Testing": (context) => TestApp(),
+            "Auth": (context) => AuthGate(),
+          },
+          localizationsDelegates: const [
+            AppLocalizations.delegate,
+            GlobalMaterialLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale("fr"),
+            Locale("ar"),
+            Locale("en"),
+            Locale("de"),
+          ],
+          locale: currentLocale,
+          initialRoute: 'Auth',
+        );
       },
+    );
+  }
 
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale("fr"),
-        Locale("ar"),
-        Locale("en"),
-        Locale("de"),
-      ],
-      locale: _locale,
-      initialRoute: 'Splash',
+  void _changeLanguage(Locale locale) {
+    Provider.of<ExperienceManager>(navigatorKey.currentContext!, listen: false)
+        .setPreferredLanguage(locale.languageCode);
+  }
+
+}
+
+
+class AuthGate extends StatelessWidget {
+  const AuthGate({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasData) {
+          final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+          if (xpManager.lastLogin == null || xpManager.lastLogin!.isBefore(DateTime.now().subtract(const Duration(seconds: 2)))) {
+            xpManager.onAppStart(snapshot.data!.uid);
+          }
+          return const SplashPage(); // ✅ no more callback
+        } else {
+          return LoginPage();
+        }
+      },
     );
   }
 }

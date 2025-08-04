@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
-
 import 'package:mortaalim/Settings/setting_Page.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/Settings/SettingPanelInGame.dart';
@@ -11,7 +10,6 @@ import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
 import 'package:mortaalim/widgets/profile_page.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'XpSystem.dart';
 import 'indexPage_tools/Course_index_tool/course_index.dart';
@@ -19,11 +17,11 @@ import 'indexPage_tools/Game_index_tool/game_index.dart';
 import 'indexPage_tools/language_menu.dart';
 import 'main.dart';
 
-final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+final RouteObserver<ModalRoute<void>> routeObserver =
+RouteObserver<ModalRoute<void>>();
 
 class Index extends StatefulWidget {
-  final void Function(Locale) onChangeLocale;
-  const Index({super.key, required this.onChangeLocale});
+  const Index({super.key}); // ❌ Removed onChangeLocale
 
   @override
   State<Index> createState() => _IndexState();
@@ -31,13 +29,9 @@ class Index extends StatefulWidget {
 
 class _IndexState extends State<Index>
     with TickerProviderStateMixin, WidgetsBindingObserver, RouteAware {
-
   BannerAd? _bannerAd;
-
   bool _isBannerAdLoaded = false;
-
   late TabController _tabController;
-  String childName = "Player";
 
   late final AnimationController _profileAnimController;
   late final Animation<Offset> _profileSlideAnimation;
@@ -50,19 +44,19 @@ class _IndexState extends State<Index>
 
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
     final audioManager = Provider.of<AudioManager>(context, listen: false);
-    audioManager.playBackgroundMusic("assets/audios/BackGround_Audio/IndexBackGroundMusic_BCG.mp3");
+
+    audioManager.playBackgroundMusic(
+        "assets/audios/BackGround_Audio/IndexBackGroundMusic_BCG.mp3");
     xpManager.init(context);
 
     _tabController = TabController(length: 4, vsync: this);
 
-    // Add listener to detect tab changes
+    // Play sound on tab change
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
-        audioManager.playEventSound('clickButton'); // Play sound on tab change
+        audioManager.playEventSound('clickButton');
       }
     });
-
-    _loadProfile();
 
     _profileAnimController = AnimationController(
       vsync: this,
@@ -72,14 +66,15 @@ class _IndexState extends State<Index>
     _profileSlideAnimation = Tween<Offset>(
       begin: const Offset(-2, 0),
       end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _profileAnimController,
-      curve: Curves.easeOut,
-    ));
+    ).animate(
+      CurvedAnimation(
+        parent: _profileAnimController,
+        curve: Curves.easeOut,
+      ),
+    );
 
     _profileAnimController.forward();
   }
-
 
   void _loadBannerAd() {
     _bannerAd?.dispose();
@@ -105,7 +100,6 @@ class _IndexState extends State<Index>
     routeObserver.subscribe(this, ModalRoute.of(context)! as PageRoute);
   }
 
-
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -114,14 +108,6 @@ class _IndexState extends State<Index>
     _profileAnimController.dispose();
     _bannerAd?.dispose();
     super.dispose();
-  }
-
-
-  void _loadProfile() async {
-    final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      childName = prefs.getString('name') ?? "Player";
-    });
   }
 
   Widget _buildAvatar(String avatarPath) {
@@ -177,10 +163,10 @@ class _IndexState extends State<Index>
       appBar: AppBar(
         backgroundColor: Colors.deepOrangeAccent.withAlpha(220),
         leading: LanguageMenu(
-          onChangeLocale: widget.onChangeLocale,
-          colorButton: Colors.white,
+          colorButton: Colors.white, // ✅ No callback needed
         ),
-        title: Text(tr(context).welcome, style: const TextStyle(color: Colors.white)),
+        title: Text(tr(context).welcome,
+            style: const TextStyle(color: Colors.white)),
         centerTitle: true,
         actions: [
           IconButton(
@@ -203,7 +189,7 @@ class _IndexState extends State<Index>
               showDialog(
                 barrierDismissible: false,
                 context: context,
-                barrierColor: Colors.black.withValues(alpha: 0.3), // Semi-transparent overlay
+                barrierColor: Colors.black.withValues(alpha: 0.3),
                 builder: (BuildContext context) {
                   return const SettingsDialog();
                 },
@@ -216,14 +202,15 @@ class _IndexState extends State<Index>
           controller: _tabController,
           indicatorColor: Colors.white,
           labelColor: Colors.white,
-          labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          labelStyle:
+          const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           unselectedLabelColor: Colors.white30,
           unselectedLabelStyle: const TextStyle(fontSize: 13),
           tabs: [
             Tab(icon: const Icon(Icons.school_outlined), text: tr(context).courses),
             Tab(icon: const Icon(Icons.videogame_asset), text: tr(context).games),
-            Tab(icon: Icon(Icons.computer), text: "IT"),
-            Tab(icon: Icon(Icons.menu_book), text: "Islam"),
+            const Tab(icon: Icon(Icons.computer), text: "IT"),
+            const Tab(icon: Icon(Icons.menu_book), text: "Islam"),
           ],
         ),
       ),
@@ -266,14 +253,7 @@ class _IndexState extends State<Index>
                                 onTap: () {
                                   audioManager.playEventSound('clickButton');
                                   Navigator.of(context)
-                                      .push(createFadeRoute(ProfilePage(
-                                    initialName: childName,
-                                    initialAvatar: avatarEmoji,
-                                    initialAge: 13,
-                                    initialColor: Colors.red,
-                                    initialMood: "Happy",
-                                  )))
-                                      .then((_) => _loadProfile());
+                                      .push(createFadeRoute(ProfilePage()));
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(1.0),
@@ -287,21 +267,17 @@ class _IndexState extends State<Index>
                               child: InkWell(
                                 onTap: () {
                                   audioManager.playEventSound('clickButton');
-                                  Navigator.of(context)
-                                      .pushNamed('Profile')
-                                      .then((_) => _loadProfile());
+                                  Navigator.of(context).pushNamed('Profile');
                                 },
                                 child: Text(
-                                  (childName == "Player" || childName.isEmpty)
+                                  (xpManager.fullName.isEmpty || xpManager.fullName == "Player")
                                       ? "${tr(context).enterName} ✏️"
-                                      : childName,
+                                      : xpManager.fullName,
                                   style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
-                                    shadows: [
-                                      Shadow(blurRadius: 3, color: Colors.black)
-                                    ],
+                                    shadows: [Shadow(blurRadius: 3, color: Colors.black)],
                                   ),
                                 ),
                               ),
@@ -342,33 +318,30 @@ class _IndexState extends State<Index>
                                       )
                                     ],
                                   ),
-
                                   const SizedBox(width: 10),
-
                                   Column(
                                     children: [
-                                   IconButton(
-                                       onPressed: () {
-                                         audioManager.playEventSound('clickButton');
-                                         Navigator.of(context)
-                                             .pushNamed('Profile')
-                                             .then((_) => _loadProfile());
-                                       },
-                                       icon: Icon(Icons.edit_note,
-                                         color: Colors.white,size: 30,)),
-                                   IconButton(
-                                       onPressed: () {
-                                         audioManager.playEventSound('clickButton');
-                                        AdHelper.showRewardedAdWithLoading(context, ()  {
-                                         Provider.of<ExperienceManager>(context, listen: false).addTokenBanner(context,2);
-                                       });
+                                      IconButton(
+                                        onPressed: () {
+                                          audioManager.playEventSound('clickButton');
+                                          Navigator.of(context).pushNamed('Profile');
                                         },
-                                       icon: Icon(Icons.ads_click,
-                                         color: Colors.white,size: 32,)),
-
+                                        icon: const Icon(Icons.edit_note,
+                                            color: Colors.white, size: 30),
+                                      ),
+                                      IconButton(
+                                        onPressed: () {
+                                          audioManager.playEventSound('clickButton');
+                                          AdHelper.showRewardedAdWithLoading(context, () {
+                                            Provider.of<ExperienceManager>(context, listen: false)
+                                                .addTokenBanner(context, 2);
+                                          });
+                                        },
+                                        icon: const Icon(Icons.ads_click,
+                                            color: Colors.white, size: 32),
+                                      ),
                                     ],
                                   ),
-
                                 ],
                               ),
                             ),
@@ -391,7 +364,9 @@ class _IndexState extends State<Index>
                   ],
                 ),
               ),
-              (context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded)
+              (context.watch<ExperienceManager>().adsEnabled &&
+                  _bannerAd != null &&
+                  _isBannerAdLoaded)
                   ? SafeArea(
                 child: Align(
                   alignment: Alignment.bottomCenter,
@@ -403,12 +378,10 @@ class _IndexState extends State<Index>
                 ),
               )
                   : const SizedBox.shrink(),
-
             ],
           ),
         ),
       ),
-
     );
   }
 }

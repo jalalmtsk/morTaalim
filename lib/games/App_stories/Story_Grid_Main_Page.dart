@@ -153,7 +153,7 @@ class _StoriesGridPageState extends State<StoriesGridPage>
             children: [
               // Local image
               Image.asset(
-                story.thumbnail ?? 'assets/images/placeholder.png',
+                story.thumbnail ?? 'assets/images/et.png',
                 fit: BoxFit.cover,
               ),
               // Dark gradient overlay for readability
@@ -217,7 +217,7 @@ class _StoriesGridPageState extends State<StoriesGridPage>
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Image.asset(
-                "assets/images/ents.png",
+                "assets/images/et.png",
                 fit: BoxFit.cover,
                 scale: 0.9,
               ),

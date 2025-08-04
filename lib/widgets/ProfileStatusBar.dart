@@ -5,17 +5,15 @@ import '../XpSystem.dart';
 import 'package:provider/provider.dart';
 
 class ProfileStatusBar extends StatelessWidget {
-  final String playerName;
-  final VoidCallback onEditName;
+
 
   const ProfileStatusBar({
     Key? key,
-    required this.playerName,
-    required this.onEditName,
   }) : super(key: key);
 
   Widget _buildSimpleAvatar(String name) {
     final initial = name.isNotEmpty ? name[0].toUpperCase() : "?";
+
     return CircleAvatar(
       radius: 35,
       backgroundColor: Colors.deepOrange.shade300,
@@ -30,6 +28,7 @@ class ProfileStatusBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
     final audioManager = Provider.of<AudioManager>(context, listen: false);
+    final playerName = xpManager.fullName;
     final banner = xpManager.selectedBannerImage;
     final stars = xpManager.stars;
     final tokens = xpManager.saveTokenCount;

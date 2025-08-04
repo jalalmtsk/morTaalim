@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1083672847922",
+    "project_id": "moortaalim-58b73",
+    "storage_bucket": "moortaalim-58b73.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1083672847922:android:eef60daf141168ce05be2b",
+        "android_client_info": {
+          "package_name": "com.example.mortaalim"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMmcn9StYu22k_kPPBxyVG7SqQD9PYPtA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
