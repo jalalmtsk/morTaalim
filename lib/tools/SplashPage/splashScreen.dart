@@ -9,6 +9,7 @@ import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/XpSystem.dart';
 import 'package:provider/provider.dart';
 
+import '../../FirstTouch/UserInfoForm_Introduction.dart';
 import 'CompanyLogoScreen.dart';
 import 'LoadingScreen.dart';
 
@@ -77,18 +78,23 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       setState(() => _loadingComplete = true);
       await Future.delayed(const Duration(milliseconds: 500));
 
-      // ✅ Get language from ExperienceManager
       final xpManager = Provider.of<ExperienceManager>(context, listen: false);
       debugPrint("Loaded language: ${xpManager.preferredLanguage}");
+
+      // ✅ Check if onboarding is needed
+      final bool needsOnboarding = xpManager.isFirstLogin;
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (_) => const Index(), // ✅ No callback needed
+          builder: (_) => needsOnboarding
+              ? const UserInfoFormFlow() // 👈 Go to onboarding
+              : const Index(),          // 👈 Or go to main index page
         ),
       );
     }
   }
+
 
   Future<void> _runWithTimeout(String name, Future<void> Function() action) async {
     debugPrint("Starting $name...");

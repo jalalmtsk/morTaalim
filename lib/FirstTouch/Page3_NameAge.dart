@@ -1,105 +1,138 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../XpSystem.dart';
 
 class NameAgePage extends StatefulWidget {
-  const NameAgePage({Key? key}) : super(key: key);
+  final VoidCallback? onNext;
+
+  const NameAgePage({Key? key, this.onNext}) : super(key: key);
 
   @override
   State<NameAgePage> createState() => _NameAgePageState();
 }
 
-class _NameAgePageState extends State<NameAgePage> {
+class _NameAgePageState extends State<NameAgePage>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
 
-  final List<String> _languages = ['English', 'Français', 'العربية', 'Español'];
-  int? _selectedLanguageIndex;
-
-  bool _isSaving = false;
   String? _errorMessage;
 
-  final Color _primaryColor = Colors.deepOrange.shade700;
+  late AnimationController _gradientController;
+  int currentGradientIndex = 0;
+
+  bool _isFormValid = false;
+
+  final List<List<Color>> gradientSets = [
+    [const Color(0xFF6DD5FA), const Color(0xFF2980B9)], // Bleu doux
+    [const Color(0xFFFFD194), const Color(0xFFD1913C)], // Or chaud
+    [const Color(0xFFB2FEFA), const Color(0xFF0ED2F7)], // Turquoise clair
+  ];
 
   @override
   void initState() {
     super.initState();
     _loadProfile();
+
+    _nameController.addListener(_validateForm);
+    _ageController.addListener(_validateForm);
+
+    _gradientController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 6),
+    )..addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          currentGradientIndex =
+              (currentGradientIndex + 1) % gradientSets.length;
+        });
+        _gradientController.forward(from: 0);
+      }
+    });
+
+    _gradientController.forward();
+  }
+
+  void _validateForm() {
+    final nameValid = _nameController.text.trim().isNotEmpty;
+    final ageText = _ageController.text.trim();
+    final ageValid =
+        ageText.isNotEmpty && int.tryParse(ageText) != null && int.parse(ageText) > 0;
+
+    final isValid = nameValid && ageValid;
+
+    if (isValid != _isFormValid) {
+      setState(() {
+        _isFormValid = isValid;
+      });
+    }
   }
 
   Future<void> _loadProfile() async {
     final prefs = await SharedPreferences.getInstance();
-    final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
+    final experienceManager =
+    Provider.of<ExperienceManager>(context, listen: false);
 
     final savedName = prefs.getString('name') ?? experienceManager.fullName;
     final savedAge = prefs.getInt('age') ?? experienceManager.age;
-    final savedLanguage = prefs.getInt('languageIndex');
 
-    // Update provider and UI
     experienceManager.setFullName(savedName);
     experienceManager.setAge(savedAge);
 
     setState(() {
       _nameController.text = savedName;
       _ageController.text = (savedAge > 0) ? savedAge.toString() : '';
-      _selectedLanguageIndex = savedLanguage;
     });
+
+    // Validate form after loading
+    _validateForm();
   }
 
-  Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) {
-      setState(() {
-        _errorMessage = "Please fill all fields correctly.";
-      });
-      return;
-    }
-    if (_selectedLanguageIndex == null) {
-      setState(() {
-        _errorMessage = "Please select a language.";
-      });
-      return;
-    }
-
+  /// Appelle cette méthode avant de passer à la page suivante
+  /// Retourne true si la sauvegarde a réussi et les données sont valides
+  Future<bool> saveData() async {
     setState(() {
       _errorMessage = null;
-      _isSaving = true;
     });
 
+    if (!_formKey.currentState!.validate()) {
+      setState(() {
+        _errorMessage = "Veuillez remplir correctement tous les champs.";
+      });
+      return false;
+    }
+
     try {
-      final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
+      final experienceManager =
+      Provider.of<ExperienceManager>(context, listen: false);
       final prefs = await SharedPreferences.getInstance();
 
       final name = _nameController.text.trim();
       final age = int.parse(_ageController.text.trim());
 
-      // Save to SharedPreferences
       await prefs.setString('name', name);
       await prefs.setInt('age', age);
-      await prefs.setInt('languageIndex', _selectedLanguageIndex!);
 
-      // Update provider
       experienceManager.setFullName(name);
       experienceManager.setAge(age);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Information saved successfully!")),
-      );
+      return true;
     } catch (e) {
       setState(() {
-        _errorMessage = "Error saving data: $e";
+        _errorMessage = "Erreur lors de la sauvegarde des données : $e";
       });
-    } finally {
-      setState(() {
-        _isSaving = false;
-      });
+      return false;
     }
   }
 
   @override
   void dispose() {
+    _gradientController.dispose();
+    _nameController.removeListener(_validateForm);
+    _ageController.removeListener(_validateForm);
     _nameController.dispose();
     _ageController.dispose();
     super.dispose();
@@ -107,107 +140,177 @@ class _NameAgePageState extends State<NameAgePage> {
 
   @override
   Widget build(BuildContext context) {
+    final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("User Information"),
-        backgroundColor: _primaryColor,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              if (_errorMessage != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Text(
-                    _errorMessage!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
-                ),
+      body: AnimatedBuilder(
+        animation: _gradientController,
+        builder: (context, _) {
+          final colors = List<Color>.generate(
+            2,
+                (i) => Color.lerp(
+              gradientSets[currentGradientIndex][i],
+              gradientSets[nextIndex][i],
+              _gradientController.value,
+            )!,
+          );
 
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: "Full Name"),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Please enter your name.";
-                  }
-                  return null;
-                },
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: colors,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
+            ),
+            child: SafeArea(
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Form(
+                      key: _formKey,
+                      child: ListView(
+                        children: [
+                          // Place pour animation Lottie en haut
+                          SizedBox(
+                            height: 300,
+                            child: Center(
+                              child: Lottie.asset(
+                                'assets/animations/FirstTouchAnimations/Learning.json',
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
 
-              const SizedBox(height: 16),
+                          const SizedBox(height: 20),
 
-              TextFormField(
-                controller: _ageController,
-                decoration: const InputDecoration(labelText: "Age"),
-                keyboardType: TextInputType.number,
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Please enter your age.";
-                  }
-                  final age = int.tryParse(value.trim());
-                  if (age == null || age <= 0) {
-                    return "Please enter a valid age.";
-                  }
-                  return null;
-                },
-              ),
+                          const Text(
+                            "Faisons connaissance",
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 8,
+                                  color: Colors.black38,
+                                  offset: Offset(0, 2),
+                                )
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
 
-              const SizedBox(height: 24),
+                          const SizedBox(height: 10),
 
-              Text(
-                "Select Language",
-                style: TextStyle(fontWeight: FontWeight.bold, color: _primaryColor, fontSize: 16),
-              ),
-              const SizedBox(height: 8),
+                          Text(
+                            "Remplissez vos informations pour personnaliser votre expérience.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white.withOpacity(0.9),
+                            ),
+                          ),
 
-              Wrap(
-                spacing: 12,
-                children: List.generate(_languages.length, (index) {
-                  final selected = _selectedLanguageIndex == index;
-                  return ChoiceChip(
-                    label: Text(
-                      _languages[index],
-                      style: TextStyle(
-                        color: selected ? Colors.white : _primaryColor,
-                        fontWeight: selected ? FontWeight.bold : FontWeight.normal,
+                          const SizedBox(height: 40),
+
+                          if (_errorMessage != null)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(color: Colors.red),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+
+                          _buildInputField(
+                            controller: _nameController,
+                            label: "Nom complet",
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return "Veuillez saisir votre nom.";
+                              }
+                              return null;
+                            },
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          _buildInputField(
+                            controller: _ageController,
+                            label: "Âge",
+                            keyboardType: TextInputType.number,
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return "Veuillez saisir votre âge.";
+                              }
+                              final age = int.tryParse(value.trim());
+                              if (age == null || age <= 0) {
+                                return "Veuillez saisir un âge valide.";
+                              }
+                              return null;
+                            },
+                          ),
+                        ],
                       ),
                     ),
-                    selected: selected,
-                    selectedColor: _primaryColor,
-                    backgroundColor: _primaryColor.withOpacity(0.1),
-                    onSelected: (_) {
-                      setState(() {
-                        _selectedLanguageIndex = index;
-                      });
-                    },
-                  );
-                }),
-              ),
+                  ),
 
-              const SizedBox(height: 36),
-
-              ElevatedButton(
-                onPressed: _isSaving ? null : _submit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _primaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                child: _isSaving
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                  "Save & Continue",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
+                  if (_isFormValid)
+                    Positioned(
+                      bottom: 20,
+                      right: 20,
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.deepOrange,
+                        onPressed: () async {
+                          final success = await saveData();
+                          if (success) {
+                            widget.onNext?.call();
+                          }
+                        },
+                        child: const Icon(Icons.arrow_forward, size: 28),
+                        elevation: 6,
+                      ),
+                    ),
+                ],
               ),
-            ],
-          ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    TextInputType keyboardType = TextInputType.text,
+    String? Function(String?)? validator,
+  }) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.7)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.white),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red),
         ),
       ),
+      validator: validator,
     );
   }
 }

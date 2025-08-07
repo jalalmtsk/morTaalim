@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/FirstTouch/Testing.dart';
 import 'package:mortaalim/FirstTouch/UserInfoForm_Introduction.dart';
 import 'package:mortaalim/UserDataProfileEntering.dart';
@@ -12,7 +14,6 @@ import 'package:mortaalim/firebase_options.dart';
 import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
 import 'package:mortaalim/games/PuzzzleGame/Puzzle_Game.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
-import 'package:mortaalim/loginTest.dart';
 import 'package:mortaalim/tasbiheTest.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 
@@ -47,7 +48,7 @@ import 'IndexPage.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
 
-import 'package:mortaalim/loginTest.dart'; // Ajoute cet import
+import 'package:mortaalim/Authentification/LogIn.dart'; // Ajoute cet import
 
 final String appVersion = "1.0.0 (Build 1)";
 
@@ -83,7 +84,6 @@ void main() async {
   final xpManager = ExperienceManager();
 
   await xpManager.loadData();
-  await xpManager.initUser();
   runApp(
     MultiProvider(
       providers: [
@@ -153,7 +153,8 @@ class _MyAppState extends State<MyApp> {
             "BreakingWalls": (context) => BreakingWalls(),
             'index1Primaire': (context) => index1Primaire(),
             'Profile': (context) => const ProfileSetupPage(),
-            'Shop': (context) => MainShopPageIndex(),
+
+            'Shop': (context) => UserInfoFormFlow(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),
@@ -187,28 +188,3 @@ class _MyAppState extends State<MyApp> {
 
 }
 
-
-class AuthGate extends StatelessWidget {
-  const AuthGate({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snapshot.hasData) {
-          final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-          if (xpManager.lastLogin == null || xpManager.lastLogin!.isBefore(DateTime.now().subtract(const Duration(seconds: 2)))) {
-            xpManager.onAppStart(snapshot.data!.uid);
-          }
-          return const SplashPage(); // ✅ no more callback
-        } else {
-          return LoginPage();
-        }
-      },
-    );
-  }
-}

@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../AppGlobal.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
+import '../../Authentification/LinkToGoogle.dart';
+import '../../Authentification/LogOut.dart';
 import '../../XpSystem.dart';
 import '../../main.dart';
 import '../../tools/audio_tool/Audio_Manager.dart';
@@ -64,6 +67,8 @@ class LanguageSelectorPage extends StatelessWidget {
         cost: 15,
       ),
     ];
+
+    final user = FirebaseAuth.instance.currentUser;
 
     return Scaffold(
       body: SafeArea(
@@ -235,7 +240,34 @@ class LanguageSelectorPage extends StatelessWidget {
                     ),
                   ),
                 ),
+                DisconnectButton(
+                  onSignedOut: () {
+                    print("User signed out!");
+                    // Do any other cleanup if needed
+                  },
+                ),
 
+                if (user != null && user.isAnonymous)
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      icon: const Icon(Icons.login),
+                      label: const Text(
+                        "Lier compte Google",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (_) => const LinkGoogleAccountPage()),
+                        );
+                      },
+                    ),
+                  ),
               ],
             ),
           ],

@@ -1,114 +1,225 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 
 class WelcomePage extends StatefulWidget {
-  const WelcomePage({Key? key}) : super(key: key);
+  final VoidCallback onGetStarted;
+
+  const WelcomePage({Key? key, required this.onGetStarted}) : super(key: key);
 
   @override
   State<WelcomePage> createState() => _WelcomePageState();
 }
 
-class _WelcomePageState extends State<WelcomePage> with SingleTickerProviderStateMixin {
+class _WelcomePageState extends State<WelcomePage>
+    with TickerProviderStateMixin {
   late AnimationController _animationController;
-  late Animation<double> _iconAnimation;
-  late Animation<double> _textFadeAnimation;
+  late AnimationController _gradientController;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _slideAnimation;
+
+  List<List<Color>> gradientSets = [
+    [const Color(0xFF6A11CB), const Color(0xFF2575FC)], // Purple → Blue
+    [const Color(0xFF43E97B), const Color(0xFF38F9D7)], // Green → Cyan
+    [const Color(0xFFFF6FD8), const Color(0xFFFF9068)], // Pink → Orange
+  ];
+
+  int currentGradientIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
+    // Fade and slide animations
     _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 2),
     );
 
-    _iconAnimation = Tween<double>(begin: 0.8, end: 1.2).animate(
-      CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
+    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: const Interval(0.4, 1.0, curve: Curves.easeIn),
+      ),
     );
 
-    _textFadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(parent: _animationController, curve: const Interval(0.5, 1.0, curve: Curves.easeIn)),
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.2),
+      end: Offset.zero,
+    ).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeOut,
+      ),
     );
 
-    _animationController.repeat(reverse: true);
+    _animationController.forward();
+
+    // Gradient background animation
+    _gradientController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 6),
+    )..addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          currentGradientIndex =
+              (currentGradientIndex + 1) % gradientSets.length;
+        });
+        _gradientController.forward(from: 0);
+      }
+    });
+
+    _gradientController.forward();
   }
 
   @override
   void dispose() {
     _animationController.dispose();
+    _gradientController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final primaryColor = Colors.deepOrange.shade600;
+    final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
 
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [primaryColor.withOpacity(0.9), Colors.orange.shade100],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-      ),
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ScaleTransition(
-                scale: _iconAnimation,
-                child: Icon(
-                  Icons.auto_awesome,
-                  size: 130,
-                  color: Colors.white,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 12,
-                      color: Colors.orange.shade900,
-                      offset: Offset(0, 6),
-                    )
+    return Scaffold(
+      body: AnimatedBuilder(
+        animation: _gradientController,
+        builder: (context, child) {
+          final colors = List<Color>.generate(
+            2,
+                (index) => Color.lerp(
+              gradientSets[currentGradientIndex][index],
+              gradientSets[nextIndex][index],
+              _gradientController.value,
+            )!,
+          );
+
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: colors,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Lottie animation
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.08),
+                            blurRadius: 20,
+                            offset: const Offset(0, 8),
+                          ),
+                        ],
+                      ),
+                      child: Lottie.asset(
+                        'assets/animations/FirstTouchAnimations/Welcome.json',
+                        width: 220,
+                        height: 220,
+                        repeat: true,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Title animation
+                    FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: SlideTransition(
+                        position: _slideAnimation,
+                        child: const Text(
+                          'Bienvenue dans votre nouvelle aventure',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.8,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 8,
+                                color: Colors.black26,
+                                offset: Offset(0, 3),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Subtitle
+                    FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: Text(
+                        'Découvrez, apprenez et progressez avec nous.\nEnsemble, rendons la connaissance amusante et accessible !',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withOpacity(0.95),
+                          height: 1.5,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 50),
+
+                    // Gradient button
+                    FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF43E97B), Color(0xFF38F9D7)],
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black26,
+                              blurRadius: 8,
+                              offset: Offset(0, 4),
+                            )
+                          ],
+                        ),
+                        child: ElevatedButton(
+                          onPressed: widget.onGetStarted,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.transparent,
+                            shadowColor: Colors.transparent,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 50,
+                              vertical: 14,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                          ),
+                          child: const Text(
+                            'Commencer',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),
-              const SizedBox(height: 40),
-              FadeTransition(
-                opacity: _textFadeAnimation,
-                child: Text(
-                  'Welcome to Your New Journey',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 36,
-                    fontWeight: FontWeight.w900,
-                    color: Colors.white,
-                    letterSpacing: 1.2,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 10,
-                        color: Colors.orange.shade900.withOpacity(0.8),
-                        offset: const Offset(0, 3),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              FadeTransition(
-                opacity: _textFadeAnimation,
-                child: Text(
-                  'Discover, learn, and grow with us. Let’s make knowledge fun and accessible!',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w400,
-                    color: Colors.orange.shade50.withOpacity(0.9),
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

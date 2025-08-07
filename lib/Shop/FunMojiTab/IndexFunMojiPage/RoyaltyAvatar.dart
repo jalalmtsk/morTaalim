@@ -19,7 +19,6 @@ class Royalties extends StatelessWidget {
     {'image': 'assets/images/AvatarImage/RoyaltyAvatar/Royalty11.webp','cost': 1000},
     {'image': 'assets/images/AvatarImage/RoyaltyAvatar/Royalty12.webp','cost': 1000},
 
-
   ];
   @override
   Widget build(BuildContext context) {

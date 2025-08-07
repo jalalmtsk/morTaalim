@@ -1,134 +1,270 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:mortaalim/XpSystem.dart'; // ExperienceManager
 
-class LanguageSelectionPage extends StatefulWidget {
-  const LanguageSelectionPage({Key? key}) : super(key: key);
+class LanguageTouch extends StatefulWidget {
+  final VoidCallback? onLanguageSelected;
+
+  const LanguageTouch({Key? key, this.onLanguageSelected}) : super(key: key);
 
   @override
-  State<LanguageSelectionPage> createState() => _LanguageSelectionPageState();
+  State<LanguageTouch> createState() => _LanguageTouchState();
 }
 
-class _LanguageSelectionPageState extends State<LanguageSelectionPage>
-    with SingleTickerProviderStateMixin {
-  final List<String> _languages = ['English', 'Français', 'العربية', 'Español', 'Deutsch', '中文'];
-  int? _selectedIndex;
+class _LanguageTouchState extends State<LanguageTouch>
+    with TickerProviderStateMixin {
+  String? _selectedLanguage;
+  late AnimationController _gradientController;
 
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
+  // Gradient sets (softer than WelcomePage)
+  final List<List<Color>> gradientSets = [
+    [const Color(0xFF6DD5FA), const Color(0xFF2980B9)], // Soft blue
+    [const Color(0xFFFFD194), const Color(0xFFD1913C)], // Warm gold
+    [const Color(0xFFB2FEFA), const Color(0xFF0ED2F7)], // Light teal
+  ];
 
-  final Color _primaryColor = Colors.deepOrange.shade700;
+  int currentGradientIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
-    _controller = AnimationController(
+    _gradientController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
+      duration: const Duration(seconds: 6),
+    )..addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          currentGradientIndex = (currentGradientIndex + 1) % gradientSets.length;
+        });
+        _gradientController.forward(from: 0);
+      }
+    });
 
-    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
-
-    _controller.forward();
+    _gradientController.forward();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _gradientController.dispose();
     super.dispose();
   }
 
-  void _selectLanguage(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-    // Optionally notify parent or provider here about selection
-  }
+  // ... Ton code actuel ...
 
   @override
   Widget build(BuildContext context) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: Container(
-        color: Colors.white,
-        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Select Your Language',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: _primaryColor,
-                letterSpacing: 1.1,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 14),
-            Text(
-              'Choose the language you want to use in the app.',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.grey.shade700,
-                fontWeight: FontWeight.w400,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 36),
+    final expManager = Provider.of<ExperienceManager>(context);
 
-            Wrap(
-              spacing: 16,
-              runSpacing: 16,
-              alignment: WrapAlignment.center,
-              children: List.generate(_languages.length, (index) {
-                final isSelected = _selectedIndex == index;
-                return ChoiceChip(
-                  label: Text(
-                    _languages[index],
-                    style: TextStyle(
-                      color: isSelected ? Colors.white : _primaryColor,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
-                      fontSize: 16,
+    final Map<String, Map<String, String>> languagesMap = {
+      'en': {'flag': '🇺🇸', 'label': 'English'},
+      'ar': {'flag': '🇲🇦', 'label': 'العربية'},
+      'fr': {'flag': '🇫🇷', 'label': 'Français'},
+      'de': {'flag': '🇩🇪', 'label': 'Deutsch'},
+    };
+
+    List<String> unlockedLanguages = expManager.unlockedLanguages
+        .where((lang) => languagesMap.containsKey(lang))
+        .toList();
+
+    if (unlockedLanguages.isEmpty) {
+      unlockedLanguages = languagesMap.keys.toList();
+    }
+
+    final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
+    return Scaffold(
+      body: AnimatedBuilder(
+        animation: _gradientController,
+        builder: (context, _) {
+          final colors = List<Color>.generate(
+            2,
+                (i) => Color.lerp(
+              gradientSets[currentGradientIndex][i],
+              gradientSets[nextIndex][i],
+              _gradientController.value,
+            )!,
+          );
+
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: colors,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: SafeArea(
+              child: Stack(
+                children: [
+                  // Main content column
+                  Column(
+                    children: [
+                      const SizedBox(height: 20),
+
+                      // **Top Lottie animation**
+                      Lottie.asset(
+                        'assets/animations/languageSwitch_Animation.json',
+                        width: 160,
+                        height: 160,
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      // **Title**
+                      Text(
+                        'Choisissez votre langue',
+                        style: const TextStyle(
+                          fontSize: 26,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black26,
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            )
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 8),
+
+                      // **Subtitle**
+                      Text(
+                        'Sélectionnez une langue pour continuer',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.white.withOpacity(0.9),
+                        ),
+                      ),
+
+                      const SizedBox(height: 25),
+
+                      // **Language grid**
+                      Expanded(
+                        child: GridView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 20,
+                            childAspectRatio: 1.1,
+                          ),
+                          itemCount: unlockedLanguages.length,
+                          itemBuilder: (context, index) {
+                            final langCode = unlockedLanguages[index];
+                            final langInfo = languagesMap[langCode]!;
+                            final isSelected = _selectedLanguage == langCode;
+
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _selectedLanguage = langCode;
+                                });
+
+                                expManager.changeLanguage(Locale(langCode));
+
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content:
+                                    Text('Langue définie sur ${langInfo['label']}'),
+                                    backgroundColor: Colors.black87,
+                                    duration: const Duration(milliseconds: 800),
+                                  ),
+                                );
+                              },
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeOut,
+                                transform: isSelected
+                                    ? (Matrix4.identity()..scale(1.05))
+                                    : Matrix4.identity(),
+                                decoration: BoxDecoration(
+                                  color: isSelected
+                                      ? Colors.white.withOpacity(0.15)
+                                      : Colors.white.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(18),
+                                  border: Border.all(
+                                    color: isSelected
+                                        ? Colors.white
+                                        : Colors.white.withOpacity(0.4),
+                                    width: 2,
+                                  ),
+                                  boxShadow: [
+                                    if (isSelected)
+                                      BoxShadow(
+                                        color: Colors.black26,
+                                        blurRadius: 10,
+                                        offset: const Offset(0, 4),
+                                      ),
+                                  ],
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      langInfo['flag']!,
+                                      style: const TextStyle(fontSize: 42),
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      langInfo['label']!,
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      // **Bottom Lottie animation**
+                      Lottie.asset(
+                        'assets/animations/FirstTouchAnimations/SwipeLeft.json',
+                        width: 80,
+                        height: 80,
+                      ),
+
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+
+                  // Floating "Next" button bottom right
+                  Positioned(
+                    bottom: 20,
+                    right: 20,
+                    child: FloatingActionButton(
+                      backgroundColor: _selectedLanguage != null
+                          ? Colors.white
+                          : Colors.white.withOpacity(0.4),
+                      foregroundColor: _selectedLanguage != null
+                          ? Colors.deepOrange
+                          : Colors.deepOrange.withOpacity(0.5),
+                      onPressed: _selectedLanguage != null
+                          ? () {
+                        widget.onLanguageSelected?.call();
+                      }
+                          : null,
+                      child: const Icon(Icons.arrow_forward, size: 28),
+                      elevation: 6,
                     ),
                   ),
-                  selected: isSelected,
-                  selectedColor: _primaryColor,
-                  backgroundColor: _primaryColor.withOpacity(0.1),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  onSelected: (_) => _selectLanguage(index),
-                );
-              }),
+                ],
+              ),
             ),
-
-            const SizedBox(height: 48),
-
-            ElevatedButton(
-              onPressed: _selectedIndex == null ? null : () {
-                // Handle next action or save language selection here
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('Language Selected: ${_languages[_selectedIndex!]}'),
-                    backgroundColor: _primaryColor,
-                    duration: const Duration(seconds: 2),
-                  ),
-                );
-                // You could also trigger navigation or state update here
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: _primaryColor,
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 14),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-              ),
-              child: Text(
-                'Continue',
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-              ),
-            )
-          ],
-        ),
+          );
+        },
       ),
     );
+
   }
 }

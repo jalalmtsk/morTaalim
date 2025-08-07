@@ -1,10 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import '../games/WordExplorer/WordExplorerPage.dart';
+import 'package:lottie/lottie.dart';
+import 'package:mortaalim/FirstTouch/Page2_LanguageSelector.dart';
+import 'package:mortaalim/FirstTouch/UserInfoPage5.dart';
+import 'package:mortaalim/FirstTouch/UserInfoPage6.dart';
 import 'Page1_Welcome.dart';
 import 'Page3_NameAge.dart';
 import 'Page4_CityCountry.dart';
-
-// import other pages...
 
 class UserInfoFormFlow extends StatefulWidget {
   const UserInfoFormFlow({Key? key}) : super(key: key);
@@ -16,16 +18,32 @@ class UserInfoFormFlow extends StatefulWidget {
 class _UserInfoFormFlowState extends State<UserInfoFormFlow> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
+  final int totalPages = 6;
+
+
+  bool canGoNextFromLanguage = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
 
   void _nextPage() {
-    if (_currentPage < 7) { // 8 pages: 0 to 7
-      _pageController.nextPage(duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+    if (_currentPage < totalPages - 1) {
+      _pageController.nextPage(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
   void _prevPage() {
     if (_currentPage > 0) {
-      _pageController.previousPage(duration: Duration(milliseconds: 400), curve: Curves.easeInOut);
+      _pageController.previousPage(
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
@@ -35,47 +53,110 @@ class _UserInfoFormFlowState extends State<UserInfoFormFlow> {
     super.dispose();
   }
 
+  void _onLanguageSelected() {
+    setState(() {
+      canGoNextFromLanguage = true;
+    });
+    _nextPage();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final progress = (_currentPage + 1) / totalPages;
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text('User Info Flow'),
-        centerTitle: true,
-      ),
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (index) => setState(() => _currentPage = index),
-        physics: NeverScrollableScrollPhysics(), // control nav only by buttons
-        children: const [
-          WelcomePage(),
-          LanguageSelectionPage(),
-          NameAgePage(),
-          CityCountryPage(),
-          // add more pages here
-          // Page5(),
-          // Page6(),
-          // Page7(),
-          // Page8(),
-        ],
-      ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            if (_currentPage > 0)
-              ElevatedButton(
-                onPressed: _prevPage,
-                child: Text('Back'),
-              )
-            else
-              SizedBox(width: 75), // space placeholder
-            Text('Page ${_currentPage + 1} / 8'),
-            ElevatedButton(
-              onPressed: _nextPage,
-              child: Text(_currentPage == 7 ? 'Finish' : 'Next'),
-            ),
-          ],
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.deepOrange.shade600, Colors.orange.shade300],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              PageView(
+                controller: _pageController,
+                onPageChanged: (index) {
+                  setState(() => _currentPage = index);
+                },
+                physics: _currentPage == 1 && !canGoNextFromLanguage
+                    ? const NeverScrollableScrollPhysics()
+                    : const BouncingScrollPhysics(),
+                children: [
+                  WelcomePage(onGetStarted: _nextPage),
+                  LanguageTouch(
+                    onLanguageSelected: _onLanguageSelected,),
+                  NameAgePage(onNext: _nextPage),
+                  CityCountryPage(onNext: _nextPage),
+                  UserInfoPage5(onNext: _nextPage),
+                  UserInfoAvatarPage(onNext: _nextPage,),
+
+                ],
+              ),
+
+              if (_currentPage > 0) ...[
+                // Progress bar
+                Positioned(
+                  top: 16,
+                  left: 16,
+                  right: 16,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 10,
+                      backgroundColor: Colors.white.withOpacity(0.3),
+                      valueColor:
+                      const AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                ),
+
+                // Page indicators
+                Positioned(
+                  bottom: 80,
+                  left: 0,
+                  right: 0,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(totalPages - 1, (index) {
+                      final isActive = index + 1 == _currentPage;
+                      return AnimatedContainer(
+                        duration: const Duration(milliseconds: 250),
+                        margin: const EdgeInsets.symmetric(horizontal: 5),
+                        width: isActive ? 16 : 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: isActive
+                              ? Colors.white
+                              : Colors.white.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+
+                // Back button
+                if (_currentPage > 1)
+                  Positioned(
+                    bottom: 20,
+                    left: 20,
+                    child: FloatingActionButton(
+                      heroTag: "backButton",
+                      backgroundColor: Colors.white.withOpacity(0.9),
+                      foregroundColor: Colors.deepOrange,
+                      elevation: 4,
+                      onPressed: _prevPage,
+                      child: const Icon(Icons.arrow_back, size: 24),
+                    ),
+                  ),
+
+              ],
+            ],
+          ),
         ),
       ),
     );

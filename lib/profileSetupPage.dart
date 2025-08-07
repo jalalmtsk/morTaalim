@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'XpSystem.dart';
-import '../../l10n/app_localizations.dart';
 import 'main.dart';
 
 class ProfileSetupPage extends StatefulWidget {
@@ -145,6 +144,10 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                           const SizedBox(height: 12),
                           _buildBannerSelector(xpManager, audioManager),
                           const SizedBox(height: 30),
+                          _buildSectionTitle(Icons.face, "Choose Your Avatar"),
+                          const SizedBox(height: 12),
+                          _buildAvatarSelector(xpManager, audioManager),
+                          const SizedBox(height: 30),
                           _buildSectionTitle(Icons.person, 'Personal' ?? "Personal Information"),
                           const SizedBox(height: 12),
                           _buildNameField(audioManager),
@@ -186,6 +189,8 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     );
   }
 
+
+
   Widget _buildBannerSelector(ExperienceManager xpManager, AudioManager audioManager) {
     return SizedBox(
       height: 140,
@@ -213,7 +218,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                 boxShadow: isSelected
                     ? [
                   BoxShadow(
-                    color: Colors.deepOrange.withOpacity(0.5),
+                    color: Colors.deepOrange.withValues(alpha: 0.5),
                     blurRadius: 12,
                     spreadRadius: 1,
                     offset: const Offset(0, 4),
@@ -236,6 +241,67 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       ),
     );
   }
+
+  Widget _buildAvatarSelector(ExperienceManager xpManager, AudioManager audioManager) {
+    bool _isEmoji(String avatar) => !avatar.contains('/');
+
+    return SizedBox(
+      height: 120,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: xpManager.unlockedAvatars.length,
+        itemBuilder: (context, index) {
+          final avatar = xpManager.unlockedAvatars[index];
+          final isSelected = xpManager.selectedAvatar == avatar;
+
+          return GestureDetector(
+            onTap: () {
+              audioManager.playEventSound('clickButton2');
+              xpManager.selectAvatar(avatar);
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(
+                  color: isSelected ? Colors.deepOrange : Colors.grey.shade300,
+                  width: isSelected ? 4 : 2,
+                ),
+                boxShadow: isSelected
+                    ? [
+                  BoxShadow(
+                    color: Colors.deepOrange.withOpacity(0.5),
+                    blurRadius: 12,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 4),
+                  )
+                ]
+                    : [],
+              ),
+              child: _isEmoji(avatar)
+                  ? Text(
+                avatar,
+                style: const TextStyle(fontSize: 48),
+              )
+                  : ClipRRect(
+                borderRadius: BorderRadius.circular(14),
+                child: Image.asset(
+                  avatar,
+                  width: 80,
+                  height: 80,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
 
   Widget _buildNameField(AudioManager audioManager) {
     return Column(

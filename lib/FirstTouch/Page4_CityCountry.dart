@@ -1,144 +1,301 @@
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../XpSystem.dart';
+import '../IndexPage.dart'; // Adjust as needed
 
 class CityCountryPage extends StatefulWidget {
-  const CityCountryPage({Key? key}) : super(key: key);
+  final VoidCallback? onNext;
+
+  const CityCountryPage({Key? key, this.onNext}) : super(key: key);
 
   @override
   State<CityCountryPage> createState() => _CityCountryPageState();
 }
 
-class _CityCountryPageState extends State<CityCountryPage> {
+class _CityCountryPageState extends State<CityCountryPage>
+    with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
-
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
 
-  bool _isSaving = false;
-  String? _errorMessage;
+  late AnimationController _gradientController;
+  int currentGradientIndex = 0;
 
-  final Color _primaryColor = Colors.deepOrange.shade700;
+  bool _isFormValid = false;
+  String? _errorMessage;
+  bool _isSaving = false;
+
+  final List<List<Color>> gradientSets = [
+    [const Color(0xFF6DD5FA), const Color(0xFF2980B9)], // Bleu doux
+    [const Color(0xFFFFD194), const Color(0xFFD1913C)], // Or chaud
+    [const Color(0xFFB2FEFA), const Color(0xFF0ED2F7)], // Turquoise clair
+  ];
 
   @override
   void initState() {
     super.initState();
+    _loadProfile();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
+    _cityController.addListener(_validateForm);
+    _countryController.addListener(_validateForm);
 
-      setState(() {
-        _cityController.text = experienceManager.city;
-        _countryController.text = experienceManager.country;
-      });
+    _gradientController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 6),
+    )..addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        setState(() {
+          currentGradientIndex =
+              (currentGradientIndex + 1) % gradientSets.length;
+        });
+        _gradientController.forward(from: 0);
+      }
     });
+
+    _gradientController.forward();
   }
 
-  Future<void> _submit() async {
+  void _validateForm() {
+    final cityValid = _cityController.text.trim().isNotEmpty;
+    final countryValid = _countryController.text.trim().isNotEmpty;
+
+    final isValid = cityValid && countryValid;
+
+    if (isValid != _isFormValid) {
+      setState(() {
+        _isFormValid = isValid;
+      });
+    }
+  }
+
+  Future<void> _loadProfile() async {
+    final experienceManager =
+    Provider.of<ExperienceManager>(context, listen: false);
+
+    setState(() {
+      _cityController.text = experienceManager.city;
+      _countryController.text = experienceManager.country;
+    });
+
+    _validateForm();
+  }
+
+  Future<bool> saveData() async {
+    setState(() {
+      _errorMessage = null;
+    });
+
     if (!_formKey.currentState!.validate()) {
       setState(() {
-        _errorMessage = "Please fill all fields correctly.";
+        _errorMessage = "Veuillez remplir correctement tous les champs.";
       });
-      return;
+      return false;
     }
 
     setState(() {
-      _errorMessage = null;
       _isSaving = true;
     });
 
     try {
-      final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
+      final experienceManager =
+      Provider.of<ExperienceManager>(context, listen: false);
 
       experienceManager.setCity(_cityController.text.trim());
       experienceManager.setCountry(_countryController.text.trim());
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("City and country saved successfully!")),
-      );
+      return true;
     } catch (e) {
       setState(() {
-        _errorMessage = "Error saving data: $e";
+        _errorMessage = "Erreur lors de la sauvegarde des données : $e";
       });
+      return false;
     } finally {
-      setState(() {
-        _isSaving = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+      }
     }
   }
 
   @override
   void dispose() {
+    _gradientController.dispose();
+    _cityController.removeListener(_validateForm);
+    _countryController.removeListener(_validateForm);
     _cityController.dispose();
     _countryController.dispose();
     super.dispose();
   }
 
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String label,
+    required String validatorMessage,
+    IconData? icon,
+  }) {
+    return TextFormField(
+      controller: controller,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: icon != null ? Icon(icon, color: Colors.white) : null,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withOpacity(0.7)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.white),
+        ),
+        errorBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.red),
+        ),
+        labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
+      ),
+      validator: (value) {
+        if (value == null || value.trim().isEmpty) {
+          return validatorMessage;
+        }
+        return null;
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
+
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Location Information"),
-        backgroundColor: _primaryColor,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: [
-              if (_errorMessage != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Text(
-                    _errorMessage!,
-                    style: const TextStyle(color: Colors.red),
+      body: AnimatedBuilder(
+        animation: _gradientController,
+        builder: (context, _) {
+          final colors = List<Color>.generate(
+            2,
+                (i) => Color.lerp(
+              gradientSets[currentGradientIndex][i],
+              gradientSets[nextIndex][i],
+              _gradientController.value,
+            )!,
+          );
+
+          return Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: colors,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: SafeArea(
+              child: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(24.0),
+                    child: Form(
+                      key: _formKey,
+                      child: ListView(
+                        children: [
+                          SizedBox(
+                            height: 300,
+                            child: Center(
+                              child: Lottie.asset(
+                                'assets/animations/FirstTouchAnimations/BusTransport.json',
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                          ),
+
+                          const Text(
+                            "Votre localisation",
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 8,
+                                  color: Colors.black38,
+                                  offset: Offset(0, 2),
+                                )
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          Text(
+                            "Veuillez entrer votre ville et votre pays pour continuer.",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white.withOpacity(0.9),
+                            ),
+                          ),
+
+                          const SizedBox(height: 40),
+
+                          if (_errorMessage != null)
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 12),
+                              child: Text(
+                                _errorMessage!,
+                                style: const TextStyle(color: Colors.red),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+
+                          _buildInputField(
+                            controller: _cityController,
+                            label: "Ville",
+                            validatorMessage: "Veuillez saisir votre ville.",
+                            icon: Icons.location_city,
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          _buildInputField(
+                            controller: _countryController,
+                            label: "Pays",
+                            validatorMessage: "Veuillez saisir votre pays.",
+                            icon: Icons.flag,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
 
-              TextFormField(
-                controller: _cityController,
-                decoration: const InputDecoration(labelText: "City"),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Please enter your city.";
-                  }
-                  return null;
-                },
+                  if (_isFormValid)
+                    Positioned(
+                      bottom: 20,
+                      right: 20,
+                      child: FloatingActionButton(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.deepOrange,
+                        onPressed: _isSaving
+                            ? null
+                            : () async {
+                          final success = await saveData();
+                          if (success) {
+                            widget.onNext?.call();
+                          }
+                        },
+                        elevation: 6,
+                        child: _isSaving
+                            ? const CircularProgressIndicator(
+                          color: Colors.deepOrange,
+                        )
+                            : const Icon(Icons.arrow_forward, size: 28),
+                      ),
+                    ),
+                ],
               ),
-
-              const SizedBox(height: 16),
-
-              TextFormField(
-                controller: _countryController,
-                decoration: const InputDecoration(labelText: "Country"),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return "Please enter your country.";
-                  }
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 36),
-
-              ElevatedButton(
-                onPressed: _isSaving ? null : _submit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _primaryColor,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                child: _isSaving
-                    ? const CircularProgressIndicator(color: Colors.white)
-                    : const Text(
-                  "Save & Continue",
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }

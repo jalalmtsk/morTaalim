@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mortaalim/tools/StarCountPulse.dart';
 import 'package:mortaalim/tools/StarDeductionOverlay.dart';
-import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +19,6 @@ import 'ManagerTools/AnimatedStarBanner.dart';
 import 'ManagerTools/AnimatedTolimBanner.dart';
 import 'ManagerTools/AnimatedXpBanner.dart';
 import 'package:mortaalim/ManagerTools/LevelUpOverlayHelper.dart';
-import 'package:uuid/uuid.dart';
 
 import 'main.dart';
 
@@ -31,7 +29,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   int Tolims = 20;
 
   // Customization
-  List<String> _unlockedAvatars = ["🐱", "🐻"];
+  List<String> _unlockedAvatars = ["🐱", "🐻, assets/images/AvatarImage/OnlyAvatar/Avatar1.png"];
   String _selectedAvatar = 'assets/images/AvatarImage/OnlyAvatar/Avatar1.png';
 
   List<String> _unlockedCourses = [];
@@ -71,12 +69,16 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   static const rewardCooldown = Duration(minutes: 30);
   static const inactivityRestartDelay = Duration(seconds: 5);
 
+  bool get isFirstLogin => lastLogin == null;
+
+
   // Ads toggle
   bool _adsEnabled = true;
 
   // Login/logout tracking
   DateTime? _lastLogin;
   DateTime? _lastLogout;
+
 
   // Firestore instance
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -557,9 +559,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   }
 
 
-
   // ---------------- Local Storage Load/Save -------------------
-
   Future<void> loadData() async {
     final prefs = await SharedPreferences.getInstance();
     _xp = prefs.getInt('xp') ?? 0;
@@ -655,7 +655,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
       if (kDebugMode) print("❌ Firebase sync failed: $e");
     }
   }
-
 
 
   String generateBackupCode({int length = 6}) {
@@ -764,11 +763,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   // ----------------------------------------------------------
-
-  // The rest of your ExperienceManager code remains unchanged...
-
-  final MusicPlayer LvlUp = MusicPlayer();
-  final MusicPlayer LvlUp2 = MusicPlayer();
 
   //ADDING XP
   void _showOverlayXPAddedBanner(BuildContext context, int xpAmount) {
