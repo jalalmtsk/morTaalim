@@ -138,65 +138,6 @@ class LanguageSelectorPage extends StatelessWidget {
                         ),
                       ),
 
-
-                      ElevatedButton(
-                        onPressed: () async {
-                          final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-                          String code = await xpManager.saveBackup();
-
-                          // Show dialog with the code and OK button to dismiss
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text("Backup saved!"),
-                              content: Text("Code: $code"),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.of(context).pop(),
-                                  child: const Text("OK"),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                        child: const Text("SAVE"),
-                      ),
-
-
-                      ElevatedButton(
-                        onPressed: () async {
-                          final code = await showDialog<String>(
-                            context: context,
-                            builder: (context) {
-                              String input = "";
-                              return AlertDialog(
-                                title: Text("Enter Backup Code"),
-                                content: TextField(
-                                  onChanged: (val) => input = val,
-                                  decoration: InputDecoration(labelText: "Backup Code"),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context, input),
-                                    child: const Text("LOAD"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-
-                          if (code != null && code.isNotEmpty) {
-                            final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-                            await xpManager.loadBackup(code);
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Backup loaded!")),
-                            );
-                          }
-                        },
-
-                        child: Text("LOAD"),
-                      ),
-
                     ],
                   ),
                 ),

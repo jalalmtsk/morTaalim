@@ -70,12 +70,12 @@ class _CityCountryPageState extends State<CityCountryPage>
   }
 
   Future<void> _loadProfile() async {
-    final experienceManager =
-    Provider.of<ExperienceManager>(context, listen: false);
+    final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
+    final user = experienceManager.userProfile;
 
     setState(() {
-      _cityController.text = experienceManager.city;
-      _countryController.text = experienceManager.country;
+      _cityController.text = user.city;
+      _countryController.text = user.country;
     });
 
     _validateForm();

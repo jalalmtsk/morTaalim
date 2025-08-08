@@ -16,6 +16,7 @@ class UserInfoPage8 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final experience = Provider.of<ExperienceManager>(context);
+    final user = experience.userProfile;
 
     return Scaffold(
       appBar: AppBar(title: const Text("Étape 8: Confirmation")),
@@ -24,12 +25,12 @@ class UserInfoPage8 extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Nom: ${experience.fullName}", style: const TextStyle(fontSize: 16)),
-            Text("Âge: ${experience.age}", style: const TextStyle(fontSize: 16)),
-            Text("Ville: ${experience.city}", style: const TextStyle(fontSize: 16)),
-            Text("Pays: ${experience.country}", style: const TextStyle(fontSize: 16)),
-            Text("Email: ${experience.email}", style: const TextStyle(fontSize: 16)),
-            Text("Genre: ${experience.gender}", style: const TextStyle(fontSize: 16)),
+            Text("Nom: ${user.fullName}", style: const TextStyle(fontSize: 16)),
+            Text("Âge: ${user.age}", style: const TextStyle(fontSize: 16)),
+            Text("Ville: ${user.city}", style: const TextStyle(fontSize: 16)),
+            Text("Pays: ${user.country}", style: const TextStyle(fontSize: 16)),
+            Text("Email: ${user.email}", style: const TextStyle(fontSize: 16)),
+            Text("Genre: ${user.gender}", style: const TextStyle(fontSize: 16)),
             const Spacer(),
             ElevatedButton(
               onPressed: () => _finish(context),

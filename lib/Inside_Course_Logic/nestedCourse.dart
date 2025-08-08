@@ -1,16 +1,58 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:confetti/confetti.dart'; // Add confetti package in pubspec.yaml
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import '../tools/VideoPlayer.dart';
 import '../tools/audio_tool/audio_tool.dart';
 
-// Simple trophy tracking for demo
+// Trophy tracking and gamification stats
 class CompletionTracker {
   static final Set<String> completedNodes = {};
-  static void markCompleted(String title) => completedNodes.add(title);
-  static void unmarkCompleted(String title) => completedNodes.remove(title);
+  static int points = 0;
+  static int level = 1;
+  static final Set<String> badges = {};
+
+  static void markCompleted(String title) {
+    if (!completedNodes.contains(title)) {
+      completedNodes.add(title);
+      points += 10; // 10 points per completion
+      _checkLevelUp();
+      _checkBadges();
+    }
+  }
+
+  static void unmarkCompleted(String title) {
+    if (completedNodes.contains(title)) {
+      completedNodes.remove(title);
+      points -= 10;
+      if (points < 0) points = 0;
+      _checkLevelDown();
+    }
+  }
+
   static bool isCompleted(String title) => completedNodes.contains(title);
+
+  static void _checkLevelUp() {
+    // Level up every 50 points
+    level = (points ~/ 50) + 1;
+  }
+
+  static void _checkLevelDown() {
+    level = (points ~/ 50) + 1;
+  }
+
+  static void _checkBadges() {
+    if (points >= 50 && !badges.contains('Bronze Learner')) {
+      badges.add('🥉 Bronze Learner');
+    }
+    if (points >= 100 && !badges.contains('Silver Scholar')) {
+      badges.add('🥈 Silver Scholar');
+    }
+    if (points >= 200 && !badges.contains('Gold Master')) {
+      badges.add('🥇 Gold Master');
+    }
+  }
 }
 
 class CourseNodePage extends StatefulWidget {
@@ -26,8 +68,8 @@ class CourseNodePage extends StatefulWidget {
 class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStateMixin {
   late final MusicPlayer _musicPlayer;
   late final AnimationController _bounceController;
+  late ConfettiController _confettiController;
 
-  // For breathing animation per card - we’ll create a map of controllers by index
   final Map<int, AnimationController> _breathControllers = {};
   final List<String> emojiList = ['🦄', '🐸', '🐱', '🐵', '🐥', '🐳', '🎩', '🧸', '🍭', '🎈'];
 
@@ -49,6 +91,8 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
       lowerBound: 0.9,
       upperBound: 1.0,
     )..forward();
+
+    _confettiController = ConfettiController(duration: const Duration(seconds: 1));
   }
 
   @override
@@ -56,15 +100,15 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
     _musicPlayer.dispose();
     _bounceController.dispose();
     _breathControllers.forEach((key, controller) => controller.dispose());
+    _confettiController.dispose();
     super.dispose();
   }
 
-  // Init breath controller for each card index if not exists
   Animation<double> _getBreathAnimation(int index) {
     if (!_breathControllers.containsKey(index)) {
       final controller = AnimationController(
         vsync: this,
-        duration: Duration(seconds: 2 + (index % 3)), // Stagger durations a bit
+        duration: Duration(seconds: 2 + (index % 3)),
         lowerBound: 0.95,
         upperBound: 1.05,
       )..repeat(reverse: true);
@@ -131,6 +175,7 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
 
   void sparkleEffect() {
     _musicPlayer.play('assets/audios/sparkle_pop.mp3');
+    _confettiController.play();
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -145,7 +190,6 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
 
   Future<void> markCompleted(String title) async {
     CompletionTracker.markCompleted(title);
-
     sparkleEffect();
   }
 
@@ -226,11 +270,16 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
     );
   }
 
-  // Calculate progress percentage of completed children
   double _calculateProgress(List<dynamic> children) {
     if (children.isEmpty) return 0;
     final completedCount = children.where((c) => CompletionTracker.isCompleted(c['title'] ?? '')).length;
     return completedCount / children.length;
+  }
+
+  Color getProgressColor(double progress) {
+    if (progress >= 0.8) return Colors.greenAccent.shade400;
+    if (progress >= 0.5) return Colors.orangeAccent.shade400;
+    return Colors.redAccent.shade400;
   }
 
   @override
@@ -253,6 +302,18 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
           style: const TextStyle(fontFamily: 'ComicNeue', fontSize: 26, color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('🏆 نقاط: ${CompletionTracker.points}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  Text('🎯 المستوى: ${CompletionTracker.level}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                ],
+              ),
+            ),
+          ),
           IconButton(
             tooltip: CompletionTracker.isCompleted(title) ? '🎉 مكتمل' : '✅ أكمل الدرس',
             icon: Icon(
@@ -269,175 +330,213 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
           ),
         ],
       ),
-      body: Column(
+      body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Userstatutbar(),
-          ),
-          Expanded(
-            child: ListView(
-              children: [
-                Lottie.asset('assets/animations/rabbit_boat.json', height: 160),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Userstatutbar(),
+              ),
+              Expanded(
+                child: ListView(
+                  children: [
+                    Lottie.asset('assets/animations/rabbit_boat.json', height: 160),
 
-                buildMediaWidget(type, videoController, audioController),
+                    buildMediaWidget(type, videoController, audioController),
 
-                const SizedBox(height: 22),
+                    const SizedBox(height: 22),
 
-                if (content.isNotEmpty)
-                  Container(
-                    padding: const EdgeInsets.all(22),
-                    decoration: BoxDecoration(
-                      color: Colors.pink.shade50,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.pink.shade100.withValues(alpha: 0.75),
-                          offset: const Offset(0, 6),
-                          blurRadius: 14,
+                    if (content.isNotEmpty)
+                      Container(
+                        padding: const EdgeInsets.all(22),
+                        decoration: BoxDecoration(
+                          color: Colors.pink.shade50,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.pink.shade100.withOpacity(0.75),
+                              offset: const Offset(0, 6),
+                              blurRadius: 14,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                    child: Directionality(
-                      textDirection: isArabic(content) ? TextDirection.rtl : TextDirection.ltr,
-                      child: Text(
-                        content,
-                        style: const TextStyle(
+                        child: Directionality(
+                          textDirection: isArabic(content) ? TextDirection.rtl : TextDirection.ltr,
+                          child: Text(
+                            content,
+                            style: const TextStyle(
+                              fontFamily: 'ComicNeue',
+                              fontSize: 22,
+                              height: 1.6,
+                              color: Colors.deepPurple,
+                            ),
+                            textAlign: TextAlign.justify,
+                          ),
+                        ),
+                      ),
+
+                    const SizedBox(height: 32),
+
+                    if (children.isNotEmpty) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                        child: Column(
+                          children: [
+                            Text(
+                              '🌟 التقدم: ${(progress * 100).toInt()}%',
+                              style: const TextStyle(
+                                fontFamily: 'ComicNeue',
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.pinkAccent,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: LinearProgressIndicator(
+                                value: progress,
+                                minHeight: 18,
+                                backgroundColor: Colors.pink.shade100,
+                                color: getProgressColor(progress),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      Text(
+                        '🎨 دروس إضافية:',
+                        style: TextStyle(
                           fontFamily: 'ComicNeue',
-                          fontSize: 22,
-                          height: 1.6,
-                          color: Colors.deepPurple,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pink.shade700,
                         ),
-                        textAlign: TextAlign.justify,
                       ),
-                    ),
-                  ),
 
-                const SizedBox(height: 32),
+                      const SizedBox(height: 14),
 
-                if (children.isNotEmpty) ...[
-                  // Progress bar & percentage
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                    child: Column(
-                      children: [
-                        Text(
-                          '🌟 التقدم: ${(progress * 100).toInt()}%',
-                          style: const TextStyle(
-                            fontFamily: 'ComicNeue',
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.pinkAccent,
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: LinearProgressIndicator(
-                            value: progress,
-                            minHeight: 18,
-                            backgroundColor: Colors.pink.shade100,
-                            color: Colors.pinkAccent.shade400,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                      ...children.asMap().entries.map((entry) {
+                        final item = entry.value;
+                        final emoji = emojiList[entry.key % emojiList.length];
+                        final hasSub = item['subsections'] != null && item['subsections'].isNotEmpty;
+                        final titleChild = item['title'] ?? '';
 
-                  const SizedBox(height: 16),
+                        final breathAnimation = _getBreathAnimation(entry.key);
 
-                  Text(
-                    '🎨 دروس إضافية:',
-                    style: TextStyle(
-                      fontFamily: 'ComicNeue',
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.pink.shade700,
-                    ),
-                  ),
-
-                  const SizedBox(height: 14),
-
-                  ...children.asMap().entries.map((entry) {
-                    final item = entry.value;
-                    final emoji = emojiList[entry.key % emojiList.length];
-                    final hasSub = item['subsections'] != null && item['subsections'].isNotEmpty;
-                    final titleChild = item['title'] ?? '';
-
-                    final breathAnimation = _getBreathAnimation(entry.key);
-
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: ScaleTransition(
-                        scale: breathAnimation,
-                        child: Card(
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-                          elevation: 11,
-                          shadowColor: Colors.pink.shade300,
-                          color: Colors.primaries[entry.key % Colors.primaries.length].shade200,
-                          child: ListTile(
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
-                            leading: Text(emoji, style: const TextStyle(fontSize: 40)),
-                            title: Directionality(
-                              textDirection: isArabic(titleChild) ? TextDirection.rtl : TextDirection.ltr,
-                              child: Text(
-                                titleChild,
-                                style: const TextStyle(
-                                  fontFamily: 'ComicNeue',
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 8),
+                          child: ScaleTransition(
+                            scale: breathAnimation,
+                            child: Card(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                              elevation: 11,
+                              shadowColor: Colors.pink.shade300,
+                              color: Colors.primaries[entry.key % Colors.primaries.length].shade200,
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 22, vertical: 18),
+                                leading: Text(emoji, style: const TextStyle(fontSize: 40)),
+                                title: Directionality(
+                                  textDirection: isArabic(titleChild) ? TextDirection.rtl : TextDirection.ltr,
+                                  child: Text(
+                                    titleChild,
+                                    style: const TextStyle(
+                                      fontFamily: 'ComicNeue',
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
+                                subtitle: item['content'] != null && !hasSub
+                                    ? Directionality(
+                                  textDirection: isArabic(item['content']) ? TextDirection.rtl : TextDirection.ltr,
+                                  child: Text(
+                                    item['content'],
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(fontSize: 18, color: Colors.deepPurple),
+                                  ),
+                                )
+                                    : null,
+                                trailing: Checkbox(
+                                  value: CompletionTracker.isCompleted(titleChild),
+                                  activeColor: Colors.pinkAccent.shade400,
+                                  checkColor: Colors.white,
+                                  onChanged: (val) {
+                                    if (val == true) {
+                                      markCompleted(titleChild);
+                                    } else {
+                                      unmarkCompleted(titleChild);
+                                    }
+                                    setState(() {});
+                                  },
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
+                                  side: BorderSide(color: Colors.pinkAccent.shade400, width: 2),
+                                ),
+                                onTap: () {
+                                  _musicPlayer.play('assets/audios/PopButton_SB.mp3');
+                                  if (hasSub) {
+                                    showSubsectionsModal(item['subsections']);
+                                  } else {
+                                    Navigator.push(context, _createRoute(item, title));
+                                  }
+                                },
                               ),
                             ),
-                            subtitle: item['content'] != null && !hasSub
-                                ? Directionality(
-                              textDirection: isArabic(item['content']) ? TextDirection.rtl : TextDirection.ltr,
-                              child: Text(
-                                item['content'],
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 18, color: Colors.deepPurple),
-                              ),
-                            )
-                                : null,
-                            trailing: Checkbox(
-                              value: CompletionTracker.isCompleted(titleChild),
-                              activeColor: Colors.pinkAccent.shade400,
-                              checkColor: Colors.white,
-                              onChanged: (val) {
-                                if (val == true) {
-                                  markCompleted(titleChild);
-                                } else {
-                                  unmarkCompleted(titleChild);
-                                }
-                                setState(() {});
-                              },
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
-                              side: BorderSide(color: Colors.pinkAccent.shade400, width: 2),
-                            ),
-                            onTap: () {
-                              _musicPlayer.play('assets/audios/PopButton_SB.mp3');
-                              if (hasSub) {
-                                showSubsectionsModal(item['subsections']);
-                              } else {
-                                Navigator.push(context, _createRoute(item, title));
-                              }
-                            },
                           ),
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ],
+                        );
+                      }).toList(),
+                    ],
 
-                const SizedBox(height: 40),
+                    const SizedBox(height: 40),
 
-                Lottie.asset('assets/animations/girl_studying.json', ),
-              ],
+                    Lottie.asset('assets/animations/girl_studying.json'),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          // Confetti overlay
+          Align(
+            alignment: Alignment.topCenter,
+            child: ConfettiWidget(
+              confettiController: _confettiController,
+              blastDirectionality: BlastDirectionality.explosive,
+              shouldLoop: false,
+              colors: const [Colors.pink, Colors.amber, Colors.greenAccent, Colors.blueAccent, Colors.purpleAccent],
+              createParticlePath: drawStar,
             ),
           ),
         ],
       ),
     );
   }
+}
+
+// Helper function to draw a star shape for confetti
+Path drawStar(Size size) {
+  // Credit: https://github.com/zlatnaspirala/flutter_confetti/blob/master/example/lib/main.dart
+  final path = Path();
+  final numberOfPoints = 5;
+  final halfWidth = size.width / 2;
+  final externalRadius = halfWidth;
+  final internalRadius = halfWidth / 2.5;
+  final degreesPerStep = 360 / numberOfPoints;
+  final halfDegreesPerStep = degreesPerStep / 2;
+  path.moveTo(size.width, halfWidth);
+  for (double step = 0; step < 360; step += degreesPerStep) {
+    path.lineTo(halfWidth + externalRadius * cos(_degreesToRadians(step)), halfWidth + externalRadius * sin(_degreesToRadians(step)));
+    path.lineTo(halfWidth + internalRadius * cos(_degreesToRadians(step + halfDegreesPerStep)), halfWidth + internalRadius * sin(_degreesToRadians(step + halfDegreesPerStep)));
+  }
+  path.close();
+  return path;
+}
+
+double _degreesToRadians(double degrees) {
+  return degrees * (pi / 180);
 }

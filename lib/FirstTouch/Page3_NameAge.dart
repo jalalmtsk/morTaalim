@@ -17,19 +17,19 @@ class _NameAgePageState extends State<NameAgePage>
     with SingleTickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
 
   String? _errorMessage;
+  bool _isFormValid = false;
 
   late AnimationController _gradientController;
   int currentGradientIndex = 0;
 
-  bool _isFormValid = false;
-
   final List<List<Color>> gradientSets = [
-    [const Color(0xFF6DD5FA), const Color(0xFF2980B9)], // Bleu doux
-    [const Color(0xFFFFD194), const Color(0xFFD1913C)], // Or chaud
-    [const Color(0xFFB2FEFA), const Color(0xFF0ED2F7)], // Turquoise clair
+    [const Color(0xFF6DD5FA), const Color(0xFF2980B9)],
+    [const Color(0xFFFFD194), const Color(0xFFD1913C)],
+    [const Color(0xFFB2FEFA), const Color(0xFF0ED2F7)],
   ];
 
   @override
@@ -38,6 +38,7 @@ class _NameAgePageState extends State<NameAgePage>
     _loadProfile();
 
     _nameController.addListener(_validateForm);
+    _lastNameController.addListener(_validateForm);
     _ageController.addListener(_validateForm);
 
     _gradientController = AnimationController(
@@ -58,11 +59,13 @@ class _NameAgePageState extends State<NameAgePage>
 
   void _validateForm() {
     final nameValid = _nameController.text.trim().isNotEmpty;
+    final lastNameValid = _lastNameController.text.trim().isNotEmpty;
     final ageText = _ageController.text.trim();
-    final ageValid =
-        ageText.isNotEmpty && int.tryParse(ageText) != null && int.parse(ageText) > 0;
+    final ageValid = ageText.isNotEmpty &&
+        int.tryParse(ageText) != null &&
+        int.parse(ageText) > 0;
 
-    final isValid = nameValid && ageValid;
+    final isValid = nameValid && lastNameValid && ageValid;
 
     if (isValid != _isFormValid) {
       setState(() {
@@ -75,24 +78,25 @@ class _NameAgePageState extends State<NameAgePage>
     final prefs = await SharedPreferences.getInstance();
     final experienceManager =
     Provider.of<ExperienceManager>(context, listen: false);
+    final user = experienceManager.userProfile;
 
-    final savedName = prefs.getString('name') ?? experienceManager.fullName;
-    final savedAge = prefs.getInt('age') ?? experienceManager.age;
+    final savedName = prefs.getString('name') ?? user.fullName;
+    final savedLastName = prefs.getString('lastName') ?? user.lastName;
+    final savedAge = prefs.getInt('age') ?? user.age;
 
     experienceManager.setFullName(savedName);
+    experienceManager.setLastName(savedLastName);
     experienceManager.setAge(savedAge);
 
     setState(() {
       _nameController.text = savedName;
+      _lastNameController.text = savedLastName;
       _ageController.text = (savedAge > 0) ? savedAge.toString() : '';
     });
 
-    // Validate form after loading
     _validateForm();
   }
 
-  /// Appelle cette méthode avant de passer à la page suivante
-  /// Retourne true si la sauvegarde a réussi et les données sont valides
   Future<bool> saveData() async {
     setState(() {
       _errorMessage = null;
@@ -111,12 +115,15 @@ class _NameAgePageState extends State<NameAgePage>
       final prefs = await SharedPreferences.getInstance();
 
       final name = _nameController.text.trim();
+      final lastName = _lastNameController.text.trim();
       final age = int.parse(_ageController.text.trim());
 
       await prefs.setString('name', name);
+      await prefs.setString('lastName', lastName);
       await prefs.setInt('age', age);
 
       experienceManager.setFullName(name);
+      experienceManager.setLastName(lastName);
       experienceManager.setAge(age);
 
       return true;
@@ -132,8 +139,10 @@ class _NameAgePageState extends State<NameAgePage>
   void dispose() {
     _gradientController.dispose();
     _nameController.removeListener(_validateForm);
+    _lastNameController.removeListener(_validateForm);
     _ageController.removeListener(_validateForm);
     _nameController.dispose();
+    _lastNameController.dispose();
     _ageController.dispose();
     super.dispose();
   }
@@ -172,9 +181,8 @@ class _NameAgePageState extends State<NameAgePage>
                       key: _formKey,
                       child: ListView(
                         children: [
-                          // Place pour animation Lottie en haut
                           SizedBox(
-                            height: 300,
+                            height: 250,
                             child: Center(
                               child: Lottie.asset(
                                 'assets/animations/FirstTouchAnimations/Learning.json',
@@ -183,7 +191,7 @@ class _NameAgePageState extends State<NameAgePage>
                             ),
                           ),
 
-                          const SizedBox(height: 20),
+                          const SizedBox(height: 10),
 
                           const Text(
                             "Faisons connaissance",
@@ -202,7 +210,7 @@ class _NameAgePageState extends State<NameAgePage>
                             textAlign: TextAlign.center,
                           ),
 
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 4),
 
                           Text(
                             "Remplissez vos informations pour personnaliser votre expérience.",
@@ -227,10 +235,23 @@ class _NameAgePageState extends State<NameAgePage>
 
                           _buildInputField(
                             controller: _nameController,
-                            label: "Nom complet",
+                            label: "Prénom",
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return "Veuillez saisir votre nom.";
+                                return "Veuillez saisir votre Prénom.";
+                              }
+                              return null;
+                            },
+                          ),
+
+                          const SizedBox(height: 16),
+
+                          _buildInputField(
+                            controller: _lastNameController,
+                            label: "Nom",
+                            validator: (value) {
+                              if (value == null || value.trim().isEmpty) {
+                                return "Veuillez saisir votre Nom.";
                               }
                               return null;
                             },

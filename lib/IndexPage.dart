@@ -17,8 +17,7 @@ import 'indexPage_tools/Game_index_tool/game_index.dart';
 import 'indexPage_tools/language_menu.dart';
 import 'main.dart';
 
-final RouteObserver<ModalRoute<void>> routeObserver =
-RouteObserver<ModalRoute<void>>();
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
 
 class Index extends StatefulWidget {
   const Index({super.key}); // ❌ Removed onChangeLocale
@@ -156,6 +155,7 @@ class _IndexState extends State<Index>
   Widget build(BuildContext context) {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     final xpManager = Provider.of<ExperienceManager>(context);
+    final user = xpManager.userProfile;
     final avatarEmoji = xpManager.selectedAvatar;
     final stars = xpManager.stars;
 
@@ -270,9 +270,9 @@ class _IndexState extends State<Index>
                                   Navigator.of(context).pushNamed('Profile');
                                 },
                                 child: Text(
-                                  (xpManager.fullName.isEmpty || xpManager.fullName == "Player")
+                                  (user.fullName.isEmpty || user.fullName == "Player")
                                       ? "${tr(context).enterName} ✏️"
-                                      : xpManager.fullName,
+                                      : user.fullName,
                                   style: const TextStyle(
                                     fontSize: 20,
                                     fontWeight: FontWeight.bold,

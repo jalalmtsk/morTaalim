@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../Authentification/BackUp/BackUpPage.dart';
+import '../XpSystem.dart';
 import '../main.dart';
 import '../tools/audio_tool/Audio_Manager.dart';
+import 'Setting_cards/BackUp_card.dart';
+import 'Setting_cards/GoogleAccount.dart';
 
 class SettingsDialog extends StatefulWidget {
   const SettingsDialog({super.key});
@@ -17,84 +21,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
   bool sfxExpanded = false;
   bool buttonExpanded = false;
   bool alertExpanded = false;
-  bool _isConnecting = false;
-  String? _googleError;
 
-  Future<void> _signInWithGoogle() async {
-    setState(() {
-      _isConnecting = true;
-      _googleError = null;
-    });
-
-    try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
-      if (googleUser == null) {
-        setState(() {
-          _isConnecting = false;
-        });
-        return; // User cancelled
-      }
-
-      final googleAuth = await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Connecté avec succès via Google !')),
-        );
-        setState(() {}); // refresh UI with new user state
-      }
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _googleError = e.message ?? "Erreur lors de la connexion avec Google.";
-      });
-    } catch (e) {
-      setState(() {
-        _googleError = "Erreur inattendue : $e";
-      });
-    } finally {
-      if (mounted) setState(() => _isConnecting = false);
-    }
-  }
-
-  Future<void> _disconnectGoogle() async {
-    try {
-      final user = FirebaseAuth.instance.currentUser;
-
-      if (user != null) {
-        // Unlink Google provider if linked
-        if (user.providerData.any((p) => p.providerId == GoogleAuthProvider.PROVIDER_ID)) {
-          await user.unlink(GoogleAuthProvider.PROVIDER_ID);
-        }
-        // Sign out from Google and Firebase
-        await GoogleSignIn().signOut();
-        await FirebaseAuth.instance.signOut();
-
-        // Optionally sign in anonymously after disconnect
-        await FirebaseAuth.instance.signInAnonymously();
-
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Compte Google déconnecté. Vous êtes maintenant en mode anonyme.")),
-          );
-          setState(() {}); // Refresh UI
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Échec de la déconnexion : $e")),
-        );
-      }
-    }
-  }
 
   Widget buildVolumeControl({
     required String title,
@@ -278,7 +205,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       icon: Icons.touch_app,
                       color: Colors.green,
                     ),
-                    buildVolumeControl(
+                   /* buildVolumeControl(
                       title: "Alerts & Notifications",
                       expanded: alertExpanded,
                       onExpandChanged: (v) => setState(() => alertExpanded = v),
@@ -288,133 +215,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       onVolumeChanged: audioManager.setAlertVolume,
                       icon: Icons.notifications,
                       color: Colors.purple,
-                    ),
-
-                    const SizedBox(height: 16),
-
-                    // GOOGLE ACCOUNT SECTION
-                    Card(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12)),
-                      margin: const EdgeInsets.symmetric(vertical: 6),
-                      elevation: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text("Google Account",
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold, fontSize: 16)),
-                            const SizedBox(height: 8),
-                            if (user != null &&
-                                user.providerData.any(
-                                        (p) => p.providerId == GoogleAuthProvider.PROVIDER_ID))
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Icon(Icons.check_circle,
-                                          color: Colors.green),
-                                      const SizedBox(width: 8),
-                                      Expanded(
-                                        child: Text(
-                                          "Connected: ${user.email ?? "Google Account"}",
-                                          style: const TextStyle(color: Colors.green),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8),
-                                  ElevatedButton.icon(
-                                    icon: const Icon(Icons.logout),
-                                    label: const Text("Disconnect"),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.red,
-                                      foregroundColor: Colors.white,
-                                    ),
-                                    onPressed: () async {
-                                      final confirm = await showDialog<bool>(
-                                        context: context,
-                                        builder: (ctx) => AlertDialog(
-                                          title:
-                                          const Text("Disconnect Google Account"),
-                                          content: const Text(
-                                              "Are you sure you want to disconnect your Google account? You will be switched to anonymous mode."),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () =>
-                                                  Navigator.of(ctx).pop(false),
-                                              child: const Text("Cancel"),
-                                            ),
-                                            ElevatedButton(
-                                              onPressed: () =>
-                                                  Navigator.of(ctx).pop(true),
-                                              style: ElevatedButton.styleFrom(
-                                                  backgroundColor: Colors.red),
-                                              child: const Text("Disconnect"),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                      if (confirm == true) {
-                                        await _disconnectGoogle();
-                                      }
-                                    },
-                                  ),
-                                ],
-                              )
-                            else
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Text("Not connected yet",
-                                      style: TextStyle(color: Colors.orange)),
-                                  const SizedBox(height: 8),
-                                  ElevatedButton.icon(
-                                    icon: _isConnecting
-                                        ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.white,
-                                      ),
-                                    )
-                                        : const Icon(Icons.login),
-                                    label: Text(
-                                      _isConnecting
-                                          ? "Connecting..."
-                                          : "Connect Google Account",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue,
-                                      foregroundColor: Colors.white,
-                                    ),
-                                    onPressed:
-                                    _isConnecting ? null : _signInWithGoogle,
-                                  ),
-                                  if (_googleError != null) ...[
-                                    const SizedBox(height: 8),
-                                    Text(
-                                      _googleError!,
-                                      style: const TextStyle(
-                                          color: Colors.red, fontSize: 14),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                          ],
-                        ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 16),
-
+                    ),*/
                     ElevatedButton.icon(
                       icon: const Icon(Icons.refresh),
                       label: const Text("Reset Audio Settings"),
@@ -427,8 +228,16 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       ),
                       onPressed: () => audioManager.resetAudioSettings(),
                     ),
-
                     const SizedBox(height: 16),
+
+                    GoogleAccountCard(
+                      onDisconnectCallback: () {
+                        setState(() {});
+                      },
+                    ),
+
+                    BackupCard(),
+                    const SizedBox(height: 22),
 
                     ElevatedButton.icon(
                         icon: const Icon(Icons.exit_to_app),
@@ -445,7 +254,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                         }),
                     const SizedBox(height: 12),
 
-                    Text("Version $appVersion"),
+                    Center(child: Text("Version $appVersion")),
                   ],
                 ),
               ),

@@ -27,8 +27,9 @@ class ProfileStatusBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
+    final user = xpManager.userProfile;
     final audioManager = Provider.of<AudioManager>(context, listen: false);
-    final playerName = xpManager.fullName;
+    final playerName = user.fullName;
     final banner = xpManager.selectedBannerImage;
     final stars = xpManager.stars;
     final tokens = xpManager.saveTokenCount;

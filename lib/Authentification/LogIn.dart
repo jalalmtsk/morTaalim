@@ -340,10 +340,18 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
                 const SizedBox(height: 30),
                 const Text(
-                  "Vos données sont synchronisées",
+                  "Les données ne sont pas synchronisées automatiquement.\n"
+                      "Sauvegardez manuellement dans la section Backup.",
                   textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.black54, fontSize: 12),
+                  style: TextStyle(
+                    color: Colors.black54,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w400,
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
+
+
               ],
             ),
           ),

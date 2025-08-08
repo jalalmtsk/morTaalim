@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
+
 class FirebaseService {
   final _firestore = FirebaseFirestore.instance;
 
@@ -13,3 +15,4 @@ class FirebaseService {
     return doc.exists ? doc.data() : null;
   }
 }
+

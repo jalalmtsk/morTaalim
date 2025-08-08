@@ -16,6 +16,7 @@ class ProfileSetupPage extends StatefulWidget {
 
 class _ProfileSetupPageState extends State<ProfileSetupPage> {
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _ageController = TextEditingController();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
@@ -32,13 +33,15 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
   Future<void> _loadProfile() async {
     final prefs = await SharedPreferences.getInstance();
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    final user = xpManager.userProfile;
 
-    _nameController.text = prefs.getString('name') ?? xpManager.fullName;
-    _ageController.text = (xpManager.age > 0) ? xpManager.age.toString() : "";
-    _cityController.text = xpManager.city;
-    _countryController.text = xpManager.country;
-    _emailController.text = xpManager.email;
-    _selectedGender = xpManager.gender.isNotEmpty ? xpManager.gender : null;
+    _nameController.text = user.fullName;
+    _lastNameController.text = user.lastName;
+    _ageController.text = (user.age > 0) ? user.age.toString() : "";
+    _cityController.text = user.city;
+    _countryController.text = user.country;
+    _emailController.text = user.email;
+    _selectedGender = user.gender.isNotEmpty ? user.gender : null;
 
     setState(() {});
   }
@@ -48,6 +51,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
 
     final name = _nameController.text.trim();
+    final lastName = _lastNameController.text.trim();
     final age = int.tryParse(_ageController.text.trim()) ?? 0;
     final city = _cityController.text.trim();
     final country = _countryController.text.trim();
@@ -72,7 +76,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       _showError("Please enter your country");
       return;
     }
-    if (email.isEmpty || !RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$").hasMatch(email)) {
+    if (email.isEmpty || !RegExp(r"^[\\w\\.]+@([\\w-]+\\.)+[\\w-]{2,4}\$").hasMatch(email)) {
       _showError("Please enter a valid email");
       return;
     }
@@ -83,8 +87,10 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('name', name);
+    await prefs.setString('lastName', lastName);
 
     xpManager.setFullName(name);
+    xpManager.setLastName(lastName);
     xpManager.setAge(age);
     xpManager.setCity(city);
     xpManager.setCountry(country);
@@ -140,7 +146,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                       padding: const EdgeInsets.all(16),
                       child: ListView(
                         children: [
-                          _buildSectionTitle(Icons.flag, tr(context).chooseYourBanner),
+                          _buildSectionTitle(Icons.flag, "Choose Your Banner"),
                           const SizedBox(height: 12),
                           _buildBannerSelector(xpManager, audioManager),
                           const SizedBox(height: 30),
@@ -148,9 +154,10 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                           const SizedBox(height: 12),
                           _buildAvatarSelector(xpManager, audioManager),
                           const SizedBox(height: 30),
-                          _buildSectionTitle(Icons.person, 'Personal' ?? "Personal Information"),
+                          _buildSectionTitle(Icons.person, "Personal Information"),
                           const SizedBox(height: 12),
                           _buildNameField(audioManager),
+                          _buildField(_lastNameController, "Last Name", Icons.person_outline),
                           _buildField(_ageController, "Age", Icons.cake, TextInputType.number),
                           _buildField(_cityController, "City", Icons.location_city),
                           _buildField(_countryController, "Country", Icons.public),
@@ -189,8 +196,6 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
     );
   }
 
-
-
   Widget _buildBannerSelector(ExperienceManager xpManager, AudioManager audioManager) {
     return SizedBox(
       height: 140,
@@ -218,7 +223,7 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
                 boxShadow: isSelected
                     ? [
                   BoxShadow(
-                    color: Colors.deepOrange.withValues(alpha: 0.5),
+                    color: Colors.deepOrange.withOpacity(0.5),
                     blurRadius: 12,
                     spreadRadius: 1,
                     offset: const Offset(0, 4),
@@ -301,7 +306,6 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
       ),
     );
   }
-
 
   Widget _buildNameField(AudioManager audioManager) {
     return Column(
@@ -386,12 +390,6 @@ class _ProfileSetupPageState extends State<ProfileSetupPage> {
         RadioListTile<String>(
           title: const Text("Female"),
           value: "female",
-          groupValue: _selectedGender,
-          onChanged: (value) => setState(() => _selectedGender = value),
-        ),
-        RadioListTile<String>(
-          title: const Text("Other"),
-          value: "other",
           groupValue: _selectedGender,
           onChanged: (value) => setState(() => _selectedGender = value),
         ),

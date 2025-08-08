@@ -17,7 +17,8 @@ class _UserInfoPage7State extends State<UserInfoPage7> {
   void initState() {
     super.initState();
     final experience = Provider.of<ExperienceManager>(context, listen: false);
-    _selectedGender = experience.gender.isNotEmpty ? experience.gender : null;
+    final user = experience.userProfile;
+    _selectedGender = user.gender.isNotEmpty ? user.gender : null;
   }
 
   void _next() {

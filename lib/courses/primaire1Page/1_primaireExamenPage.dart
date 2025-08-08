@@ -181,7 +181,6 @@ class _Primaire1StateExam extends State<primaire1Exam> {
                               builder: (_) => CoursePage(
                                 jsonFilePath: course['file']!,
                                 courseId: title,
-                                progressPrefix: "progress1", // standard
                               ),
                             ),
                           ).then((_) => loadProgressForCourses());

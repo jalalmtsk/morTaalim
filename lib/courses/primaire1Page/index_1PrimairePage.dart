@@ -164,7 +164,7 @@ class _index1PrimaireState extends State<index1Primaire>
             Expanded(
               child: TabBarView(
                 children: [
-                  primaire1(key: _keyTab1),
+                  Primaire1(key: _keyTab1),
                   primaire1Exam(key: _keyTab3),
                   Primaire1Pratique(key: _keyTab2),
 

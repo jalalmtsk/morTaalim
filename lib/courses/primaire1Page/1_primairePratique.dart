@@ -14,11 +14,11 @@ class Primaire1Pratique extends StatefulWidget {
 }
 
 class _Primaire1PratiqueState extends State<Primaire1Pratique> {
-  final List<Map<String, String>> courses = [
-    {'title': 'math', 'route': 'IndexMath1Practise'},
-    {'title': 'french', 'route': 'IndexFrench1Practise'},
-    {'title': 'islamicEducation', 'route': 'IndexIslamicEducation1Practise'},
-    {'title': 'science', 'route': 'IndexScience1Practise'},
+  final List<Map<String, dynamic>> courses = [
+    {'title': 'math', 'route': 'IndexMath1Practise', 'color': Colors.orangeAccent},
+    {'title': 'french', 'route': 'IndexFrench1Practise', 'color': Colors.lightBlueAccent},
+    {'title': 'islamicEducation', 'route': 'IndexIslamicEducation1Practise', 'color': Colors.greenAccent},
+    {'title': 'science', 'route': 'IndexScience1Practise', 'color': Colors.purpleAccent},
   ];
 
   IconData getIcon(String key) {
@@ -71,52 +71,65 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
     final tr = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xfff7f9fc),
+      backgroundColor: const Color(0xfffef9f4),
       body: Column(
         children: [
+          // Cute header
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(20, 50, 20, 20),
+            padding: const EdgeInsets.fromLTRB(20, 50, 20, 30),
             decoration: const BoxDecoration(
               gradient: LinearGradient(
-                colors: [Color(0xff4db6ac), Color(0xff00796b)],
+                colors: [Color(0xffffd54f), Color(0xffffb300)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black26,
-                  blurRadius: 8,
-                  offset: Offset(0, 4),
+                  blurRadius: 10,
+                  offset: Offset(0, 5),
                 )
               ],
             ),
             child: Row(
               children: [
-                const Icon(Icons.school, color: Colors.white, size: 30),
+                const Icon(Icons.school, color: Colors.white, size: 36),
                 const SizedBox(width: 12),
-                Text(
-                  '📘 ${tr.class1}',
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                Expanded(
+                  child: Text(
+                    '📚 ${tr.class1} - Practise}',
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black26,
+                          offset: Offset(1, 1),
+                          blurRadius: 2,
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          const SizedBox(height: 16),
+
+          const SizedBox(height: 20),
+
+          // Grid of colorful bubbles
           Expanded(
             child: GridView.builder(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               itemCount: courses.length,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                mainAxisSpacing: 14,
-                crossAxisSpacing: 14,
-                childAspectRatio: 1.1,
+                mainAxisSpacing: 18,
+                crossAxisSpacing: 18,
+                childAspectRatio: 1,
               ),
               itemBuilder: (context, index) {
                 final course = courses[index];
@@ -124,6 +137,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                 final route = course['route']!;
                 final icon = getIcon(title);
                 final label = getLabel(title, tr);
+                final color = course['color'] as Color;
 
                 return GestureDetector(
                   onTap: () {
@@ -133,33 +147,38 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                     }
                   },
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 400),
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(18),
+                      gradient: LinearGradient(
+                        colors: [color.withOpacity(0.8), color],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(26),
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.teal.withValues(alpha: 0.2),
-                          blurRadius: 8,
+                          color: color.withOpacity(0.4),
+                          blurRadius: 10,
                           offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-                    padding: const EdgeInsets.all(12),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CircleAvatar(
-                          radius: 28,
-                          backgroundColor: Colors.teal.shade100,
-                          child: Icon(icon, size: 30, color: Colors.teal.shade900),
+                          radius: 36,
+                          backgroundColor: Colors.white,
+                          child: Icon(icon, size: 40, color: color),
                         ),
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 14),
                         Text(
                           label,
                           style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Colors.white,
                           ),
                         ),
                       ],

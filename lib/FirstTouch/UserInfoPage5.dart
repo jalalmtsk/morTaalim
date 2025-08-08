@@ -57,7 +57,8 @@ class _UserInfoPage5State extends State<UserInfoPage5>
 
   void _loadData() {
     final experience = Provider.of<ExperienceManager>(context, listen: false);
-    _countryController.text = experience.country;
+    final user = experience.userProfile;
+    _countryController.text = user.country;
     _validateForm();
   }
 

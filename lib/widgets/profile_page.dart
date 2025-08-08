@@ -115,6 +115,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
+    final user = xpManager.userProfile;
     final tr = AppLocalizations.of(context)!;
 
     final level = xpManager.level;
@@ -122,7 +123,7 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
     final xp = xpManager.xp;
     final stars = xpManager.stars;
     final tokens = xpManager.saveTokenCount;
-    final userName = xpManager.fullName.isNotEmpty ? xpManager.fullName : 'UnkownUser';
+    final userName = user.fullName.isNotEmpty ? user.fullName : 'UnkownUser';
     final userMood = "😊"; // You can add mood to your ExperienceManager and get it here
     final favoriteColor = Colors.deepPurple; // Replace by dynamic color if you have it
 
@@ -220,15 +221,15 @@ class _ProfilePageState extends State<ProfilePage> with SingleTickerProviderStat
 
             const SizedBox(height: 24),
 
-            _infoRow(Icons.email, xpManager.email.isNotEmpty ? xpManager.email : 'noEmail', Colors.deepPurple),
+            _infoRow(Icons.email, user.email.isNotEmpty ? user.email : 'noEmail', Colors.deepPurple),
             const SizedBox(height: 12),
-            _infoRow(Icons.cake, "${xpManager.age} ${'years Old'}", favoriteColor),
+            _infoRow(Icons.cake, "${user.age} ${'years Old'}", favoriteColor),
             const SizedBox(height: 12),
-            _infoRow(Icons.person, xpManager.gender.isNotEmpty ? xpManager.gender : 'unkown', Colors.pinkAccent),
+            _infoRow(Icons.person, user.gender.isNotEmpty ? user.gender : 'unkown', Colors.pinkAccent),
             const SizedBox(height: 12),
 
-            _infoRow(Icons.public, xpManager.city.isNotEmpty ? xpManager.city : 'unkown', Colors.teal),
-            _infoRow(Icons.public, xpManager.country.isNotEmpty ? xpManager.country : 'unkown', Colors.teal),
+            _infoRow(Icons.public, user.city.isNotEmpty ? user.city : 'unkown', Colors.teal),
+            _infoRow(Icons.public, user.country.isNotEmpty ? user.country : 'unkown', Colors.teal),
 
             const SizedBox(height: 40),
 

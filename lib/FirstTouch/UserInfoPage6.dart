@@ -74,7 +74,7 @@ class _UserInfoAvatarPageState extends State<UserInfoAvatarPage>
       return false;
     }
 
-    if (xpManager.gender.isEmpty) {
+    if (xpManager.userProfile.gender.isEmpty) {
       setState(() {
         _errorMessage = "Veuillez sélectionner votre genre.";
         _isSaving = false;
@@ -83,7 +83,7 @@ class _UserInfoAvatarPageState extends State<UserInfoAvatarPage>
     }
 
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('gender', xpManager.gender);
+    await prefs.setString('gender', xpManager.userProfile.gender);
     return true;
   }
 
@@ -93,7 +93,7 @@ class _UserInfoAvatarPageState extends State<UserInfoAvatarPage>
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
     final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
-    bool isSelectionValid = xpManager.selectedAvatar.isNotEmpty && xpManager.gender.isNotEmpty;
+    bool isSelectionValid = xpManager.selectedAvatar.isNotEmpty && xpManager.userProfile.gender.isNotEmpty;
 
     return Scaffold(
       body: AnimatedBuilder(
@@ -201,9 +201,9 @@ class _UserInfoAvatarPageState extends State<UserInfoAvatarPage>
         ),
         const SizedBox(height: 10),
         Text(
-          xpManager.gender.isEmpty
+          xpManager.userProfile.gender.isEmpty
               ? "Sélectionnez votre genre"
-              : xpManager.gender == "male"
+              : xpManager.userProfile.gender == "male"
               ? "Homme"
               : "Femme",
           style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
@@ -283,7 +283,7 @@ class _UserInfoAvatarPageState extends State<UserInfoAvatarPage>
   }
 
   Widget _buildGenderButton(String gender, IconData icon, ExperienceManager xpManager) {
-    final isSelected = xpManager.gender == gender;
+    final isSelected = xpManager.userProfile.gender == gender;
     return GestureDetector(
       onTap: () => xpManager.setGender(gender),
       child: AnimatedContainer(

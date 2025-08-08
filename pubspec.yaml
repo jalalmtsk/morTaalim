@@ -163,6 +163,7 @@ flutter:
   - assets/animations/LvlUnlocked/
   - assets/animations/UIBannerAnimations/
   - assets/animations/FirstTouchAnimations/
+  - assets/animations/UI_Animations/
 
 
   #   - images/a_dot_ham.jpeg

@@ -29,19 +29,20 @@ class _UserInfoFormPageState extends State<UserInfoFormPage> {
     // Use listen: false to safely read provider once in initState
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
+      final user = experienceManager.userProfile;
 
       setState(() {
-        _nameController.text = experienceManager.fullName;
-        _ageController.text = experienceManager.age > 0 ? experienceManager.age.toString() : '';
-        _cityController.text = experienceManager.city;
-        _countryController.text = experienceManager.country;
-        _emailController.text = experienceManager.email;
-        _selectedGender = experienceManager.gender.isNotEmpty ? experienceManager.gender : null;
+        _nameController.text = user.fullName;
+        _ageController.text = user.age > 0 ? user.age.toString() : '';
+        _cityController.text = user.city;
+        _countryController.text = user.country;
+        _emailController.text = user.email;
+        _selectedGender = user.gender.isNotEmpty ? user.gender : null;
       });
     });
   }
 
-  // If you want reactive update when ExperienceManager changes, you can use didChangeDependencies:
+  // If you want reactive update when @ changes, you can use didChangeDependencies:
   // @override
   // void didChangeDependencies() {
   //   super.didChangeDependencies();

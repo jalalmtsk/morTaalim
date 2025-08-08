@@ -1,21 +1,18 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mortaalim/widgets/shimmerPage.dart';
-import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
-
 import '../../Inside_Course_Logic/HomeCourse.dart';
 
-class primaire1 extends StatefulWidget {
-  const primaire1({Key? key}) : super(key: key);
+class Primaire1 extends StatefulWidget {
+  const Primaire1({Key? key}) : super(key: key);
 
   @override
-  _Primaire1State createState() => _Primaire1State();
+  State<Primaire1> createState() => _Primaire1State();
 }
 
-class _Primaire1State extends State<primaire1> {
+class _Primaire1State extends State<Primaire1> {
   final List<Map<String, String>> courses = [
     {'title': 'math', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_mathematique.json'},
     {'title': 'french', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_francais.json'},
@@ -26,13 +23,13 @@ class _Primaire1State extends State<primaire1> {
   ];
 
   Map<String, double> courseProgress = {};
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
     loadProgressForCourses();
   }
-  bool isLoading = true;
 
   Future<void> loadProgressForCourses() async {
     final prefs = await SharedPreferences.getInstance();
@@ -41,13 +38,10 @@ class _Primaire1State extends State<primaire1> {
       final saved = prefs.getStringList('progress_$courseId') ?? [];
       final total = await getTotalSections(course['file']!);
       final progress = total > 0 ? saved.length / total : 0.0;
-
       courseProgress[courseId] = progress;
     }
-    await Future.delayed(const Duration(seconds: 1)); // simulate loading
-    setState(() {
-      isLoading = false;
-    });
+    await Future.delayed(const Duration(milliseconds: 800)); // playful loading
+    setState(() => isLoading = false);
   }
 
   Future<int> getTotalSections(String jsonFilePath) async {
@@ -59,17 +53,17 @@ class _Primaire1State extends State<primaire1> {
   IconData getCourseIcon(String title) {
     switch (title) {
       case 'math':
-        return Icons.calculate;
+        return Icons.calculate_rounded;
       case 'french':
-        return Icons.language;
+        return Icons.language_rounded;
       case 'arabic':
-        return Icons.translate;
+        return Icons.translate_rounded;
       case 'islamicEducation':
         return Icons.mosque;
       case 'artEducation':
-        return Icons.brush;
+        return Icons.palette_rounded;
       default:
-        return Icons.menu_book;
+        return Icons.book_rounded;
     }
   }
 
@@ -95,168 +89,158 @@ class _Primaire1State extends State<primaire1> {
     final tr = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xfff8fafc),
+      backgroundColor: const Color(0xfffdf6e3),
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            automaticallyImplyLeading: false,
+            expandedHeight: 170,
             pinned: true,
-            expandedHeight: 150,
             backgroundColor: Colors.transparent,
             elevation: 0,
             flexibleSpace: FlexibleSpaceBar(
-              titlePadding: const EdgeInsets.only(left: 60, bottom: 10),
+              titlePadding: const EdgeInsets.only(left: 24, bottom: 16),
               title: Text(
-                "📘 ${tr.class1}",
+                "🎒 ${tr.class1}",
                 style: const TextStyle(
-                  fontSize: 25,
+                  fontSize: 26,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
+                  shadows: [
+                    Shadow(color: Colors.black26, blurRadius: 3),
+                  ],
                 ),
               ),
               background: Container(
                 decoration: const BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xffff7043), Color(0xfff4511e)],
+                    colors: [Color(0xfff9a825), Color(0xfff57c00)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
                   borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 12,
-                      offset: Offset(0, 4),
+                ),
+                child: Align(
+                  alignment: Alignment.bottomRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Image(
+                      image: AssetImage('assets/images/cartoon_kid.png'),
+                      height: 90,
                     ),
-                  ],
+                  ),
                 ),
               ),
             ),
             shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(28)),
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
             ),
           ),
 
-
-          /// Your Userstatutbar as a separate sliver
-          SliverToBoxAdapter(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              child: const Userstatutbar(),
-            ),
-          ),
-
-          // Your course list section remains the same as SliverToBoxAdapter
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 20),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverToBoxAdapter(
               child: isLoading
-                  ? ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: 5,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (_, __) => const ShimmerCard(),
+                  ? Center(
+                child: SizedBox(
+                  height: 80,
+                  width: 80,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 6,
+                    color: Colors.orangeAccent,
+                  ),
+                ),
               )
-                  : ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: courses.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final course = courses[index];
+                  : Column(
+                children: courses.map((course) {
                   final title = course['title']!;
                   final icon = getCourseIcon(title);
                   final percent = courseProgress[title] ?? 0.0;
                   final percentText = (percent * 100).toStringAsFixed(0);
 
-                  return TweenAnimationBuilder(
-                    tween: Tween<double>(begin: 0, end: percent),
-                    duration: const Duration(milliseconds: 500),
-                    builder: (context, double value, child) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => CoursePage(
-                                jsonFilePath: course['file']!,
-                                courseId: title,
-                                progressPrefix: "progress", // standard
-                              ),
-                            ),
-                          ).then((_) => loadProgressForCourses());
-                        },
-                        child: Card(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(18),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => CoursePage(
+                            jsonFilePath: course['file']!,
+                            courseId: title,
                           ),
-                          child: Container(
-                            padding: const EdgeInsets.all(18),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(22), // more rounded corners
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.orange.withValues(alpha:0.4),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ],
-                            ),
+                        ),
+                      ).then((_) => loadProgressForCourses());
+                    },
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: const EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.all(18),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [Colors.white, Colors.orange.shade50],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(28),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.orange.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 28,
+                            backgroundColor: Colors.orangeAccent.shade100,
+                            child: Icon(icon, size: 32, color: Colors.deepOrange),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: [
-                                    Icon(icon, size: 30, color: Colors.deepOrange),
-                                    const SizedBox(width: 12),
-                                    Expanded(
-                                      child: Text(
-                                        getCourseName(title, tr),
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                    Text(
-                                      "$percentText%",
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.deepOrange,
-                                      ),
-                                    ),
-                                  ],
+                                Text(
+                                  getCourseName(title, tr),
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                                const SizedBox(height: 12),
+                                const SizedBox(height: 8),
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(12),
                                   child: LinearProgressIndicator(
-                                    value: value,
+                                    value: percent,
                                     minHeight: 10,
-                                    backgroundColor: Colors.grey[300],
-                                    color: Colors.deepOrangeAccent,
+                                    backgroundColor: Colors.orange.shade100,
+                                    valueColor: AlwaysStoppedAnimation(
+                                      Colors.deepOrangeAccent,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ),
-                      );
-                    },
+                          const SizedBox(width: 12),
+                          Text(
+                            "$percentText%",
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.deepOrange,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   );
-                },
+                }).toList(),
               ),
             ),
           ),
         ],
       ),
     );
-
-
   }
 }

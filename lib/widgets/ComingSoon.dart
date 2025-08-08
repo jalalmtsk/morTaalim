@@ -28,7 +28,7 @@ class ComingSoonPage extends StatelessWidget {
               children: [
                 const SizedBox(height: 40),
                 Lottie.asset(
-                  'assets/animations/languageSwitch_Animation.json',
+                  'assets/animations/UI_Animations/UnderMaintenance.json',
                   width: 250,
                   repeat: true,
                 ),

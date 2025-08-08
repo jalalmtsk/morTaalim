@@ -5,14 +5,22 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 import 'package:mortaalim/tools/StarCountPulse.dart';
 import 'package:mortaalim/tools/StarDeductionOverlay.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+//MANAGERS/MODELS
+import 'Manager/models/LearningPrefrences.dart';
+import 'Manager/models/customazationSetting.dart';
+import 'Manager/models/user_profile.dart';
+
+// Manager TOOLS BANNERS STAR /XP /TOLIM /LEVEL UP
 import 'ManagerTools/AnimatedSpendingStarBanner.dart';
 import 'ManagerTools/AnimatedSpendingTolimBanner.dart';
 import 'ManagerTools/AnimatedStarBanner.dart';
@@ -29,33 +37,19 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   int Tolims = 20;
 
   // Customization
-  List<String> _unlockedAvatars = ["🐱", "🐻, assets/images/AvatarImage/OnlyAvatar/Avatar1.png"];
-  String _selectedAvatar = 'assets/images/AvatarImage/OnlyAvatar/Avatar1.png';
-
   List<String> _unlockedCourses = [];
   List<String> _unlockedLanguages = ['arabic', 'french'];
-
-  List<String> _unlockedBanners = [
-    'assets/images/Banners/CuteBr/Banner1.png',
-    'assets/images/Banners/CuteBr/Banner2.png',
-    'assets/images/Banners/CuteBr/Banner3.png',
-  ];
-  String _selectedBannerImage = 'assets/images/Banners/CuteBr/Banner3.png';
-
-  String _selectedAvatarFrame = '';
-  List<String> _unlockedAvatarFrames = [];
 
   // User personal info
   String? _userId;
 
-  String _fullName = '';
-  int _age = 0;
-  String _country = '';
-  String _city = '';
-  String _gender = '';
-  String _email = '';
+  UserProfile userProfile = UserProfile();
 
-  String _preferredLanguage = 'fr';
+  // Customazation
+  CustomizationSettings customization = CustomizationSettings();
+
+  //LearningPreferenes
+  LearningPreferences learningPreferences = LearningPreferences();
 
   // UX & animations
   int _recentlyAddedTokens = 0;
@@ -71,9 +65,9 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
 
   bool get isFirstLogin => lastLogin == null;
 
-
   // Ads toggle
   bool _adsEnabled = true;
+
 
   // Login/logout tracking
   DateTime? _lastLogin;
@@ -116,27 +110,18 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   int get stars => _stars;
   int get saveTokenCount => Tolims;
 
-  List<String> get unlockedAvatars => _unlockedAvatars;
-  String get selectedAvatar => _selectedAvatar;
+  List<String> get unlockedAvatars => customization.unlockedAvatars;
+  String get selectedAvatar => customization.selectedAvatar;
 
-  Locale get locale => Locale(_preferredLanguage);
+  Locale get locale => Locale(userProfile.preferredLanguage);
   List<String> get unlockedCourses => _unlockedCourses;
   List<String> get unlockedLanguages => _unlockedLanguages;
 
-  List<String> get unlockedBanners => _unlockedBanners;
-  String get selectedBannerImage => _selectedBannerImage;
+  List<String> get unlockedBanners => customization.unlockedBanners;
+  String get selectedBannerImage => customization.selectedBannerImage;
 
-  String get selectedAvatarFrame => _selectedAvatarFrame;
-  List<String> get unlockedAvatarFrames => _unlockedAvatarFrames;
-
-  String get fullName => _fullName;
-  int get age => _age;
-  String get country => _country;
-  String get city => _city;
-  String get gender => _gender;
-  String get email => _email;
-
-  String get preferredLanguage => _preferredLanguage;
+  String get selectedAvatarFrame => customization.selectedAvatarFrame;
+  List<String> get unlockedAvatarFrames => customization.unlockedAvatarFrames;
 
   int get recentlyAddedTokens => _recentlyAddedTokens;
   int get recentlyAddedStars => _recentlyAddedStars;
@@ -152,40 +137,47 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   // ---------------- User setters -------------------
 
   void setFullName(String name) {
-    if (_fullName != name) {
-      _fullName = name;
+    if (userProfile.fullName != name) {
+      userProfile.fullName = name;
       _saveData(); // ✅ Save change
       notifyListeners();
     }
   }
 
+  void setLastName(String name) {
+    if (userProfile.lastName != name) {
+      userProfile.lastName = name;
+      _saveData(); // ✅ Save change
+      notifyListeners();
+    }
+  }
 
   void setAge(int age) {
-    _age = age;
+    userProfile.age = age;
     _saveData();
     notifyListeners();
   }
 
   void setCountry(String country) {
-    _country = country;
+    userProfile.country = country;
     _saveData();
     notifyListeners();
   }
 
   void setCity(String city) {
-    _city = city;
+    userProfile.city = city;
     _saveData();
     notifyListeners();
   }
 
   void setGender(String gender) {
-    _gender = gender;
+    userProfile.gender = gender;
     _saveData();
     notifyListeners();
   }
 
   void setEmail(String email) {
-    _email = email;
+    userProfile.email = email;
     _saveData();
     notifyListeners();
   }
@@ -194,56 +186,56 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   // ---------------- Other setters (customization) -------------------
 
   void unlockAvatar(String emoji) {
-    if (!_unlockedAvatars.contains(emoji)) {
-      _unlockedAvatars.add(emoji);
+    if (!customization.unlockedAvatars.contains(emoji)) {
+      customization.unlockedAvatars.add(emoji);
       _saveData();
       notifyListeners();
     }
   }
 
   void selectAvatar(String emoji) {
-    if (_unlockedAvatars.contains(emoji)) {
-      _selectedAvatar = emoji;
+    if (customization.unlockedAvatars.contains(emoji)) {
+      customization.selectedAvatar = emoji;
       _saveData();
       notifyListeners();
     }
   }
 
   void unlockBanner(String path) {
-    if (!_unlockedBanners.contains(path)) {
-      _unlockedBanners.add(path);
+    if (!customization.unlockedBanners.contains(path)) {
+      customization.unlockedBanners.add(path);
       _saveData();
       notifyListeners();
     }
   }
 
   void selectBannerImage(String path) {
-    if (_unlockedBanners.contains(path)) {
-      _selectedBannerImage = path;
+    if (customization.unlockedBanners.contains(path)) {
+      customization.selectedBannerImage = path;
       _saveData();
       notifyListeners();
     }
   }
 
   void unlockAvatarFrame(String path) {
-    if (!_unlockedAvatarFrames.contains(path)) {
-      _unlockedAvatarFrames.add(path);
+    if (!customization.unlockedAvatarFrames.contains(path)) {
+      customization.unlockedAvatarFrames.add(path);
       _saveData();
       notifyListeners();
     }
   }
 
   void selectAvatarFrame(String path) {
-    if (_unlockedAvatarFrames.contains(path)) {
-      _selectedAvatarFrame = path;
+    if (customization.unlockedAvatarFrames.contains(path)) {
+      customization.selectedAvatarFrame = path;
       _saveData();
       notifyListeners();
     }
   }
 
   void setPreferredLanguage(String lang) {
-    if (_preferredLanguage != lang) {
-      _preferredLanguage = lang;
+    if (userProfile.preferredLanguage != lang) {
+      userProfile.preferredLanguage = lang;
       _saveData();
       notifyListeners();
     }
@@ -272,7 +264,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   Future<void> changeLanguage(Locale locale) async {
-    _preferredLanguage = locale.languageCode;
+    userProfile.preferredLanguage = locale.languageCode;
     await _saveData(); // save to SharedPreferences
     notifyListeners();
   }
@@ -503,12 +495,14 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
+
   void resetData() {
+    userProfile.clearPrefs(prefs);
     _xp = 0;
     _stars = 0;
     Tolims = 20;
-    _unlockedAvatars = ["🐱", "🐻"];
-    _selectedAvatar = 'assets/images/AvatarImage/OnlyAvatar/Avatar1.png';
+    customization.unlockedAvatars = ["🐱", "🐻"];
+    customization.selectedAvatar = 'assets/images/AvatarImage/OnlyAvatar/Avatar1.png';
     _unlockedCourses = [];
     _unlockedLanguages = ['arabic', 'french'];
     _saveData();
@@ -548,8 +542,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
-
-
   void startConnectivityListener() {
     Connectivity().onConnectivityChanged.listen((status) async {
       if (status != ConnectivityResult.none) {
@@ -558,7 +550,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     });
   }
 
-
   // ---------------- Local Storage Load/Save -------------------
   Future<void> loadData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -566,22 +557,11 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _stars = prefs.getInt('stars') ?? 5;
     Tolims = prefs.getInt('saveTokens') ?? 20;
 
-    _unlockedAvatars = prefs.getStringList('unlockedAvatars') ?? ["🐱", "🐻", 'assets/images/AvatarImage/OnlyAvatar/Avatar1.png', 'assets/images/AvatarImage/OnlyAvatar/Avatar2.png', 'assets/images/AvatarImage/OnlyAvatar/Avatar3.png', 'assets/images/AvatarImage/OnlyAvatar/Avatar4.png'];
-    _unlockedBanners = prefs.getStringList('unlockedBanners') ?? ['assets/images/Banners/CuteBr/Banner1.png', 'assets/images/Banners/CuteBr/Banner2.png', 'assets/images/Banners/CuteBr/Banner3.png'];
     _unlockedCourses = prefs.getStringList('unlockedCourses') ?? ['AlphaDraw', 'BrainQuest'];
     _unlockedLanguages = prefs.getStringList('unlockedLanguages') ?? ['arabic', 'french'];
-    _selectedAvatar = prefs.getString('selectedAvatar') ?? 'assets/images/AvatarImage/OnlyAvatar/Avatar1.png';
-    _selectedBannerImage = prefs.getString('selectedBannerImage') ?? 'assets/images/Banners/CuteBr/Banner1.png';
-    _selectedAvatarFrame = prefs.getString('selectedAvatarFrame') ?? '';
-    _unlockedAvatarFrames = prefs.getStringList('unlockedAvatarFrames') ?? [''];
 
-    _fullName = prefs.getString('fullName') ?? '';
-    _age = prefs.getInt('age') ?? 0;
-    _country = prefs.getString('country') ?? '';
-    _city = prefs.getString('city') ?? '';
-    _gender = prefs.getString('gender') ?? '';
-    _email = prefs.getString('email') ?? '';
-    _preferredLanguage = prefs.getString('preferredLanguage') ?? 'fr';
+    userProfile = UserProfile.fromPrefs(prefs);
+    customization = CustomizationSettings.fromPrefs(prefs);
 
     _adsEnabled = prefs.getBool('adsEnabled') ?? true;
 
@@ -594,24 +574,17 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     await prefs.setInt('xp', _xp);
     await prefs.setInt('stars', _stars);
     await prefs.setInt('saveTokens', Tolims);
-    await prefs.setStringList('unlockedAvatars', _unlockedAvatars);
-    await prefs.setStringList('unlockedBanners', _unlockedBanners);
+
     await prefs.setStringList('unlockedCourses', _unlockedCourses);
     await prefs.setStringList('unlockedLanguages', _unlockedLanguages);
-    await prefs.setString('selectedAvatar', _selectedAvatar);
-    await prefs.setString('selectedBannerImage', _selectedBannerImage);
-    await prefs.setString('selectedAvatarFrame', _selectedAvatarFrame);
-    await prefs.setStringList('unlockedAvatarFrames', _unlockedAvatarFrames);
 
     // Personal info
-    await prefs.setString('fullName', _fullName);
-    await prefs.setInt('age', _age);
-    await prefs.setString('country', _country);
-    await prefs.setString('city', _city);
-    await prefs.setString('gender', _gender);
-    await prefs.setString('email', _email);
-    await prefs.setString('preferredLanguage', _preferredLanguage);
+    await userProfile.saveToPrefs(prefs);
+
+    //Customazations
+    await customization.saveToPrefs(prefs);
   }
+
 
   // ---------------- Firebase Sync -------------------
   Future<void> syncWithFirebaseIfOnline() async {
@@ -632,22 +605,16 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
         "xp": _xp,
         "stars": _stars,
         "tolims": Tolims,
-        "unlockedAvatars": _unlockedAvatars,
-        "unlockedBanners": _unlockedBanners,
+
         "unlockedLanguages": _unlockedLanguages,
         "unlockedCourses": _unlockedCourses,
-        "unlockedAvatarFrames": _unlockedAvatarFrames,
-        "selectedAvatar": _selectedAvatar,
-        "selectedBannerImage": _selectedBannerImage,
-        "selectedAvatarFrame": _selectedAvatarFrame,
-        "fullName": _fullName,
-        "age": _age,
-        "country": _country,
-        "city": _city,
-        "gender": _gender,
-        "email": _email,
-        "preferredLanguage": _preferredLanguage,
+
         "adsEnabled": _adsEnabled,
+
+        ...userProfile.toMap(),
+        ...customization.toMap(), // <-- include AVATAR/ BANNER
+        ...learningPreferences.toMap(),
+
       }, SetOptions(merge: true));
 
       print("✅ Local data pushed to Firebase");
@@ -666,83 +633,61 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   Future<String> saveBackup() async {
     String backupCode;
 
-    // Generate a unique backup code with timestamp if duplicate is found
     while (true) {
       backupCode = generateBackupCode(length: 6);
       final doc = await _firestore.collection('backups').doc(backupCode).get();
 
-      if (!doc.exists) break; // Ensure no duplicate
-      // Add timestamp if duplicate exists (extra uniqueness)
+      if (!doc.exists) break;
       backupCode = "${backupCode}_${DateTime.now().millisecondsSinceEpoch}";
       break;
     }
 
-    await _firestore.collection('backups').doc(backupCode).set({
+    final backupData = {
+      ...userProfile.toMap(),
+      ...customization.toMap(),
       "xp": _xp,
       "stars": _stars,
       "tolims": Tolims,
-      "unlockedAvatars": _unlockedAvatars,
-      "unlockedBanners": _unlockedBanners,
       "unlockedLanguages": _unlockedLanguages,
       "unlockedCourses": _unlockedCourses,
-      "unlockedAvatarFrames": _unlockedAvatarFrames,
-      "selectedAvatar": _selectedAvatar,
-      "selectedBannerImage": _selectedBannerImage,
-      "selectedAvatarFrame": _selectedAvatarFrame,
-      "fullName": _fullName,
-      "age": _age,
-      "country": _country,
-      "city": _city,
-      "gender": _gender,
-      "email": _email,
-      "preferredLanguage": _preferredLanguage,
       "adsEnabled": _adsEnabled,
       "createdAt": FieldValue.serverTimestamp(),
-    });
+    };
+
+    await _firestore.collection('backups').doc(backupCode).set(backupData);
 
     print("✅ Backup saved with code: $backupCode");
     return backupCode;
   }
-
 
   Future<void> loadBackup(String backupCode) async {
     final backupDoc = await _firestore.collection('backups').doc(backupCode).get();
 
     if (!backupDoc.exists) {
       print("❌ Backup not found");
-      return;
+      throw Exception("Backup not found");
     }
 
     final data = backupDoc.data()!;
+    userProfile.loadFromMap(data);
 
     _xp = data["xp"] ?? 0;
     _stars = data["stars"] ?? 0;
     Tolims = data["tolims"] ?? 0;
-    _unlockedAvatars = List<String>.from(data["unlockedAvatars"] ?? []);
-    _unlockedBanners = List<String>.from(data["unlockedBanners"] ?? []);
+
     _unlockedLanguages = List<String>.from(data["unlockedLanguages"] ?? []);
     _unlockedCourses = List<String>.from(data["unlockedCourses"] ?? []);
-    _unlockedAvatarFrames = List<String>.from(data["unlockedAvatarFrames"] ?? []);
-    _selectedAvatar = data["selectedAvatar"] ?? _selectedAvatar;
-    _selectedBannerImage = data["selectedBannerImage"] ?? _selectedBannerImage;
-    _selectedAvatarFrame = data["selectedAvatarFrame"] ?? _selectedAvatarFrame;
-    _fullName = data["fullName"] ?? _fullName;
-    _age = data["age"] ?? _age;
-    _country = data["country"] ?? _country;
-    _city = data["city"] ?? _city;
-    _gender = data["gender"] ?? _gender;
-    _email = data["email"] ?? _email;
-    _preferredLanguage = data["preferredLanguage"] ?? _preferredLanguage;
+
+    customization.loadFromMap(data);
+
     _adsEnabled = data["adsEnabled"] ?? _adsEnabled;
 
     await _saveData();
     print("✅ Backup loaded successfully from code: $backupCode");
 
-    // 🔄 Restart app flow by navigating to Auth screen
+    // Navigate to Auth screen (restart flow)
     navigatorKey.currentState?.pushNamedAndRemoveUntil('Auth', (route) => false);
   }
-
-
 
   // ---------------- Track Login & Logout -------------------
 
@@ -761,8 +706,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     }
     await _saveData();
   }
-
-  // ----------------------------------------------------------
 
   //ADDING XP
   void _showOverlayXPAddedBanner(BuildContext context, int xpAmount) {
@@ -791,11 +734,9 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void init(BuildContext context) {
-
   }
 
   // ADS MANAGER
-
   void setAdsEnabled(bool value) {
     _adsEnabled = value;
     _saveAdsPreference();
@@ -807,7 +748,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     await prefs.setBool('adsEnabled', _adsEnabled);
   }
 
-
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
@@ -815,4 +755,5 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _delayedRestartTimer?.cancel();
     super.dispose();
   }
+
 }

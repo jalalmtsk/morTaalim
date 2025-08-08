@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/Authentification/Auth.dart';
+import 'package:mortaalim/Authentification/BackUp/BackUpPage.dart';
 import 'package:mortaalim/FirstTouch/Testing.dart';
 import 'package:mortaalim/FirstTouch/UserInfoForm_Introduction.dart';
 import 'package:mortaalim/UserDataProfileEntering.dart';
@@ -38,18 +39,17 @@ import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/MusicRouteObserver.dart';
 import 'package:mortaalim/tools/SplashPage/splashScreen.dart';
 import 'package:mortaalim/testing.dart';
+import 'package:mortaalim/widgets/AIChatbot/ChatBotScreen.dart';
 import 'package:mortaalim/widgets/ComingSoon.dart';
 import 'package:mortaalim/widgets/CreditsPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
+
 import 'IndexPage.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
-
-import 'package:mortaalim/Authentification/LogIn.dart'; // Ajoute cet import
-
 final String appVersion = "1.0.0 (Build 1)";
 
 late SharedPreferences prefs;
@@ -113,9 +113,10 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
     return Consumer<ExperienceManager>(
       builder: (context, xpManager, child) {
-        final currentLocale = Locale(xpManager.preferredLanguage);
+        final currentLocale = Locale(xpManager.userProfile.preferredLanguage);
 
         return MaterialApp(
           navigatorKey: navigatorKey,
@@ -154,7 +155,8 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => index1Primaire(),
             'Profile': (context) => const ProfileSetupPage(),
 
-            'Shop': (context) => UserInfoFormFlow(),
+
+            'Shop': (context) => MainShopPageIndex(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

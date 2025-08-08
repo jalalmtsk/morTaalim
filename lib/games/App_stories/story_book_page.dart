@@ -27,6 +27,7 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
   late final PageController _pageController;
   final FlutterTts flutterTts = FlutterTts();
 
+
   int currentPageIndex = 0;
   int highlightedWordIndex = 0;
   bool isPlaying = false;

@@ -79,7 +79,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       await Future.delayed(const Duration(milliseconds: 500));
 
       final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-      debugPrint("Loaded language: ${xpManager.preferredLanguage}");
+      final user = xpManager.userProfile;
+      debugPrint("Loaded language: ${user.preferredLanguage}");
 
       // ✅ Check if onboarding is needed
       final bool needsOnboarding = xpManager.isFirstLogin;

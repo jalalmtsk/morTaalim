@@ -1,7 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
-import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
@@ -17,7 +18,7 @@ class AlphabetTracingPage extends StatefulWidget {
   State<AlphabetTracingPage> createState() => _AlphabetTracingPageState();
 }
 
-class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
+class _AlphabetTracingPageState extends State<AlphabetTracingPage> with SingleTickerProviderStateMixin {
   BannerAd? _bannerAd;
   late List<String> _letters;
   late Map<String, Map<String, String>> _letterDetails;
@@ -28,10 +29,32 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
 
   int score = 0;
   bool _isBannerAdLoaded = false;
+
+  late AnimationController _glowController;
+  late Animation<double> _glowAnimation;
+  bool _showGlow = false;
+
+  late FlutterTts flutterTts;
+
   @override
   void initState() {
     super.initState();
+    _setupLetters();
+    _loadBannerAd();
 
+    flutterTts = FlutterTts();
+    _configureTtsLanguage();
+
+    _glowController = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000));
+    _glowAnimation = Tween<double>(begin: 0.0, end: 12.0).animate(
+        CurvedAnimation(parent: _glowController, curve: Curves.easeInOut)
+    )..addStatusListener((status) {
+      if (status == AnimationStatus.completed) _glowController.reverse();
+      else if (status == AnimationStatus.dismissed) _glowController.forward();
+    });
+  }
+
+  void _setupLetters() {
     switch (widget.language) {
       case 'arabic':
         _letters = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ'];
@@ -45,7 +68,6 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
           'خ': {'pronunciation': 'Kha', 'example': 'خبز (Khubz) – Bread'},
         };
         break;
-
 
       case 'russian':
         _letters = [
@@ -145,7 +167,6 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
         };
         break;
 
-
       case 'korean':
         _letters = [
           'ㄱ', 'ㄴ', 'ㄷ', 'ㄹ', 'ㅁ',
@@ -173,118 +194,58 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
           'ㅍ': {'pronunciation': 'p', 'example': '피자 (pija) – Pizza'},
           'ㅎ': {'pronunciation': 'h', 'example': '하늘 (haneul) – Sky'},
 
-          'ㅏ': {'pronunciation': 'a', 'example': '아기 (agi) – Baby'},
+          'ㅏ': {'pronunciation': 'a', 'example': '아버지 (abeoji) – Father'},
           'ㅑ': {'pronunciation': 'ya', 'example': '야구 (yagu) – Baseball'},
-          'ㅓ': {'pronunciation': 'eo', 'example': '어서 (eoseo) – Quickly'},
-          'ㅕ': {'pronunciation': 'yeo', 'example': '여우 (yeou) – Fox'},
-          'ㅗ': {'pronunciation': 'o', 'example': '오이 (oi) – Cucumber'},
+          'ㅓ': {'pronunciation': 'eo', 'example': '어머니 (eomeoni) – Mother'},
+          'ㅕ': {'pronunciation': 'yeo', 'example': '여자 (yeoja) – Woman'},
+          'ㅗ': {'pronunciation': 'o', 'example': '오리 (ori) – Duck'},
 
           'ㅛ': {'pronunciation': 'yo', 'example': '요리 (yori) – Cooking'},
-          'ㅜ': {'pronunciation': 'u', 'example': '우산 (usan) – Umbrella'},
+          'ㅜ': {'pronunciation': 'u', 'example': '우유 (uyu) – Milk'},
           'ㅠ': {'pronunciation': 'yu', 'example': '유리 (yuri) – Glass'},
-          'ㅡ': {'pronunciation': 'eu', 'example': '음악 (eumak) – Music'},
-          'ㅣ': {'pronunciation': 'i', 'example': '이름 (ireum) – Name'},
+          'ㅡ': {'pronunciation': 'eu', 'example': '으르렁 (eureureong) – Growl'},
+          'ㅣ': {'pronunciation': 'i', 'example': '이 (i) – Tooth'},
         };
         break;
 
-
-      case 'french':
       default:
-        _letters = List.generate(26, (i) => String.fromCharCode(65 + i));
+        _letters = [
+          'A', 'B', 'C', 'D', 'E', 'F', 'G',
+          'H', 'I', 'J', 'K', 'L', 'M', 'N',
+          'O', 'P', 'Q', 'R', 'S', 'T', 'U',
+          'V', 'W', 'X', 'Y', 'Z'
+        ];
+
         _letterDetails = {
-          'A': {'pronunciation': 'ah', 'example': 'Avion – Plane'},
-          'B': {'pronunciation': 'bay', 'example': 'Banane – Banana'},
-          'C': {'pronunciation': 'say', 'example': 'Chat – Cat'},
-          'D': {'pronunciation': 'day', 'example': 'Dauphin – Dolphin'},
-          'E': {'pronunciation': 'uh', 'example': 'Étoile – Star'},
-          'F': {'pronunciation': 'eff', 'example': 'Fromage – Cheese'},
-          'G': {'pronunciation': 'zhay', 'example': 'Gâteau – Cake'},
-          'H': {'pronunciation': 'ahsh', 'example': 'Hôpital – Hospital'},
-          'I': {'pronunciation': 'ee', 'example': 'Île – Island'},
-          'J': {'pronunciation': 'zhee', 'example': 'Jardin – Garden'},
-          'K': {'pronunciation': 'kah', 'example': 'Koala – Koala'},
-          'L': {'pronunciation': 'ell', 'example': 'Lait – Milk'},
-          'M': {'pronunciation': 'emm', 'example': 'Montagne – Mountain'},
-          'N': {'pronunciation': 'enn', 'example': 'Nez – Nose'},
-          'O': {'pronunciation': 'oh', 'example': 'Orange – Orange'},
-          'P': {'pronunciation': 'pay', 'example': 'Poisson – Fish'},
-          'Q': {'pronunciation': 'ku', 'example': 'Quiche – Quiche'},
-          'R': {'pronunciation': 'air', 'example': 'Rivière – River'},
-          'S': {'pronunciation': 'ess', 'example': 'Soleil – Sun'},
-          'T': {'pronunciation': 'tay', 'example': 'Tigre – Tiger'},
-          'U': {'pronunciation': 'u', 'example': 'Usine – Factory'},
-          'V': {'pronunciation': 'vay', 'example': 'Voiture – Car'},
-          'W': {'pronunciation': 'doo-bluh-vay', 'example': 'Wagon – Wagon'},
-          'X': {'pronunciation': 'eeks', 'example': 'Xylophone – Xylophone'},
-          'Y': {'pronunciation': 'ee-grek', 'example': 'Yaourt – Yogurt'},
-          'Z': {'pronunciation': 'zed', 'example': 'Zèbre – Zebra'},
+          'A': {'pronunciation': 'A', 'example': 'Apple'},
+          'B': {'pronunciation': 'B', 'example': 'Banana'},
+          'C': {'pronunciation': 'C', 'example': 'Cat'},
+          'D': {'pronunciation': 'D', 'example': 'Dog'},
+          'E': {'pronunciation': 'E', 'example': 'Elephant'},
+          'F': {'pronunciation': 'F', 'example': 'Fish'},
+          'G': {'pronunciation': 'G', 'example': 'Giraffe'},
+          'H': {'pronunciation': 'H', 'example': 'Hat'},
+          'I': {'pronunciation': 'I', 'example': 'Ice'},
+          'J': {'pronunciation': 'J', 'example': 'Juice'},
+          'K': {'pronunciation': 'K', 'example': 'Kite'},
+          'L': {'pronunciation': 'L', 'example': 'Lion'},
+          'M': {'pronunciation': 'M', 'example': 'Monkey'},
+          'N': {'pronunciation': 'N', 'example': 'Nest'},
+          'O': {'pronunciation': 'O', 'example': 'Orange'},
+          'P': {'pronunciation': 'P', 'example': 'Panda'},
+          'Q': {'pronunciation': 'Q', 'example': 'Queen'},
+          'R': {'pronunciation': 'R', 'example': 'Rabbit'},
+          'S': {'pronunciation': 'S', 'example': 'Sun'},
+          'T': {'pronunciation': 'T', 'example': 'Tiger'},
+          'U': {'pronunciation': 'U', 'example': 'Umbrella'},
+          'V': {'pronunciation': 'V', 'example': 'Violin'},
+          'W': {'pronunciation': 'W', 'example': 'Whale'},
+          'X': {'pronunciation': 'X', 'example': 'Xylophone'},
+          'Y': {'pronunciation': 'Y', 'example': 'Yak'},
+          'Z': {'pronunciation': 'Z', 'example': 'Zebra'},
         };
-        break;
+
     }
-
-    _loadBannerAd();
-  }
-
-  void _clearCanvas() {
-    final audioManager = Provider.of<AudioManager>(context, listen: false);
-      audioManager.playEventSound('cancelButton');
-    setState(() {
-      _points = []; // assign new list, not just _points.clear()
-    });
-  }
-
-  void _nextLetter() {
-    final audioManager = Provider.of<AudioManager>(context, listen: false);
-    audioManager.playEventSound('clickButton');
-    setState(() {
-      _currentLetterIndex = (_currentLetterIndex + 1) % _letters.length;
-      _points.clear();
-    });
-  }
-
-  void giveTolimAndXP() {
-    setState(() {
-      final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-      xpManager.addXP(2, context: context);
-      score += 1;    // Increment score by 1
-
-      if (score >= 10) {
-        xpManager.addTokenBanner(context, 1);  // Give 1 Tolim
-        score = 0;    // Reset score to 0
-      }
-    });
-  }
-
-  void _showRewardToast(BuildContext context, String message) {
-    final overlay = Overlay.of(context);
-    if (overlay == null) return;
-
-    final entry = OverlayEntry(
-      builder: (ctx) => Positioned(
-        top: MediaQuery.of(context).padding.top + 20,
-        left: 20,
-        right: 20,
-        child: Material(
-          color: Colors.transparent,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: Colors.deepOrangeAccent.withValues(alpha: 0.9),
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Center(
-              child: Text(
-                message,
-                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-
-    overlay.insert(entry);
-    Future.delayed(const Duration(seconds: 2), () => entry.remove());
   }
 
   void _loadBannerAd() {
@@ -298,13 +259,93 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
     });
   }
 
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    _glowController.dispose();
+    flutterTts.stop();
+    super.dispose();
+  }
+
+  void _configureTtsLanguage() async {
+    String languageCode;
+
+    switch (widget.language.toLowerCase()) {
+      case 'arabic':
+        languageCode = 'ar-SA'; // Arabic (Saudi Arabia)
+        break;
+      case 'russian':
+        languageCode = 'ru-RU'; // Russian
+        break;
+      case 'chinese':
+        languageCode = 'zh-CN'; // Chinese Mandarin
+        break;
+      case 'japanese':
+        languageCode = 'ja-JP'; // Japanese
+        break;
+      case 'korean':
+        languageCode = 'ko-KR'; // Korean
+        break;
+      default:
+        languageCode = 'en-US'; // English fallback
+    }
+
+    await flutterTts.setLanguage(languageCode);
+  }
+
+  void _speakCurrentLetter() async {
+    final details = _letterDetails[_letters[_currentLetterIndex]];
+    if (details != null) {
+      final pronunciation = details['pronunciation'] ?? '';
+      await flutterTts.stop();
+      await flutterTts.speak(pronunciation);
+    }
+  }
+
+
+  void _clearCanvas() {
+    Provider.of<AudioManager>(context, listen: false).playEventSound('cancelButton');
+    setState(() {
+      _points = [];
+    });
+  }
+
+  void _nextLetter() {
+    Provider.of<AudioManager>(context, listen: false).playEventSound('clickButton');
+    setState(() {
+      _currentLetterIndex = (_currentLetterIndex + 1) % _letters.length;
+      _points.clear();
+      _showGlow = false;
+    });
+    _speakCurrentLetter();
+
+  }
+
+  void _giveTolimAndXP() {
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    xpManager.addXP(2, context: context);
+    setState(() {
+      score += 1;
+    });
+
+    _showGlow = true;
+    _glowController.forward();
+
+    Provider.of<AudioManager>(context, listen: false).playSfx("assets/audios/success.mp3");
+
+    if (score >= 10) {
+      xpManager.addTokenBanner(context, 1);
+      setState(() {
+        score = 0;
+      });
+    }
+  }
 
   double _calculateTotalDrawnDistance(List<Offset?> points) {
     double distance = 0.0;
     for (int i = 0; i < points.length - 1; i++) {
       final p1 = points[i];
       final p2 = points[i + 1];
-
       if (p1 != null && p2 != null) {
         distance += (p1 - p2).distance;
       }
@@ -313,14 +354,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
   }
 
   @override
-  void dispose() {
-    _bannerAd?.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final xpManager = Provider.of<ExperienceManager>(context);
     final audioManager = Provider.of<AudioManager>(context);
     final currentLetter = _letters[_currentLetterIndex];
     final details = _letterDetails[currentLetter];
@@ -341,55 +375,63 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            children: [
-              const Userstatutbar(),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        shape: const CircleBorder(),
-                        padding: const EdgeInsets.all(12),
-                        backgroundColor: Colors.deepOrange,
+          child: SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: Column(
+              children: [
+                const Userstatutbar(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          shape: const CircleBorder(),
+                          padding: const EdgeInsets.all(12),
+                          backgroundColor: Colors.deepOrange,
+                        ),
+                        onPressed: () {
+                          audioManager.playEventSound('cancelButton');
+                          Navigator.of(context).pop();
+                        },
+                        child: const Icon(Icons.arrow_back, color: Colors.white),
                       ),
-                      onPressed: () {
-                        audioManager.playEventSound('cancelButton');
-                        Navigator.of(context).pop();
-                      } ,
-                      child: const Icon(Icons.arrow_back, color: Colors.white),
-                    ),
-                    Text(
-                      '${tr(context).letter} ${_currentLetterIndex + 1}/${_letters.length}',
-                      style: const TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.brown,
+                      Text(
+                        '${tr(context).letter} ${_currentLetterIndex + 1}/${_letters.length}',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.brown,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 48), // Empty for alignment
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 10),
-              Center(
-                child: Container(
-                  width: 320,
-                  height: 320,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.orange.withValues(alpha: 0.3),
-                        blurRadius: 12,
-                        offset: const Offset(4, 4),
-                      )
+                      const SizedBox(width: 48), // For alignment
                     ],
                   ),
+                ),
+                const SizedBox(height: 4),
+
+                AnimatedBuilder(
+                  animation: _glowController,
+                  builder: (context, child) {
+                    return Container(
+                      width: 320,
+                      height: 320,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.orange.withOpacity(0.7),
+                            blurRadius: _showGlow ? _glowAnimation.value : 0,
+                            spreadRadius: _showGlow ? _glowAnimation.value / 2 : 0,
+                            offset: const Offset(0, 0),
+                          ),
+                        ],
+                      ),
+                      child: child,
+                    );
+                  },
                   child: Stack(
                     children: [
                       Center(
@@ -398,7 +440,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                           style: TextStyle(
                             fontSize: 200,
                             fontWeight: FontWeight.bold,
-                            color: Colors.orange.shade100,
+                            color: Colors.orange.shade100.withOpacity(0.3),
                           ),
                         ),
                       ),
@@ -424,7 +466,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
 
                           if (drawnDistance > 500 && !_rewardedLetterIndexes.contains(_currentLetterIndex)) {
                             _rewardedLetterIndexes.add(_currentLetterIndex);
-                            giveTolimAndXP();
+                            _giveTolimAndXP();
                           }
                         },
                         child: CustomPaint(
@@ -436,89 +478,89 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> {
                     ],
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
 
-              Card(
-                margin: const EdgeInsets.symmetric(horizontal: 24),
-                color: Colors.white.withValues(alpha: 0.9),
-                elevation: 4,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    children: [
-                      Text(
-                        "🔤 ${tr(context).pronunciation}: $pronunciation",
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        "📘 ${tr(context).example}: $example",
-                        style: const TextStyle(fontSize: 17),
-                      ),
-                    ],
+                const SizedBox(height: 10),
+                Card(
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  color: Colors.white.withOpacity(0.9),
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      children: [
+                        Text(
+                          "🔤 ${tr(context).pronunciation}: $pronunciation",
+                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                        ),
+                        const SizedBox(height: 8),
+                        Text(
+                          "📘 ${tr(context).example}: $example",
+                          style: const TextStyle(fontSize: 17),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              const SizedBox(height: 20),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
+                const SizedBox(height: 20),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          ElevatedButton.icon(
-                            onPressed: _clearCanvas,
-                            icon: const Icon(Icons.refresh),
-                            label:  Text(tr(context).retry),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.deepOrange.shade300,
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            ),
-                          ),
-                          ElevatedButton.icon(
-                            onPressed: _nextLetter,
-                            icon: const Icon(Icons.navigate_next),
-                            label:  Text(tr(context).next),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orangeAccent.shade200,
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(50),
-                          boxShadow: [BoxShadow(color: Colors.orange.shade100, blurRadius: 10)],
+                      ElevatedButton.icon(
+                        onPressed: _clearCanvas,
+                        icon: const Icon(Icons.refresh),
+                        label: Text(tr(context).retry),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.deepOrange.shade300,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          elevation: 6,
                         ),
-                        child: Text(
-                          "🎯 ${tr(context).score}: $score",
-                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      ElevatedButton.icon(
+                        onPressed: _nextLetter,
+                        icon: const Icon(Icons.navigate_next),
+                        label: Text(tr(context).next),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orangeAccent.shade200,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          elevation: 6,
                         ),
                       ),
                     ],
                   ),
                 ),
-              ),
-            ],
+
+                const SizedBox(height: 20),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(50),
+                    boxShadow: [BoxShadow(color: Colors.orange.shade100, blurRadius: 12)],
+                  ),
+                  child: Text(
+                    "🎯 ${tr(context).score}: $score",
+                    style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ),
+
+                const SizedBox(height: 12),
+              ],
+            ),
           ),
         ),
       ),
       bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded
           ? SafeArea(
-            child: Container(
-              height: _bannerAd!.size.height.toDouble(),
-              width: _bannerAd!.size.width.toDouble(),
-                child: AdWidget(ad: _bannerAd!),
+        child: SizedBox(
+          height: _bannerAd!.size.height.toDouble(),
+          width: _bannerAd!.size.width.toDouble(),
+          child: AdWidget(ad: _bannerAd!),
         ),
       )
           : null,
@@ -550,5 +592,5 @@ class TracingPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant TracingPainter oldDelegate) => oldDelegate.points != points;
+  bool shouldRepaint(TracingPainter oldDelegate) => oldDelegate.points != points;
 }
