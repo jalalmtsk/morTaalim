@@ -29,6 +29,9 @@ target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
+   # Force GTMSessionFetcher/Core to be compatible with both firebase_auth & google_sign_in
+    pod 'GTMSessionFetcher/Core', '~> 3.4'
+
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 
   target 'RunnerTests' do

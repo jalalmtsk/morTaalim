@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+
+import '../../../tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
 
 class ExpandableAyatCard extends StatefulWidget {
   const ExpandableAyatCard({Key? key}) : super(key: key);
@@ -18,11 +19,60 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
   late Timer _timer;
   final _random = Random();
 
+
   final _ayatList = [
-    {'text': 'قال يا قوم أرأيتم إن كنت على بينة من ربي ورزقني منه رزقا حسنا وما أريد أن أخالفكم إلى ما أنهاكم عنه إن أريد إلا الإصلاح ما استطعت وما توفيقي إلا بالله عليه توكلت وإليه أنيب ِ', 'surah': 'هود - 88', 'audio': 'assets/audios/quranSourate/RandomAyat/Hud88.mp3'},
-    {'text': 'إِنَّ اللَّهَ مَعَ الصَّابِرِينَ', 'surah': 'البقرة - 153', 'audio': 'assets/audios/QuizGame_Sounds/correct.mp3'},
-    {'text': 'فَصْلٌ لِلنَّاسِ وَهُدًى وَرَحْمَةٌ لِلْمُؤْمِنِينَ', 'surah': 'يونس - 57', 'audio': 'assets/audios/QuizGame_Sounds/correct.mp3'},
+    {
+      'text':
+      'اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ * خَلَقَ الْإِنْسَانَ مِنْ عَلَقٍ * اقْرَأْ وَرَبُّكَ الْأَكْرَمُ * الَّذِي عَلَّمَ بِالْقَلَمِ * عَلَّمَ الْإِنْسَانَ مَا لَمْ يَعْلَمْ',
+      'surah': 'العلق - 1-5',
+      'audio': 'assets/audios/quranSourate/AlAlaq1-5.mp3',
+      'tafsir':
+      'هذه أول آيات نزلت تدعو إلى القراءة والتعلم باسم الله، وتشير إلى أهمية العلم الذي علمه الله للإنسان.',
+      'translation':
+      'Read in the name of your Lord who created — Created man from a clinging substance. Read, and your Lord is the most Generous — Who taught by the pen — Taught man that which he knew not.'
+    },
+    {
+      'text':
+      'وَقُل رَّبِّ زِدْنِي عِلْمًا',
+      'surah': 'طه - 114',
+      'audio': 'assets/audios/quranSourate/Taha114.mp3',
+      'tafsir':
+      'دعاء النبي محمد صلى الله عليه وسلم أن يطلب من الله أن يزيده علماً نافعا.',
+      'translation':
+      'And say, "My Lord, increase me in knowledge."'
+    },
+    {
+      'text':
+      'يَرْفَعِ اللَّهُ الَّذِينَ آمَنُوا مِنكُمْ وَالَّذِينَ أُوتُوا الْعِلْمَ دَرَجَاتٍ',
+      'surah': 'المجادلة - 11',
+      'audio': 'assets/audios/quranSourate/AlMujadila11.mp3',
+      'tafsir':
+      'الله يرفع درجات الذين آمنوا والذين أوتوا العلم بين الناس تقديراً لهم.',
+      'translation':
+      'Allah will raise those who have believed among you and those who were given knowledge, by degrees.'
+    },
+    {
+      'text':
+      'فَلا تَقْرَبُوا مَالَ الْيَتِيمِ إِلَّا بِالَّتِي هِيَ أَحْسَنُ',
+      'surah': 'النساء - 6',
+      'audio': 'assets/audios/quranSourate/AnNisa6.mp3',
+      'tafsir':
+      'الأمر بالإنصاف في التعامل مع مال اليتيم، مما يدل على رعاية حقوق الأطفال وحمايتهم.',
+      'translation':
+      'And do not approach the orphan’s property except in a way that is best.'
+    },
+    {
+      'text':
+      'وَوَصَّيْنَا الَّذِينَ أُوتُوا الْكِتَابَ مِن قَبْلِكُمْ وَإِيَّاكُمْ أَنِ اتَّقُوا اللَّهَ',
+      'surah': 'النساء - 131',
+      'audio': 'assets/audios/quranSourate/AnNisa131.mp3',
+      'tafsir':
+      'وصية الله بالتقوى لجميع الناس، خاصة أهل الكتاب، مما يؤكد أهمية التربية والتوجيه السليم.',
+      'translation':
+      'And We have instructed those who were given the Scripture before you and yourselves to fear Allah.'
+    }
   ];
+
 
   late Map<String, String> _currentAyat;
   int _seconds = 60;
@@ -73,8 +123,11 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    final cardVisibility = context.watch<CardVisibilityManager>();
+    if (!cardVisibility.showCard) {
+      return const SizedBox.shrink();
+    }
     final progress = _seconds / 60;
-
     return Card(
       margin: const EdgeInsets.all(16),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

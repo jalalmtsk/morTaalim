@@ -2,26 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../Authentification/BackUp/BackUpPage.dart';
-import '../XpSystem.dart';
 import '../main.dart';
+
+import '../tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
 import '../tools/audio_tool/Audio_Manager.dart';
 import 'Setting_cards/BackUp_card.dart';
 import 'Setting_cards/GoogleAccount.dart';
 
 class SettingsDialog extends StatefulWidget {
   const SettingsDialog({super.key});
-
   @override
   State<SettingsDialog> createState() => _SettingsDialogState();
 }
+
 
 class _SettingsDialogState extends State<SettingsDialog> {
   bool bgExpanded = true;
   bool sfxExpanded = false;
   bool buttonExpanded = false;
   bool alertExpanded = false;
-
 
   Widget buildVolumeControl({
     required String title,
@@ -122,7 +121,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
   Widget build(BuildContext context) {
     final audioManager = Provider.of<AudioManager>(context);
     final user = FirebaseAuth.instance.currentUser;
-
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       insetPadding: const EdgeInsets.symmetric(horizontal: 30, vertical: 100),
@@ -133,7 +131,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withValues(alpha: 0.2),
               blurRadius: 15,
               offset: const Offset(0, 6),
             ),
@@ -164,11 +162,12 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 ],
               ),
               const Divider(),
-
               // Content
               Expanded(
                 child: ListView(
                   children: [
+                    // === AUDIO SETTINGS ===
+                    buildSectionTitle("Audio Settings"),
                     buildVolumeControl(
                       title: "Background Music",
                       expanded: bgExpanded,
@@ -192,7 +191,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       color: Colors.blue,
                       showTestButton: true,
                       onTest: () => audioManager.playSfx(
-                          'assets/audios/UI_Audio/SFX_Audio/MarimbaWin_SFX.mp3'),
+                        'assets/audios/UI_Audio/SFX_Audio/MarimbaWin_SFX.mp3',
+                      ),
                     ),
                     buildVolumeControl(
                       title: "Button Sounds",
@@ -205,58 +205,66 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       icon: Icons.touch_app,
                       color: Colors.green,
                     ),
-                   /* buildVolumeControl(
-                      title: "Alerts & Notifications",
-                      expanded: alertExpanded,
-                      onExpandChanged: (v) => setState(() => alertExpanded = v),
-                      isMuted: audioManager.isAlertMuted,
-                      toggleMute: audioManager.toggleAlertMute,
-                      volume: audioManager.alertVolume,
-                      onVolumeChanged: audioManager.setAlertVolume,
-                      icon: Icons.notifications,
-                      color: Colors.purple,
-                    ),*/
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.refresh),
-                      label: const Text("Reset Audio Settings"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[700],
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12)),
-                        minimumSize: const Size(double.infinity, 45),
-                      ),
-                      onPressed: () => audioManager.resetAudioSettings(),
-                    ),
-                    const SizedBox(height: 16),
-
-                    GoogleAccountCard(
-                      onDisconnectCallback: () {
-                        setState(() {});
-                      },
-                    ),
-
-                    BackupCard(),
-                    const SizedBox(height: 22),
-
-                    ElevatedButton.icon(
-                        icon: const Icon(Icons.exit_to_app),
-                        label: const Text('Close'),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 4),
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.refresh),
+                        label: const Text("Reset Audio Settings"),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.redAccent,
+                          backgroundColor: Colors.grey[700],
                           foregroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                           minimumSize: const Size(double.infinity, 45),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        }),
-                    const SizedBox(height: 12),
+                        onPressed: () => audioManager.resetAudioSettings(),
+                      ),
+                    ),
 
+                    // === UI ELEMENTS ===
+                    buildSectionTitle("UI Elements"),
+                    buildAyatCardToggle(
+                      title: "Show Ayat Card",
+                      expanded: ayatExpanded,
+                      onExpandChanged: (v) => setState(() => ayatExpanded = v),
+                      isEnabled: context.watch<CardVisibilityManager>().showCard,
+                      onToggle: (value) {
+                        context.read<CardVisibilityManager>().toggleCardVisibility(value);
+                        audioManager.playEventSound('toggleButton');
+                      },
+                      icon: Icons.menu_book,
+                      color: Colors.orange,
+                    ),
+
+                    // === ACCOUNT & BACKUP ===
+                    buildSectionTitle("Account & Backup"),
+                    GoogleAccountCard(
+                      onDisconnectCallback: () {
+                        setState(() {});
+                      },
+                    ),
+                    BackupCard(),
+
+                    const SizedBox(height: 22),
+                    ElevatedButton.icon(
+                      icon: const Icon(Icons.exit_to_app),
+                      label: const Text('Close'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12)),
+                        minimumSize: const Size(double.infinity, 45),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                    const SizedBox(height: 12),
                     Center(child: Text("Version $appVersion")),
                   ],
-                ),
+                )
+
               ),
             ],
           ),
@@ -264,4 +272,78 @@ class _SettingsDialogState extends State<SettingsDialog> {
       ),
     );
   }
+
+  bool ayatExpanded = false; // collapsed by default
+
+
+  Widget buildAyatCardToggle({
+    required String title,
+    required bool expanded,
+    required Function(bool) onExpandChanged,
+    required bool isEnabled,
+    required Function(bool) onToggle,
+    required IconData icon,
+    required Color color,
+  }) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      elevation: 3,
+      child: Theme(
+        data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
+        child: ExpansionTile(
+          initiallyExpanded: expanded,
+          onExpansionChanged: (v) {
+            audioManager.playEventSound("PopClick");
+            onExpandChanged(v);
+          },
+          leading: CircleAvatar(
+            backgroundColor: color.withAlpha(40),
+            child: Icon(icon, color: color),
+          ),
+          title: Text(
+            title,
+            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
+          ),
+          trailing: Switch(
+            value: isEnabled,
+            onChanged: (value) {
+              audioManager.playEventSound('toggleButton');
+              onToggle(value);
+            },
+            activeColor: color,
+          ),
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Text(
+                "Enable or disable the Ayat card from appearing in your app.",
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey[700],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildSectionTitle(String title) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(8, 16, 8, 8),
+      child: Text(
+        title,
+        style: const TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.black87,
+        ),
+      ),
+    );
+  }
+
 }

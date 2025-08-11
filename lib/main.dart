@@ -10,6 +10,7 @@ import 'package:mortaalim/Authentification/BackUp/BackUpPage.dart';
 import 'package:mortaalim/Manager/Services/YoutubeProgressManager.dart';
 import 'package:mortaalim/PractiseGames/MemoryFlipGame/LevelSeletor.dart';
 import 'package:mortaalim/PractiseGames/MemoryFlipGame/MemoryFlip.dart';
+import 'package:mortaalim/tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/UserDataProfileEntering.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
 import 'package:mortaalim/courses/primaire1Page/index_1PrimairePage.dart';
@@ -93,6 +94,8 @@ void main() async {
         ChangeNotifierProvider.value(value: xpManager),
         ChangeNotifierProvider.value(value: audioManager),
         ChangeNotifierProvider(create: (_) => ConnectivityService()),
+        ChangeNotifierProvider(create: (_) => CardVisibilityManager(),
+        )
       ],
         child: AppLifecycleManager( child: MyApp(),
         )
