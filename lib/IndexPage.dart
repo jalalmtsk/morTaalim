@@ -8,7 +8,7 @@ import 'package:mortaalim/Settings/SettingPanelInGame.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
-import 'package:mortaalim/widgets/profile_page.dart';
+import 'package:mortaalim/widgets/ProfileSetup_Widget/profile_page.dart';
 import 'package:provider/provider.dart';
 
 import 'XpSystem.dart';

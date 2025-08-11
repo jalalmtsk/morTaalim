@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../AppGlobal.dart';
+import '../../ManagerTools/AppGlobal.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import '../../Authentification/LinkToGoogle.dart';
 import '../../Authentification/LogOut.dart';

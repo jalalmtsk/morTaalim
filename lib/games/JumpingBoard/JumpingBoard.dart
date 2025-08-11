@@ -2,17 +2,13 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:mortaalim/main.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 
 import '../../XpSystem.dart';
-
-
-MusicPlayerOne rightLeft_sound = MusicPlayerOne();
-MusicPlayerOne backGround_sound = MusicPlayerOne();
-MusicPlayerOne score_sound = MusicPlayerOne();
-MusicPlayerOne explosion_sound = MusicPlayerOne();
 
 class JumpingBoard extends StatelessWidget {
   const JumpingBoard({super.key});
@@ -70,38 +66,21 @@ class _JumpingJellyGameState extends State<JumpingJellyGame> {
   int magnetSecondsLeft = 0;
   Timer? magnetCountdownTimer;
 
-  // Your ExperienceManager instance - assign properly!
-  // You can use Provider, or pass via constructor, etc.
-  // For this example, it's null and needs to be assigned
   dynamic experienceManager;
 
   @override
   void initState() {
     super.initState();
-
-    rightLeft_sound.preload("assets/audios/sound_effects/retro-rightLeft.mp3");
-    score_sound.preload("assets/audios/sound_effects/retro-coin.mp3");
-    explosion_sound.preload("assets/audios/sound_effects/retro-explode.mp3");
-    backGround_sound.play("assets/audios/sound_track/arcade-beat.mp3", loop: true);
+final audioManager  = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playSfx("assets/audios/sound_effects/retro-rightLeft.mp3");
+    audioManager.playSfx("assets/audios/sound_effects/retro-coin.mp3");
+    audioManager.playSfx("assets/audios/sound_effects/retro-explode.mp3");
+    audioManager.playBackgroundMusic("assets/audios/sound_track/arcade-beat.mp3", loop: true);
 
     _initGrid();
     _spawnPlatforms();
     _startGameLoop();
   }
-
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    if (experienceManager == null) {
-      experienceManager = Provider.of<ExperienceManager>(context, listen: false);
-    }
-
-    // Ensure background music is playing
-    backGround_sound.play("assets/audios/sound_track/arcade-beat.mp3", loop: true);
-  }
-
 
   void _initGrid() {
     grid = List.generate(rows, (_) => List.generate(cols, (_) => TileType.empty));
@@ -207,7 +186,7 @@ class _JumpingJellyGameState extends State<JumpingJellyGame> {
 
   void _movePlayer(int direction) {
     if (isGameOver || isPaused) return;
-    rightLeft_sound.play("assets/audios/sound_effects/retro-rightLeft.mp3");
+    audioManager.playSfx("assets/audios/sound_effects/retro-rightLeft.mp3");
     setState(() {
       playerCol = (playerCol + direction).clamp(0, cols - 1);
       _checkCollision();
@@ -218,7 +197,7 @@ class _JumpingJellyGameState extends State<JumpingJellyGame> {
     TileType tile = grid[0][playerCol];
     if (tile == TileType.trap) {
       if (!magnetActive) {
-        explosion_sound.play("assets/audios/sound_effects/retro-explode.mp3");
+        audioManager.playSfx("assets/audios/sound_effects/retro-explode.mp3");
         lives--;
         consecutiveStars = 0;
         scoreMultiplier = 1;
@@ -231,7 +210,7 @@ class _JumpingJellyGameState extends State<JumpingJellyGame> {
         }
       }
     } else if (tile == TileType.star) {
-      score_sound.play("assets/audios/sound_effects/retro-coin.mp3");
+      audioManager.playSfx("assets/audios/sound_effects/retro-coin.mp3");
       int pointsToAdd = doublePointsActive ? scoreMultiplier * 2 : scoreMultiplier;
       score += pointsToAdd;
       consecutiveStars++;
@@ -343,7 +322,7 @@ class _JumpingJellyGameState extends State<JumpingJellyGame> {
     for (int r = 0; r < 3; r++) {
       for (int c = 0; c < cols; c++) {
         if (grid[r][c] == TileType.star) {
-          score_sound.play("assets/audios/sound_effects/retro-coin.mp3");
+          audioManager.playSfx("assets/audios/sound_effects/retro-coin.mp3");
           int pointsToAdd = doublePointsActive ? scoreMultiplier * 2 : scoreMultiplier;
           score += pointsToAdd;
           grid[r][c] = TileType.safe;
@@ -419,10 +398,6 @@ class _JumpingJellyGameState extends State<JumpingJellyGame> {
   @override
   void dispose() {
     super.dispose();
-    score_sound.dispose();
-    explosion_sound.dispose();
-    backGround_sound.dispose();
-    rightLeft_sound.dispose();
     doublePointsTimer?.cancel();
     magnetTimer?.cancel();
     doublePointsCountdownTimer?.cancel();

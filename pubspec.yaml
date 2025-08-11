@@ -106,6 +106,7 @@ flutter:
   assets:
   - assets/courses/
   - assets/courses/primaire1/Primaire1Cours/
+  - assets/courses/primaire2/Primaire2Cours/
   #Images
   - assets/images/
   - assets/images/Sketches/
@@ -134,13 +135,13 @@ flutter:
   - assets/images/Banners/RoyalBanners/
   - assets/images/UI/Buttons/
   - assets/images/UI/BackGrounds/
+  - assets/images/UI/BackGrounds/Course_BG/
   - assets/images/UI/utilities/
   - assets/images/Puzz/PuzzMainImages/
   - assets/images/Puzz/Puzz1/Puzz1_3x3/
 
     #Videos
-  - assets/videos/
-  - assets/videos/Kids_song.mp4
+
   #Audios
   - assets/audios/
   - assets/audios/quranSourate/
@@ -153,6 +154,8 @@ flutter:
   - assets/audios/UI_Audio/ButtonSounds/
   - assets/audios/BackGround_Audio/
   - assets/audios/SplashScreen_Audio/
+  - assets/audios/tts_female/arabic_Questions_QuizzGame/
+  - assets/audios/quranSourate/RandomAyat/
   #Fonts
   - assets/fonts/ComicNeue-Regular.ttf
   - assets/fonts/ComicNeue-Bold.ttf

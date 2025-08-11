@@ -55,7 +55,6 @@ class _PlayTheWordState extends State<PlayTheWord> {
   }
 
   void playWord(PractiseWords word) async {
-    await backGroundIndexMusic.play(word.audioPath);
     setState(() {
       selectedWord = word;
       learnedWords.add(word.word);
@@ -80,7 +79,6 @@ class _PlayTheWordState extends State<PlayTheWord> {
 
   @override
   void dispose() {
-    backGroundIndexMusic.dispose();
     super.dispose();
   }
 

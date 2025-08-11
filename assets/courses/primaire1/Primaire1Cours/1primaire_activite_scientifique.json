@@ -1,90 +1,189 @@
 {
-  "title": "النشاط العلمي",
+  "title": "النشاط العلمي - السنة الأولى ابتدائي",
   "sections": [
     {
       "title": "أُميِّز الزمان",
       "content": "",
-      "type": "",
+      "type": "module",
       "subsections": [
         {
           "title": "الهدف العام",
           "content": "يكتشف المتعلم مفهوم الزمن من خلال التعرف على اليوم، الأسبوع، والشهور.",
-          "type": "instruction"
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=FMH2AD8sgD4"
         },
         {
           "title": "الوضعية المحفزة",
           "content": "عرض صور لساعة، شمس، قمر، أيام الأسبوع، ومناقشة: ماذا نعرف عن الزمن؟ متى نذهب إلى المدرسة؟ متى ننام؟",
-          "type": "activity"
-        },
-        {
-          "title": "تجارب وملاحظات",
-          "content": "نشاط عملي لتسجيل لحظات مختلفة من اليوم (صباح - ظهر - مساء) وتحديد الأنشطة التي نمارسها في كل وقت.",
-          "type": "activity"
-        },
-        {
-          "title": "ملخص واستنتاج",
-          "content": "يتعلم المتعلم أن الزمن يُقسم إلى لحظات (صباح - ظهر - مساء)، وأيام (أحد - اثنين... سبت)، وشهور (يناير... دجنبر).",
-          "type": "summary"
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=Az4FhwLgd6E"
         },
         {
           "title": "تطبيق وتدريب",
           "content": "تمرين: ترتيب صور تمثل فترات اليوم حسب التسلسل الزمني. / تلوين أيام الأسبوع.",
-          "type": "practice"
+          "type": "practice",
+          "controller": "AZIZA"
         },
         {
           "title": "نشاط تفاعلي",
-          "content": "لعبة ذاكرة: ربط صورة النشاط بوقته المناسب. مثال: النوم - الليل / الدراسة - الصباح.",
-          "type": "game"
+          "content": "لعبة ذاكرة: ",
+          "type": "video",
+          "controller" : "https://www.youtube.com/shorts/Jamig3qYMAc"
         },
         {
           "title": "التقويم",
           "content": "سؤال شفوي أو مكتوب: ما هو اليوم الذي يسبق الأربعاء؟ متى تستيقظ؟ متى تتناول الغذاء؟",
-          "type": "assessment"
+          "type": "assessment",
+          "controller": "AZIZA"
         }
       ]
     },
     {
       "title": "الماء",
       "content": "",
-      "type": "",
+      "type": "module",
       "subsections": [
         {
           "title": "الهدف العام",
           "content": "يتعرف المتعلم على أهمية الماء، مصادره، واستعمالاته اليومية.",
-          "type": "instruction"
+          "type": "instruction",
+          "controller": "AZIZA"
         },
         {
           "title": "الوضعية المحفزة",
           "content": "عرض صور أو فيديوهات لبحيرة، نهر، مطر، صنبور، وسقي النباتات. طرح أسئلة: من أين يأتي الماء؟ لماذا نحتاجه؟",
-          "type": "activity"
+          "type": "activity",
+          "controller": "AZIZA"
         },
         {
           "title": "الملاحظة والتجربة",
           "content": "يقوم المتعلم بملاحظة الماء في أوعية مختلفة، ويجرب سقي نبات صغير، أو غسل يديه.",
-          "type": "activity"
+          "type": "activity",
+          "controller": "AZIZA"
         },
         {
           "title": "الاكتشاف والاستنتاج",
           "content": "يستنتج المتعلم أن الماء ضروري للحياة: للشرب، للنظافة، للطهي، والنباتات.",
-          "type": "summary"
+          "type": "summary",
+          "controller": "AZIZA"
         },
         {
           "title": "تطبيق وتدريب",
           "content": "تمارين بسيطة: رسم أنشطة نستخدم فيها الماء / تلوين مصادر الماء / خط توصيل بين الصور والاستعمالات.",
-          "type": "practice"
+          "type": "practice",
+          "controller": "AZIZA"
         },
         {
           "title": "نشاط تفاعلي",
           "content": "مشروع صغير: يطلب من كل متعلم إحضار قنينة ماء صغيرة من البيت واستعمالها لري نبتة في القسم.",
-          "type": "application"
+          "type": "application",
+          "controller": "AZIZA"
         },
         {
           "title": "التقويم",
           "content": "أسئلة شفهية أو رسومات: لماذا نشرب الماء؟ كيف نحافظ عليه؟ هل يمكن أن نعيش بدونه؟",
-          "type": "assessment"
+          "type": "assessment",
+          "controller": "AZIZA"
+        }
+      ]
+    },
+    {
+      "title": "النباتات والحيوانات القريبة منا",
+      "content": "",
+      "type": "module",
+      "subsections": [
+        {
+          "title": "الهدف العام",
+          "content": "يتعرف المتعلم على بعض النباتات والحيوانات الموجودة في بيئته المحيطة.",
+          "type": "instruction",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "الوضعية المحفزة",
+          "content": "عرض صور لنباتات وحيوانات مألوفة مثل الشجرة، الوردة، القطة، العصفور، ومناقشة: أين نراها؟ ماذا تحتاج؟",
+          "type": "activity",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "الملاحظة والتجربة",
+          "content": "زيارة ميدانية أو مشاهدة فيديوهات قصيرة لمشاهدة النباتات والحيوانات وملاحظة خصائصها.",
+          "type": "activity",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "الاكتشاف والاستنتاج",
+          "content": "يستنتج المتعلم أن النباتات تحتاج للماء والضوء لتنمو، والحيوانات تحتاج للطعام والمأوى.",
+          "type": "summary",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "تطبيق وتدريب",
+          "content": "تمارين على تسمية أجزاء النبات والحيوان، وتلوين صورهم.",
+          "type": "practice",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "نشاط تفاعلي",
+          "content": "زراعة بذرة بسيطة في وعاء ومتابعة نموها أسبوعيًا.",
+          "type": "application",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "التقويم",
+          "content": "أسئلة شفوية أو رسمية: ما هي أجزاء النبات؟ ماذا تأكل الحيوانات؟",
+          "type": "assessment",
+          "controller": "AZIZA"
+        }
+      ]
+    },
+    {
+      "title": "الجو والطقس",
+      "content": "",
+      "type": "module",
+      "subsections": [
+        {
+          "title": "الهدف العام",
+          "content": "يتعرف المتعلم على عناصر الطقس المختلفة وتأثيرها على الحياة اليومية.",
+          "type": "instruction",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "الوضعية المحفزة",
+          "content": "عرض صور تمثل الشمس، المطر، الغيوم، الرياح، ومناقشة تأثير كل عنصر.",
+          "type": "activity",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "الملاحظة والتجربة",
+          "content": "مراقبة الطقس يوميًا لمدة أسبوع وتسجيل ملاحظات بسيطة مثل مشمس، غائم، ممطر.",
+          "type": "activity",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "الاكتشاف والاستنتاج",
+          "content": "يتعلم المتعلم أن الطقس يتغير وله تأثير على ملابسنا ونشاطاتنا اليومية.",
+          "type": "summary",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "تطبيق وتدريب",
+          "content": "تمرين تلوين صور الطقس المختلفة وربطها بالملابس المناسبة.",
+          "type": "practice",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "نشاط تفاعلي",
+          "content": "صنع بطاقة يومية عن حالة الطقس لتتبع التغيرات.",
+          "type": "application",
+          "controller": "AZIZA"
+        },
+        {
+          "title": "التقويم",
+          "content": "أسئلة شفوية: ماذا نرتدي في يوم ممطر؟ كيف يتغير الطقس في الصيف؟",
+          "type": "assessment",
+          "controller": "AZIZA"
         }
       ]
     }
-    ]
-  }
-
+  ]
+}

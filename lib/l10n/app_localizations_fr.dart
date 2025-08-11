@@ -616,4 +616,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get youHaveNoHeartsLeftWhatWouldYouLikeToDo => 'Vous n\'avez plus de cœurs. Que souhaitez-vous faire ?';
+
+  @override
+  String get science => 'Science';
 }

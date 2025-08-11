@@ -1,11 +1,12 @@
 import 'dart:math';
 
 class Question {
+  final int id;              // Unique question ID (for audio)
   final String questionText;
   final List<String> options;
   final int correctIndex;
 
-  Question(this.questionText, this.options, this.correctIndex);
+  Question(this.id, this.questionText, this.options, this.correctIndex);
 
   /// Returns a new Question instance with shuffled options and updated correctIndex
   Question shuffled() {
@@ -16,6 +17,6 @@ class Question {
     // Find the new index of the original correct answer after shuffle
     final newCorrectIndex = shuffledOptions.indexOf(options[correctIndex]);
 
-    return Question(questionText, shuffledOptions, newCorrectIndex);
+    return Question(id, questionText, shuffledOptions, newCorrectIndex);
   }
 }

@@ -5,7 +5,14 @@ class ProgressCard extends StatelessWidget {
   final double progress;
   final int xp;
   final int badges;
-  const ProgressCard({Key? key, required this.progressPct, required this.progress, required this.xp, required this.badges}) : super(key: key);
+
+  const ProgressCard({
+    Key? key,
+    required this.progressPct,
+    required this.progress,
+    required this.xp,
+    required this.badges,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +21,10 @@ class ProgressCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(18),
       child: Container(
         padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(18), color: Colors.white),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          color: Colors.white,
+        ),
         child: Row(
           children: [
             // Circular progress
@@ -24,23 +34,45 @@ class ProgressCard extends StatelessWidget {
                 SizedBox(
                   width: 78,
                   height: 78,
-                  child: CircularProgressIndicator(value: progress, strokeWidth: 8, color: Colors.deepOrange),
+                  child: CircularProgressIndicator(
+                    value: progress,
+                    strokeWidth: 8,
+                    color: Colors.deepOrange,
+                  ),
                 ),
-                Text('$progressPct%', style: const TextStyle(fontWeight: FontWeight.bold)),
+                Text(
+                  '$progressPct%',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
               ],
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
-                const Text('Your Journey', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 6),
-                Text('XP: $xp  •  Badges: $badges', style: TextStyle(color: Colors.grey.shade700)),
-                const SizedBox(height: 8),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: LinearProgressIndicator(value: progress, minHeight: 8, backgroundColor: Colors.orange.shade50, color: Colors.deepOrange),
-                ),
-              ]),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'Your Journey',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    'XP: $xp  •  Badges: $badges',
+                    style: TextStyle(color: Colors.grey.shade700),
+                  ),
+                  const SizedBox(height: 8),
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(12),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 8,
+                      backgroundColor: Colors.orange.shade50,
+                      color: Colors.deepOrange,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),

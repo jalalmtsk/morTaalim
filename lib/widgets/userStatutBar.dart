@@ -6,7 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
-import '../AppGlobal.dart';
+import '../ManagerTools/AppGlobal.dart';
 
 class Userstatutbar extends StatefulWidget {
   const Userstatutbar({super.key});
@@ -350,7 +350,7 @@ class _UserStatutBar extends State<Userstatutbar>
                           builder: (_, __) {
                             final displayedXPInt = _displayedXP.toInt();
                             return Text(
-                              "$displayedXPInt / $requiredXPForNextLevel XP",
+                              "$currentLevelXP / $requiredXPForNextLevel XP",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 12,

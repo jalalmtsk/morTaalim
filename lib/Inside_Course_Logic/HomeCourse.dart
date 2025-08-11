@@ -5,24 +5,25 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mortaalim/Manager/Services/YoutubeProgressManager.dart';
+import 'package:mortaalim/Settings/SettingPanelInGame.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
+import 'package:provider/provider.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../XpSystem.dart';
+import 'HomeCourse_Tools/CoursedetailPage.dart';
 import 'HomeCourse_Tools/Widgets/BadgeChip.dart';
 import 'HomeCourse_Tools/Widgets/MascotBubble.dart';
 import 'HomeCourse_Tools/Widgets/ProgressCard.dart';
 import 'HomeCourse_Tools/Widgets/SectionCard.dart';
 import 'nestedCourse.dart';
-import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/SubsectionTile.dart';
 
 /// ---------- CONFIG ----------
 const String kProgressPrefix = 'gamified_progress';
-const String kXpKey = 'gamified_xp';
-const String kBadgeKey = 'gamified_badges';
-
 
 /// ---------- Models ----------
 class GamifiedSection {
@@ -33,14 +34,21 @@ class GamifiedSection {
 }
 
 /// ---------- Main Widget ----------
+///
+///
+
+
+YoutubeProgressManager youtubeProgressManager = YoutubeProgressManager(); // your instance
 class CoursePage extends StatefulWidget {
   final String jsonFilePath;
   final String courseId;
+  final ExperienceManager experienceManager; // <-- Inject ExperienceManager here
 
   const CoursePage({
     Key? key,
     required this.jsonFilePath,
     required this.courseId,
+    required this.experienceManager,
   }) : super(key: key);
 
   @override
@@ -51,24 +59,10 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
   // Data
   String courseTitle = '';
   List<GamifiedSection> sections = [];
-  Set<int> completed = {}; // section indices
-  Map<int, int> sectionStars = {}; // section index -> stars earned (0..3)
-
-  // Persistence
-  SharedPreferences? _prefs;
 
   // Visuals & animations
   late ConfettiController _confetti;
   late AnimationController _bounceController;
-  final FlutterTts _tts = FlutterTts();
-
-  // Ads
-  BannerAd? _bannerAd;
-  bool _isBannerLoaded = false;
-
-  // Gamification / XP
-  int _xp = 0;
-  Set<String> _badges = {};
 
   // UI
   bool isLoading = true;
@@ -82,236 +76,88 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
     _bounceController = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
     _bounceController.repeat(reverse: true);
 
-    _configureTts();
     _loadData();
   }
 
-  Future<void> _configureTts() async {
-    await _tts.setSpeechRate(0.45);
-    await _tts.setPitch(1.05);
-    // Choose a default language - adapt to user locale
-    await _tts.setLanguage('ar-MA'); // keep as original project's language setting
+  Future<void> _resetProgression() async {
+    await widget.experienceManager.courseProgressionManager.resetProgress();
+    setState(() {}); // refresh UI
+    _showSnack('Progress reset successfully.');
   }
+
+
 
   Future<void> _loadData() async {
     setState(() => isLoading = true);
     final raw = await rootBundle.loadString(widget.jsonFilePath);
     final json = jsonDecode(raw);
-    final prefs = await SharedPreferences.getInstance();
-    _prefs = prefs;
 
-    final saved = prefs.getStringList(_progressKey()) ?? [];
-    final savedStars = prefs.getStringList(_starsKey()) ?? [];
-
-    final xp = prefs.getInt(kXpKey) ?? 0;
-    final badges = prefs.getStringList(kBadgeKey) ?? [];
-
-    // parse sections
     List<GamifiedSection> parsed = [];
     final jsonSections = json['sections'] as List<dynamic>? ?? [];
     for (final s in jsonSections) {
       parsed.add(GamifiedSection(title: s['title'] ?? 'Untitled', subsections: s['subsections'] ?? [], image: s['image']));
     }
 
-    // restore progress
-    final completedIndices = saved.map((s) => int.tryParse(s) ?? -1).where((i) => i >= 0).toSet();
-    final starsMap = <int, int>{};
-    for (final s in savedStars) {
-      final parts = s.split(':'); // "index:stars"
-      if (parts.length == 2) {
-        final idx = int.tryParse(parts[0]) ?? -1;
-        final st = int.tryParse(parts[1]) ?? 0;
-        if (idx >= 0) starsMap[idx] = st;
-      }
-    }
+    // Register total sections count for progress calculation
+    widget.experienceManager.courseProgressionManager.setTotalSections(widget.courseId, parsed.length);
 
     setState(() {
       courseTitle = json['title'] ?? 'Course';
       sections = parsed;
-      completed = completedIndices;
-      sectionStars = starsMap;
-      _xp = xp;
-      _badges = badges.toSet();
       isLoading = false;
     });
   }
 
-  String _progressKey() => '$kProgressPrefix\_${widget.courseId}';
-  String _starsKey() => '${kProgressPrefix}_stars_${widget.courseId}';
+  // Use course-specific completed sections and points
+  Set<int> get completed => widget.experienceManager.courseProgressionManager.getCompletedSections(widget.courseId);
+  Map<int, int> get sectionCoursePoints => widget.experienceManager.courseProgressionManager.getSectionPoints(widget.courseId);
+  Set<String> get badges => widget.experienceManager.courseProgressionManager.badges;
+  int get courseXp => widget.experienceManager.courseProgressionManager.courseXp;
 
-  Future<void> _saveProgress() async {
-    if (_prefs == null) return;
-    await _prefs!.setStringList(_progressKey(), completed.map((i) => i.toString()).toList());
-    await _prefs!.setStringList(_starsKey(), sectionStars.entries.map((e) => '${e.key}:${e.value}').toList());
-    await _prefs!.setInt(kXpKey, _xp);
-    await _prefs!.setStringList(kBadgeKey, _badges.toList());
-  }
-
-  @override
-  void dispose() {
-    _confetti.dispose();
-    _bounceController.dispose();
-    _bannerAd?.dispose();
-    _tts.stop();
-    super.dispose();
-  }
-
-  // ---------- GAMIFICATION UTILS ----------
-  int _awardStarsForSection(int subsectionCount) {
-    // Simple fun algorithm: 1..3 stars based on subsection count / randomization (you can adapt)
-    if (subsectionCount <= 1) return 3;
+  int _awardCoursePointsForSection(int subsectionCount) {
+    if (subsectionCount <= 1) return 1;
     final rng = Random();
-    final val = rng.nextInt(3) + 1; // 1..3
-    return val;
+    return rng.nextInt(3) + 1; // 1..3
   }
 
-  void _grantXp(int amount) {
-    setState(() => _xp += amount);
-    _saveProgress();
-    // Check for badges
-    _maybeAwardBadge();
-  }
-
-  void _maybeAwardBadge() {
-    // Examples: badges at xp thresholds 10, 30, 60
-    if (_xp >= 60 && !_badges.contains('master')) {
-      _badges.add('master');
-      _showBadgeDialog('Master Learner', 'You earned the Master Learner badge!');
-    } else if (_xp >= 30 && !_badges.contains('star_collector')) {
-      _badges.add('star_collector');
-      _showBadgeDialog('Star Collector', 'You earned the Star Collector badge!');
-    } else if (_xp >= 10 && !_badges.contains('starter')) {
-      _badges.add('starter');
-      _showBadgeDialog('Starter', 'Good start! Badge unlocked.');
-    }
-    _saveProgress();
-  }
-
-  // ---------- INTERACTIONS ----------
-  Future<void> _openSection(int index) async {
-    // Open a fullscreen modal showing subsections in friendly big buttons
-    final section = sections[index];
-    await showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (ctx) {
-        return DraggableScrollableSheet(
-          initialChildSize: 0.86,
-          minChildSize: 0.5,
-          maxChildSize: 0.98,
-          builder: (_, controller) {
-            return Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [Colors.white, Colors.orange.shade50]),
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-              child: Column(
-                children: [
-                  Container(
-                    width: 64,
-                    height: 6,
-                    decoration: BoxDecoration(color: Colors.grey[300], borderRadius: BorderRadius.circular(12)),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(child: Text(section.title, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold))),
-                      IconButton(
-                        icon: const Icon(Icons.volume_up_rounded),
-                        onPressed: () => _speak(section.title),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                  Expanded(
-                    child: ListView.builder(
-                      controller: controller,
-                      itemCount: section.subsections.length,
-                      itemBuilder: (ctx, i) {
-                        final sub = section.subsections[i];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: SubsectionTile(
-                            title: sub['title'] ?? 'Activity',
-                            description: sub['description'] ?? '',
-                            onTap: () async {
-                              Navigator.of(ctx).pop();
-                              // Play click sound if you have AudioManager
-                              await _speak(sub['title'] ?? '');
-                              // Navigate to node page (your nestedCourse)
-                              if (sub is Map<String, dynamic>) {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => CourseNodePage(node: sub)));
-                              }
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                            backgroundColor: Colors.deepOrange,
-                          ),
-                          onPressed: () {
-                            Navigator.of(ctx).pop();
-                            _completeSection(index);
-                          },
-                          icon: const Icon(Icons.celebration),
-                          label: const Text('Mark Completed'),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-                ],
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
-  Future<void> _speak(String text) async {
-    if (_muted) return;
-    await _tts.stop();
-    await _tts.speak(text);
-  }
-
-  void _completeSection(int index) {
+  Future<void> _completeSection(int index) async {
     if (completed.contains(index)) {
-      // already done -> show small reward
-      _showSnack('Already completed! Great job! ⭐');
+      _showSnack('Already completed! Great job! 🏆');
       return;
     }
 
-    final stars = _awardStarsForSection(sections[index].subsections.length);
-    setState(() {
-      completed.add(index);
-      sectionStars[index] = stars;
-    });
+    final subsectionCount = sections[index].subsections.length;
+    await widget.experienceManager.courseProgressionManager.completeSection(
+      widget.courseId,
+      index,
+      subsectionCount,
+    );
 
-    // grant XP based on stars
-    final xpGain = 5 * stars; // 5,10,15 xp
-    _grantXp(xpGain);
+    setState(() {}); // Refresh UI after updating experienceManager
 
     _confetti.play();
-    _showCompletionModal(index, stars, xpGain);
-    _saveProgress();
+    final points = _awardCoursePointsForSection(subsectionCount);
+    _showCompletionModal(index, points, points * 5);
   }
 
-  // ---------- MODALS & TOASTS ----------
+  Future<void> _openSection(int index) async {
+    final section = sections[index];
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => CourseDetailPage(
+          section: section,
+          index: index,
+          onComplete: () => _completeSection(index),
+        ),
+      ),
+    );
+  }
+
+
   void _showSnack(String text) => ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(text)));
 
-  void _showCompletionModal(int index, int stars, int xpGained) {
+  void _showCompletionModal(int index, int points, int xpGained) {
     final title = sections[index].title;
     showDialog(
       context: context,
@@ -332,20 +178,20 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                 children: [
                   Lottie.asset('assets/animations/girl_jumping.json', width: 160, repeat: false),
                   const SizedBox(height: 8),
-                  Text('Great job!', style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                  const Text('Great job!', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 6),
                   Text('You completed: $title', textAlign: TextAlign.center),
                   const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(3, (i) {
-                      final lit = i < stars;
+                    children: List.generate(2, (i) {
+                      final lit = i < points;
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6.0),
                         child: Icon(
-                          lit ? Icons.star : Icons.star_border,
+                          lit ? Icons.emoji_events : Icons.emoji_events_outlined,
                           color: lit ? Colors.amber : Colors.grey[400],
-                          size: 36,
+                          size: 40,
                         ),
                       );
                     }),
@@ -367,38 +213,22 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
     );
   }
 
-  void _showBadgeDialog(String badgeTitle, String message) {
-    // small celebratory badge popup
-    showDialog(
-      context: context,
-      builder: (_) {
-        return AlertDialog(
-          backgroundColor: Colors.orange.shade50,
-          title: Row(
-            children: [
-              const Icon(Icons.shield_rounded, color: Colors.amber),
-              const SizedBox(width: 8),
-              Text(badgeTitle),
-            ],
-          ),
-          content: Text(message),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(context).pop(), child: const Text('Nice!')),
-          ],
-        );
-      },
-    );
+  @override
+  void dispose() {
+    _confetti.dispose();
+    _bounceController.dispose();
+    super.dispose();
   }
 
-  // ---------- UI BUILD ----------
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     final locale = AppLocalizations.of(context);
     if (isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final progress = sections.isEmpty ? 0.0 : completed.length / sections.length;
+    final progress = widget.experienceManager.courseProgressionManager.getProgress(widget.courseId);
     final progressPct = (progress * 100).toInt();
 
     return Scaffold(
@@ -410,10 +240,17 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
         title: Text(courseTitle, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Colors.black87)),
         actions: [
           IconButton(
-            icon: Icon(_muted ? Icons.volume_off : Icons.volume_up, color: Colors.deepOrange),
+            icon: const Icon(Icons.settings, color: Colors.black),
             onPressed: () {
-              setState(() => _muted = !_muted);
-              if (_muted) _tts.stop();
+              audioManager.playEventSound('clickButton');
+              showDialog(
+                barrierDismissible: false,
+                context: context,
+                barrierColor: Colors.black.withValues(alpha: 0.3),
+                builder: (BuildContext context) {
+                  return const SettingsDialog();
+                },
+              );
             },
           ),
           const SizedBox(width: 8)
@@ -426,22 +263,20 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
         child: SafeArea(
           child: ListView(
             children: [
-              // user status bar (your widget)
               const Userstatutbar(),
 
-              // Top card: progress + mascot
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 child: Row(
                   children: [
                     Expanded(
-                      child: ProgressCard(progressPct: progressPct, progress: progress, xp: _xp, badges: _badges.length),
+                      child: ProgressCard(progressPct: progressPct, progress: progress, xp: courseXp, badges: badges.length),
                     ),
                     const SizedBox(width: 12),
                     MascotBubble(
+
+                      emoji: "🐱",
                       onTap: () {
-                        // mascot speaks encouragement and shows small animation
-                        _speak('Keep going! You are doing wonderful!');
                         _confetti.play();
                       },
                     ),
@@ -449,7 +284,6 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                 ),
               ),
 
-              // Title inviting children to pick a section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 child: Row(children: [
@@ -464,7 +298,6 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
 
               const SizedBox(height: 8),
 
-              // PageView of section cards
               SizedBox(
                 height: 280,
                 child: PageView.builder(
@@ -474,7 +307,7 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                   itemBuilder: (ctx, index) {
                     final s = sections[index];
                     final completedFlag = completed.contains(index);
-                    final stars = sectionStars[index] ?? 0;
+                    final points = sectionCoursePoints[index] ?? 0;
                     final scale = (_currentPage == index) ? 1.0 : 0.94;
                     return Transform.scale(
                       scale: scale,
@@ -483,12 +316,12 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                         child: SectionCard(
                           title: s.title,
                           subtitle: '${s.subsections.length} activities',
-                          imageAsset: s.image,
+                          imageAsset: "assets/images/UI/BackGrounds/bg10.jpg",
                           completed: completedFlag,
-                          stars: stars,
+                          points: points,
                           color: Colors.primaries[index % Colors.primaries.length].shade300,
                           onTap: () => _openSection(index),
-                          onToggleComplete: () => _completeSection(index),
+                          onToggleComplete: completedFlag ? null : () => _completeSection(index),
                           bounceController: _bounceController,
                         ),
                       ),
@@ -499,7 +332,6 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
 
               const SizedBox(height: 10),
 
-              // Row of badges (scrollable)
               SizedBox(
                 height: 86,
                 child: ListView(
@@ -507,35 +339,30 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                   scrollDirection: Axis.horizontal,
                   children: [
                     const SizedBox(width: 6),
-                    BadgeChip(title: 'Starter', unlocked: _badges.contains('starter')),
+                    BadgeChip(title: 'Starter', unlocked: badges.contains('starter')),
                     const SizedBox(width: 8),
-                    BadgeChip(title: 'Star Collector', unlocked: _badges.contains('star_collector')),
+                    BadgeChip(title: 'Point Collector', unlocked: badges.contains('point_collector')),
                     const SizedBox(width: 8),
-                    BadgeChip(title: 'Master', unlocked: _badges.contains('master')),
-                    const SizedBox(width: 8),
-                    // your additional badges...
+                    BadgeChip(title: 'Master Learner', unlocked: badges.contains('master')),
+                    const SizedBox(width: 6),
                   ],
                 ),
               ),
 
-              const Spacer(),
-
-              // Banner Ad slot
-              if (_isBannerLoaded && _bannerAd != null)
-                SizedBox(height: _bannerAd!.size.height.toDouble(), child: AdWidget(ad: _bannerAd!))
-              else
-                Container(
-                  height: 64,
-                  alignment: Alignment.center,
-                  child: Text('Ad space', style: TextStyle(color: Colors.grey.shade400)),
-                ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 28),
             ],
           ),
         ),
       ),
+      floatingActionButton: ConfettiWidget(
+        confettiController: _confetti,
+        blastDirectionality: BlastDirectionality.explosive,
+        shouldLoop: false,
+        colors: const [Colors.amber, Colors.orange, Colors.deepOrange],
+        emissionFrequency: 0.04,
+        numberOfParticles: 20,
+        gravity: 0.1,
+      ),
     );
   }
 }
-
-

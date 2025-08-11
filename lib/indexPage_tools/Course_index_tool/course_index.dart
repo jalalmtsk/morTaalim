@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/RandomAyaCard.dart';
 import 'package:provider/provider.dart';
+import '../../Inside_Course_Logic/HomeCourse_Tools/Widgets/IstighfarBanner.dart';
+import '../../XpSystem.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:mortaalim/indexPage_tools/Course_index_tool/course_data.dart';
 import 'package:mortaalim/indexPage_tools/Course_index_tool/course_grid.dart';
@@ -22,7 +25,6 @@ class _CourseTabState extends State<CourseTab> {
     _connectivityService = Provider.of<ConnectivityService>(context, listen: false);
     _connectivityService.resumeMonitoring();
   }
-
   @override
   void dispose() {
     _connectivityService.pauseMonitoring(); // safe: no context lookup
@@ -39,11 +41,7 @@ class _CourseTabState extends State<CourseTab> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              tr.chooseLevel,
-              style: TextStyle(fontSize: 20, color: Colors.grey[700]),
-            ),
-            const ConnectivityIndicator(),
+            Expanded(child: ExpandableAyatCard ()),
           ],
         ),
         const SizedBox(height: 12),

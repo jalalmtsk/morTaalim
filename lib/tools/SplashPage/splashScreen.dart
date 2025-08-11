@@ -5,11 +5,11 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/IndexPage.dart';
+import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/XpSystem.dart';
 import 'package:provider/provider.dart';
 
-import '../../FirstTouch/UserInfoForm_Introduction.dart';
 import 'CompanyLogoScreen.dart';
 import 'LoadingScreen.dart';
 
@@ -89,7 +89,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         context,
         MaterialPageRoute(
           builder: (_) => needsOnboarding
-              ? const UserInfoFormFlow() // 👈 Go to onboarding
+              ? const UserInfoForm() // 👈 Go to onboarding
               : const Index(),          // 👈 Or go to main index page
         ),
       );

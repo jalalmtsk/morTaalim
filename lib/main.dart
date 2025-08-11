@@ -7,14 +7,17 @@ import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Authentification/BackUp/BackUpPage.dart';
-import 'package:mortaalim/FirstTouch/Testing.dart';
-import 'package:mortaalim/FirstTouch/UserInfoForm_Introduction.dart';
-import 'package:mortaalim/UserDataProfileEntering.dart';
+import 'package:mortaalim/Manager/Services/YoutubeProgressManager.dart';
+import 'package:mortaalim/PractiseGames/MemoryFlipGame/LevelSeletor.dart';
+import 'package:mortaalim/PractiseGames/MemoryFlipGame/MemoryFlip.dart';
+import 'package:mortaalim/widgets/ProfileSetup_Widget/UserDataProfileEntering.dart';
+import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
 import 'package:mortaalim/courses/primaire1Page/index_1PrimairePage.dart';
 import 'package:mortaalim/firebase_options.dart';
 import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
 import 'package:mortaalim/games/PuzzzleGame/Puzzle_Game.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
+import 'package:mortaalim/indexPage_tools/Dashboard_Index_tool/Home_Page.dart';
 import 'package:mortaalim/tasbiheTest.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 
@@ -32,13 +35,12 @@ import 'package:mortaalim/games/Tracing_Alphabet_app/language_selector.dart';
 import 'package:mortaalim/games/WordExplorer/WordExplorerPage.dart';
 import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
-import 'package:mortaalim/profileSetupPage.dart';
+import 'package:mortaalim/widgets/ProfileSetup_Widget/profileSetupPage.dart';
 import 'package:mortaalim/tools/ConnectivityManager/Connectivity_Manager.dart';
 import 'package:mortaalim/tools/LifeCycleManager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/MusicRouteObserver.dart';
 import 'package:mortaalim/tools/SplashPage/splashScreen.dart';
-import 'package:mortaalim/testing.dart';
 import 'package:mortaalim/widgets/AIChatbot/ChatBotScreen.dart';
 import 'package:mortaalim/widgets/ComingSoon.dart';
 import 'package:mortaalim/widgets/CreditsPage.dart';
@@ -50,13 +52,14 @@ import '../../l10n/app_localizations.dart';
 import 'IndexPage.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
+
+
 final String appVersion = "1.0.0 (Build 1)";
 
 late SharedPreferences prefs;
 AppLocalizations tr(BuildContext context) => AppLocalizations.of(context)!;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final MusicRouteObserver routeObserver = MusicRouteObserver();
-
 
 // Create ONE AudioManager instance here, globally:
 final AudioManager  audioManager = AudioManager();
@@ -82,13 +85,13 @@ void main() async {
   AdHelper.initializeAds();
 
   final xpManager = ExperienceManager();
-
   await xpManager.loadData();
+
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: audioManager),  // Provide the global instance here
         ChangeNotifierProvider.value(value: xpManager),
+        ChangeNotifierProvider.value(value: audioManager),
         ChangeNotifierProvider(create: (_) => ConnectivityService()),
       ],
         child: AppLifecycleManager( child: MyApp(),
@@ -152,16 +155,15 @@ class _MyAppState extends State<MyApp> {
             'FavoriteWords': (context) => const FavoriteWordsPage(),
             "SugarSmash": (context) => const Sugrasmash(),
             "BreakingWalls": (context) => BreakingWalls(),
-            'index1Primaire': (context) => index1Primaire(),
+            'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const ProfileSetupPage(),
 
 
-            'Shop': (context) => MainShopPageIndex(),
+            'Shop': (context) => LevelSelectionPage(totalLevels: 30, unlockedLevel: 0),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),
             'Splash': (context) => SplashPage(),
-            "Testing": (context) => TestApp(),
             "Auth": (context) => AuthGate(),
           },
           localizationsDelegates: const [

@@ -198,51 +198,6 @@ class MusicPlayer {
   }
 }
 
-class MusicPlayerOne {
-  final AudioPlayer _player = AudioPlayer();
-  final Map<String, AudioSource> _cache = {};
-
-  Future<void> preload(String assetPath) async {
-    try {
-      final source = await CachedAudioManager().getAudioSource(assetPath);
-      _cache[assetPath] = source;
-      print('Preloaded $assetPath');
-    } catch (e) {
-      print('Error preloading $assetPath: $e');
-    }
-  }
-  Future<void> setVolume(double volume) async {
-    await _player.setVolume(volume);
-  }
-
-  Future<void> play(String assetPath, {bool loop = false}) async {
-    try {
-      final source = _cache[assetPath];
-      if (source == null) {
-        print('Warning: asset not preloaded, loading now...');
-        final loadedSource = await CachedAudioManager().getAudioSource(assetPath);
-        _cache[assetPath] = loadedSource;
-        await _player.setAudioSource(loadedSource);
-      } else {
-        await _player.setAudioSource(source);
-      }
-
-      await _player.setLoopMode(loop ? LoopMode.one : LoopMode.off);
-      await _player.play();
-    } catch (e) {
-      print('Error playing audio: $e');
-    }
-  }
-
-  Future<void> stop() async {
-    await _player.stop();
-  }
-
-  void dispose() {
-    _player.dispose();
-  }
-}
-
 
 class MusicPlayers {
   // We no longer keep a single player instance.

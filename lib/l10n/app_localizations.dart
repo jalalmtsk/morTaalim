@@ -1316,6 +1316,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You have no hearts left. What would you like to do?'**
   String get youHaveNoHeartsLeftWhatWouldYouLikeToDo;
+
+  /// No description provided for @science.
+  ///
+  /// In en, this message translates to:
+  /// **'Science'**
+  String get science;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

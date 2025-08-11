@@ -1,50 +1,169 @@
 import 'package:flutter/material.dart';
-import 'package:mortaalim/courses/primaire1Page/1_primaireExamenPage.dart';
-import 'package:mortaalim/courses/primaire1Page/1_primairePage.dart';
-import 'package:mortaalim/courses/primaire2Page/2_primaire.dart';
-import 'package:mortaalim/courses/primaire2Page/2_primaireExamenPage.dart';
-import '../../l10n/app_localizations.dart';
+import 'package:mortaalim/XpSystem.dart';
+import 'package:mortaalim/courses/primaire2Page/2_primairePage.dart';
+import 'package:mortaalim/courses/primaire2Page/2_primairePratique.dart';
+import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class index2Primaire extends StatefulWidget {
-  const index2Primaire({super.key});
+class Index2Primaire extends StatefulWidget {
+  const Index2Primaire({super.key});
 
   @override
-  State<index2Primaire> createState() => _index2PrimaireState();
+  State<Index2Primaire> createState() => _Index2PrimaireState();
 }
 
-class _index2PrimaireState extends State<index2Primaire> {
+class _Index2PrimaireState extends State<Index2Primaire>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<Offset> _slideAnimation;
+  late final Animation<double> _fadeAnimation;
+
+  Key _keyTab1 = UniqueKey();
+  Key _keyTab2 = UniqueKey();
+
+  static const _titles = [
+    'math',
+    'french',
+    'arabic',
+    'islamicEducation',
+    'artEducation',
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, -1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _fadeAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> resetAllProgress() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    for (final title in _titles) {
+      await prefs.remove('progress_$title');
+      await prefs.remove('progress1_$title');
+      await prefs.remove('progress2_$title');
+    }
+
+    setState(() {
+      _keyTab1 = UniqueKey();
+      _keyTab2 = UniqueKey();
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('✅ Tous les progrès ont été réinitialisés.'),
+        backgroundColor: Colors.deepOrange,
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final xpManager = ExperienceManager();
+    const headerTextStyle = TextStyle(
+      fontSize: 24,
+      fontWeight: FontWeight.w700,
+      color: Colors.black87,
+    );
+
+    const tabLabelStyle = TextStyle(
+      fontWeight: FontWeight.w600,
+      fontSize: 16,
+    );
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         backgroundColor: Colors.grey[100],
-        appBar: AppBar(
-          backgroundColor: Colors.teal,
-          elevation: 2,
-          shape:  RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-          ),
-          title:  Text(
-            "${AppLocalizations.of(context)!.class2}",
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-          ),
-          bottom: const TabBar(
-            indicatorColor: Colors.white,
-            indicatorWeight: 3,
-            labelColor: Colors.white,
-            unselectedLabelColor: Colors.white70,
-            labelStyle: TextStyle(fontWeight: FontWeight.bold),
-            tabs: [
-              Tab(icon: Icon(Icons.menu_book), text: 'Cours'),
-              Tab(icon: Icon(Icons.assignment), text: 'Examens'),
-            ],
-          ),
-        ),
-        body: TabBarView(
+        body: Column(
           children: [
-            primaire2(),
-            primaire2Exam(),
+            SlideTransition(
+              position: _slideAnimation,
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: Container(
+                  padding:
+                  const EdgeInsets.only(top: 50, left: 20, right: 20, bottom: 12),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 10,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                    borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back, color: Colors.deepOrange),
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          Expanded(
+                            child: Text(
+                              '2ème Année Primaire',
+                              style: headerTextStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const SizedBox(width: 48),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      TabBar(
+                        labelColor: Colors.deepOrange,
+                        unselectedLabelColor: Colors.grey,
+                        indicatorColor: Colors.deepOrange,
+                        indicatorWeight: 5,
+                        labelStyle: tabLabelStyle,
+                        tabs: const [
+                          Tab(icon: Icon(Icons.menu_book), text: 'Cours'),
+                          Tab(icon: Icon(Icons.track_changes_rounded), text: 'Exercices'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: TabBarView(
+                children: [
+                  Primaire2(key: _keyTab1, experienceManager: xpManager),
+                  Primaire2Pratique(key: _keyTab2),
+                ],
+              ),
+            ),
           ],
         ),
       ),

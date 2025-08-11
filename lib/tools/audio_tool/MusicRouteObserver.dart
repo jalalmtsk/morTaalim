@@ -13,7 +13,7 @@ final Map<Type, String> widgetMusicMap = {
   MainShopPageIndex : 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
   DrawingIndex: 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
   QuizGameApp: 'assets/audios/BackGround_Audio/FunnyHappyMusic.mp3',
-  index1Primaire: 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
+  Index1Primaire: 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
 };
 
 class MusicRouteObserver extends NavigatorObserver {

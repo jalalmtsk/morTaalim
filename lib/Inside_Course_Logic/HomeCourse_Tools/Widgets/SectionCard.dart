@@ -5,10 +5,10 @@ class SectionCard extends StatelessWidget {
   final String subtitle;
   final String? imageAsset;
   final bool completed;
-  final int stars;
+  final int points; // CoursePoints earned (0..3)
   final Color color;
   final VoidCallback onTap;
-  final VoidCallback onToggleComplete;
+  final VoidCallback? onToggleComplete;
   final AnimationController bounceController;
 
   const SectionCard({
@@ -17,10 +17,10 @@ class SectionCard extends StatelessWidget {
     required this.subtitle,
     this.imageAsset,
     required this.completed,
-    required this.stars,
     required this.color,
     required this.onTap,
-    required this.onToggleComplete,
+    this.onToggleComplete,  // now nullable
+    required this.points,
     required this.bounceController,
   }) : super(key: key);
 
@@ -34,8 +34,13 @@ class SectionCard extends StatelessWidget {
         onTap: onTap,
         borderRadius: BorderRadius.circular(20),
         child: Container(
-          decoration: BoxDecoration(gradient: LinearGradient(colors: [color.withOpacity(0.95), color.withOpacity(0.75)]), borderRadius: BorderRadius.circular(20)),
-          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [color.withValues(alpha: 0.95), color.withValues(alpha: 0.75)],
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          padding: const EdgeInsets.all(22),
           child: Column(
             children: [
               Row(
@@ -47,7 +52,7 @@ class SectionCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: 2),
                           Text(subtitle, style: const TextStyle(color: Colors.white70)),
                         ],
                       ),
@@ -56,13 +61,21 @@ class SectionCard extends StatelessWidget {
                   Column(
                     children: [
                       IconButton(
-                        onPressed: onToggleComplete,
-                        icon: Icon(completed ? Icons.favorite : Icons.favorite_border, color: completed ? Colors.redAccent : Colors.white),
+                        onPressed: onToggleComplete, // safely allows null
+                        icon: Icon(
+                          completed ? Icons.favorite : Icons.favorite_border,
+                          color: completed ? Colors.red : Colors.white,
+                          size: 25,
+                        ),
                       ),
                       Row(
-                        children: List.generate(3, (i) {
-                          final lit = i < stars;
-                          return Icon(lit ? Icons.star : Icons.star_border, color: lit ? Colors.amber : Colors.white70, size: 18);
+                        children: List.generate(2, (i) {
+                          final lit = i < points;
+                          return Icon(
+                            lit ? Icons.emoji_events : Icons.emoji_events_outlined,
+                            color: lit ? Colors.amber : Colors.white70,
+                            size: 22,
+                          );
                         }),
                       ),
                     ],
@@ -71,14 +84,30 @@ class SectionCard extends StatelessWidget {
               ),
               const Spacer(),
               if (imageAsset != null)
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Opacity(
-                    opacity: 0.9,
-                    child: Image.asset(imageAsset!, width: 86, height: 86, fit: BoxFit.contain),
-                  ),
-                ),
-            ],
+    Padding(
+      padding: const EdgeInsets.only(bottom: 20.0, top: 10),
+      child: Align(
+        alignment: Alignment.bottomRight,
+        child: Opacity(
+          opacity: completed ? 0.9 : 0.4,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: Align(
+              alignment: Alignment.topCenter, // Change this to crop different areas
+              widthFactor: 1, // Show 50% of the width
+              heightFactor: 0.5, // Show 50% of the height
+              child: Image.asset(
+                imageAsset!,
+                width: 280,
+                height: 130,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+      ),
+    )
+    ],
           ),
         ),
       ),

@@ -5,6 +5,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:mortaalim/Manager/Services/YoutubeProgressManager.dart';
+import 'package:mortaalim/Manager/models/CourseProgressionManager.dart';
 
 import 'package:mortaalim/tools/StarCountPulse.dart';
 import 'package:mortaalim/tools/StarDeductionOverlay.dart';
@@ -36,6 +38,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   int _stars = 5;
   int Tolims = 20;
 
+  //------------------------------------------------------------------//
+
   // Customization
   List<String> _unlockedCourses = [];
   List<String> _unlockedLanguages = ['arabic', 'french'];
@@ -44,6 +48,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   String? _userId;
 
   UserProfile userProfile = UserProfile();
+  YoutubeProgressManager youtubeProgressManager = YoutubeProgressManager();
+  CourseProgressionManager courseProgressionManager = CourseProgressionManager();
 
   // Customazation
   CustomizationSettings customization = CustomizationSettings();
@@ -82,6 +88,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     loadData();
   }
 
+
   // -------------- XP System -------------------
 
   int getXPForLevel(int level) => level * level * 50;
@@ -110,6 +117,9 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   int get stars => _stars;
   int get saveTokenCount => Tolims;
 
+  //------------------------------------------------------------------//
+
+
   List<String> get unlockedAvatars => customization.unlockedAvatars;
   String get selectedAvatar => customization.selectedAvatar;
 
@@ -134,6 +144,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   DateTime? get lastLogin => _lastLogin;
   DateTime? get lastLogout => _lastLogout;
 
+
+
   // ---------------- User setters -------------------
 
   void setFullName(String name) {
@@ -148,6 +160,73 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     if (userProfile.lastName != name) {
       userProfile.lastName = name;
       _saveData(); // ✅ Save change
+      notifyListeners();
+    }
+  }
+
+  void setSchoolName(String schoolName) {
+    if (userProfile.schoolName != schoolName) {
+      userProfile.schoolName = schoolName;
+      _saveData(); // ✅ Save change
+      notifyListeners();
+    }
+  }
+
+  void setSpecialNeeds(String specialNeeds) {
+    if (userProfile.specialNeeds != specialNeeds) {
+      userProfile.specialNeeds = specialNeeds;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setParentGuardianName(String parentGuardianName) {
+    if (userProfile.parentGuardianName != parentGuardianName) {
+      userProfile.parentGuardianName = parentGuardianName;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setBirthday(String birthday) {
+    if (userProfile.birthday != birthday) {
+      userProfile.birthday = birthday;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setSchoolType(String schoolType) {
+    if (userProfile.schoolType != schoolType) {
+      userProfile.schoolType = schoolType;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setSchoolGrade(String schoolGrade) {
+    if (userProfile.schoolGrade != schoolGrade) {
+      userProfile.schoolGrade = schoolGrade;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  String get schoolLevel => userProfile.schoolLevel ?? '';
+  String get lyceeTrack => userProfile.lyceeTrack ?? '';
+
+  void setSchoolLevel(String value) {
+    if (userProfile.schoolLevel != value) {
+      userProfile.schoolLevel = value;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setLyceeTrack(String value) {
+    if (userProfile.lyceeTrack != value) {
+      userProfile.lyceeTrack = value;
+      _saveData();
       notifyListeners();
     }
   }
@@ -278,6 +357,75 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
       return true;
     }
     return false;
+  }
+
+
+  //----------------------------Learning Preferences--------------------------------
+  void setBetterSubjects(List<String> subjects) {
+    learningPreferences.betterSubjects = subjects;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setPreferredLearningStyle(String style) {
+    learningPreferences.preferredLearningStyle = style;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setStudyTimePreference(String timePreference) {
+    learningPreferences.studyTimePreference = timePreference;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setDifficultyPreference(String difficulty) {
+    learningPreferences.difficultyPreference = difficulty;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setGoalType(String goalType) {
+    learningPreferences.goalType = goalType;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setWeeklyGoal(String weeklyGoal) {
+    learningPreferences.weeklyGoal = weeklyGoal;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setLongTermGoal(String longTermGoal) {
+    learningPreferences.longTermGoal = longTermGoal;
+    _saveData();
+    notifyListeners();
+  }
+
+
+  //-------------------YoutubeVideoReward----------------------------
+
+  /// Mark a video as completed
+  Future<void> markVideoCompleted({required String videoId}) async {
+    if (!youtubeProgressManager.completedVideoIds.contains(videoId)) {
+      youtubeProgressManager.completedVideoIds.add(videoId);
+       _saveData();
+      notifyListeners();
+    }
+  }
+
+  // Methods to add or remove completed videos
+  void addCompletedVideo(String videoId) {
+    youtubeProgressManager.completedVideoIds.add(videoId);
+     _saveData();
+    notifyListeners();
+  }
+
+  void removeCompletedVideo(String videoId) {
+    youtubeProgressManager.completedVideoIds.remove(videoId);
+     _saveData();
+    notifyListeners();
   }
 
   // ---------------- Reward & Banner methods -------------------
@@ -495,9 +643,13 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
+  //-----------------Course Progression Manager Setters ----------------------------------------
 
+
+//----------------------------------------------------------------------------------
   void resetData() {
     userProfile.clearPrefs(prefs);
+    learningPreferences.clearPrefs(prefs);
     _xp = 0;
     _stars = 0;
     Tolims = 20;
@@ -550,6 +702,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     });
   }
 
+
   // ---------------- Local Storage Load/Save -------------------
   Future<void> loadData() async {
     final prefs = await SharedPreferences.getInstance();
@@ -562,6 +715,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
 
     userProfile = UserProfile.fromPrefs(prefs);
     customization = CustomizationSettings.fromPrefs(prefs);
+    courseProgressionManager = await CourseProgressionManager.fromPrefs(prefs);
+    youtubeProgressManager = await YoutubeProgressManager.fromPrefs(prefs);
 
     _adsEnabled = prefs.getBool('adsEnabled') ?? true;
 
@@ -578,11 +733,14 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     await prefs.setStringList('unlockedCourses', _unlockedCourses);
     await prefs.setStringList('unlockedLanguages', _unlockedLanguages);
 
+
+    await courseProgressionManager.saveToPrefs(prefs);
     // Personal info
     await userProfile.saveToPrefs(prefs);
-
     //Customazations
     await customization.saveToPrefs(prefs);
+    // YoutubeProgressManager
+    youtubeProgressManager.saveToPrefs(prefs);
   }
 
 
@@ -614,6 +772,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
         ...userProfile.toMap(),
         ...customization.toMap(), // <-- include AVATAR/ BANNER
         ...learningPreferences.toMap(),
+        ...courseProgressionManager.toMap(),
+        ...youtubeProgressManager.toMap(),
 
       }, SetOptions(merge: true));
 
@@ -645,6 +805,9 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     final backupData = {
       ...userProfile.toMap(),
       ...customization.toMap(),
+      ...courseProgressionManager.toMap(),
+      ...youtubeProgressManager.toMap(),
+
       "xp": _xp,
       "stars": _stars,
       "tolims": Tolims,
@@ -679,6 +842,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _unlockedCourses = List<String>.from(data["unlockedCourses"] ?? []);
 
     customization.loadFromMap(data);
+    courseProgressionManager.loadFromMap(data);
+    youtubeProgressManager.loadFromMap(data);
 
     _adsEnabled = data["adsEnabled"] ?? _adsEnabled;
 

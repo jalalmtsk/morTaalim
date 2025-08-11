@@ -1,12 +1,18 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/GlobalStatCard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/MascotBubble.dart';
+import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/ProgressCard.dart';
+import '../../XpSystem.dart';
 import '../../l10n/app_localizations.dart';
 import '../../Inside_Course_Logic/HomeCourse.dart';
 
 class Primaire1 extends StatefulWidget {
-  const Primaire1({Key? key}) : super(key: key);
+  final ExperienceManager experienceManager;
+
+  const Primaire1({Key? key, required this.experienceManager}) : super(key: key);
 
   @override
   State<Primaire1> createState() => _Primaire1State();
@@ -14,232 +20,353 @@ class Primaire1 extends StatefulWidget {
 
 class _Primaire1State extends State<Primaire1> {
   final List<Map<String, String>> courses = [
-    {'title': 'math', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_mathematique.json'},
-    {'title': 'french', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_francais.json'},
-    {'title': 'arabic', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
-    {'title': 'islamicEducation', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_education_islamique.json'},
-    {'title': 'artEducation', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
-    {'title': 'Activitéscientifique', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_activite_scientifique.json'},
+    {'title': 'math1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_mathematique.json'},
+    {'title': 'french1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_francais.json'},
+    {'title': 'arabic1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
+    {'title': 'islamicEducation1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_education_islamique.json'},
+    {'title': 'artEducation1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
+    {'title': 'Activitéscientifique1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_activite_scientifique.json'},
   ];
 
   Map<String, double> courseProgress = {};
+  double overallProgressPct = 0.0; // 0.0 .. 1.0
   bool isLoading = true;
+
+  // same prefix keys used by your CourseProgressionManager
+  static const String _kProgressPrefix = 'gamified_progress';
 
   @override
   void initState() {
     super.initState();
-    loadProgressForCourses();
+    widget.experienceManager.addListener(_onExperienceChanged);
+    _loadAllCoursesTotalSectionsAndProgress().then((_) {
+      _onExperienceChanged();
+    });  }
+
+  @override
+  void dispose() {
+    widget.experienceManager.removeListener(_onExperienceChanged);
+    super.dispose();
   }
 
-  Future<void> loadProgressForCourses() async {
+  Future<void> _loadAllCoursesTotalSectionsAndProgress() async {
+    setState(() => isLoading = true);
+
+    // read prefs early so we can show immediate saved progress (no need to wait for ExperienceManager init)
     final prefs = await SharedPreferences.getInstance();
+
+    int totalSectionsAll = 0;
+    int completedSectionsAll = 0;
+    final totals = <String, int>{};
+
     for (var course in courses) {
       final courseId = course['title']!;
-      final saved = prefs.getStringList('progress_$courseId') ?? [];
-      final total = await getTotalSections(course['file']!);
-      final progress = total > 0 ? saved.length / total : 0.0;
-      courseProgress[courseId] = progress;
+      final jsonFile = course['file']!;
+
+      // Load JSON (to determine total sections and optional per-section 'completed' flags)
+      final raw = await rootBundle.loadString(jsonFile);
+      final jsonData = jsonDecode(raw);
+      final sections = jsonData['sections'] as List<dynamic>? ?? [];
+      final totalSections = sections.length;
+
+      totals[courseId] = totalSections;
+      totalSectionsAll += totalSections;
+
+      // 1) Prefer persisted SharedPreferences saved completed list (same key your manager uses).
+      final savedKey = '$_kProgressPrefix\_$courseId';
+      final savedList = prefs.getStringList(savedKey);
+      int completedCount = 0;
+
+      if (savedList != null) {
+        // If prefs contains stored completed indices, use that
+        completedCount = savedList.length;
+      } else {
+        // 2) If JSON contains per-section 'completed' flags, count them
+        bool jsonHasCompletedField = false;
+        int jsonCompletedCount = 0;
+        for (var sec in sections) {
+          if (sec is Map<String, dynamic> && sec.containsKey('completed')) {
+            jsonHasCompletedField = true;
+            if (sec['completed'] == true) jsonCompletedCount++;
+          } else if (sec is Map && sec.containsKey('completed')) {
+            jsonHasCompletedField = true;
+            if (sec['completed'] == true) jsonCompletedCount++;
+          }
+        }
+        if (jsonHasCompletedField) {
+          completedCount = jsonCompletedCount;
+        } else {
+          // 3) fallback to experienceManager (may be empty if it's not initialized yet)
+          completedCount = widget.experienceManager.courseProgressionManager
+              .getCompletedSections(courseId)
+              .length;
+        }
+      }
+
+      completedSectionsAll += completedCount;
+
+      // per-course progress as fraction 0..1
+      courseProgress[courseId] = totalSections == 0 ? 0.0 : (completedCount / totalSections);
     }
-    await Future.delayed(const Duration(milliseconds: 800)); // playful loading
-    setState(() => isLoading = false);
+
+    // Store totals into the manager so other parts can read totals
+    widget.experienceManager.courseProgressionManager.setTotalSectionsBatch(totals);
+
+    // Weighted overall progress across all courses (completed sections / total sections)
+    overallProgressPct = totalSectionsAll == 0 ? 0.0 : (completedSectionsAll / totalSectionsAll);
+
+    if (!mounted) return;
+    setState(() {
+      isLoading = false;
+    });
   }
 
-  Future<int> getTotalSections(String jsonFilePath) async {
-    final data = await rootBundle.loadString(jsonFilePath);
-    final jsonResult = jsonDecode(data);
-    return (jsonResult['sections'] as List).length;
+  void _onExperienceChanged() {
+    // When experienceManager notifies, recalc progress using the manager's authoritative data
+    if (!mounted) return;
+
+    int totalSectionsAll = 0;
+    int completedSectionsAll = 0;
+
+    for (var course in courses) {
+      final courseId = course['title']!;
+      final totalSections = widget.experienceManager.courseProgressionManager.getTotalSections(courseId);
+      final completedCount = widget.experienceManager.courseProgressionManager.getCompletedSections(courseId).length;
+
+      totalSectionsAll += totalSections;
+      completedSectionsAll += completedCount;
+
+      courseProgress[courseId] = totalSections == 0 ? 0.0 : (completedCount / totalSections);
+    }
+
+    overallProgressPct = totalSectionsAll == 0 ? 0.0 : (completedSectionsAll / totalSectionsAll);
+
+    setState(() {
+      // just update UI
+    });
   }
 
   IconData getCourseIcon(String title) {
     switch (title) {
-      case 'math':
+      case 'math1':
         return Icons.calculate_rounded;
-      case 'french':
+      case 'arabic1':
+        return Icons.accessibility_new_sharp;
+      case 'french1':
         return Icons.language_rounded;
-      case 'arabic':
+      case 'Activitéscientifique1':
         return Icons.translate_rounded;
-      case 'islamicEducation':
+      case 'islamicEducation1':
         return Icons.mosque;
-      case 'artEducation':
+      case 'artEducation1':
         return Icons.palette_rounded;
       default:
         return Icons.book_rounded;
     }
   }
 
+  String getCourseImagePath(String title) {
+    switch (title) {
+      case 'math1':
+        return 'assets/images/UI/BackGrounds/Course_BG/mathCourse_bg.png';
+      case 'arabic1':
+        return 'assets/images/UI/BackGrounds/Course_BG/arabicCourse_bg.png';
+      case 'french1':
+        return 'assets/images/UI/BackGrounds/Course_BG/frenchCourse_bg.png';
+      case 'Activitéscientifique1':
+        return 'assets/images/UI/BackGrounds/Course_BG/scienceCourse_bg.png';
+      case 'islamicEducation1':
+        return 'assets/images/UI/BackGrounds/Course_BG/islamCourse_bg.png';
+      case 'artEducation1':
+        return 'assets/images/UI/BackGrounds/Course_BG/artCourse_bg.png';
+      default:
+        return 'assets/images/default_bg.png';
+    }
+  }
+
   String getCourseName(String key, AppLocalizations tr) {
     switch (key) {
-      case 'math':
+      case 'math1':
         return tr.math;
-      case 'french':
+      case 'french1':
         return tr.french;
-      case 'arabic':
+      case 'arabic1':
         return tr.arabic;
-      case 'islamicEducation':
+      case 'islamicEducation1':
         return tr.islamicEducation;
-      case 'artEducation':
+      case 'artEducation1':
         return tr.artEducation;
       default:
-        return tr.class6;
+        return tr.science;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final tr = AppLocalizations.of(context)!;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       backgroundColor: const Color(0xfffdf6e3),
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-            expandedHeight: 170,
-            pinned: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            flexibleSpace: FlexibleSpaceBar(
-              titlePadding: const EdgeInsets.only(left: 24, bottom: 16),
-              title: Text(
-                "🎒 ${tr.class1}",
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  shadows: [
-                    Shadow(color: Colors.black26, blurRadius: 3),
-                  ],
-                ),
-              ),
-              background: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Color(0xfff9a825), Color(0xfff57c00)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
-                ),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Image(
-                      image: AssetImage('assets/images/cartoon_kid.png'),
-                      height: 90,
-                    ),
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator(color: Colors.orangeAccent))
+          : Padding(
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: GlobalStatsCard(
+                    progress: overallProgressPct,
+                    badges: widget.experienceManager.courseProgressionManager.getBadges().length,
+                    courseXp: widget.experienceManager.courseProgressionManager.getCourseXp(),
+                    completedCourses: courseProgress.values.where((p) => p >= 1.0).length,
+                    totalCourses: courses.length,
                   ),
                 ),
-              ),
+                const SizedBox(width: 10),
+              ],
             ),
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
-            ),
-          ),
-
-          SliverPadding(
-            padding: const EdgeInsets.all(16),
-            sliver: SliverToBoxAdapter(
-              child: isLoading
-                  ? Center(
-                child: SizedBox(
-                  height: 80,
-                  width: 80,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 6,
-                    color: Colors.orangeAccent,
-                  ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: GridView.builder(
+                itemCount: courses.length,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: screenWidth > 700 ? 3 : 2,
+                  mainAxisSpacing: 18,
+                  crossAxisSpacing: 18,
+                  childAspectRatio: 4 / 3,
                 ),
-              )
-                  : Column(
-                children: courses.map((course) {
+                itemBuilder: (context, index) {
+                  final course = courses[index];
                   final title = course['title']!;
                   final icon = getCourseIcon(title);
                   final percent = courseProgress[title] ?? 0.0;
                   final percentText = (percent * 100).toStringAsFixed(0);
 
                   return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (_) => CoursePage(
                             jsonFilePath: course['file']!,
                             courseId: title,
+                            experienceManager: widget.experienceManager,
                           ),
                         ),
-                      ).then((_) => loadProgressForCourses());
+                      );
+                      // Recalculate after coming back (keeps UI fresh)
+                      await _loadAllCoursesTotalSectionsAndProgress();
                     },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 300),
-                      margin: const EdgeInsets.symmetric(vertical: 10),
-                      padding: const EdgeInsets.all(18),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [Colors.white, Colors.orange.shade50],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        borderRadius: BorderRadius.circular(28),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.orange.withOpacity(0.3),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                      ),
-                      child: Row(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: Stack(
                         children: [
-                          CircleAvatar(
-                            radius: 28,
-                            backgroundColor: Colors.orangeAccent.shade100,
-                            child: Icon(icon, size: 32, color: Colors.deepOrange),
+                          Positioned.fill(
+                            child: Image.asset(
+                              getCourseImagePath(title),
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.black.withOpacity(0.4),
+                                    Colors.black.withOpacity(0.0),
+                                  ],
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Center(
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  getCourseName(title, tr),
-                                  style: const TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.8),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Icon(
+                                    icon,
+                                    size: 35,
+                                    color: Colors.orangeAccent,
+                                    shadows: const [
+                                      Shadow(
+                                        blurRadius: 4,
+                                        color: Colors.black45,
+                                        offset: Offset(1, 1),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(height: 8),
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(12),
-                                  child: LinearProgressIndicator(
-                                    value: percent,
-                                    minHeight: 10,
-                                    backgroundColor: Colors.orange.shade100,
-                                    valueColor: AlwaysStoppedAnimation(
-                                      Colors.deepOrangeAccent,
+                                const SizedBox(height: 10),
+                                Text(
+                                  getCourseName(title, tr),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
+                                    height: 1.2,
+                                    shadows: [
+                                      Shadow(
+                                        color: Colors.black,
+                                        blurRadius: 4,
+                                        offset: Offset(1, 1),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: LinearProgressIndicator(
+                                      value: percent,
+                                      minHeight: 8,
+                                      backgroundColor: Colors.white.withOpacity(0.3),
+                                      valueColor: const AlwaysStoppedAnimation(Colors.orangeAccent),
                                     ),
                                   ),
                                 ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  "$percentText%",
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 4,
+                                        color: Colors.black87,
+                                        offset: Offset(1, 1),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            "$percentText%",
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.deepOrange,
                             ),
                           ),
                         ],
                       ),
                     ),
                   );
-                }).toList(),
+                },
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

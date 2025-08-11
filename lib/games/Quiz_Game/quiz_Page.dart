@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ffi';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -175,7 +174,13 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
         break;
       case QuizLanguage.arabic:
         await flutterTts.setLanguage("ar-SA");
+        var voices = await flutterTts.getVoices;
+        var arabicVoice = voices.firstWhere(
+                (v) => v['locale'] == 'ar-SA',
+            orElse: () => voices.first);
+        await flutterTts.setVoice(arabicVoice);
         break;
+
       case QuizLanguage.deutch:
         await flutterTts.setLanguage("de-DE");
         break;
@@ -186,15 +191,31 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   }
 
   Future<void> _readQuestion(Question question) async {
-    if (_isTtsMuted) return; // ✅ Don't read if muted
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
-    String text = "${question.questionText}. Options: ";
-    for (int i = 0; i < question.options.length; i++) {
-      text += "${i + 1}. ${question.options[i]}. ";
+    if (_isTtsMuted) return;
+
+    if (widget.language == QuizLanguage.arabic) {
+      await flutterTts.stop();
+
+      // Use question.id instead of _currentQuestion
+      String audioPath = 'assets/audios/tts_female/arabic_Questions_QuizzGame/qst${question.id}.mp3';
+
+      audioManager.playAlert(audioPath);
+
+    } else {
+      String text = question.questionText;
+      text += ". Options: ";
+      for (int i = 0; i < question.options.length; i++) {
+        text += "${i + 1}. ${question.options[i]}. ";
+      }
+
+      await flutterTts.stop();
+      await flutterTts.speak(text);
     }
-    await flutterTts.stop();
-    await flutterTts.speak(text);
   }
+
+
 
 
 
