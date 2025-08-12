@@ -21,9 +21,11 @@ class AuthGate extends StatelessWidget {
         if (snapshot.hasData) {
           final xpManager = Provider.of<ExperienceManager>(context, listen: false);
           if (xpManager.lastLogin == null || xpManager.lastLogin!.isBefore(DateTime.now().subtract(const Duration(seconds: 2)))) {
-            xpManager.onAppStart(snapshot.data!.uid);
+            Future.microtask(() {
+              xpManager.onAppStart(snapshot.data!.uid);
+            });
           }
-          return const SplashPage(); // ✅ no more callback
+          return const SplashPage();
         } else {
           return LoginPage();
         }

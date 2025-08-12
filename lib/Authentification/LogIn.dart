@@ -107,7 +107,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     _setLoading(true);
     try {
       await FirebaseAuth.instance.signInAnonymously();
-      await _initializeUser();
     } catch (e) {
       _showFriendlyError(e);
     } finally {
@@ -150,7 +149,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       }
 
       if (userCredential.user != null) {
-        await _initializeUser();
       } else {
         _showError("Erreur : utilisateur non trouvé après connexion.");
       }
@@ -191,8 +189,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   }
 
   void _showFriendlyError(Object e) {
-    if (kDebugMode) debugPrint("Erreur technique : $e");
-    _showError("Connexion impossible. Vérifiez votre connexion internet et réessayez.");
+    debugPrint("FULL GOOGLE LOGIN ERROR: $e");
+    setState(() => _errorMessage = e.toString()); // Show the real error for testing
   }
 
   Future<bool> _showConfirmationDialog(String title, String message) async {

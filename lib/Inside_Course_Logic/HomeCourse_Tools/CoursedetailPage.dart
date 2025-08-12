@@ -29,32 +29,33 @@ class CourseDetailPage extends StatelessWidget {
             pinned: true,
             backgroundColor: Colors.orange,
             flexibleSpace: FlexibleSpaceBar(
-              title: Text(
-                section.title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.white,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black45,
-                      blurRadius: 4,
-                      offset: Offset(1, 1),
-                    )
-                  ],
-                ),
-              ),
               background: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Hero(
-                    tag: "section_image_$index",
-                    child: section.image != null
-                        ? Image.asset(section.image!, fit: BoxFit.cover)
-                        : Container(color: Colors.orange.shade300),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 120.0, right: 20, left: 20),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Text(
+                        section.title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30,
+                          color: Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black45,
+                              blurRadius: 4,
+                              offset: Offset(1, 1),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
                   ),
+
                   Align(
-                    alignment: Alignment.bottomRight,
+                    alignment: Alignment.bottomCenter,
                     child: BotWithGreeting()
                   ),
                 ],

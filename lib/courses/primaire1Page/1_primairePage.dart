@@ -22,7 +22,7 @@ class _Primaire1State extends State<Primaire1> {
   final List<Map<String, String>> courses = [
     {'title': 'math1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_mathematique.json'},
     {'title': 'french1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_francais.json'},
-    {'title': 'arabic1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
+    {'title': 'arabic1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_arabe.json'},
     {'title': 'islamicEducation1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_education_islamique.json'},
     {'title': 'artEducation1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
     {'title': 'Activitéscientifique1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_activite_scientifique.json'},

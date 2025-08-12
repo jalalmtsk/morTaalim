@@ -10,48 +10,43 @@
           "title": "الأعداد من 1 إلى 20 🔟",
           "content": "التعرف على الأعداد والكتابة والقراءة من 1 إلى 20. مثلاً: 1️⃣، 2️⃣، 3️⃣ ... 2️⃣0️⃣.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=F6IU1TCiRzU&list=RDF6IU1TCiRzU&start_radio=1"
-
+          "controller": "https://www.youtube.com/watch?v=F6IU1TCiRzU&list=RDF6IU1TCiRzU&start_radio=1"
         },
         {
           "title": "الأعداد من 21 إلى 100 🔟➕",
           "content": "التعرف على الأعداد من 21 إلى 100 وكتابتها وقراءتها.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=eVJjiTUHV5g"
+          "controller": "https://www.youtube.com/watch?v=eVJjiTUHV5g"
         },
         {
           "title": "العد التصاعدي ⬆️",
           "content": "العد من العدد الأصغر إلى الأكبر، مثلاً من 1️⃣ إلى 2️⃣0️⃣.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=XTBLhDCZBlE"
-
+          "controller": "https://www.youtube.com/watch?v=XTBLhDCZBlE"
         },
         {
           "title": "العد التنازلي ⬇️",
           "content": "العد من العدد الأكبر إلى الأصغر، مثلاً من 2️⃣0️⃣ إلى 1️⃣.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=XTBLhDCZBlE"
-
+          "controller": "https://www.youtube.com/watch?v=XTBLhDCZBlE"
         },
         {
           "title": "تمرين 1: عد تصاعدي 🗣️",
           "content": "عد الأعداد من 1️⃣ إلى 2️⃣0️⃣ بصوت عالٍ.",
           "type": "video",
-          "controller" : "https://youtu.be/7EY_Hms4Ers"
-
+          "controller": "https://youtu.be/7EY_Hms4Ers"
         },
         {
           "title": "تمرين 2: عد تنازلي 🗣️",
           "content": "عد الأعداد من 2️⃣0️⃣ إلى 1️⃣ بصوت عالٍ.",
           "type": "video",
-          "controller" : "https://youtu.be/7EY_Hms4Ers"
-
+          "controller": "https://youtu.be/7EY_Hms4Ers"
         },
         {
           "title": "تمرين 3: التعرف على العدد الصحيح 🔍",
           "content": "اختر العدد الصحيح الذي يمثل الرقم المكتوب.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=gAopROIudmk"
+          "controller": "https://www.youtube.com/watch?v=gAopROIudmk"
         }
       ]
     },
@@ -64,22 +59,19 @@
           "title": "الجمع ➕",
           "content": "تعلم كيفية جمع عددين باستخدام الأصابع 👆👆 أو الرسومات 🍎🍎.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=_i1osrOINCE"
-
+          "controller": "https://www.youtube.com/watch?v=_i1osrOINCE"
         },
         {
           "title": "الجمع باستخدام الرسم 🍏+🍎=؟",
           "content": "مثال: إذا كان لديك 4 تفاحات 🍎🍎🍎🍎 ورسمت 3 تفاحات أخرى 🍏🍏🍏، كم تفاحة لديك؟ 🤔",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=_i1osrOINCE"
-
+          "controller": "https://www.youtube.com/watch?v=_i1osrOINCE"
         },
         {
           "title": "الطرح ➖",
           "content": "تعلم كيفية طرح عدد من عدد آخر لمعرفة الباقي، مثل إزالة أو أخذ أشياء.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=ogmX9Z0bn9Y"
-
+          "controller": "https://www.youtube.com/watch?v=ogmX9Z0bn9Y"
         },
         {
           "title": "تمرين 4: مسائل جمع 🧮",
@@ -107,29 +99,25 @@
           "title": "الأشكال الأساسية 🔷🔶",
           "content": "تعريف الدائرة ⚪، المربع ⬜، المستطيل ▭، المثلث 🔺.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=RXs_lCpaACg"
-
+          "controller": "https://www.youtube.com/watch?v=RXs_lCpaACg"
         },
         {
           "title": "خصائص الأشكال 📏",
           "content": "عدد الأضلاع والزوايا لكل شكل: المربع له ٤ أضلاع ⬜، المثلث له ٣ أضلاع 🔺.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=UcKfQGUqKwQ"
-
+          "controller": "https://www.youtube.com/watch?v=UcKfQGUqKwQ"
         },
         {
           "title": "رسم الأشكال ✏️",
           "content": "تمارين على رسم الأشكال المختلفة بأستخدام أدوات الرسم.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=wCTr_MHBxx8&list=RDwCTr_MHBxx8&start_radio=1"
-
+          "controller": "https://www.youtube.com/watch?v=wCTr_MHBxx8&list=RDwCTr_MHBxx8&start_radio=1"
         },
         {
           "title": "التعرف على الأشكال في الحياة اليومية 🏠📦",
           "content": "البحث عن الأشكال الهندسية في البيئة المحيطة، مثل النوافذ ⬛، الكتب 📚، والإشارات ⚠️.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=FX--ZhIa_wk"
-
+          "controller": "https://www.youtube.com/watch?v=FX--ZhIa_wk"
         },
         {
           "title": "تمرين 7: عد الأضلاع 🔢",
@@ -152,21 +140,19 @@
           "title": "الوزن ⚖️",
           "content": "تعريف الوزن وكيفية مقارنته بين الأشياء المختلفة.",
           "type": "explanation",
-          "controller" : "https://www.youtube.com/watch?v=CIqwxnlQPTs"
-
+          "controller": "https://www.youtube.com/watch?v=CIqwxnlQPTs"
         },
         {
           "title": "المقارنة بين الأوزان 🥚🍎",
           "content": "تحديد الأثقل بين جسمين: هل التفاحة 🍎 أثقل أم البيضة 🥚؟",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=PZxJMoOPAp8"
+          "controller": "https://www.youtube.com/watch?v=PZxJMoOPAp8"
         },
         {
           "title": "السعة 🥤",
           "content": "مفهوم السعة وقياسها باستخدام أدوات بسيطة مثل الكأس 🥛.",
           "type": "explanation",
-          "controller" : "https://www.youtube.com/watch?v=aC-pMPa3XOs"
-
+          "controller": "https://www.youtube.com/watch?v=aC-pMPa3XOs"
         },
         {
           "title": "تمرين 10: مقارنة الأوزان ⚖️",

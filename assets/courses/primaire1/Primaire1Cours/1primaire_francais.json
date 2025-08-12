@@ -1,145 +1,146 @@
 {
-  "title": "Apprendre avec joie - Cours pour enfants 🎉",
+  "title": "Français - Première année primaire",
   "sections": [
     {
-      "title": "Reconnaître le temps ⏰",
-      "content": "Apprendre à comprendre le temps et son importance dans notre vie quotidienne.",
+      "title": "Les lettres et les sons 🅰️🅱️",
+      "content": "Apprentissage des lettres de l'alphabet, leurs sons et leur prononciation.",
       "type": "theory",
       "subsections": [
         {
-          "title": "Qu'est-ce que le temps ? 🕰️",
-          "content": "Le temps est ce qui nous permet de savoir quand faire nos activités, comme manger 🍽️, dormir 🛌 ou jouer ⚽.",
+          "title": "Les lettres de A à E",
+          "content": "Découverte des lettres A, B, C, D, E et leurs sons correspondants.",
           "type": "video",
-          "controller" : "https://www.youtube.com/watch?v=ZOX18HfLxu4",
-          "video": "https://www.youtube.com/watch?v=K7WWVz1aTXg"
+          "controller": "https://www.youtube.com/watch?v=xz0ATvW6L0I"
         },
         {
-          "title": "Lire l'heure sur une horloge 🕒",
-          "content": "Comprendre les aiguilles de l'horloge : l'aiguille des heures 🕐, des minutes ⏱️, et des secondes ⏳.",
-          "type": "explanation",
-          "video": "https://www.youtube.com/watch?v=ZOX18HfLxu4"
+          "title": "Les lettres de F à J",
+          "content": "Apprentissage des lettres F, G, H, I, J avec des exemples simples.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=Y5MGnBaDEg4"
         },
         {
-          "title": "Matin, midi et soir 🌅🌞🌙",
-          "content": "Identifier les moments de la journée : le matin ☀️, l'après-midi 🌤️, le soir 🌙.",
-          "type": "explanation",
-          "video": "https://www.youtube.com/watch?v=dwWFn_k3_Vk"
+          "title": "Les lettres de K à O",
+          "content": "Étude des lettres K, L, M, N, O et prononciation.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=5xuZxGirWQI&list=RD5xuZxGirWQI&start_radio=1"
         },
         {
-          "title": "Exercice : Quelle heure est-il ? 🕰️❓",
-          "content": "Regarde l'horloge et dis quelle heure il est.",
-          "type": "exercise"
+          "title": "Écriture des lettres",
+          "content": "Exercices d’écriture des lettres en majuscules et minuscules.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=FWsm1G7Hnkk"
         }
       ]
     },
     {
-      "title": "Les nombres et le comptage 🔢",
-      "content": "Apprendre à compter de 1 à 100 avec des exercices amusants.",
+      "title": "Les accents et les voyelles 🔤",
+      "content": "Apprentissage des accents (é, è, à) et des voyelles en français.",
       "type": "theory",
       "subsections": [
         {
-          "title": "Compter de 1 à 20 🔟",
-          "content": "Découvrir les nombres de 1 à 20 avec des images colorées et des objets à compter.",
-          "type": "explanation",
-          "video": "https://www.youtube.com/watch?v=DR-cfDsHCGA"
+          "title": "Les accents aigus, graves et circonflexes",
+          "content": "Comprendre et prononcer les accents français avec exemples.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=ONj_ghJYOIQ"
         },
         {
-          "title": "Compter jusqu'à 100 🔟➕",
-          "content": "Apprendre à compter jusqu'à 100 en sautant par dizaines.",
-          "type": "explanation",
-          "video": "https://www.youtube.com/watch?v=G3iW2EO_eoM"
+          "title": "Les voyelles et leurs sons",
+          "content": "Étude des voyelles a, e, i, o, u et leur prononciation.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=Iqbw0ikFdqo&list=RDIqbw0ikFdqo&start_radio=1"
         },
         {
-          "title": "Exercice : Compte avec moi 🧮",
-          "content": "Comptez les pommes 🍎, les ballons 🎈, ou les étoiles ⭐️.",
-          "type": "exercise"
+          "title": "L’importance des accents dans les mots",
+          "content": "Différences de sens liées aux accents dans les mots.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=4RKRc79k6LU"
         }
       ]
     },
     {
-      "title": "Les opérations mathématiques de base ➕➖",
-      "content": "Apprendre à additionner et à soustraire avec des exemples simples et ludiques.",
+      "title": "Le vocabulaire de base 📚",
+      "content": "Apprentissage des mots et expressions simples de la vie quotidienne.",
       "type": "theory",
       "subsections": [
         {
-          "title": "L'addition ➕",
-          "content": "Ajouter des objets ensemble, comme 3 pommes 🍎 + 2 pommes 🍎 = 5 pommes 🍏.",
-          "type": "explanation",
-          "video": "https://www.youtube.com/watch?v=9wgIvm8tuNA"
+          "title": "Les objets autour de nous",
+          "content": "Noms d’objets familiers comme la maison, l’école, les animaux.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=E1bEHjVrIHQ"
         },
         {
-          "title": "La soustraction ➖",
-          "content": "Retirer des objets, comme 5 bonbons 🍬 - 2 bonbons 🍬 = 3 bonbons 🍭.",
-          "type": "explanation",
-          "video": "https://www.youtube.com/watch?v=7lAsWmhRvcE"
+          "title": "Les couleurs",
+          "content": "Apprentissage des noms des couleurs principales en français.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=m50U33brThk&list=RDm50U33brThk&start_radio=1"
         },
         {
-          "title": "Exercice : Calcule avec des fruits 🍓",
-          "content": "Si tu as 10 fraises 🍓 et que tu en manges 4, combien te reste-t-il ?",
-          "type": "exercise"
+          "title": "Les animaux communs",
+          "content": "Noms et sons des animaux familiers.",
+          "type": "explanation",
+          "controller": null
+        },
+        {
+          "title": "La famille",
+          "content": "Vocabulaire lié aux membres de la famille.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=ZIADvMC1BZI"
+        },
+        {
+          "title": "Exercices de vocabulaire",
+          "content": "Jeux et activités pour renforcer le vocabulaire appris.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=Do6tLeqfHQY"
         }
       ]
     },
     {
-      "title": "Les formes géométriques 🔺⬛⚪",
-      "content": "Découvrir les formes de base et les retrouver dans la vie quotidienne.",
+      "title": "Les phrases simples et la communication 🗣️",
+      "content": "Formation de phrases simples pour communiquer efficacement.",
       "type": "theory",
       "subsections": [
         {
-          "title": "Les formes principales 🔷🔶",
-          "content": "Apprendre à reconnaître le cercle ⚪, le carré ⬜, le triangle 🔺, et le rectangle ▭.",
+          "title": "La phrase affirmative",
+          "content": "Structure et exemples de phrases affirmatives simples.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=zNHm9LvsxqE"
+        },
+        {
+          "title": "La phrase interrogative",
+          "content": "Formation des questions simples en français.",
           "type": "explanation",
-          "video": "https://www.youtube.com/watch?v=3OaP2BYnVz0"
+          "controller": "https://www.youtube.com/watch?v=-0BnEnS8SRc"
         },
         {
-          "title": "Propriétés des formes 📏",
-          "content": "Savoir combien de côtés et d'angles ont chaque forme.",
-          "type": "explanation"
-        },
-        {
-          "title": "Exercice : Trouve les formes autour de toi 🔍",
-          "content": "Cherche un objet en forme de cercle, carré ou triangle dans ta maison.",
-          "type": "activity"
+          "title": "Les mots de liaison",
+          "content": "Utilisation de mots comme 'et', 'mais', 'donc' pour relier des phrases.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=WUPNzCj0Kqk"
         }
       ]
     },
     {
-      "title": "La mesure et la comparaison 📏⚖️",
-      "content": "Apprendre à mesurer et comparer les longueurs, poids, et capacités.",
-      "type": "theory",
+      "title": "Expression orale et écrite 🗨️✍️",
+      "content": "Activités pour développer les compétences d’expression orale et écrite.",
+      "type": "practice",
       "subsections": [
         {
-          "title": "Mesurer une longueur 📐",
-          "content": "Utiliser une règle pour mesurer un crayon ✏️ ou une gomme.",
-          "type": "practice",
-          "video": "https://www.youtube.com/watch?v=ybvUEb83jGI"
+          "title": "Parler de soi et de sa famille",
+          "content": "Exercices pour parler simplement de soi et des membres de sa famille.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=BLI6gI96qFM"
         },
         {
-          "title": "Comparer des poids ⚖️",
-          "content": "Savoir quel objet est plus lourd, une pomme 🍎 ou une banane 🍌.",
-          "type": "practice"
+          "title": "Rédiger des phrases courtes sur un sujet",
+          "content": "Écriture de phrases simples liées à la vie quotidienne.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=y8trQNgkVPk"
         },
         {
-          "title": "Mesurer des volumes 🥤",
-          "content": "Découvrir combien de liquide peut contenir un verre.",
-          "type": "explanation"
-        }
-      ]
-    },
-    {
-      "title": "Résolution de problèmes et logique 🤔🧠",
-      "content": "Apprendre à utiliser les maths pour résoudre des problèmes de la vie quotidienne.",
-      "type": "theory",
-      "subsections": [
-        {
-          "title": "Problèmes simples ➕➖",
-          "content": "Résoudre des situations comme : Si tu as 15 bonbons 🍬 et que tu en donnes 5, combien t'en reste-t-il ?",
-          "type": "exercise"
-        },
-        {
-          "title": "Développement de la logique 🧩",
-          "content": "Apprendre à réfléchir pour trouver la meilleure solution.",
-          "type": "explanation"
+          "title": "Petites conversations",
+          "content": "Pratique de dialogues simples avec phrases toutes faites.",
+          "type": "video",
+          "controller": "https://www.youtube.com/watch?v=ShHHXG2JZoc"
         }
       ]
     }

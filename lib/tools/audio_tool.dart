@@ -23,6 +23,7 @@ class MusicPlayer {
     }
   }
 
+
   Future<void> stop() async {
     await _player.pause();
   }

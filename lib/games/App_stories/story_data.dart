@@ -108,4 +108,39 @@ final List<Story> stories = [
     ],
   ),
 
+  Story(
+    title: 'مغامرات الأرنب الصغير',
+    thumbnail: 'assets/images/StoriesImages/StoriesCovers/LittleRabbit_cover.png',
+    pages: [
+      StoryPageData(
+        words: [
+          'في', 'غابة', 'كبيرة،', 'كان', 'هناك', 'أرنب', 'صغير', 'يحب', 'الاستكشاف.',
+          'كان', 'اسمه', 'رامي.'
+        ],
+        imageUrl: 'assets/images/StoriesImages/InsideStoriesImages/LittleRabbit_Explore_Story.png',
+        characterName: 'رامي',
+        funnyLine: 'رامي قفز على صخرة لكنه سقط بطريقة مضحكة!',
+      ),
+      StoryPageData(
+        words: [
+          'في', 'يومٍ', 'مشمس،', 'التقى', 'رامي', 'بصديقه', 'السنجاب', 'سامي،',
+          'وذهبا', 'للبحث', 'عن', 'الجوز', 'في', 'الغابة.'
+        ],
+        imageUrl: 'assets/images/StoriesImages/InsideStoriesImages/RabbitWithSquirrel_Story.png',
+        characterName: 'سامي',
+        funnyLine: 'سامي حاول تسلق شجرة بسرعة لكنه انزلق!',
+      ),
+      StoryPageData(
+        words: [
+          'معًا،', 'وجدوا', 'صندوقًا', 'قديمًا', 'مليئًا', 'بالجوز،',
+          'وفرحوا', 'بالمغامرة', 'الناجحة.'
+        ],
+        imageUrl: 'assets/images/StoriesImages/InsideStoriesImages/FoundNuts_Story.png',
+        characterName: 'رامي و سامي',
+        funnyLine: 'رامي أكل جوزة كبيرة وانفجر ضاحكًا!',
+      ),
+    ],
+  ),
+
+
 ];

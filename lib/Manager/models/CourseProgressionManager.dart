@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -241,5 +242,16 @@ class CourseProgressionManager extends ChangeNotifier {
     // TODO: remove total sections key if saved
 
     notifyListeners();
+  }
+
+
+  Future<void> loadFromJsonString(String jsonString) async {
+    try {
+      final data = jsonDecode(jsonString) as Map<String, dynamic>;
+      loadFromMap(data);
+    } catch (e) {
+      print('Error parsing JSON: $e');
+      // Handle error (e.g., fallback or reset)
+    }
   }
 }

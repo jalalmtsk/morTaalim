@@ -12,7 +12,9 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
     WidgetsBinding.instance.addObserver(this); // ✅ Observe lifecycle
     _loadSettings();
   }
+  final AudioPlayer _player = AudioPlayer();
 
+  AudioPlayer get audioPlayer => _player;
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused || state == AppLifecycleState.detached) {

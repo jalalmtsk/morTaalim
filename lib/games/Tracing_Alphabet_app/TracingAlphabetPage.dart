@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
 import '../../main.dart';
 import '../../tools/Ads_Manager.dart';
+import '../../tools/Reysable_Tools/Info_First_Intro_Info_Dialog.dart';
 
 class AlphabetTracingPage extends StatefulWidget {
   final String language;
@@ -52,20 +53,55 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> with SingleTi
       if (status == AnimationStatus.completed) _glowController.reverse();
       else if (status == AnimationStatus.dismissed) _glowController.forward();
     });
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => InfoDialog(
+          title: 'How to Play',
+          message:
+          'Trace each letter to earn 1 XP.\nCollect 10 XP to earn 1 Tolim token.',
+          lottieAssetPath: 'assets/animations/UI_Animations/WakiBot.json',
+          buttonText: 'Start',
+        ),
+      );
+    });
   }
 
   void _setupLetters() {
     switch (widget.language) {
       case 'arabic':
-        _letters = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'خ'];
+        _letters = ["ا", "ب", "ت", "ث", "ج", "ح", "خ", "د", "ذ", "ر", "ز", "س", "ش", "ص", "ض", "ط", "ظ", "ع", "غ", "ف", "ق", "ك", "ل", "م", "ن", "ه", "و", "ي"];
         _letterDetails = {
-          'ا': {'pronunciation': 'Alif', 'example': 'أسد (Asad) – Lion'},
-          'ب': {'pronunciation': 'Ba', 'example': 'بيت (Bayt) – House'},
-          'ت': {'pronunciation': 'Ta', 'example': 'تفاح (Tuffāḥ) – Apple'},
-          'ث': {'pronunciation': 'Tha', 'example': 'ثعلب (Tha‘lab) – Fox'},
-          'ج': {'pronunciation': 'Jim', 'example': 'جمل (Jamal) – Camel'},
-          'ح': {'pronunciation': 'Ha', 'example': 'حصان (Ḥiṣān) – Horse'},
-          'خ': {'pronunciation': 'Kha', 'example': 'خبز (Khubz) – Bread'},
+            'ا': {'pronunciation': 'Alif', 'example': 'أسد (Asad) – Lion'},
+            'ب': {'pronunciation': 'Ba', 'example': 'بيت (Bayt) – House'},
+            'ت': {'pronunciation': 'Ta', 'example': 'تفاح (Tuffāḥ) – Apple'},
+            'ث': {'pronunciation': 'Tha', 'example': 'ثعلب (Tha‘lab) – Fox'},
+            'ج': {'pronunciation': 'Jim', 'example': 'جمل (Jamal) – Camel'},
+            'ح': {'pronunciation': 'Ha', 'example': 'حصان (Ḥiṣān) – Horse'},
+            'خ': {'pronunciation': 'Kha', 'example': 'خبز (Khubz) – Bread'},
+            'د': {'pronunciation': 'Dal', 'example': 'دجاجة (Dajājah) – Chicken'},
+            'ذ': {'pronunciation': 'Dhal', 'example': 'ذهب (Dhahab) – Gold'},
+            'ر': {'pronunciation': 'Ra', 'example': 'رمان (Rummān) – Pomegranate'},
+            'ز': {'pronunciation': 'Zay', 'example': 'زيتون (Zaytūn) – Olive'},
+            'س': {'pronunciation': 'Sin', 'example': 'سمك (Samak) – Fish'},
+            'ش': {'pronunciation': 'Shin', 'example': 'شمس (Shams) – Sun'},
+            'ص': {'pronunciation': 'Sad', 'example': 'صقر (Ṣaqr) – Falcon'},
+            'ض': {'pronunciation': 'Dad', 'example': 'ضوء (Ḍawʼ) – Light'},
+            'ط': {'pronunciation': 'Taʼ', 'example': 'طائرة (Ṭāʼirah) – Airplane'},
+            'ظ': {'pronunciation': 'Zaʼ', 'example': 'ظرف (Ẓarf) – Envelope'},
+            'ع': {'pronunciation': 'Ayn', 'example': 'عنب (ʿInab) – Grapes'},
+            'غ': {'pronunciation': 'Ghayn', 'example': 'غزال (Ghazāl) – Gazelle'},
+            'ف': {'pronunciation': 'Fa', 'example': 'فيل (Fīl) – Elephant'},
+            'ق': {'pronunciation': 'Qaf', 'example': 'قلم (Qalam) – Pen'},
+            'ك': {'pronunciation': 'Kaf', 'example': 'كتاب (Kitāb) – Book'},
+            'ل': {'pronunciation': 'Lam', 'example': 'ليمون (Laymūn) – Lemon'},
+            'م': {'pronunciation': 'Mim', 'example': 'مدينة (Madīnah) – City'},
+            'ن': {'pronunciation': 'Nun', 'example': 'نمر (Namir) – Tiger'},
+            'هـ': {'pronunciation': 'Haʼ', 'example': 'هاتف (Hātif) – Phone'},
+            'و': {'pronunciation': 'Waw', 'example': 'وردة (Wardah) – Rose'},
+            'ي': {'pronunciation': 'Ya', 'example': 'يد (Yad) – Hand'}
         };
         break;
 
@@ -323,7 +359,7 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> with SingleTi
 
   void _giveTolimAndXP() {
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-    xpManager.addXP(2, context: context);
+    xpManager.addXP(1, context: context);
     setState(() {
       score += 1;
     });
@@ -363,10 +399,10 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> with SingleTi
 
     return Scaffold(
       body: Container(
+        height: double.infinity,
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
             colors: [
               Color(0xFFFFE0B2),
               Color(0xFFFFCCBC),
@@ -557,9 +593,19 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> with SingleTi
       ),
       bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _isBannerAdLoaded
           ? SafeArea(
-        child: SizedBox(
+        child: Container(
           height: _bannerAd!.size.height.toDouble(),
           width: _bannerAd!.size.width.toDouble(),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              colors: [
+                Color(0xFFFFE0B2),
+                Color(0xFFFFCCBC),
+                Color(0xFFFFAB91),
+              ],
+            ),
+          ),
           child: AdWidget(ad: _bannerAd!),
         ),
       )
