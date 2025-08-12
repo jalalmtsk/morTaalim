@@ -8,7 +8,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Authentification/BackUp/BackUpPage.dart';
 import 'package:mortaalim/Manager/Services/YoutubeProgressManager.dart';
-import 'package:mortaalim/PetAnimal.dart';
+import 'package:mortaalim/Pet/pet_home_page.dart';
 import 'package:mortaalim/PractiseGames/MemoryFlipGame/LevelSeletor.dart';
 import 'package:mortaalim/PractiseGames/MemoryFlipGame/MemoryFlip.dart';
 import 'package:mortaalim/tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
@@ -163,7 +163,7 @@ class _MyAppState extends State<MyApp> {
             'Profile': (context) => const ProfileSetupPage(),
 
 
-            'Shop': (context) => VirtualPetApp(),
+            'Shop': (context) => LevelSelectionPage(totalLevels: 40, unlockedLevel: 0),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

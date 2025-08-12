@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:mortaalim/Manager/Services/YoutubeProgressManager.dart';
 import 'package:mortaalim/Manager/models/CourseProgressionManager.dart';
+import 'package:mortaalim/Manager/models/InventoryPet.dart';
 
 import 'package:mortaalim/tools/StarCountPulse.dart';
 import 'package:mortaalim/tools/StarDeductionOverlay.dart';
@@ -50,7 +51,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   UserProfile userProfile = UserProfile();
   YoutubeProgressManager youtubeProgressManager = YoutubeProgressManager();
   CourseProgressionManager courseProgressionManager = CourseProgressionManager();
-
+  Inventory inventoryManager = Inventory();
   // Customazation
   CustomizationSettings customization = CustomizationSettings();
 
@@ -428,6 +429,60 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
+
+  //--------------------InvetoryPet Methods-----------------------------------
+
+  /// Add food and notify listeners
+  Future<void> addFood(int amount) async {
+    if (amount <= 0) return;
+    inventoryManager.food += amount;
+    await _saveData();
+    notifyListeners();
+  }
+
+  /// Spend food if possible; return true if success
+  Future<bool> spendFood(int amount) async {
+    if (amount <= 0 || amount > inventoryManager.food) return false;
+    inventoryManager.food -= amount;
+    await _saveData();
+    notifyListeners();
+    return true;
+  }
+
+  /// Add water and notify listeners
+  Future<void> addWater(int amount) async {
+    if (amount <= 0) return;
+    inventoryManager.water += amount;
+    await _saveData();
+    notifyListeners();
+  }
+
+  /// Spend water if possible; return true if success
+  Future<bool> spendWater(int amount) async {
+    if (amount <= 0 || amount > inventoryManager.water) return false;
+    inventoryManager.water -= amount;
+    await _saveData();
+    notifyListeners();
+    return true;
+  }
+
+  /// Add energy and notify listeners
+  Future<void> addEnergy(int amount) async {
+    if (amount <= 0) return;
+    inventoryManager.energy += amount;
+    await _saveData();
+    notifyListeners();
+  }
+
+  /// Spend energy if possible; return true if success
+  Future<bool> spendEnergy(int amount) async {
+    if (amount <= 0 || amount > inventoryManager.energy) return false;
+    inventoryManager.energy -= amount;
+    await _saveData();
+    notifyListeners();
+    return true;
+  }
+
   // ---------------- Reward & Banner methods -------------------
 
   void addTokenBanner(BuildContext context, int amount) {
@@ -717,7 +772,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     customization = CustomizationSettings.fromPrefs(prefs);
     courseProgressionManager = await CourseProgressionManager.fromPrefs(prefs);
     youtubeProgressManager = await YoutubeProgressManager.fromPrefs(prefs);
-
+    inventoryManager = await Inventory.fromPrefs(prefs);
     _adsEnabled = prefs.getBool('adsEnabled') ?? true;
 
     notifyListeners();
@@ -733,12 +788,13 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     await prefs.setStringList('unlockedCourses', _unlockedCourses);
     await prefs.setStringList('unlockedLanguages', _unlockedLanguages);
 
-
     await courseProgressionManager.saveToPrefs(prefs);
     // Personal info
     await userProfile.saveToPrefs(prefs);
     //Customazations
     await customization.saveToPrefs(prefs);
+
+    await inventoryManager.saveToPrefs(prefs);
     // YoutubeProgressManager
     youtubeProgressManager.saveToPrefs(prefs);
   }
@@ -773,6 +829,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
         ...customization.toMap(), // <-- include AVATAR/ BANNER
         ...learningPreferences.toMap(),
         ...courseProgressionManager.toMap(),
+        ...inventoryManager.toMap(),
         ...youtubeProgressManager.toMap(),
 
       }, SetOptions(merge: true));
@@ -806,6 +863,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
       ...userProfile.toMap(),
       ...customization.toMap(),
       ...courseProgressionManager.toMap(),
+      ...inventoryManager.toMap(),
       ...youtubeProgressManager.toMap(),
 
       "xp": _xp,
@@ -843,6 +901,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
 
     customization.loadFromMap(data);
     courseProgressionManager.loadFromMap(data);
+    inventoryManager.loadFromMap(data);
     youtubeProgressManager.loadFromMap(data);
 
     _adsEnabled = data["adsEnabled"] ?? _adsEnabled;

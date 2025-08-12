@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vibration/vibration.dart';
 
 class TasbihApp extends StatefulWidget {
   const TasbihApp({super.key});
@@ -119,9 +118,6 @@ class _TasbihHomePageState extends State<TasbihHomePage>
       });
       _controller.forward(from: 0);
 
-      if (await Vibration.hasVibrator() ?? false) {
-        Vibration.vibrate(duration: 20);
-      }
     }
     if (_count == _goal) {
       _celebrate();

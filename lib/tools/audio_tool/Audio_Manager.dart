@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vibration/vibration.dart';
 
 class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
 
@@ -239,11 +238,6 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
-  Future<void> triggerHaptic() async {
-    if (_hapticsEnabled && await Vibration.hasVibrator() ?? false) {
-      Vibration.vibrate(duration: 50);
-    }
-  }
 
   Future<void> toggleButtonMute() async {
     _isButtonMuted = !_isButtonMuted;
