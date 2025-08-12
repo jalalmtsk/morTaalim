@@ -182,32 +182,33 @@ class CourseProgressionManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Add XP and award badges if thresholds met
+  // Add LP and award badges if thresholds met
   void addCourseXp(int amount) {
     courseXp += amount;
 
-    // XP thresholds mapped to badge names
+    // LP thresholds mapped to badge names
     final badgeLevels = {
-      10: 'starter',
-      30: 'point_collector',
-      60: 'master',
-      100: 'expert',
-      150: 'veteran',
-      200: 'elite',
-      250: 'champion',
-      300: 'legend',
-      350: 'mythic',
-      400: 'grandmaster',
-      450: 'ultra',
-      500: 'immortal',
-      600: 'divine',
-      700: 'supreme',
-      800: 'celestial',
-      900: 'transcendent',
-      1200: 'eternal',
-      1500: 'infinite',
-      2000: 'omniscient',
+      0: 'beginnerReader',
+      30: 'curiousMind',
+      60: 'bookLover',
+      100: 'knowledgeSeeker',
+      150: 'quizExpert',
+      200: 'studyMaster',
+      250: 'truthDiscoverer',
+      300: 'intelligent',
+      350: 'theorist',
+      400: 'masterOfLogic',
+      450: 'keeperOfWisdom',
+      500: 'ideaArchitect',
+      600: 'thoughtLeader',
+      700: 'mindMentor',
+      800: 'wizardOfWisdom',
+      900: 'learningLegend',
+      1200: 'sageOfTruth',
+      1500: 'greatScholar',
+      2000: 'pinnacleOfKnowledge',
     };
+
 
     // Award all eligible badges
     badgeLevels.forEach((xpRequired, badgeName) {

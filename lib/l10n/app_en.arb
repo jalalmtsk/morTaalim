@@ -244,9 +244,28 @@
   "chooseALanguage": "Choose A Language",
   "allCorrectAnwsersEqualOneTolim": "All correct answers equal one Tolim",
   "youHaveNoHeartsLeftWhatWouldYouLikeToDo": "You have no hearts left. What would you like to do?",
-   "science": "Science"
+   "science": "Science",
 
 
+  "badges_beginnerReader": "beginner reader",
+  "badges_curiousMind": "curious mind",
+  "badges_bookLover": "book lover",
+  "badges_knowledgeSeeker": "knowledge seeker",
+  "badges_quizExpert": "quiz expert",
+  "badges_studyMaster": "study master",
+  "badges_truthDiscoverer": "truth discoverer",
+  "badges_intelligent": "intelligent",
+  "badges_theorist": "theorist",
+  "badges_masterOfLogic": "master of logic",
+  "badges_keeperOfWisdom": "keeper of wisdom",
+  "badges_ideaArchitect": "idea architect",
+  "badges_thoughtLeader": "thought leader",
+  "badges_mindMentor": "mind mentor",
+  "badges_wizardOfWisdom": "wizard of wisdom",
+  "badges_learningLegend": "learning legend",
+  "badges_sageOfTruth": "sage of truth",
+  "badges_greatScholar": "great scholar",
+  "badges_pinnacleOfKnowledge": "pinnacle of knowledge"
 
 
 }

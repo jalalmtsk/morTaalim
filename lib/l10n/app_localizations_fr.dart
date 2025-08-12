@@ -619,4 +619,61 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get science => 'Science';
+
+  @override
+  String get badges_beginnerReader => 'beginner reader';
+
+  @override
+  String get badges_curiousMind => 'curious mind';
+
+  @override
+  String get badges_bookLover => 'book lover';
+
+  @override
+  String get badges_knowledgeSeeker => 'knowledge seeker';
+
+  @override
+  String get badges_quizExpert => 'quiz expert';
+
+  @override
+  String get badges_studyMaster => 'study master';
+
+  @override
+  String get badges_truthDiscoverer => 'truth discoverer';
+
+  @override
+  String get badges_intelligent => 'intelligent';
+
+  @override
+  String get badges_theorist => 'theorist';
+
+  @override
+  String get badges_masterOfLogic => 'master of logic';
+
+  @override
+  String get badges_keeperOfWisdom => 'keeper of wisdom';
+
+  @override
+  String get badges_ideaArchitect => 'idea architect';
+
+  @override
+  String get badges_thoughtLeader => 'thought leader';
+
+  @override
+  String get badges_mindMentor => 'mind mentor';
+
+  @override
+  String get badges_wizardOfWisdom => 'wizard of wisdom';
+
+  @override
+  String get badges_learningLegend => 'learning legend';
+
+  @override
+  String get badges_sageOfTruth => 'sage of truth';
+
+  @override
+  String get badges_greatScholar => 'great scholar';
+
+  @override
+  String get badges_pinnacleOfKnowledge => 'pinnacle of knowledge';
 }

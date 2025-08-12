@@ -238,8 +238,25 @@
   "chooseALanguage": "اختر لغة",
   "allCorrectAnwsersEqualOneTolim": "كل الإجابات الصحيحة تساوي توليم واحد",
   "youHaveNoHeartsLeftWhatWouldYouLikeToDo": "لم يعد لديك أي قلوب. ماذا تريد أن تفعل؟",
-  "science": "العلوم"
+  "science": "العلوم",
 
-
-
+  "badges_beginnerReader": "قارئ مبتدئ",
+  "badges_curiousMind": "عقل فضولي",
+  "badges_bookLover": "محب للكتب",
+  "badges_knowledgeSeeker": "باحث عن المعرفة",
+  "badges_quizExpert": "خبير الاختبارات",
+  "badges_studyMaster": "ماهر في الدراسة",
+  "badges_truthDiscoverer": "مكتشف الحقائق",
+  "badges_intelligent": "ذكي",
+  "badges_theorist": "منظر",
+  "badges_masterOfLogic": "سيد المنطق",
+  "badges_keeperOfWisdom": "حافظ الحكمة",
+  "badges_ideaArchitect": "مهندس الأفكار",
+  "badges_thoughtLeader": "قائد الفكر",
+  "badges_mindMentor": "مرشد العقل",
+  "badges_wizardOfWisdom": "ساحر الحكمة",
+  "badges_learningLegend": "أسطورة التعلم",
+  "badges_sageOfTruth": "حكيم الحقيقة",
+  "badges_greatScholar": "عالِم كبير",
+  "badges_pinnacleOfKnowledge": "قمة المعرفة"
 }

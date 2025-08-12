@@ -15,7 +15,6 @@ class SettingsDialog extends StatefulWidget {
   State<SettingsDialog> createState() => _SettingsDialogState();
 }
 
-
 class _SettingsDialogState extends State<SettingsDialog> {
   bool bgExpanded = true;
   bool sfxExpanded = false;

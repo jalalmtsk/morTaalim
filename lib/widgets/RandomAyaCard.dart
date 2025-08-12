@@ -5,7 +5,7 @@ import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 
-import '../../../tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
+import '../tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
 
 class ExpandableAyatCard extends StatefulWidget {
   const ExpandableAyatCard({Key? key}) : super(key: key);
@@ -23,7 +23,7 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
   final _ayatList = [
     {
       'text':
-      'اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ * خَلَقَ الْإِنْسَانَ مِنْ عَلَقٍ * اقْرَأْ وَرَبُّكَ الْأَكْرَمُ * الَّذِي عَلَّمَ بِالْقَلَمِ * عَلَّمَ الْإِنْسَانَ مَا لَمْ يَعْلَمْ',
+      'اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَْ',
       'surah': 'العلق - 1-5',
       'audio': 'assets/audios/quranSourate/AlAlaq1-5.mp3',
       'tafsir':
@@ -43,7 +43,7 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
     },
     {
       'text':
-      'يَرْفَعِ اللَّهُ الَّذِينَ آمَنُوا مِنكُمْ وَالَّذِينَ أُوتُوا الْعِلْمَ دَرَجَاتٍ',
+      'يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا قِيلَ لَكُمْ تَفَسَّحُوا فِي الْمَجَالِسِ فَافْسَحُوا يَفْسَحِ اللَّهُ لَكُمْ ۖ وَإِذَا قِيلَ انشُزُوا فَانشُزُوا يَرْفَعِ اللَّهُ الَّذِينَ آمَنُوا مِنكُمْ وَالَّذِينَ أُوتُوا الْعِلْمَ دَرَجَاتٍ ۚ وَاللَّهُ بِمَا تَعْمَلُونَ خَبِيرٌ',
       'surah': 'المجادلة - 11',
       'audio': 'assets/audios/quranSourate/AlMujadila11.mp3',
       'tafsir':
@@ -53,13 +53,9 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
     },
     {
       'text':
-      'فَلا تَقْرَبُوا مَالَ الْيَتِيمِ إِلَّا بِالَّتِي هِيَ أَحْسَنُ',
-      'surah': 'النساء - 6',
+      'وَجَعَلْنَا السَّمَاءَ سَقْفًا مَّحْفُوظًا وَهُمْ عَنْ آيَاتِهَا مُعْرِضُونَ',
+      'surah': 'سورة الأنبياء - 32',
       'audio': 'assets/audios/quranSourate/AnNisa6.mp3',
-      'tafsir':
-      'الأمر بالإنصاف في التعامل مع مال اليتيم، مما يدل على رعاية حقوق الأطفال وحمايتهم.',
-      'translation':
-      'And do not approach the orphan’s property except in a way that is best.'
     },
     {
       'text':

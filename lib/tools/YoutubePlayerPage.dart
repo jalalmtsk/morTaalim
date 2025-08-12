@@ -25,6 +25,7 @@ class _YouTubeSectionPlayerState extends State<YouTubeSectionPlayer>
     with SingleTickerProviderStateMixin {
   YoutubePlayerController? _ytController;
   late AnimationController _popController;
+  late ExperienceManager _xpManager; // Store reference here
 
   bool _isLeaving = false;
   bool _hasFinished = false;
@@ -45,15 +46,17 @@ class _YouTubeSectionPlayerState extends State<YouTubeSectionPlayer>
       upperBound: 1.2,
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPlayer());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _xpManager = Provider.of<ExperienceManager>(context, listen: false);
+      _initPlayer();
+    });
   }
 
   void _initPlayer() {
     _videoId = YoutubePlayer.convertUrlToId(widget.videoUrl);
     if (_videoId == null) return;
 
-    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-    final progressManager = xpManager.youtubeProgressManager;
+    final progressManager = _xpManager.youtubeProgressManager;
 
     setState(() {
       _hasFinished = progressManager.isVideoCompleted(_videoId!);
@@ -67,8 +70,7 @@ class _YouTubeSectionPlayerState extends State<YouTubeSectionPlayer>
       )..addListener(_ytListener);
     });
 
-    // Listen for changes in progressManager if needed
-    xpManager.addListener(_onProgressChanged);
+    _xpManager.addListener(_onProgressChanged);
   }
 
   void _ytListener() {
@@ -86,7 +88,7 @@ class _YouTubeSectionPlayerState extends State<YouTubeSectionPlayer>
       _onVideoFinished();
     }
 
-    // Optional: Prevent fullscreen mode
+    // Prevent fullscreen
     if (value.isFullScreen) {
       _ytController!.toggleFullScreenMode();
     }
@@ -94,8 +96,7 @@ class _YouTubeSectionPlayerState extends State<YouTubeSectionPlayer>
 
   void _onProgressChanged() {
     if (_videoId == null) return;
-    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-    final isCompleted = xpManager.youtubeProgressManager.isVideoCompleted(_videoId!);
+    final isCompleted = _xpManager.youtubeProgressManager.isVideoCompleted(_videoId!);
     if (isCompleted != _hasFinished) {
       setState(() => _hasFinished = isCompleted);
     }
@@ -104,9 +105,7 @@ class _YouTubeSectionPlayerState extends State<YouTubeSectionPlayer>
   @override
   void dispose() {
     _ytController?.removeListener(_ytListener);
-    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-    xpManager.removeListener(_onProgressChanged);
-
+    _xpManager.removeListener(_onProgressChanged); // Using cached reference
     _ytController?.dispose();
     _popController.dispose();
     super.dispose();
@@ -123,10 +122,8 @@ class _YouTubeSectionPlayerState extends State<YouTubeSectionPlayer>
     if (_hasFinished || _videoId == null) return;
 
     setState(() => _hasFinished = true);
-    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-
-    xpManager.addXP(context: context, 2);
-    xpManager.markVideoCompleted(videoId: _videoId!);
+    _xpManager.addXP(context: context, 2);
+    _xpManager.markVideoCompleted(videoId: _videoId!);
     widget.onVideoFinished?.call();
 
     _popController.forward(from: 0.7);

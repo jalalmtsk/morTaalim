@@ -24,125 +24,154 @@ class CourseDetailPage extends StatelessWidget {
       backgroundColor: Colors.orange.shade50,
       body: CustomScrollView(
         slivers: [
+          /// HEADER
           SliverAppBar(
-            expandedHeight: 280,
+            expandedHeight: 260,
             pinned: true,
             backgroundColor: Colors.orange,
             flexibleSpace: FlexibleSpaceBar(
               background: Stack(
                 fit: StackFit.expand,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 120.0, right: 20, left: 20),
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text(
-                        section.title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 30,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black45,
-                              blurRadius: 4,
-                              offset: Offset(1, 1),
-                            )
-                          ],
+                  // Background overlay
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.orange.shade300, Colors.orange.shade700],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                  ),
+
+                  // Course title card
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 60),
+                      child: Material(
+                        elevation: 6,
+                        borderRadius: BorderRadius.circular(16),
+                        color: Colors.white,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            section.title,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 26,
+                              color: Colors.black87,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
 
+                  // Bot
                   Align(
                     alignment: Alignment.bottomCenter,
-                    child: BotWithGreeting()
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: BotWithGreeting(),
+                    ),
                   ),
                 ],
               ),
             ),
             actions: [
               IconButton(
-                icon: const Icon(Icons.settings, color: Colors.black),
+                icon: const Icon(Icons.settings, color: Colors.white),
                 onPressed: () {
                   audioManager.playEventSound('clickButton');
                   showDialog(
                     barrierDismissible: false,
                     context: context,
-                    barrierColor: Colors.black.withValues(alpha: 0.3),
+                    barrierColor: Colors.black.withOpacity(0.3),
                     builder: (BuildContext context) {
                       return const SettingsDialog();
                     },
                   );
                 },
               ),
-              ]
+            ],
           ),
 
-          // Subsections
+          /// ACTIVITIES SECTION
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
+              child: Text(
+                "Activities",
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[800],
+                ),
+              ),
+            ),
+          ),
+
           SliverPadding(
-            padding: const EdgeInsets.all(12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
                     (ctx, i) {
                   final sub = section.subsections[i];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => CourseNodePage(node: sub)),
-                      );
-                    },
-                    child: AnimatedContainer(
-                      duration: const Duration(milliseconds: 250),
-                      curve: Curves.easeInOut,
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.primaries[i % Colors.primaries.length].shade100,
-                        borderRadius: BorderRadius.circular(20),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 6,
-                            offset: const Offset(0, 3),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 28,
-                            child: Icon(Icons.disc_full_rounded,
-                                size: 36,
-                                color: Colors.primaries[i % Colors.primaries.length]),
-                          ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  sub['title'] ?? 'Activity',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  sub['description'] ?? '',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey[700],
-                                  ),
-                                ),
-                              ],
+                  return Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    margin: const EdgeInsets.symmetric(vertical: 8),
+                    elevation: 4,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(16),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => CourseNodePage(node: sub)),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: Colors.primaries[i % Colors.primaries.length].shade100,
+                              radius: 28,
+                              child: Icon(
+                                Icons.menu_book,
+                                size: 32,
+                                color: Colors.primaries[i % Colors.primaries.length],
+                              ),
                             ),
-                          ),
-                        ],
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    sub['title'] ?? 'Activity',
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    sub['description'] ?? '',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.grey[700],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.grey),
+                          ],
+                        ),
                       ),
                     ),
                   );

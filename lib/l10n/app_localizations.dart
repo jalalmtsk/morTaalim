@@ -1322,6 +1322,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Science'**
   String get science;
+
+  /// No description provided for @badges_beginnerReader.
+  ///
+  /// In en, this message translates to:
+  /// **'beginner reader'**
+  String get badges_beginnerReader;
+
+  /// No description provided for @badges_curiousMind.
+  ///
+  /// In en, this message translates to:
+  /// **'curious mind'**
+  String get badges_curiousMind;
+
+  /// No description provided for @badges_bookLover.
+  ///
+  /// In en, this message translates to:
+  /// **'book lover'**
+  String get badges_bookLover;
+
+  /// No description provided for @badges_knowledgeSeeker.
+  ///
+  /// In en, this message translates to:
+  /// **'knowledge seeker'**
+  String get badges_knowledgeSeeker;
+
+  /// No description provided for @badges_quizExpert.
+  ///
+  /// In en, this message translates to:
+  /// **'quiz expert'**
+  String get badges_quizExpert;
+
+  /// No description provided for @badges_studyMaster.
+  ///
+  /// In en, this message translates to:
+  /// **'study master'**
+  String get badges_studyMaster;
+
+  /// No description provided for @badges_truthDiscoverer.
+  ///
+  /// In en, this message translates to:
+  /// **'truth discoverer'**
+  String get badges_truthDiscoverer;
+
+  /// No description provided for @badges_intelligent.
+  ///
+  /// In en, this message translates to:
+  /// **'intelligent'**
+  String get badges_intelligent;
+
+  /// No description provided for @badges_theorist.
+  ///
+  /// In en, this message translates to:
+  /// **'theorist'**
+  String get badges_theorist;
+
+  /// No description provided for @badges_masterOfLogic.
+  ///
+  /// In en, this message translates to:
+  /// **'master of logic'**
+  String get badges_masterOfLogic;
+
+  /// No description provided for @badges_keeperOfWisdom.
+  ///
+  /// In en, this message translates to:
+  /// **'keeper of wisdom'**
+  String get badges_keeperOfWisdom;
+
+  /// No description provided for @badges_ideaArchitect.
+  ///
+  /// In en, this message translates to:
+  /// **'idea architect'**
+  String get badges_ideaArchitect;
+
+  /// No description provided for @badges_thoughtLeader.
+  ///
+  /// In en, this message translates to:
+  /// **'thought leader'**
+  String get badges_thoughtLeader;
+
+  /// No description provided for @badges_mindMentor.
+  ///
+  /// In en, this message translates to:
+  /// **'mind mentor'**
+  String get badges_mindMentor;
+
+  /// No description provided for @badges_wizardOfWisdom.
+  ///
+  /// In en, this message translates to:
+  /// **'wizard of wisdom'**
+  String get badges_wizardOfWisdom;
+
+  /// No description provided for @badges_learningLegend.
+  ///
+  /// In en, this message translates to:
+  /// **'learning legend'**
+  String get badges_learningLegend;
+
+  /// No description provided for @badges_sageOfTruth.
+  ///
+  /// In en, this message translates to:
+  /// **'sage of truth'**
+  String get badges_sageOfTruth;
+
+  /// No description provided for @badges_greatScholar.
+  ///
+  /// In en, this message translates to:
+  /// **'great scholar'**
+  String get badges_greatScholar;
+
+  /// No description provided for @badges_pinnacleOfKnowledge.
+  ///
+  /// In en, this message translates to:
+  /// **'pinnacle of knowledge'**
+  String get badges_pinnacleOfKnowledge;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

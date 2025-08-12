@@ -228,6 +228,28 @@
   "chooseALanguage": "Wähle eine Sprache",
   "allCorrectAnwsersEqualOneTolim": "Alle richtigen Antworten ergeben einen Tolim",
   "youHaveNoHeartsLeftWhatWouldYouLikeToDo": "Du hast keine Leben mehr. Was möchtest du tun?",
-  "science_de": "Wissenschaft"
+  "science_de": "Wissenschaft",
+
+
+  "badges_beginnerReader": "Anfängerleser",
+  "badges_curiousMind": "neugieriger Geist",
+  "badges_bookLover": "Bücherliebhaber",
+  "badges_knowledgeSeeker": "Wissenssucher",
+  "badges_quizExpert": "Quizexperte",
+  "badges_studyMaster": "Studienmeister",
+  "badges_truthDiscoverer": "Wahrheitsentdecker",
+  "badges_intelligent": "intelligent",
+  "badges_theorist": "Theoretiker",
+  "badges_masterOfLogic": "Meister der Logik",
+  "badges_keeperOfWisdom": "Weisheitsbewahrer",
+  "badges_ideaArchitect": "Ideenarchitekt",
+  "badges_thoughtLeader": "Vordenker",
+  "badges_mindMentor": "Mentor des Geistes",
+  "badges_wizardOfWisdom": "Weisheitszauberer",
+  "badges_learningLegend": "Lernlegende",
+  "badges_sageOfTruth": "Weiser der Wahrheit",
+  "badges_greatScholar": "Großer Gelehrter",
+  "badges_pinnacleOfKnowledge": "Gipfel des Wissens"
+
 
 }

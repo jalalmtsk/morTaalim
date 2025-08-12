@@ -53,12 +53,12 @@ class ProgressCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    'Your Journey',
+                    'Course Progression',
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 6),
                   Text(
-                    'XP: $xp  •  Badges: $badges',
+                    'LP: $xp  •  Badges: $badges',
                     style: TextStyle(color: Colors.grey.shade700),
                   ),
                   const SizedBox(height: 8),

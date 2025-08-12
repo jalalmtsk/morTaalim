@@ -13,7 +13,9 @@ import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 
 import '../../l10n/app_localizations.dart';
+import '../ManagerTools/CourseBadge_Banner.dart';
 import '../XpSystem.dart';
+import '../main.dart';
 import 'HomeCourse_Tools/CoursedetailPage.dart';
 import 'HomeCourse_Tools/Widgets/BadgeChip.dart';
 import 'HomeCourse_Tools/Widgets/MascotBubble.dart';
@@ -69,6 +71,8 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
   int _currentPage = 0;
   bool _muted = false;
 
+  String? _recentlyUnlockedBadge;
+
   @override
   void initState() {
     super.initState();
@@ -111,7 +115,7 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
   // Use course-specific completed sections and points
   Set<int> get completed => widget.experienceManager.courseProgressionManager.getCompletedSections(widget.courseId);
   Map<int, int> get sectionCoursePoints => widget.experienceManager.courseProgressionManager.getSectionPoints(widget.courseId);
-  Set<String> get badges => widget.experienceManager.courseProgressionManager.badges;
+  Set<String> get badges => widget.experienceManager.courseProgressionManager.getBadges();
   int get courseXp => widget.experienceManager.courseProgressionManager.courseXp;
 
   int _awardCoursePointsForSection(int subsectionCount) {
@@ -126,6 +130,8 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
       return;
     }
 
+    final beforeBadges = Set<String>.from(badges);
+
     final subsectionCount = sections[index].subsections.length;
     await widget.experienceManager.courseProgressionManager.completeSection(
       widget.courseId,
@@ -138,7 +144,20 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
     _confetti.play();
     final points = _awardCoursePointsForSection(subsectionCount);
     _showCompletionModal(index, points, points * 5);
+
+    // Check for newly unlocked badge
+    final afterBadges = Set<String>.from(badges);
+    final newBadges = afterBadges.difference(beforeBadges);
+    if (newBadges.isNotEmpty) {
+      setState(() {
+        _recentlyUnlockedBadge = newBadges.first;
+      });
+      Future.delayed(const Duration(seconds: 4), () {
+        setState(() => _recentlyUnlockedBadge = null);
+      });
+    }
   }
+
 
   Future<void> _openSection(int index) async {
     final section = sections[index];
@@ -171,7 +190,7 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
               decoration: BoxDecoration(
                 gradient: LinearGradient(colors: [Colors.orange.shade100, Colors.white]),
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [BoxShadow(color: Colors.black26.withOpacity(0.08), blurRadius: 12)],
+                boxShadow: [BoxShadow(color: Colors.black26.withValues(alpha: 0.08), blurRadius: 12)],
               ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -290,11 +309,15 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                   Text("Choose" ?? 'Choose a section', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                   const Spacer(),
                   IconButton(
-                    onPressed: () => _showSnack('Tip: Tap a card to open activities.'),
+                    onPressed: () {
+                      _resetProgression();
+                      _showSnack('Tip: Tap a card to open activities.');
+                    },
                     icon: const Icon(Icons.info_outline),
                   )
                 ]),
               ),
+
 
               const SizedBox(height: 8),
 
@@ -331,7 +354,11 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
               ),
 
               const SizedBox(height: 10),
-
+              if (_recentlyUnlockedBadge != null)
+                BadgeUnlockBanner(
+                  badgeName: _recentlyUnlockedBadge!,
+                  onClose: () => setState(() => _recentlyUnlockedBadge = null),
+                ),
               SizedBox(
                 height: 86,
                 child: ListView(
@@ -339,12 +366,43 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                   scrollDirection: Axis.horizontal,
                   children: [
                     const SizedBox(width: 6),
-                    BadgeChip(title: 'Starter', unlocked: badges.contains('starter')),
+                    BadgeChip(title: tr(context).badges_beginnerReader, unlocked: badges.contains('beginnerReader')),
                     const SizedBox(width: 8),
-                    BadgeChip(title: 'Point Collector', unlocked: badges.contains('point_collector')),
+                    BadgeChip(title: tr(context).badges_curiousMind, unlocked: badges.contains('curiousMind')),
                     const SizedBox(width: 8),
-                    BadgeChip(title: 'Master Learner', unlocked: badges.contains('master')),
+                    BadgeChip(title: tr(context).badges_bookLover, unlocked: badges.contains('bookLover')),
                     const SizedBox(width: 6),
+                    BadgeChip(title: tr(context).badges_knowledgeSeeker, unlocked: badges.contains('knowledgeSeeker')),
+                    const SizedBox(width: 8),
+                    BadgeChip(title: tr(context).badges_quizExpert, unlocked: badges.contains('quizExpert')),
+                    const SizedBox(width: 8),
+                    BadgeChip(title: tr(context).badges_studyMaster, unlocked: badges.contains('studyMaster')),
+                    const SizedBox(width: 6),
+                    BadgeChip(title: tr(context).badges_truthDiscoverer, unlocked: badges.contains('truthDiscoverer')),
+                    const SizedBox(width: 8),
+                    BadgeChip(title: tr(context).badges_intelligent, unlocked: badges.contains('intelligent')),
+                    const SizedBox(width: 8),
+                    BadgeChip(title: tr(context).badges_theorist, unlocked: badges.contains('theorist')),
+                    const SizedBox(width: 6),
+                    BadgeChip(title: tr(context).badges_masterOfLogic, unlocked: badges.contains('masterOfLogic')),
+                    const SizedBox(width: 8),
+                    BadgeChip(title: tr(context).badges_keeperOfWisdom, unlocked: badges.contains('keeperOfWisdom')),
+                    const SizedBox(width: 8),
+                    BadgeChip(title: tr(context).badges_ideaArchitect, unlocked: badges.contains('ideaArchitect')),
+                    const SizedBox(width: 6),
+                    BadgeChip(title: tr(context).badges_thoughtLeader, unlocked: badges.contains('thoughtLeader')),
+                    const SizedBox(width: 8),
+                    BadgeChip(title: tr(context).badges_mindMentor, unlocked: badges.contains('mindMentor')),
+                    const SizedBox(width: 8),
+                    BadgeChip(title: tr(context).badges_wizardOfWisdom, unlocked: badges.contains('wizardOfWisdom')),
+                    const SizedBox(width: 6),
+                    BadgeChip(title: tr(context).badges_learningLegend, unlocked: badges.contains('learningLegend')),
+                    const SizedBox(width: 8),
+                    BadgeChip(title: tr(context).badges_sageOfTruth, unlocked: badges.contains('sageOfTruth')),
+                    const SizedBox(width: 8),
+                    BadgeChip(title: tr(context).badges_greatScholar, unlocked: badges.contains('greatScholar')),
+                    const SizedBox(width: 6),
+                    BadgeChip(title: tr(context).badges_pinnacleOfKnowledge, unlocked: badges.contains('pinnacleOfKnowledge')),
                   ],
                 ),
               ),
