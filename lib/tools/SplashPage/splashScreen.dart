@@ -138,7 +138,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   }
 
   Future<void> _preloadAssets() async {
-    await precacheImage(const AssetImage('assets/icons/app_icon.png'), context);
     await rootBundle.load('assets/audios/SplashScreen_Audio/openingZoom.mp3');
     await rootBundle.load('assets/audios/UI_Audio/SFX_Audio/CinematicStart_SFX.mp3');
     await rootBundle.load('assets/audios/AppLogoSound.mp3');

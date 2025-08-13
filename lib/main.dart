@@ -162,8 +162,7 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const ProfileSetupPage(),
 
-
-            'Shop': (context) => LevelSelectionPage(totalLevels: 40, unlockedLevel: 0),
+            'Shop': (context) => PetHomePage(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

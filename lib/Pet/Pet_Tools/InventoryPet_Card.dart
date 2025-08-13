@@ -15,43 +15,37 @@ class InventoryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      elevation: 6,
+      elevation: 1,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(8),
       ),
+      margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       color: Colors.white,
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 25),
+        padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildStatItem(Icons.restaurant, "Food", foodLeft, Colors.orange),
+            _buildMiniItem("🍎", foodLeft, Colors.redAccent),
             _buildDivider(),
-            _buildStatItem(Icons.water_drop, "Water", waterLeft, Colors.blue),
+            _buildMiniItem("💧", waterLeft, Colors.blueAccent),
             _buildDivider(),
-            _buildStatItem(Icons.sports_esports, "Energy", energyLeft, Colors.green),
+            _buildMiniItem("⚡", energyLeft, Colors.greenAccent),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildStatItem(IconData icon, String label, int value, Color color) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+  Widget _buildMiniItem(String emoji, int value, Color color) {
+    return Row(
       children: [
-        Icon(icon, size: 24, color: color),
-        const SizedBox(height: 2),
-        Text(label,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[700],
-            )),
-        const SizedBox(height: 2),
+        Text(emoji, style: const TextStyle(fontSize: 16)),
+        const SizedBox(width: 3),
         Text(
           "$value",
           style: TextStyle(
-            fontSize: 20,
+            fontSize: 14,
             fontWeight: FontWeight.bold,
             color: color,
           ),
@@ -62,7 +56,7 @@ class InventoryCard extends StatelessWidget {
 
   Widget _buildDivider() {
     return Container(
-      height: 10,
+      height: 14,
       width: 1,
       color: Colors.grey[300],
     );

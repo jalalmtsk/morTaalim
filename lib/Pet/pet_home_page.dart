@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mortaalim/Pet/pet_widget.dart';
 import 'package:mortaalim/XpSystem.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
@@ -8,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Pet_Tools/InventoryPet_Card.dart';
+import 'Pet_Tools/PetStatProgress.dart';
 
 class PetHomePage extends StatefulWidget {
   const PetHomePage({super.key});
@@ -19,9 +19,16 @@ class PetHomePage extends StatefulWidget {
 class _PetHomePageState extends State<PetHomePage>
     with SingleTickerProviderStateMixin {
   int _level = 1;
+
+  // Current round stats
   int _feed = 0;
   int _water = 0;
   int _play = 0;
+
+  // Permanent progress counters
+  int _feedProgress = 0;
+  int _waterProgress = 0;
+  int _playProgress = 0;
 
   bool _isEvolving = false;
   int _evolveSecondsLeft = 0;
@@ -32,7 +39,11 @@ class _PetHomePageState extends State<PetHomePage>
   late AnimationController _animationController;
   late SharedPreferences prefs;
 
-  static const int maxStat = 10;
+  // Level-up requirement
+  int get requiredStat => 4; // Fixed per your example (12/12)
+
+  // Max stat per action
+  int get actionMaxStat => 5;
 
   @override
   void initState() {
@@ -63,6 +74,11 @@ class _PetHomePageState extends State<PetHomePage>
       _feed = prefs.getInt('feed') ?? 0;
       _water = prefs.getInt('water') ?? 0;
       _play = prefs.getInt('play') ?? 0;
+
+      _feedProgress = prefs.getInt('feedProgress') ?? 0;
+      _waterProgress = prefs.getInt('waterProgress') ?? 0;
+      _playProgress = prefs.getInt('playProgress') ?? 0;
+
       _isEvolving = prefs.getBool('isEvolving') ?? false;
       _evolveSecondsLeft = prefs.getInt('evolveSecondsLeft') ?? 0;
 
@@ -77,23 +93,28 @@ class _PetHomePageState extends State<PetHomePage>
     await prefs.setInt('feed', _feed);
     await prefs.setInt('water', _water);
     await prefs.setInt('play', _play);
+
+    await prefs.setInt('feedProgress', _feedProgress);
+    await prefs.setInt('waterProgress', _waterProgress);
+    await prefs.setInt('playProgress', _playProgress);
+
     await prefs.setBool('isEvolving', _isEvolving);
     await prefs.setInt('evolveSecondsLeft', _evolveSecondsLeft);
   }
 
   void _checkLevelUp() {
     if (!_isEvolving &&
-        _feed == maxStat &&
-        _water == maxStat &&
-        _play == maxStat) {
+        _feedProgress >= requiredStat &&
+        _waterProgress >= requiredStat &&
+        _playProgress >= requiredStat) {
       if (_level % 5 == 0) {
         _checkEvolutionStart();
       } else {
         setState(() {
           _level++;
-          _feed = 0;
-          _water = 0;
-          _play = 0;
+          _feedProgress = 0;
+          _waterProgress = 0;
+          _playProgress = 0;
         });
         _savePetState();
       }
@@ -105,9 +126,9 @@ class _PetHomePageState extends State<PetHomePage>
     _decayTimer = Timer.periodic(const Duration(seconds: 10), (timer) {
       if (!_isEvolving) {
         setState(() {
-          _feed = (_feed - 1).clamp(0, maxStat);
-          _water = (_water - 1).clamp(0, maxStat);
-          _play = (_play - 1).clamp(0, maxStat);
+          _feed = (_feed - 1).clamp(0, actionMaxStat);
+          _water = (_water - 1).clamp(0, actionMaxStat);
+          _play = (_play - 1).clamp(0, actionMaxStat);
         });
         _savePetState();
       }
@@ -135,6 +156,9 @@ class _PetHomePageState extends State<PetHomePage>
     setState(() {
       _isEvolving = false;
       _level++;
+      _feedProgress = 0;
+      _waterProgress = 0;
+      _playProgress = 0;
       _feed = 0;
       _water = 0;
       _play = 0;
@@ -150,35 +174,54 @@ class _PetHomePageState extends State<PetHomePage>
     final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     if (_isEvolving) return;
+
     setState(() {
       switch (action) {
         case 'feed':
-          if(inventory.food > 0){
-            audioManager.playSfx('assets/audios/sound_effects/spin.mp3');
-            _feed = (_feed + 1).clamp(0, maxStat);
+          if (_feedProgress >= requiredStat) return; // lock if max
+          if (inventory.food > 0) {
+            _feed++;
             xpManager.spendFood(1);
-          }else{
-            audioManager.playSfx('assets/audios/sound_effects/retro-rightLeft.mp3');
+            if (_feed >= actionMaxStat) {
+              _feed = 0; // reset at 5
+              _feedProgress++;
+            }
+          } else {
           }
           break;
+
         case 'water':
-          if(inventory.water > 0){
-            audioManager.playSfx('assets/audios/sound_effects/spin.mp3');
-            _water = (_water + 1).clamp(0, maxStat);
+          if (_waterProgress >= requiredStat) return; // lock if max
+          if (inventory.water > 0) {
+            _water++;
             xpManager.spendWater(1);
+            if (_water >= actionMaxStat) {
+              _water = 0; // reset at 5
+              _waterProgress++;
+            }
+          } else {
+
           }
           break;
+
         case 'play':
-          if(inventory.energy > 0){
-            _play = (_play + 1).clamp(0, maxStat);
+          if (_playProgress >= requiredStat) return; // lock if max
+          if (inventory.energy > 0) {
+            _play++;
             xpManager.spendEnergy(1);
+            if (_play >= actionMaxStat) {
+              _play = 0; // reset at 5
+              _playProgress++;
+            }
+          } else {
+
           }
           break;
       }
     });
 
-    _savePetState();
     _checkLevelUp();
+    _savePetState();
   }
 
   void _checkEvolutionStart() {
@@ -204,6 +247,9 @@ class _PetHomePageState extends State<PetHomePage>
       _feed = 0;
       _water = 0;
       _play = 0;
+      _feedProgress = 0;
+      _waterProgress = 0;
+      _playProgress = 0;
       _isEvolving = false;
       _evolveSecondsLeft = 0;
     });
@@ -235,11 +281,11 @@ class _PetHomePageState extends State<PetHomePage>
 
   @override
   Widget build(BuildContext context) {
-
     final scaleAnim =
     Tween(begin: 1.0, end: 1.1).animate(_animationController);
-final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-final inventory = xpManager.inventoryManager;
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    final inventory = xpManager.inventoryManager;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Virtual Pet Evolution'),
@@ -250,11 +296,20 @@ final inventory = xpManager.inventoryManager;
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
         child: Column(
           children: [
-            InventoryCard(foodLeft: inventory.food, waterLeft: inventory.water,energyLeft: inventory.energy),
+            InventoryCard(
+                foodLeft: inventory.food,
+                waterLeft: inventory.water,
+                energyLeft: inventory.energy),
             Text('Level $_level',
                 style:
                 const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 20),
+            PetStatMiniCardProgress(
+              requiredStat: requiredStat,
+              feedProgress: _feedProgress,
+              waterProgress: _waterProgress,
+              playProgress: _playProgress,
+              maxPerLevel: requiredStat,
+            ),
             if (_isEvolving)
               EvolvingView(
                 scaleAnim: scaleAnim,
@@ -271,7 +326,7 @@ final inventory = xpManager.inventoryManager;
                 onFeed: () => _tryInteract('feed'),
                 onWater: () => _tryInteract('water'),
                 onPlay: () => _tryInteract('play'),
-                maxStat: maxStat,
+                maxStat: actionMaxStat,
                 isEvolving: _isEvolving,
               ),
             const SizedBox(height: 20),
@@ -292,12 +347,13 @@ final inventory = xpManager.inventoryManager;
                     fontSize: 16),
               ),
             ),
-            ElevatedButton(onPressed: ()
-            {
-              xpManager.addFood(200);
-              xpManager.addWater(200);
-              xpManager.addEnergy(200);
-            }, child: Text("Add"))
+            ElevatedButton(
+                onPressed: () {
+                  xpManager.addFood(200);
+                  xpManager.addWater(200);
+                  xpManager.addEnergy(200);
+                },
+                child: const Text("Add"))
           ],
         ),
       ),
