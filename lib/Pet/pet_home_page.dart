@@ -20,12 +20,10 @@ class _PetHomePageState extends State<PetHomePage>
     with SingleTickerProviderStateMixin {
   int _level = 1;
 
-  // Current round stats
   int _feed = 0;
   int _water = 0;
   int _play = 0;
 
-  // Permanent progress counters
   int _feedProgress = 0;
   int _waterProgress = 0;
   int _playProgress = 0;
@@ -39,10 +37,9 @@ class _PetHomePageState extends State<PetHomePage>
   late AnimationController _animationController;
   late SharedPreferences prefs;
 
-  // Level-up requirement
-  int get requiredStat => 4; // Fixed per your example (12/12)
+  bool _showEffect = false; // For visual effect on interaction
 
-  // Max stat per action
+  int get requiredStat => 4;
   int get actionMaxStat => 5;
 
   @override
@@ -171,50 +168,45 @@ class _PetHomePageState extends State<PetHomePage>
   void _tryInteract(String action) {
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
     final inventory = xpManager.inventoryManager;
-    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     if (_isEvolving) return;
 
     setState(() {
+      _showEffect = true; // show sparkle
+      Timer(const Duration(seconds: 1), () => setState(() => _showEffect = false));
+
       switch (action) {
         case 'feed':
-          if (_feedProgress >= requiredStat) return; // lock if max
-          if (inventory.food > 0) {
+          if (_feedProgress >= requiredStat) return;
+          if (inventory.food > 0 && _feed < actionMaxStat) {
             _feed++;
             xpManager.spendFood(1);
             if (_feed >= actionMaxStat) {
-              _feed = 0; // reset at 5
+              _feed = 0;
               _feedProgress++;
             }
-          } else {
           }
           break;
-
         case 'water':
-          if (_waterProgress >= requiredStat) return; // lock if max
-          if (inventory.water > 0) {
+          if (_waterProgress >= requiredStat) return;
+          if (inventory.water > 0 && _water < actionMaxStat) {
             _water++;
             xpManager.spendWater(1);
             if (_water >= actionMaxStat) {
-              _water = 0; // reset at 5
+              _water = 0;
               _waterProgress++;
             }
-          } else {
-
           }
           break;
-
         case 'play':
-          if (_playProgress >= requiredStat) return; // lock if max
-          if (inventory.energy > 0) {
+          if (_playProgress >= requiredStat) return;
+          if (inventory.energy > 0 && _play < actionMaxStat) {
             _play++;
             xpManager.spendEnergy(1);
             if (_play >= actionMaxStat) {
-              _play = 0; // reset at 5
+              _play = 0;
               _playProgress++;
             }
-          } else {
-
           }
           break;
       }
@@ -281,79 +273,118 @@ class _PetHomePageState extends State<PetHomePage>
 
   @override
   Widget build(BuildContext context) {
-    final scaleAnim =
-    Tween(begin: 1.0, end: 1.1).animate(_animationController);
+    final scaleAnim = Tween(begin: 1.0, end: 1.1).animate(_animationController);
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
     final inventory = xpManager.inventoryManager;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Virtual Pet Evolution'),
+        title: const Text('🐾 Virtual Pet Evolution'),
         centerTitle: true,
         backgroundColor: Colors.deepPurple,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 28),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            InventoryCard(
-                foodLeft: inventory.food,
-                waterLeft: inventory.water,
-                energyLeft: inventory.energy),
-            Text('Level $_level',
-                style:
-                const TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
-            PetStatMiniCardProgress(
-              requiredStat: requiredStat,
-              feedProgress: _feedProgress,
-              waterProgress: _waterProgress,
-              playProgress: _playProgress,
-              maxPerLevel: requiredStat,
-            ),
-            if (_isEvolving)
-              EvolvingView(
-                scaleAnim: scaleAnim,
-                evolveSecondsLeft: _evolveSecondsLeft,
-                formatDuration: formatDuration,
-              )
-            else
-              PetView(
-                petImage: petImage,
-                scaleAnim: scaleAnim,
-                feed: _feed,
-                water: _water,
-                play: _play,
-                onFeed: () => _tryInteract('feed'),
-                onWater: () => _tryInteract('water'),
-                onPlay: () => _tryInteract('play'),
-                maxStat: actionMaxStat,
-                isEvolving: _isEvolving,
+            // Inventory & Level
+            Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    InventoryCard(
+                      foodLeft: inventory.food,
+                      waterLeft: inventory.water,
+                      energyLeft: inventory.energy,
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      'Level $_level',
+                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    PetStatMiniCardProgress(
+                      requiredStat: requiredStat,
+                      feedProgress: _feedProgress,
+                      waterProgress: _waterProgress,
+                      playProgress: _playProgress,
+                      maxPerLevel: requiredStat,
+                    ),
+                  ],
+                ),
               ),
+            ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _resetGame,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                padding:
-                const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-              ),
-              child: const Text(
-                'Reset Game',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
+
+            // Pet View / Evolution
+            Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    _isEvolving
+                        ? EvolvingView(
+                      scaleAnim: scaleAnim,
+                      evolveSecondsLeft: _evolveSecondsLeft,
+                      formatDuration: formatDuration,
+                    )
+                        : PetView(
+                      petImage: petImage,
+                      scaleAnim: scaleAnim,
+                      feed: _feed,
+                      water: _water,
+                      play: _play,
+                      onFeed: () => _tryInteract('feed'),
+                      onWater: () => _tryInteract('water'),
+                      onPlay: () => _tryInteract('play'),
+                      maxStat: actionMaxStat,
+                      isEvolving: _isEvolving,
+                    ),
+                    if (_showEffect)
+                      const Icon(
+                        Icons.star,
+                        color: Colors.yellowAccent,
+                        size: 80,
+                      ),
+                  ],
+                ),
               ),
             ),
-            ElevatedButton(
-                onPressed: () {
-                  xpManager.addFood(200);
-                  xpManager.addWater(200);
-                  xpManager.addEnergy(200);
-                },
-                child: const Text("Add"))
+
+            const SizedBox(height: 20),
+            // Control buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: _resetGame,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
+                  child: const Text("Reset Game", style: TextStyle(color: Colors.white)),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    xpManager.addFood(200);
+                    xpManager.addWater(200);
+                    xpManager.addEnergy(200);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
+                  child: const Text("Add", style: TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
           ],
         ),
       ),

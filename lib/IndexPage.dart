@@ -282,6 +282,7 @@ class _IndexState extends State<Index>
                                 ),
                               ),
                             ),
+
                             Expanded(
                               flex: 4,
                               child: Row(

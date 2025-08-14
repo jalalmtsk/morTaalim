@@ -442,19 +442,16 @@ class _UserStatutBar extends State<Userstatutbar>
                       animation: Listenable.merge([_xpScaleController, _xpColorController]),
                       builder: (_, __) {
                         final scale = 1 + (_xpScaleController.value * 0.4);
+                        final xpManager =Provider.of<ExperienceManager>(context, listen: false);
+                        final inventory =  xpManager.inventoryManager;
                         return Transform.scale(
                           scale: scale,
-                          child: Text(
-                            "$currentLevelXP / $requiredXPForNextLevel XP",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
-                              color: _xpColor.value ?? Colors.white,
-                              shadows: const [
-                                Shadow(color: Colors.black54, offset: Offset(1, 1), blurRadius: 2),
-                              ],
-                            ),
-                          ),
+                          child:Row(children: [
+                            _buildMiniItem("🍎", inventory.food, Colors.redAccent),
+                            _buildDivider(),
+                            _buildMiniItem("💧", inventory.water, Colors.blueAccent),
+                            _buildDivider(),
+                            _buildMiniItem("⚡", inventory.energy, Colors.greenAccent),                          ],)
                         );
                       },
                     ),
@@ -467,4 +464,50 @@ class _UserStatutBar extends State<Userstatutbar>
       ),
     );
   }
+
+  Widget _buildMiniItem(String emoji, int value, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 4),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.25), // soft colored background
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: color, width: 1.5), // colorful outline
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            emoji,
+            style: TextStyle(fontSize: 18),
+          ),
+          const SizedBox(width: 6),
+          Text(
+            "$value",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: color,
+              shadows: [
+                Shadow(
+                  blurRadius: 4,
+                  color: Colors.black.withOpacity(0.8),
+                  offset: const Offset(1, 1),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+  Widget _buildDivider() {
+    return Container(
+      height: 0,
+      width: 10,
+      color: Colors.grey[300],
+    );
+  }
 }
+

@@ -11,6 +11,7 @@ import 'package:mortaalim/Manager/Services/YoutubeProgressManager.dart';
 import 'package:mortaalim/Pet/pet_home_page.dart';
 import 'package:mortaalim/PractiseGames/MemoryFlipGame/LevelSeletor.dart';
 import 'package:mortaalim/PractiseGames/MemoryFlipGame/MemoryFlip.dart';
+import 'package:mortaalim/TestingBeforeProdcution/DragonGameFruit.dart';
 import 'package:mortaalim/tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/UserDataProfileEntering.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
@@ -52,6 +53,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 import 'IndexPage.dart';
+import 'TestingBeforeProdcution/WaterFilledANimatuionCotnrol.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
 
@@ -162,7 +164,7 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const ProfileSetupPage(),
 
-            'Shop': (context) => PetHomePage(),
+            'Shop': (context) => DragonBubblePopSpark(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

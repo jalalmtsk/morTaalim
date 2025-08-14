@@ -14,14 +14,6 @@
       },
       "oauth_client": [
         {
-          "client_id": "1083672847922-luncg25pqtvhpfn8nf6f2l084kt3901f.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.mortaalim",
-            "certificate_hash": "a390c6566b60ec9269d2edbd9f46fd7115096dc3"
-          }
-        },
-        {
           "client_id": "1083672847922-ui2m0tq5tpii46cvgvepugrra33hi1u9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

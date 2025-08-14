@@ -15,31 +15,38 @@ class EvolvingView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Center(
-        child: ScaleTransition(
-          scale: scaleAnim,
+    return ScaleTransition(
+      scale: scaleAnim,
+      child: Card(
+        color: Colors.purple.shade50,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        elevation: 6,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                height: 220,
-                width: 220,
+                height: 200,
+                width: 200,
                 child: Lottie.asset('assets/lottie/evolving.json'),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 20),
               Text(
-                'Evolving...',
+                'Evolving!',
                 style: TextStyle(
-                    fontSize: 26,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple.shade700),
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.deepPurple.shade700,
+                ),
               ),
               const SizedBox(height: 12),
               Text(
                 'Time left: ${formatDuration(evolveSecondsLeft)}',
-                style:
-                const TextStyle(fontSize: 20, color: Colors.black87),
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.deepPurple,
+                ),
               ),
             ],
           ),
@@ -77,110 +84,86 @@ class PetView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            ScaleTransition(
-              scale: scaleAnim,
-              child: Container(
-                height: 220,
-                width: 220,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(40),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.deepPurple.withOpacity(0.3),
-                        blurRadius: 20,
-                        spreadRadius: 3),
-                  ],
-                  image: DecorationImage(
-                    image: AssetImage(petImage),
-                    fit: BoxFit.contain,
-                  ),
+    return Column(
+      children: [
+        // Pet image
+        ScaleTransition(
+          scale: scaleAnim,
+          child: Card(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32)),
+            elevation: 8,
+            shadowColor: Colors.deepPurple.withOpacity(0.5),
+            child: Container(
+              height: 220,
+              width: 220,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(32),
+                image: DecorationImage(
+                  image: AssetImage(petImage),
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
-            const SizedBox(height: 28),
-            _buildStatRow('Feed', feed, Colors.orange, maxStat),
-            _buildStatRow('Water', water, Colors.blue, maxStat),
-            _buildStatRow('Play', play, Colors.pinkAccent, maxStat),
-            const SizedBox(height: 24),
-            const Text(
-              'Interact with your pet:',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+          ),
+        ),
+
+        const SizedBox(height: 32),
+
+        // Buttons as stats
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _StatButton(
+              icon: Icons.restaurant,
+              label: 'Feed',
+              value: feed,
+              maxValue: maxStat,
+              color: Colors.orange,
+              disabled: isEvolving || feed >= maxStat,
+              onTap: onFeed,
             ),
-            const SizedBox(height: 12),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _ActionButton(
-                    icon: Icons.restaurant,
-                    label: 'Feed',
-                    color: Colors.orange,
-                    disabled: isEvolving || feed >= maxStat,
-                    onTap: onFeed),
-                _ActionButton(
-                    icon: Icons.local_drink,
-                    label: 'Water',
-                    color: Colors.blue,
-                    disabled: isEvolving || water >= maxStat,
-                    onTap: onWater),
-                _ActionButton(
-                    icon: Icons.sports_esports,
-                    label: 'Play',
-                    color: Colors.pink,
-                    disabled: isEvolving || play >= maxStat,
-                    onTap: onPlay),
-              ],
+            _StatButton(
+              icon: Icons.local_drink,
+              label: 'Water',
+              value: water,
+              maxValue: maxStat,
+              color: Colors.blue,
+              disabled: isEvolving || water >= maxStat,
+              onTap: onWater,
+            ),
+            _StatButton(
+              icon: Icons.sports_esports,
+              label: 'Play',
+              value: play,
+              maxValue: maxStat,
+              color: Colors.pink,
+              disabled: isEvolving || play >= maxStat,
+              onTap: onPlay,
             ),
           ],
         ),
-      ),
-    );
-  }
 
-  Widget _buildStatRow(String label, int value, Color color, int maxStat) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 75,
-            child: Text(label,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 16)),
-          ),
-          Expanded(
-            child: LinearProgressIndicator(
-              value: value / maxStat,
-              backgroundColor: Colors.grey.shade300,
-              valueColor: AlwaysStoppedAnimation(color),
-              minHeight: 12,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Text(
-            '$value / $maxStat',
-            style: TextStyle(
-                fontWeight: FontWeight.w600, fontSize: 16, color: color),
-          ),
-        ],
-      ),
+        const SizedBox(height: 40),
+      ],
     );
   }
 }
 
-class _ActionButton extends StatelessWidget {
+class _StatButton extends StatelessWidget {
   final IconData icon;
   final String label;
+  final int value;
+  final int maxValue;
   final Color color;
   final bool disabled;
   final VoidCallback onTap;
 
-  const _ActionButton({
+  const _StatButton({
     required this.icon,
     required this.label,
+    required this.value,
+    required this.maxValue,
     required this.color,
     required this.disabled,
     required this.onTap,
@@ -189,28 +172,38 @@ class _ActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: disabled ? Colors.grey.shade300 : color.withOpacity(0.2),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: InkWell(
-        onTap: disabled ? null : onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Container(
-          padding:
-          const EdgeInsets.symmetric(vertical: 14, horizontal: 18),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
+    return GestureDetector(
+      onTap: disabled ? null : onTap,
+      child: Column(
+        children: [
+          Stack(
+            alignment: Alignment.center,
             children: [
-              Icon(icon,
-                  color: disabled ? Colors.grey : color, size: 32),
-              const SizedBox(height: 6),
-              Text(label,
-                  style: TextStyle(
-                      color: disabled ? Colors.grey : color,
-                      fontWeight: FontWeight.bold)),
+              SizedBox(
+                width: 80,
+                height: 80,
+                child: CircularProgressIndicator(
+                  value: value / maxValue,
+                  strokeWidth: 8,
+                  backgroundColor: Colors.grey.shade300,
+                  valueColor: AlwaysStoppedAnimation(color),
+                ),
+              ),
+              Icon(icon, size: 36, color: disabled ? Colors.grey : color),
             ],
           ),
-        ),
+          const SizedBox(height: 8),
+          Text(
+            '$label',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: disabled ? Colors.grey : color),
+          ),
+          Text(
+            '$value/$maxValue',
+            style: const TextStyle(fontSize: 12, color: Colors.black87),
+          ),
+        ],
       ),
     );
   }

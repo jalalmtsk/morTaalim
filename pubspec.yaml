@@ -166,6 +166,7 @@ flutter:
   - assets/animations/UIBannerAnimations/
   - assets/animations/FirstTouchAnimations/
   - assets/animations/UI_Animations/
+  - assets/animations/PetAnimations/
 
 
   #   - images/a_dot_ham.jpeg
