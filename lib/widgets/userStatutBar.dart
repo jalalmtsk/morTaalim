@@ -220,10 +220,10 @@ class _UserStatutBar extends State<Userstatutbar>
       children: [
         ClipOval(
           child: avatarPath.endsWith('.json')
-              ? Lottie.asset(avatarPath, fit: BoxFit.cover, repeat: true, width: 40, height: 40)
+              ? Lottie.asset(avatarPath, fit: BoxFit.cover, repeat: true, width: 55, height: 55)
               : (avatarPath.contains('assets/')
-              ? Image.asset(avatarPath, width: 40, height: 40, fit: BoxFit.cover)
-              : Text(avatarPath, style: const TextStyle(fontSize: 22))),
+              ? Image.asset(avatarPath, width: 55, height: 55, fit: BoxFit.cover)
+              : Text(avatarPath, style: const TextStyle(fontSize: 35))),
         ),
         if (showSparkle)
           Positioned(
@@ -318,10 +318,10 @@ class _UserStatutBar extends State<Userstatutbar>
                 children: [
                   CircleAvatar(
                     backgroundColor: Colors.blue.shade100,
-                    radius: 22,
+                    radius: 40,
                     child: _buildAvatar(xpManager.selectedAvatar, showSparkle),
                   ),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 10),
                   Expanded(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -433,7 +433,7 @@ class _UserStatutBar extends State<Userstatutbar>
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CircleAvatar(
-                      radius: 26,
+                      radius: 50,
                       backgroundColor: Colors.white10,
                       child: _buildAvatar(xpManager.selectedAvatar, showSparkle),
                     ),

@@ -43,91 +43,9 @@ class IndexFrench1Practise extends StatelessWidget {
       imagePath: 'assets/images/PractiseImage/voiture.jpg',
       audioPath: 'assets/audios/tts_female/voiture_female.mp3',
     ),
-    PractiseWords(
-      word: 'École',
-      emoji: '🏫',
-      imagePath: 'assets/images/PractiseImage/ecole.jpg',
-      audioPath: 'assets/audio/ecole.mp3',
-    ),
-    PractiseWords(
-      word: 'Livre',
-      emoji: '📖',
-      imagePath: 'assets/images/PractiseImage/livre.jpg',
-      audioPath: 'assets/audio/livre.mp3',
-    ),
-    PractiseWords(
-      word: 'Soleil',
-      emoji: '☀️',
-      imagePath: 'assets/images/PractiseImage/soleil.jpg',
-      audioPath: 'assets/audio/soleil.mp3',
-    ),
-    PractiseWords(
-      word: 'Lune',
-      emoji: '🌙',
-      imagePath: 'assets/images/PractiseImage/lune.jpg',
-      audioPath: 'assets/audio/lune.mp3',
-    ),
-    PractiseWords(
-      word: 'Fleur',
-      emoji: '🌸',
-      imagePath: 'assets/images/PractiseImage/fleur.jpg',
-      audioPath: 'assets/audio/fleur.mp3',
-    ),
-    PractiseWords(
-      word: 'Arbre',
-      emoji: '🌳',
-      imagePath: 'assets/images/PractiseImage/arbre.jpg',
-      audioPath: 'assets/audio/arbre.mp3',
-    ),
-    PractiseWords(
-      word: 'Oiseau',
-      emoji: '🐦',
-      imagePath: 'assets/images/PractiseImage/oiseau.jpg',
-      audioPath: 'assets/audio/oiseau.mp3',
-    ),
-    PractiseWords(
-      word: 'Poisson',
-      emoji: '🐟',
-      imagePath: 'assets/images/PractiseImage/poisson.jpg',
-      audioPath: 'assets/audio/poisson.mp3',
-    ),
-    PractiseWords(
-      word: 'Papillon',
-      emoji: '🦋',
-      imagePath: 'assets/images/PractiseImage/papillon.jpg',
-      audioPath: 'assets/audio/papillon.mp3',
-    ),
-    PractiseWords(
-      word: 'Bateau',
-      emoji: '⛵',
-      imagePath: 'assets/images/PractiseImage/bateau.jpg',
-      audioPath: 'assets/audio/bateau.mp3',
-    ),
-    PractiseWords(
-      word: 'Avion',
-      emoji: '✈️',
-      imagePath: 'assets/images/PractiseImage/avion.jpg',
-      audioPath: 'assets/audio/avion.mp3',
-    ),
-    PractiseWords(
-      word: 'Banane',
-      emoji: '🍌',
-      imagePath: 'assets/images/PractiseImage/banane.jpg',
-      audioPath: 'assets/audio/banane.mp3',
-    ),
-    PractiseWords(
-      word: 'Robe',
-      emoji: '👗',
-      imagePath: 'assets/images/PractiseImage/robe.jpg',
-      audioPath: 'assets/audio/robe.mp3',
-    ),
-    PractiseWords(
-      word: 'Chaussure',
-      emoji: '👟',
-      imagePath: 'assets/images/PractiseImage/chaussure.jpg',
-      audioPath: 'assets/audio/chaussure.mp3',
-    ),
+    // Add more words as needed
   ];
+
   void navigateTo(BuildContext context, Widget page) {
     Navigator.push(
       context,
@@ -173,6 +91,7 @@ class IndexFrench1Practise extends StatelessWidget {
                 context,
                 title: "Play the Word",
                 icon: Icons.volume_up_rounded,
+                imagePath: 'assets/images/PractiseImage/bonjour.jpg',
                 color: Colors.blueAccent,
                 onTap: () => navigateTo(context, PlayTheWord(words: wordList)),
               ),
@@ -180,6 +99,7 @@ class IndexFrench1Practise extends StatelessWidget {
                 context,
                 title: "Choose the Image",
                 icon: Icons.image_rounded,
+                imagePath: 'assets/images/PractiseImage/cat.jpg',
                 color: Colors.green,
                 onTap: () => navigateTo(context, MatchWordToImage(words: wordList)),
               ),
@@ -187,11 +107,11 @@ class IndexFrench1Practise extends StatelessWidget {
                 context,
                 title: "Match the Word",
                 icon: Icons.sync_alt_rounded,
+                imagePath: 'assets/images/PractiseImage/dog.jpg',
                 color: Colors.orange,
                 onTap: () => navigateTo(context, DragDropGame(items: wordList)),
               ),
-
-              // Add more games here later if needed
+              // Add more cards here if needed
             ],
           ),
         ),
@@ -205,6 +125,7 @@ class IndexFrench1Practise extends StatelessWidget {
         required IconData icon,
         required Color color,
         required VoidCallback onTap,
+        String? imagePath,
       }) {
     return InkWell(
       onTap: onTap,
@@ -212,11 +133,6 @@ class IndexFrench1Practise extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [color.withOpacity(0.85), color],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
@@ -225,6 +141,23 @@ class IndexFrench1Practise extends StatelessWidget {
               offset: const Offset(0, 6),
             ),
           ],
+          image: imagePath != null
+              ? DecorationImage(
+            image: AssetImage(imagePath),
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(
+              Colors.black.withOpacity(0.35),
+              BlendMode.darken,
+            ),
+          )
+              : null,
+          gradient: imagePath == null
+              ? LinearGradient(
+            colors: [color.withOpacity(0.85), color],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          )
+              : null,
         ),
         child: Center(
           child: Padding(
@@ -240,6 +173,13 @@ class IndexFrench1Practise extends StatelessWidget {
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 3,
+                        color: Colors.black45,
+                        offset: Offset(1, 1),
+                      ),
+                    ],
                   ),
                   textAlign: TextAlign.center,
                 ),

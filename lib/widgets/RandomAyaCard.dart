@@ -53,9 +53,9 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
     },
     {
       'text':
-      'وَجَعَلْنَا السَّمَاءَ سَقْفًا مَّحْفُوظًا وَهُمْ عَنْ آيَاتِهَا مُعْرِضُونَ',
-      'surah': 'سورة الأنبياء - 32',
-      'audio': 'assets/audios/quranSourate/AnNisa6.mp3',
+      'قَالَ يَـٰقَوْمِ أَرَءَيْتُمْ إِن كُنتُ عَلَىٰ بَيِّنَةٍۢ مِّن رَّبِّى وَرَزَقَنِى مِنْهُ رِزْقًا حَسَنًۭا ۚ وَمَآ أُرِيدُ أَنْ أُخَالِفَكُمْ إِلَىٰ مَآ أَنْهَىٰكُمْ عَنْهُ ۚ إِنْ أُرِيدُ إِلَّا ٱلْإِصْلَـٰحَ مَا ٱسْتَطَعْتُ ۚ وَمَا تَوْفِيقِىٓ إِلَّا بِٱللَّهِ ۚ عَلَيْهِ تَوَكَّلْتُ وَإِلَيْهِ أُنِيبُ',
+      'surah': 'سورة هود - الآية 88',
+      'audio': 'assets/audios/quranSourate/RandomAyat/Hud88.mp3',
     },
     {
       'text':
@@ -68,7 +68,6 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
       'And We have instructed those who were given the Scripture before you and yourselves to fear Allah.'
     }
   ];
-
 
   late Map<String, String> _currentAyat;
   int _seconds = 60;

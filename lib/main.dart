@@ -6,12 +6,10 @@ import 'package:flutter/services.dart';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/Authentification/Auth.dart';
-import 'package:mortaalim/Authentification/BackUp/BackUpPage.dart';
-import 'package:mortaalim/Manager/Services/YoutubeProgressManager.dart';
 import 'package:mortaalim/Pet/pet_home_page.dart';
-import 'package:mortaalim/PractiseGames/MemoryFlipGame/LevelSeletor.dart';
-import 'package:mortaalim/PractiseGames/MemoryFlipGame/MemoryFlip.dart';
 import 'package:mortaalim/TestingBeforeProdcution/DragonGameFruit.dart';
+import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
+import 'package:mortaalim/games/MemoryFlipGame/LevelSeletor.dart';
 import 'package:mortaalim/tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/UserDataProfileEntering.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
@@ -43,10 +41,10 @@ import 'package:mortaalim/tools/ConnectivityManager/Connectivity_Manager.dart';
 import 'package:mortaalim/tools/LifeCycleManager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/MusicRouteObserver.dart';
-import 'package:mortaalim/tools/SplashPage/splashScreen.dart';
 import 'package:mortaalim/widgets/AIChatbot/ChatBotScreen.dart';
 import 'package:mortaalim/widgets/ComingSoon.dart';
 import 'package:mortaalim/widgets/CreditsPage.dart';
+import 'package:mortaalim/widgets/SplashPage/splashScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -147,9 +145,12 @@ class _MyAppState extends State<MyApp> {
           navigatorObservers: [routeObserver],
           routes: {
             'Index': (context) => Index(),
+
+
             'DrawingAlphabet': (context) => LanguageSelectorPage(onChangeLocale: _changeLanguage),
             'QuizGameApp': (context) => const QuizGameApp(),
             'AppStories': (context) => StoriesGridPage(stories: stories),
+            'AnimalSounds': (context) => AnimalsoundIndex(),
             'ShapeSorter': (context) => const ShapeSorterApp(),
             'Piano': (context) => const PianoModeSelector(),
             'PlaneDestroyer': (context) => const SpeedBomb(),
@@ -161,10 +162,13 @@ class _MyAppState extends State<MyApp> {
             'FavoriteWords': (context) => const FavoriteWordsPage(),
             "SugarSmash": (context) => const Sugrasmash(),
             "BreakingWalls": (context) => BreakingWalls(),
+            "MemoryFlip" : (context) => MemoryFlipLevelSelector(totalLevels: 50, unlockedLevel: 1),
+
+
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const ProfileSetupPage(),
 
-            'Shop': (context) => DragonBubblePopSpark(),
+            'Shop': (context) => MainShopPageIndex(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

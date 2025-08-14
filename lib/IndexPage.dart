@@ -38,24 +38,15 @@ class _IndexState extends State<Index>
   @override
   void initState() {
     super.initState();
+
+    // Load banner ad
     _loadBannerAd();
+
+    // Observe app lifecycle
     WidgetsBinding.instance.addObserver(this);
 
-    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-    final audioManager = Provider.of<AudioManager>(context, listen: false);
-
-    audioManager.playBackgroundMusic(
-        "assets/audios/BackGround_Audio/IndexBackGroundMusic_BCG.mp3");
-    xpManager.init(context);
-
+    // Initialize controllers
     _tabController = TabController(length: 4, vsync: this);
-
-    // Play sound on tab change
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        audioManager.playEventSound('clickButton');
-      }
-    });
 
     _profileAnimController = AnimationController(
       vsync: this,
@@ -73,7 +64,32 @@ class _IndexState extends State<Index>
     );
 
     _profileAnimController.forward();
+
+    // Access providers
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+
+    // Initialize XP manager
+    xpManager.init(context);
+
+    // Play alert and background music AFTER first frame for immediate playback
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // Optional: preload alert audio for instant play
+
+      audioManager.playAlert("assets/audios/HappyIntranceIndex.mp3");
+      audioManager.playBackgroundMusic(
+        "assets/audios/BackGround_Audio/IndexBackGroundMusic_BCG.mp3",
+      );
+    });
+
+    // Play sound on tab change
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        audioManager.playEventSound('clickButton');
+      }
+    });
   }
+
 
   void _loadBannerAd() {
     _bannerAd?.dispose();

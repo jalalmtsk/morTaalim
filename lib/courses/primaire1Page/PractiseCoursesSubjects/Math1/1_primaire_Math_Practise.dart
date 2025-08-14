@@ -20,52 +20,44 @@ class IndexMath1Practise extends StatelessWidget {
   Widget build(BuildContext context) {
     final exercises = [
       {
-        'title': '🔢 Missing Number',
-        'icon': Icons.question_mark,
-        'color': Colors.pinkAccent,
-        'page':  MissingNumberExercise()
+        'title': 'Missing Number',
+        'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/MissingNumber_bg.png',
+        'page': MissingNumberExercise()
       },
       {
-        'title': '🏆 Find Largest',
-        'icon': Icons.trending_up,
-        'color': Colors.orangeAccent,
-        'page':  FindLargestNumberExercise()
+        'title': 'Find Largest',
+        'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/Largest_bg.png',
+        'page': FindLargestNumberExercise()
       },
       {
-        'title': '➕ Addition',
-        'icon': Icons.add_circle,
-        'color': Colors.blueAccent,
-        'page':  MathAdditionExercise()
+        'title': 'Addition',
+        'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/Addition_bg.png',
+        'page': MathAdditionExercise()
       },
       {
-        'title': '➖ Subtraction',
-        'icon': Icons.remove_circle,
-        'color': Colors.green,
-        'page':  MathSubtractionExercise()
+        'title': 'Subtraction',
+        'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/SubStraction_bg.png',
+        'page': MathSubtractionExercise()
       },
       {
-        'title': '🍎 Count Objects',
-        'icon': Icons.countertops,
-        'color': Colors.amber,
-        'page':  CountObject()
+        'title': 'Count Objects',
+        'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/CountObject_bg.png',
+        'page': CountObject()
       },
       {
-        'title': '⚖ Compare Numbers',
-        'icon': Icons.compare_arrows,
-        'color': Colors.purple,
-        'page':  NumberComparisonGame()
+        'title': 'Compare Numbers',
+        'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/GreaterSmallerThan_bg.png',
+        'page': NumberComparisonGame()
       },
       {
-        'title': '🔍 Odd Numbers',
-        'icon': Icons.filter_9_plus,
-        'color': Colors.teal,
-        'page':  EvenOddExercise()
+        'title': 'Odd Numbers',
+        'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/OddNumber_bg.png',
+        'page': EvenOddExercise()
       },
       {
-        'title': '🎯 Target Number',
-        'icon': Icons.my_location,
-        'color': Colors.deepPurpleAccent,
-        'page':  TargetNumberExercise()
+        'title': 'Target Number',
+        'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/TargetNumber_bg.png',
+        'page': TargetNumberExercise()
       },
     ];
 
@@ -126,8 +118,7 @@ class IndexMath1Practise extends StatelessWidget {
                 padding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 itemCount: exercises.length,
-                gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,
@@ -147,47 +138,46 @@ class IndexMath1Practise extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24),
                       child: Container(
                         decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [
-                              (ex['color'] as Color).withOpacity(0.8),
-                              ex['color'] as Color
-                            ],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
                           borderRadius: BorderRadius.circular(24),
+                          image: DecorationImage(
+                            image: AssetImage(ex['image'] as String),
+                            fit: BoxFit.cover,
+                          ),
                           boxShadow: [
                             BoxShadow(
-                              color: (ex['color'] as Color)
-                                  .withOpacity(0.3),
+                              color: Colors.black26,
                               blurRadius: 8,
                               offset: const Offset(0, 4),
                             )
                           ],
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(ex['icon'] as IconData,
-                                size: 60, color: Colors.white),
-                            const SizedBox(height: 10),
-                            Text(
-                              ex['title'] as String,
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                shadows: [
-                                  Shadow(
-                                    blurRadius: 3,
-                                    color: Colors.black26,
-                                    offset: Offset(1, 1),
-                                  )
-                                ],
-                              ),
-                              textAlign: TextAlign.center,
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.5),
+                            borderRadius: const BorderRadius.only(
+                              bottomLeft: Radius.circular(24),
+                              bottomRight: Radius.circular(24),
                             ),
-                          ],
+                          ),
+                          child: Text(
+                            ex['title'] as String,
+                            style: const TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 3,
+                                  color: Colors.black26,
+                                  offset: Offset(1, 1),
+                                )
+                              ],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
                     ),

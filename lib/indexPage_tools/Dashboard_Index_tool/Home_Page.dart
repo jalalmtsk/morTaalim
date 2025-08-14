@@ -3,10 +3,6 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 
-void main() {
-  runApp(const MaterialApp(home: DashboardPage()));
-}
-
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 

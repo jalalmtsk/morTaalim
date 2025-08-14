@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/courses/primaire1Page/PractiseCoursesSubjects/Arabic1/1_primaire_Arabic_Practise.dart';
 import 'package:mortaalim/l10n/app_localizations.dart';
-
 import 'PractiseCoursesSubjects/French1/1_primaire_French_Practise.dart';
 import 'PractiseCoursesSubjects/Math1/1_primaire_Math_Practise.dart';
 import 'PractiseCoursesSubjects/Science1/1_primaire_Science_Practise.dart';
@@ -16,11 +15,36 @@ class Primaire1Pratique extends StatefulWidget {
 
 class _Primaire1PratiqueState extends State<Primaire1Pratique> {
   final List<Map<String, dynamic>> courses = [
-    {'title': 'arabic', 'route': 'IndexArabic1Practise', 'color': Colors.purpleAccent},
-    {'title': 'math', 'route': 'IndexMath1Practise', 'color': Colors.orangeAccent},
-    {'title': 'french', 'route': 'IndexFrench1Practise', 'color': Colors.lightBlueAccent},
-    {'title': 'islamicEducation', 'route': 'IndexIslamicEducation1Practise', 'color': Colors.greenAccent},
-    {'title': 'science', 'route': 'IndexScience1Practise', 'color': Colors.purpleAccent},
+    {
+      'title': 'arabic',
+      'route': 'IndexArabic1Practise',
+      'image': 'assets/images/UI/BackGrounds/Course_BG/arabicCourse_bg.png',
+      'color': Colors.purpleAccent
+    },
+    {
+      'title': 'math',
+      'route': 'IndexMath1Practise',
+      'image': 'assets/images/UI/BackGrounds/Course_BG/mathCourse_bg.png',
+      'color': Colors.orangeAccent
+    },
+    {
+      'title': 'french',
+      'route': 'IndexFrench1Practise',
+      'image': 'assets/images/UI/BackGrounds/Course_BG/frenchCourse_bg.png',
+      'color': Colors.lightBlueAccent
+    },
+    {
+      'title': 'islamicEducation',
+      'route': 'IndexIslamicEducation1Practise',
+      'image': 'assets/images/UI/BackGrounds/Course_BG/islamCourse_bg.png',
+      'color': Colors.greenAccent
+    },
+    {
+      'title': 'science',
+      'route': 'IndexScience1Practise',
+      'image': 'assets/images/UI/BackGrounds/Course_BG/scienceCourse_bg.png',
+      'color': Colors.purpleAccent
+    },
   ];
 
   IconData getIcon(String key) {
@@ -74,14 +98,11 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
     }
   }
 
-  // Example dynamic info cards data, easy to extend:
   final List<InfoCardData> infoCards = [];
 
   @override
   void initState() {
     super.initState();
-
-    // Initialize your cards data (can come from API or user settings)
     infoCards.addAll([
       InfoCardData(
         title: 'Preferred Subject',
@@ -124,7 +145,6 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title for info cards section
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
@@ -136,10 +156,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 12),
-
-              // Horizontal scrollable info cards
               SizedBox(
                 height: 160,
                 child: ListView.separated(
@@ -150,7 +167,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                   itemBuilder: (context, index) {
                     final card = infoCards[index];
                     return SizedBox(
-                      width: 200, // fixed width for uniformity
+                      width: 200,
                       child: _InfoCard(
                         title: card.title,
                         content: card.content,
@@ -162,10 +179,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                   },
                 ),
               ),
-
               const SizedBox(height: 10),
-
-              // Title for practice courses
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
@@ -177,9 +191,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                   ),
                 ),
               ),
-
               const SizedBox(height: 10),
-
               SizedBox(
                 height: 200,
                 child: ListView.separated(
@@ -193,23 +205,27 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                     final route = course['route'] as String;
                     final icon = getIcon(title);
                     final label = getLabel(title, tr);
+                    final image = course['image'] as String;
                     final color = course['color'] as Color;
 
                     return _CourseCard(
-                      color: color,
+                      imagePath: image,
+                      overlayColor: color,
                       icon: icon,
                       label: label,
                       onTap: () {
                         final page = getPage(route);
                         if (page != null) {
-                          Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => page),
+                          );
                         }
                       },
                     );
                   },
                 ),
               ),
-
             ],
           ),
         ),
@@ -218,7 +234,6 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
   }
 }
 
-/// Data class for info card parameters
 class InfoCardData {
   final String title;
   final String content;
@@ -235,7 +250,6 @@ class InfoCardData {
   });
 }
 
-/// Reusable Info Card Widget with optional subtitle
 class _InfoCard extends StatelessWidget {
   final String title;
   final String content;
@@ -244,13 +258,12 @@ class _InfoCard extends StatelessWidget {
   final String? subtitle;
 
   const _InfoCard({
-    Key? key,
     required this.title,
     required this.content,
     required this.icon,
     required this.color,
     this.subtitle,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -274,21 +287,24 @@ class _InfoCard extends StatelessWidget {
           children: [
             Icon(icon, size: 40, color: Colors.white),
             const SizedBox(height: 4),
-            Text(
-              title,
-              style: const TextStyle(color: Colors.white70, fontSize: 16, fontWeight: FontWeight.w600),
-            ),
+            Text(title,
+                style: const TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600)),
             const SizedBox(height: 4),
-            Text(
-              content,
-              style: const TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold),
-            ),
+            Text(content,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold)),
             if (subtitle != null) ...[
               const SizedBox(height: 4),
-              Text(
-                subtitle!,
-                style: TextStyle(color: Colors.white.withOpacity(0.85), fontSize: 14, fontWeight: FontWeight.w500),
-              ),
+              Text(subtitle!,
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(0.85),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500)),
             ]
           ],
         ),
@@ -297,26 +313,26 @@ class _InfoCard extends StatelessWidget {
   }
 }
 
-/// Horizontal course card for practice courses
 class _CourseCard extends StatelessWidget {
-  final Color color;
+  final String imagePath;
+  final Color overlayColor;
   final IconData icon;
   final String label;
   final VoidCallback onTap;
 
   const _CourseCard({
-    Key? key,
-    required this.color,
+    required this.imagePath,
+    required this.overlayColor,
     required this.icon,
     required this.label,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Material(
       elevation: 6,
-      shadowColor: color.withOpacity(0.4),
+      shadowColor: overlayColor.withOpacity(0.4),
       borderRadius: BorderRadius.circular(26),
       child: InkWell(
         borderRadius: BorderRadius.circular(26),
@@ -325,12 +341,15 @@ class _CourseCard extends StatelessWidget {
         child: Container(
           width: 200,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [color.withOpacity(0.85), color],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
             borderRadius: BorderRadius.circular(26),
+            image: DecorationImage(
+              image: AssetImage(imagePath),
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                overlayColor.withOpacity(0.3),
+                BlendMode.darken,
+              ),
+            ),
           ),
           padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
           child: Column(
@@ -339,7 +358,7 @@ class _CourseCard extends StatelessWidget {
               CircleAvatar(
                 radius: 38,
                 backgroundColor: Colors.white,
-                child: Icon(icon, size: 40, color: color),
+                child: Icon(icon, size: 40, color: overlayColor),
               ),
               const SizedBox(height: 10),
               Text(

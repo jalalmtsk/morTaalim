@@ -25,7 +25,7 @@ final List<Map<String, dynamic>> games = [
     'routeName': 'AppStories',
     'image': 'assets/images/GameGridImages/StoriesGame.png', // ✅ New key
     'locked': true,
-    'cost': 100,
+    'cost': 80,
     'unlockType': 'reading',
   },
 
@@ -35,8 +35,28 @@ final List<Map<String, dynamic>> games = [
     'routeName': 'MagicPainting',
     'image': 'assets/images/GameGridImages/Painting.png', // ✅ New key
     'locked': true,
-    'cost': 120,
+    'cost': 100,
     'unlockType': 'iq',
+  },
+
+  {
+    'title': 'AnimalSounds',
+    'icon': Icons.surround_sound,
+    'routeName': 'AnimalSounds',
+    'image': 'assets/images/GameGridImages/AnimalSounds.png', // ✅ New key
+    'locked': true,
+    'cost': 150,
+    'unlockType': 'Animal',
+  },
+
+  {
+    'title': 'MemoryFlip',
+    'icon': Icons.flip,
+    'routeName': 'MemoryFlip',
+    'image': 'assets/images/GameGridImages/MemoryFlip.png', // ✅ New key
+    'locked': true,
+    'cost': 180,
+    'unlockType': 'MemoryFlip',
   },
 
   /*{

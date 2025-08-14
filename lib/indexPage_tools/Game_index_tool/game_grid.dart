@@ -177,9 +177,9 @@ class _GameGridState extends State<GameGrid>
                         children: [
                           Positioned.fill(
                             child: Image.asset(
-                              game['image'] ?? 'assets/images/AvatarImage/Avatar2.png',
+                              game['image'] ?? '',
                               fit: BoxFit.cover,
-                              color: isLocked ? Colors.black.withValues(alpha: 0.4) : null,
+                              color: isLocked ? Colors.black.withValues(alpha: 0.45) : null,
                               colorBlendMode: isLocked ? BlendMode.darken : null,
                             ),
                           ),
@@ -380,6 +380,8 @@ class _GameGridState extends State<GameGrid>
         return tr.appStories;
       case 'MagicPainting':
         return tr.magicPainting;
+      case 'AnimalSounds':
+        return tr.animated;
       case 'SugarSmash':
         return tr.sugarSmash;
       case 'shapeSorter':

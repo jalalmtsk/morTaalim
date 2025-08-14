@@ -108,6 +108,8 @@ flutter:
   #Images
   - assets/images/
   - assets/images/Sketches/
+  - assets/images/Animals/Animal_images/
+  - assets/images/Animals/Animal_Houses/
   - assets/icons/
   - assets/images/GameGridImages/
   - assets/images/PractiseImage/
@@ -137,7 +139,10 @@ flutter:
   - assets/images/UI/utilities/
   - assets/images/Puzz/PuzzMainImages/
   - assets/images/Puzz/Puzz1/Puzz1_3x3/
-  - assets/images/PetImages/
+  - assets/images/PetImages/DragonPet/
+  - assets/images/PetImages/CatPet/
+  - assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/
+  - assets/images/UI/utilities/MemoryFlip_images/
 
     #Videos
 
