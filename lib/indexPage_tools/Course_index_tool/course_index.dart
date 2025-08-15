@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mortaalim/widgets/RandomAyaCard.dart';
+import 'package:mortaalim/widgets/RandomAyat_Card/RandomAyaCard.dart';
 import 'package:provider/provider.dart';
 import '../../Inside_Course_Logic/HomeCourse_Tools/Widgets/IstighfarBanner.dart';
 import '../../XpSystem.dart';

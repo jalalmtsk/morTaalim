@@ -5,6 +5,7 @@ import 'package:lottie/lottie.dart';
 import 'package:mortaalim/Settings/setting_Page.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/Settings/SettingPanelInGame.dart';
+import 'package:mortaalim/tools/Reysable_Tools/SmartDuaaMorningNight_Dialog.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
@@ -75,11 +76,11 @@ class _IndexState extends State<Index>
     // Play alert and background music AFTER first frame for immediate playback
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       // Optional: preload alert audio for instant play
-
       audioManager.playAlert("assets/audios/HappyIntranceIndex.mp3");
       audioManager.playBackgroundMusic(
         "assets/audios/BackGround_Audio/IndexBackGroundMusic_BCG.mp3",
       );
+      _showDuaaDialog();
     });
 
     // Play sound on tab change
@@ -136,6 +137,7 @@ class _IndexState extends State<Index>
           repeat: true,
         ),
       );
+
     } else if (avatarPath.contains('assets/')) {
       return Image.asset(
         avatarPath,
@@ -151,6 +153,22 @@ class _IndexState extends State<Index>
         ),
       );
     }
+  }
+
+
+  void _showDuaaDialog() {
+    final hour = DateTime.now().hour;
+    String duaa = '';
+
+    if (hour >= 5 && hour < 12) {
+      duaa = "🌅 Morning Duaa: الحمد لله الذي أحيانا بعدما أماتنا وإليه النشور";
+    } else if (hour >= 12 && hour < 18) {
+      duaa = "☀️ Afternoon Duaa: اللهم أعني على ذكرك وشكرك وحسن عبادتك";
+    } else {
+      duaa = "🌙 Night Duaa: اللهم بك أمسينا وبك أصبحنا وبك نحيا وبك نموت وإليك المصير";
+    }
+
+    showDialog(context: context, builder: (context) => DuaaDialog() );
   }
 
   Future<void> simulateLoading() async {
