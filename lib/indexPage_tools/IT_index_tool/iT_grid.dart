@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
@@ -9,18 +10,17 @@ import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
 
 import '../../XpSystem.dart';
+import '../../main.dart';
 import '../../tools/audio_tool/audio_tool.dart';
 import '../../tools/loading_page.dart';
 import '../../widgets/RewardChest.dart';
 import '../../widgets/SpinWheel/SpinTheWheel.dart';
 
-final MusicPlayer _victorySound = MusicPlayer();
 
 class ITGrid extends StatefulWidget {
   final List<Map<String, dynamic>> ITCourses;
-  final MusicPlayer musicPlayer;
 
-  const ITGrid({super.key, required this.ITCourses, required this.musicPlayer});
+  const ITGrid({super.key, required this.ITCourses});
 
   @override
   State<ITGrid> createState() => _GameGridState();
@@ -30,7 +30,6 @@ class _GameGridState extends State<ITGrid>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   BannerAd? _bannerAd;
 
-  late MusicPlayer _clickButton;
   late ConfettiController _confettiController;
   bool _isBannerAdLoaded = false;
   @override
@@ -38,8 +37,6 @@ class _GameGridState extends State<ITGrid>
     super.initState();
     _loadBannerAd();
     WidgetsBinding.instance.addObserver(this);
-    _clickButton = MusicPlayer();
-    _clickButton.preload("assets/audios/PopButton_SB.mp3");
     _confettiController = ConfettiController(duration: const Duration(seconds: 1));
   }
 
@@ -70,8 +67,6 @@ class _GameGridState extends State<ITGrid>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _confettiController.dispose();
-    _victorySound.dispose();
-    _clickButton.dispose();
     _bannerAd?.dispose();
     super.dispose();
   }
@@ -85,14 +80,15 @@ class _GameGridState extends State<ITGrid>
 
 
   void triggerConfetti() {
-    _clickButton.play("assets/audios/sound_effects/victory1_SFX.mp3");
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playSfx("assets/audios/sound_effects/victory1_SFX.mp3");
     _confettiController.play();
   }
 
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
-    final tr = AppLocalizations.of(context)!;
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     return Stack(
       children: [
@@ -104,7 +100,7 @@ class _GameGridState extends State<ITGrid>
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    tr.chooseGame,
+                    tr(context).chooseGame,
                     style: TextStyle(fontSize: 20, color: Colors.grey[700]),
                   ),
                 ),
@@ -133,8 +129,6 @@ class _GameGridState extends State<ITGrid>
                   return GestureDetector(
                     onTap: () {
                       if (isUnlocked) {
-                        _clickButton.play("assets/audios/PopButton_SB.mp3");
-                        widget.musicPlayer.stop();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -145,7 +139,6 @@ class _GameGridState extends State<ITGrid>
                           ),
                         );
                       } else {
-                        _clickButton.play("assets/audios/PopButton_SB.mp3");
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
@@ -154,7 +147,6 @@ class _GameGridState extends State<ITGrid>
                             actions: [
                               TextButton(
                                 onPressed: () {
-                                  _clickButton.play("assets/audios/sound_effects/uiButton.mp3");
                                   Navigator.pop(context);
                                 },
                                 child: const Text("Cancel"),
@@ -213,7 +205,7 @@ class _GameGridState extends State<ITGrid>
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  _getCourseTitle(tr, game['title']),
+                                  _getCourseTitle(tr(context), game['title']),
                                   style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.white,

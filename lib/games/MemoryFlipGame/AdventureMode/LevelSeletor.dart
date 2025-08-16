@@ -1,24 +1,24 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:mortaalim/games/MemoryFlipGame/AdventureMode/MemoryFlip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'MemoryFlip.dart';
 
-class MemoryFlipLevelSelector extends StatefulWidget {
+class MFLevelSelectorAdventure extends StatefulWidget {
   final int totalLevels;
   final int unlockedLevel;
 
-  const MemoryFlipLevelSelector({
+  const MFLevelSelectorAdventure({
     super.key,
     required this.totalLevels,
     required this.unlockedLevel,
   });
 
   @override
-  State<MemoryFlipLevelSelector> createState() => _MemoryFlipLevelSelectorState();
+  State<MFLevelSelectorAdventure> createState() => _MFLevelSelectorAdventureState();
 }
 
-class _MemoryFlipLevelSelectorState extends State<MemoryFlipLevelSelector> with SingleTickerProviderStateMixin {
+class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> with SingleTickerProviderStateMixin {
   int? _currentUnlocked;
   static const String _prefsKey = 'unlocked_level';
 
@@ -65,7 +65,7 @@ class _MemoryFlipLevelSelectorState extends State<MemoryFlipLevelSelector> with 
   Future<void> _startLevel(int index) async {
     int? result = await Navigator.of(context).push<int>(
       MaterialPageRoute(
-        builder: (_) => MemoryGame(startLevel: index),
+        builder: (_) => MFAdventureMode(startLevel: index),
       ),
     );
 
@@ -103,20 +103,20 @@ class _MemoryFlipLevelSelectorState extends State<MemoryFlipLevelSelector> with 
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.white.withOpacity(0.25),
-                    Colors.white.withOpacity(0.05),
+                    Colors.white.withValues(alpha: 0.25),
+                    Colors.white.withValues(alpha: 0.05),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: Colors.white.withOpacity(0.3),
+                  color: Colors.white.withValues(alpha: 0.3),
                   width: 2,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.purple.withOpacity(0.1),
+                    color: Colors.purple.withValues(alpha: 0.1),
                     offset: const Offset(0, 8),
                     blurRadius: 24,
                   ),
@@ -176,12 +176,12 @@ class _MemoryFlipLevelSelectorState extends State<MemoryFlipLevelSelector> with 
             Positioned(
               top: -100,
               left: -50,
-              child: _buildBlob(180, Colors.pinkAccent.withOpacity(0.15)),
+              child: _buildBlob(180, Colors.pinkAccent.withValues(alpha: 0.15)),
             ),
             Positioned(
               bottom: -120,
               right: -40,
-              child: _buildBlob(220, Colors.lightBlueAccent.withOpacity(0.15)),
+              child: _buildBlob(220, Colors.lightBlueAccent.withValues(alpha: 0.15)),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -195,7 +195,7 @@ class _MemoryFlipLevelSelectorState extends State<MemoryFlipLevelSelector> with 
                       color: Colors.deepPurple.shade700,
                       shadows: [
                         Shadow(
-                          color: Colors.deepPurple.shade200.withOpacity(0.5),
+                          color: Colors.deepPurple.shade200.withValues(alpha: 0.5),
                           offset: const Offset(0, 3),
                           blurRadius: 8,
                         )
@@ -283,7 +283,7 @@ class _MemoryFlipLevelSelectorState extends State<MemoryFlipLevelSelector> with 
         borderRadius: BorderRadius.circular(size),
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.5),
+            color: color.withValues(alpha: 0.5),
             blurRadius: 40,
             spreadRadius: 10,
           )

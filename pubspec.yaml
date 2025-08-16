@@ -160,6 +160,7 @@ flutter:
   - assets/audios/SplashScreen_Audio/
   - assets/audios/tts_female/arabic_Questions_QuizzGame/
   - assets/audios/quranSourate/RandomAyat/
+  - assets/audios/Animals_sounds/Animals_sound/
   #Fonts
   - assets/fonts/ComicNeue-Regular.ttf
   - assets/fonts/ComicNeue-Bold.ttf

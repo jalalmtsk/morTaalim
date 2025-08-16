@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:mortaalim/games/MemoryFlipGame/AdventureMode/MemoryFlip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'MemoryFlip.dart';
 
 class MemoryFlipLevelSelector extends StatefulWidget {
   final int totalLevels;
@@ -65,7 +65,7 @@ class _MemoryFlipLevelSelectorState extends State<MemoryFlipLevelSelector> with 
   Future<void> _startLevel(int index) async {
     int? result = await Navigator.of(context).push<int>(
       MaterialPageRoute(
-        builder: (_) => MemoryGame(startLevel: index),
+        builder: (_) => MFAdventureMode(startLevel: index),
       ),
     );
 

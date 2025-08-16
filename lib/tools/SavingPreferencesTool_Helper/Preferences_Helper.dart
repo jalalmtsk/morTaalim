@@ -2,24 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CardVisibilityManager extends ChangeNotifier {
-  bool _showCard = true;
+  bool _showAyatCard = true;
+  bool _showDuaaDialog = true;
 
-  bool get showCard => _showCard;
+  bool get showAyatCard => _showAyatCard;
+  bool get showDuaaDialog => _showDuaaDialog;
 
   CardVisibilityManager() {
-    _loadPreference();
+    _loadPreferences();
   }
 
-  Future<void> _loadPreference() async {
+  Future<void> _loadPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    _showCard = prefs.getBool('showAyatCard') ?? true;
+    _showAyatCard = prefs.getBool('showAyatCard') ?? true;
+    _showDuaaDialog = prefs.getBool('showDuaaDialog') ?? true;
     notifyListeners();
   }
 
-  Future<void> toggleCardVisibility(bool value) async {
-    _showCard = value;
+  Future<void> toggleAyatCard(bool value) async {
+    _showAyatCard = value;
     notifyListeners();
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('showAyatCard', value);
+  }
+
+  Future<void> toggleDuaaDialog(bool value) async {
+    _showDuaaDialog = value;
+    notifyListeners();
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('showDuaaDialog', value);
   }
 }

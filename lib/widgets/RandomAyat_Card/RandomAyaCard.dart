@@ -52,16 +52,27 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
   }
 
   Future<void> _playAudio() async {
-    if (_isPlaying) return; // If already playing, ignore tap
+    if (_isPlaying) return;
     _isPlaying = true;
-    final audio = Provider.of<AudioManager>(context, listen: false);
+
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+
     try {
-      audioManager.toggleBgMute();
-      await audio.playSfx(_currentAyat['audio']!);
-    } catch (_) {}
-    audioManager.toggleBgMute();
-    _isPlaying = false;
+      // Mute background music if needed
+      if (!audioManager.isBgMuted) await audioManager.toggleBgMute();
+
+      // Play a fresh instance of the audio
+      await audioManager.playAlert(_currentAyat['audio']!);
+
+    } catch (e, st) {
+      debugPrint("Error playing audio: $e\n$st");
+    } finally {
+      // Restore background music state
+      if (!audioManager.isBgMuted) await audioManager.toggleBgMute();
+      _isPlaying = false;
+    }
   }
+
 
   @override
   void dispose() {
@@ -73,7 +84,7 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
   @override
   Widget build(BuildContext context) {
     final cardVisibility = context.watch<CardVisibilityManager>();
-    if (!cardVisibility.showCard) {
+    if (!cardVisibility.showAyatCard) {
       return const SizedBox.shrink();
     }
     final progress = _seconds / 60;
@@ -89,8 +100,8 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
           borderRadius: BorderRadius.circular(16),
           onTap: _playAudio,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 10),
+            child: Column(mainAxisSize: MainAxisSize.max, children: [
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -100,9 +111,14 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 16,
+                        wordSpacing: 4,
                         fontWeight: FontWeight.w600,
                         color: Colors.black87,
-                        height: 0.8,
+                      ),
+                      strutStyle: const StrutStyle(
+                        forceStrutHeight: true,
+                        height: 1.2, // exact line spacing factor
+                        leading: 0.4, // extra space above/below
                       ),
                     ),
                   ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:just_audio/just_audio.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
 
 import 'Animal_Data.dart';
 
@@ -33,25 +34,23 @@ class _AnimalFullScreenPageState extends State<ListenMode>
     _audioPlayer.play();
   }
 
+  /// Floating playful particles (stars instead of white dots)
   Widget buildParticles() {
-    // Floating circles for fun effect
     return Stack(
-      children: List.generate(20, (index) {
-        final double left = random.nextDouble() * MediaQuery.of(context).size.width;
-        final double top = random.nextDouble() * MediaQuery.of(context).size.height;
-        final double size = 10 + random.nextDouble() * 20;
+      children: List.generate(15, (index) {
+        final double left =
+            random.nextDouble() * MediaQuery.of(context).size.width;
+        final double top =
+            random.nextDouble() * MediaQuery.of(context).size.height;
         return Positioned(
           left: left,
           top: top,
           child: Opacity(
-            opacity: 0.2 + random.nextDouble() * 0.5,
-            child: Container(
-              width: size,
-              height: size,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-              ),
+            opacity: 0.3 + random.nextDouble() * 0.6,
+            child: Icon(
+              Icons.tips_and_updates,
+              size: 15 + random.nextDouble() * 20,
+              color: Colors.yellow.withOpacity(0.8),
             ),
           ),
         );
@@ -63,15 +62,18 @@ class _AnimalFullScreenPageState extends State<ListenMode>
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Full screen background image
+        // Background
         Image.asset(
           animal['bgImage'],
           fit: BoxFit.cover,
         ),
         buildParticles(),
+
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
+            // Animal image in playful circle
             GestureDetector(
               onTap: () => playSoundAndAnimate(animal['sound']),
               child: AnimatedBuilder(
@@ -82,47 +84,68 @@ class _AnimalFullScreenPageState extends State<ListenMode>
                     child: child,
                   );
                 },
-                child: Hero(
-                  tag: animal['name'],
-                  child: Image.asset(
-                    animal['image'],
-                    width: MediaQuery.of(context).size.width * 0.7,
-                    height: MediaQuery.of(context).size.width * 0.7,
+                child: Container(
+                  child: Hero(
+                    tag: animal['name'],
+                    child: Image.asset(
+                      animal['image'],
+                      width: MediaQuery.of(context).size.width * 0.55,
+                      height: MediaQuery.of(context).size.width * 0.55,
+                    ),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 30),
+
+            // Animal info card
             Container(
               decoration: BoxDecoration(
-                color: Colors.black45,
-                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  colors: [Colors.white.withOpacity(0.9), Colors.blue.shade100],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.circular(25),
+                boxShadow: [
+                  BoxShadow(
+                      color: Colors.black26, blurRadius: 10, spreadRadius: 2)
+                ],
               ),
               margin: EdgeInsets.symmetric(horizontal: 20),
-              padding: EdgeInsets.all(15),
+              padding: EdgeInsets.all(20),
               child: Column(
                 children: [
                   Text(
                     animal['name'],
                     style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 34,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.blueAccent,
+                    ),
                   ),
-                  SizedBox(height: 5),
+                  SizedBox(height: 8),
                   Text(
-                    'Habitat: ${animal['habitat']}',
-                    style: TextStyle(fontSize: 20, color: Colors.white70),
+                    '🌍 Habitat: ${animal['habitat']}',
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.deepPurple,
+                        fontWeight: FontWeight.w500),
                   ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 12),
                   Text(
                     animal['info'],
-                    style: TextStyle(fontSize: 18, color: Colors.white70),
+                    style: TextStyle(fontSize: 18, color: Colors.black87),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 10),
-                  Text('Tap the animal to hear its sound!',
-                      style: TextStyle(color: Colors.white70)),
+                  SizedBox(height: 12),
+                  Text(
+                    '👆 Tap the animal to hear its sound!',
+                    style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.redAccent,
+                        fontStyle: FontStyle.italic),
+                  ),
                 ],
               ),
             ),
@@ -142,13 +165,48 @@ class _AnimalFullScreenPageState extends State<ListenMode>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView.builder(
-        controller: _pageController,
-        itemCount: animals.length,
-        onPageChanged: (index) => setState(() => currentIndex = index),
-        itemBuilder: (context, index) {
-          return buildAnimalPage(animals[index]);
-        },
+      appBar: AppBar(
+        backgroundColor: Colors.transparent, // Transparent background
+        elevation: 0, // Remove shadow
+        surfaceTintColor: Colors.transparent, // Prevent Material3 tint
+        scrolledUnderElevation: 0, // Remove scroll shadow in Material3
+      ),
+      extendBodyBehindAppBar: true, // Lets body go under the AppBar
+      body: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            itemCount: animals.length,
+            onPageChanged: (index) => setState(() => currentIndex = index),
+            itemBuilder: (context, index) {
+              return buildAnimalPage(animals[index]);
+            },
+          ),
+          // Page indicator (bottom)
+          Positioned(
+            bottom: 30,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: List.generate(
+                animals.length,
+                    (index) => AnimatedContainer(
+                  duration: Duration(milliseconds: 300),
+                  margin: EdgeInsets.symmetric(horizontal: 4),
+                  width: currentIndex == index ? 14 : 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: currentIndex == index
+                        ? Colors.blueAccent
+                        : Colors.grey,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -223,16 +223,31 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     // === UI ELEMENTS ===
                     buildSectionTitle("UI Elements"),
                     buildAyatCardToggle(
-                      title: "Show Ayat Card",
+                      title: "Show Ayat",
                       expanded: ayatExpanded,
                       onExpandChanged: (v) => setState(() => ayatExpanded = v),
-                      isEnabled: context.watch<CardVisibilityManager>().showCard,
+                      isEnabled: context.watch<CardVisibilityManager>().showAyatCard,
                       onToggle: (value) {
-                        context.read<CardVisibilityManager>().toggleCardVisibility(value);
+                        context.read<CardVisibilityManager>().toggleAyatCard(value);
                         audioManager.playEventSound('toggleButton');
                       },
+                      content: "Enable or disable the Ayat card from appearing in your app",
                       icon: Icons.menu_book,
                       color: Colors.orange,
+                    ),
+
+                    buildAyatCardToggle(
+                      title: "Show Duaa",
+                      expanded: DuaaDialogExpanded,
+                      onExpandChanged: (v) => setState(() => DuaaDialogExpanded = v),
+                      isEnabled: context.watch<CardVisibilityManager>().showDuaaDialog,
+                      onToggle: (value) {
+                        context.read<CardVisibilityManager>().toggleDuaaDialog(value);
+                        audioManager.playEventSound('toggleButton');
+                      },
+                      content: "Enable or Disable Duaa Every Time You Enter",
+                      icon: Icons.border_outer,
+                      color: Colors.deepOrange,
                     ),
 
                     // === ACCOUNT & BACKUP ===
@@ -273,6 +288,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
   }
 
   bool ayatExpanded = false; // collapsed by default
+  bool DuaaDialogExpanded = false; // collapsed by default
 
 
   Widget buildAyatCardToggle({
@@ -283,6 +299,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
     required Function(bool) onToggle,
     required IconData icon,
     required Color color,
+    required String content,
   }) {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
 
@@ -318,7 +335,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
             Padding(
               padding: const EdgeInsets.all(12),
               child: Text(
-                "Enable or disable the Ayat card from appearing in your app.",
+              content,
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[700],

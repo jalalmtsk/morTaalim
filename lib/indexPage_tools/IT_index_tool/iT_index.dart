@@ -6,12 +6,11 @@ import 'iT_grid.dart';
 
 
 class ITTabs extends StatelessWidget {
-  final MusicPlayer musicPlayer;
 
-  const ITTabs({super.key, required this.musicPlayer});
+  const ITTabs({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ITGrid(ITCourses: ITCourses, musicPlayer: musicPlayer);
+    return ITGrid(ITCourses: ITCourses);
   }
 }

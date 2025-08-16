@@ -2,20 +2,23 @@ import 'dart:async';
 import 'dart:ui';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:mortaalim/XpSystem.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class MemoryGame extends StatefulWidget {
+class MFAdventureMode extends StatefulWidget {
   final int startLevel;
 
-  const MemoryGame({super.key, required this.startLevel});
+  const MFAdventureMode({super.key, required this.startLevel});
 
   @override
-  State<MemoryGame> createState() => _MemoryGameState();
+  State<MFAdventureMode> createState() => _MFAdventureModeState();
 }
 
-class _MemoryGameState extends State<MemoryGame> with SingleTickerProviderStateMixin {
+class _MFAdventureModeState extends State<MFAdventureMode> with SingleTickerProviderStateMixin {
   /// All available images (put them in assets/images/memory/)
   final List<String> allImages = List.generate(
-    100,
+    36,
         (index) => 'assets/images/UI/utilities/MemoryFlip_images/${index + 1}.png',
   );
 
@@ -31,11 +34,17 @@ class _MemoryGameState extends State<MemoryGame> with SingleTickerProviderStateM
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
 
+  // Track completed levels to give Tolim only once
+   Set<int> _completedLevels = {};
+
+
   @override
   void initState() {
     super.initState();
     currentLevel = widget.startLevel;
     _stopwatch = Stopwatch();
+
+    _loadCompletedLevels(); // load saved levels
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 100),
@@ -52,6 +61,14 @@ class _MemoryGameState extends State<MemoryGame> with SingleTickerProviderStateM
     _startLevel();
   }
 
+  Future<void> _loadCompletedLevels() async {
+    final prefs = await SharedPreferences.getInstance();
+    final completed = prefs.getStringList('completedLevels') ?? [];
+    setState(() {
+      _completedLevels = completed.map(int.parse).toSet();
+    });
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -61,15 +78,12 @@ class _MemoryGameState extends State<MemoryGame> with SingleTickerProviderStateM
   }
 
   void _startLevel() {
-    // Determine number of pairs for this level
     int pairsCount = (3 + (currentLevel ~/ 2)).clamp(3, 12);
 
-    // Pick random images for this level
     final random = Random();
     final selectedImages = List<String>.from(allImages)..shuffle(random);
     final levelImages = selectedImages.take(pairsCount).toList();
 
-    // Duplicate and shuffle cards
     _cards = [];
     for (var img in levelImages) {
       _cards.add(_CardData(img));
@@ -83,7 +97,6 @@ class _MemoryGameState extends State<MemoryGame> with SingleTickerProviderStateM
     _canTap = false;
     _stopwatch.reset();
 
-    // Show preview before playing
     int previewSeconds = (4 - (currentLevel ~/ 2)).clamp(1, 4);
     Timer(Duration(seconds: previewSeconds), () {
       if (!mounted) return;
@@ -171,14 +184,25 @@ class _MemoryGameState extends State<MemoryGame> with SingleTickerProviderStateM
     );
   }
 
-  void _finishLevel() {
+  void _finishLevel() async {
+    final xpManager = Provider.of<ExperienceManager>(context, listen : false);
+    xpManager.addXP(context: context,2);
+    if (!_completedLevels.contains(currentLevel)) {
+      _completedLevels.add(currentLevel);
+      xpManager.addTokenBanner(context, 1); // Give 1 Tolim
+
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setStringList('completedLevels', _completedLevels.map((e) => e.toString()).toList());
+    }
+
     int nextLevel = currentLevel + 1;
-    if (nextLevel >= 50) { // End game after 50 levels
+    if (nextLevel >= 50) {
       Navigator.of(context).pop(currentLevel);
     } else {
       Navigator.of(context).pop(nextLevel);
     }
   }
+
 
   Widget _glassmorphicCard({required Widget child, required VoidCallback? onTap}) {
     return GestureDetector(
@@ -253,7 +277,6 @@ class _MemoryGameState extends State<MemoryGame> with SingleTickerProviderStateM
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
         child: Column(
           children: [
-            // Status Bar
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -262,8 +285,6 @@ class _MemoryGameState extends State<MemoryGame> with SingleTickerProviderStateM
               ],
             ),
             const SizedBox(height: 20),
-
-            // Cards Grid
             Expanded(
               child: GridView.builder(
                 physics: const BouncingScrollPhysics(),

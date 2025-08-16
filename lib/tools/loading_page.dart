@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 import '../../../l10n/app_localizations.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 
@@ -18,8 +20,6 @@ class LoadingPage extends StatefulWidget {
   State<LoadingPage> createState() => _LoadingPageState();
 }
 
-
-MusicPlayer _catSound = MusicPlayer();
 class _LoadingPageState extends State<LoadingPage> {
   late String selectedPhraseKey;
   bool showBottomCat = false;
@@ -40,17 +40,17 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   void initState() {
     super.initState();
-
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     final random = Random();
     selectedPhraseKey = phraseKeys[random.nextInt(phraseKeys.length)];
 
-    // 10% chance to show bottom cat
-    showBottomCat = random.nextInt(10) == 0;
+    // 50% chance to show bottom cat
+    showBottomCat = random.nextBool();
+
     if (showBottomCat) {
       Future.delayed(const Duration(milliseconds: 300), () async {
         if (mounted) {
-          await _catSound.stop(); // Ensures the player is reset
-          _catSound.play("assets/audios/sound_effects/catMeow.mp3");
+          audioManager.playAlert("assets/audios/sound_effects/catMeow.mp3");
         }
       });
     }
@@ -64,7 +64,6 @@ class _LoadingPageState extends State<LoadingPage> {
 
   @override
   void dispose() {
-    _catSound.dispose();
     super.dispose();
   }
 
@@ -114,7 +113,7 @@ class _LoadingPageState extends State<LoadingPage> {
 
             const Spacer(flex: 2),
 
-            /// Optional bottom cat animation (10% chance)
+            /// Optional bottom cat animation (50% chance)
             if (showBottomCat)
               Padding(
                 padding: const EdgeInsets.only(bottom: 3.0),

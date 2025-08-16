@@ -65,8 +65,8 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
   // Volumes
   double _bgVolume = 0.1;
   double _sfxVolume = 0.5;
-  double _buttonVolume = 0.3;
-  double _alertVolume = 0.4;
+  double _buttonVolume = 0.4;
+  double _alertVolume = 0.6;
 
   // SharedPreferences keys
   static const String _prefBgVolumeKey = 'bgVolume';
@@ -294,8 +294,8 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
   Future<void> resetAudioSettings() async {
     _bgVolume = 0.1;
     _sfxVolume = 0.5;
-    _buttonVolume = 0.3;
-    _alertVolume = 0.4;
+    _buttonVolume = 0.4;
+    _alertVolume = 0.6;
     _isBgMuted = false;
     _isSfxMuted = false;
     _isButtonMuted = false;
@@ -319,7 +319,6 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
     if (kDebugMode) print('[AudioManager] Audio settings reset to default');
     notifyListeners();
   }
-
 
   @override
   void dispose() {

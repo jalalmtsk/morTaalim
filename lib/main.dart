@@ -9,9 +9,12 @@ import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Pet/pet_home_page.dart';
 import 'package:mortaalim/TestingBeforeProdcution/DragonGameFruit.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
-import 'package:mortaalim/games/MemoryFlipGame/LevelSeletor.dart';
+import 'package:mortaalim/games/MemoryFlipGame/AdventureMode/LevelSeletor.dart';
+import 'package:mortaalim/games/MemoryFlipGame/MemoryFlip_index.dart';
+import 'package:mortaalim/games/MemoryFlipGame/SurvivalMode/MainSurvivalModePage.dart';
 import 'package:mortaalim/tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
-import 'package:mortaalim/widgets/ProfileSetup_Widget/UserDataProfileEntering.dart';
+import 'package:mortaalim/widgets/ProfileSetup_Widget/BannerAndAvatarProfilePage/BannerAvatarProfile.dart';
+import 'package:mortaalim/widgets/ProfileSetup_Widget/MainProfile_Page/Widgets/UserDataProfileEntering.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
 import 'package:mortaalim/courses/primaire1Page/index_1PrimairePage.dart';
 import 'package:mortaalim/firebase_options.dart';
@@ -36,14 +39,13 @@ import 'package:mortaalim/games/Tracing_Alphabet_app/language_selector.dart';
 import 'package:mortaalim/games/WordExplorer/WordExplorerPage.dart';
 import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
-import 'package:mortaalim/widgets/ProfileSetup_Widget/profileSetupPage.dart';
 import 'package:mortaalim/tools/ConnectivityManager/Connectivity_Manager.dart';
 import 'package:mortaalim/tools/LifeCycleManager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/MusicRouteObserver.dart';
 import 'package:mortaalim/widgets/AIChatbot/ChatBotScreen.dart';
 import 'package:mortaalim/widgets/ComingSoon.dart';
-import 'package:mortaalim/widgets/CreditsPage.dart';
+import 'package:mortaalim/widgets/CreditPage/CreditsPage.dart';
 import 'package:mortaalim/widgets/SplashPage/splashScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -162,13 +164,13 @@ class _MyAppState extends State<MyApp> {
             'FavoriteWords': (context) => const FavoriteWordsPage(),
             "SugarSmash": (context) => const Sugrasmash(),
             "BreakingWalls": (context) => BreakingWalls(),
-            "MemoryFlip" : (context) => MemoryFlipLevelSelector(totalLevels: 50, unlockedLevel: 1),
+            "MemoryFlip" : (context) => MFIndexPage(),
 
 
             'index1Primaire': (context) => Index1Primaire(),
-            'Profile': (context) => const ProfileSetupPage(),
+            'Profile': (context) => const BannerAvatarProfile(),
 
-            'Shop': (context) => MainShopPageIndex(),
+            'Shop': (context) => SurvivalMemoryGame(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

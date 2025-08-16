@@ -6,10 +6,11 @@ import 'package:mortaalim/Settings/setting_Page.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/Settings/SettingPanelInGame.dart';
 import 'package:mortaalim/tools/Reysable_Tools/SmartDuaaMorningNight_Dialog.dart';
+import 'package:mortaalim/tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
-import 'package:mortaalim/widgets/ProfileSetup_Widget/profile_page.dart';
+import 'package:mortaalim/widgets/ProfileSetup_Widget/MainProfile_Page/MainProfile_page.dart';
 import 'package:provider/provider.dart';
 
 import 'XpSystem.dart';
@@ -75,13 +76,23 @@ class _IndexState extends State<Index>
 
     // Play alert and background music AFTER first frame for immediate playback
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // Optional: preload alert audio for instant play
       audioManager.playAlert("assets/audios/HappyIntranceIndex.mp3");
       audioManager.playBackgroundMusic(
         "assets/audios/BackGround_Audio/IndexBackGroundMusic_BCG.mp3",
       );
+
+      // Wait until CardVisibilityManager has loaded preferences
+      final cardManager = context.read<CardVisibilityManager>();
+      await Future.doWhile(() async {
+        // Wait until _loadPreferences() has finished
+        if (cardManager.showDuaaDialog != null) return false;
+        await Future.delayed(Duration(milliseconds: 50));
+        return true;
+      });
+
       _showDuaaDialog();
     });
+
 
     // Play sound on tab change
     _tabController.addListener(() {
@@ -157,6 +168,7 @@ class _IndexState extends State<Index>
 
 
   void _showDuaaDialog() {
+    if (!context.read<CardVisibilityManager>().showDuaaDialog) return;
     final hour = DateTime.now().hour;
     String duaa = '';
 
@@ -168,7 +180,10 @@ class _IndexState extends State<Index>
       duaa = "🌙 Night Duaa: اللهم بك أمسينا وبك أصبحنا وبك نحيا وبك نموت وإليك المصير";
     }
 
-    showDialog(context: context, builder: (context) => DuaaDialog() );
+      showDialog(
+        context: context,
+        builder: (_) => const DuaaDialog(),
+      );
   }
 
   Future<void> simulateLoading() async {
@@ -287,7 +302,7 @@ class _IndexState extends State<Index>
                                 onTap: () {
                                   audioManager.playEventSound('clickButton');
                                   Navigator.of(context)
-                                      .push(createFadeRoute(ProfilePage()));
+                                      .push(createFadeRoute(MainProfilePage()));
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(1.0),

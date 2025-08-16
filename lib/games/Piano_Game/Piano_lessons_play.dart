@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 import 'package:provider/provider.dart';
 
 import '../../XpSystem.dart';
 
-final MusicPlayer _lessonPlayer = MusicPlayer();
 
 class PianoLessonsPage extends StatelessWidget {
   const PianoLessonsPage({super.key});
@@ -83,7 +83,8 @@ class _InteractiveLessonPageState extends State<InteractiveLessonPage> {
   }
 
   Future<void> playNote(String note) async {
-    await _lessonPlayer.play('assets/audios/piano_notes/$note.mp3');
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    await audioManager.playAlert('assets/audios/piano_notes/$note.mp3');
 
     if (!lessonCompleted && note == widget.lesson.notes[currentNoteIndex]) {
       // Add XP per correct note

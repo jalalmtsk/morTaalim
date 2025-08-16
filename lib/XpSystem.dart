@@ -67,9 +67,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   Timer? _rewardTimer;
   Timer? _delayedRestartTimer;
 
-  static const rewardCooldown = Duration(minutes: 30);
-  static const inactivityRestartDelay = Duration(seconds: 5);
-
   bool get isFirstLogin => lastLogin == null;
 
   // Ads toggle
@@ -88,7 +85,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     WidgetsBinding.instance.addObserver(this);
     loadData();
   }
-
 
   // -------------- XP System -------------------
 
@@ -698,13 +694,12 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     }
   }
 
-  //-----------------Course Progression Manager Setters ----------------------------------------
-
 
 //----------------------------------------------------------------------------------
   void resetData() {
     userProfile.clearPrefs(prefs);
     learningPreferences.clearPrefs(prefs);
+    inventoryManager.clearPrefs(prefs);
     _xp = 0;
     _stars = 0;
     Tolims = 20;
