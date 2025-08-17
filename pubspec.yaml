@@ -143,6 +143,13 @@ flutter:
   - assets/images/PetImages/CatPet/
   - assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/
   - assets/images/UI/utilities/MemoryFlip_images/
+  - assets/images/UI/utilities/MemoryFlip_images/Cake/
+  - assets/images/UI/utilities/MemoryFlip_images/Candy/
+  - assets/images/UI/utilities/MemoryFlip_images/Dessert/
+  - assets/images/UI/utilities/MemoryFlip_images/FastFood/
+  - assets/images/UI/utilities/MemoryFlip_images/ItalianFood/
+  - assets/images/UI/utilities/MemoryFlip_images/Sushi/
+  - assets/images/UI/utilities/MemoryFlip_images/Vegetables/
 
     #Videos
 

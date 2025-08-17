@@ -2,26 +2,33 @@ import 'dart:async';
 import 'dart:ui';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:mortaalim/XpSystem.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../XpSystem.dart';
+import 'CategoryOfImages_Data.dart';
+
+
+
+/// ---------------- GAME MODE ----------------
 class MFAdventureMode extends StatefulWidget {
   final int startLevel;
+  final String category;
 
-  const MFAdventureMode({super.key, required this.startLevel});
+  const MFAdventureMode({
+    super.key,
+    required this.startLevel,
+    required this.category,
+  });
 
   @override
   State<MFAdventureMode> createState() => _MFAdventureModeState();
 }
 
-class _MFAdventureModeState extends State<MFAdventureMode> with SingleTickerProviderStateMixin {
-  /// All available images (put them in assets/images/memory/)
-  final List<String> allImages = List.generate(
-    36,
-        (index) => 'assets/images/UI/utilities/MemoryFlip_images/${index + 1}.png',
-  );
-
+class _MFAdventureModeState extends State<MFAdventureMode>
+    with SingleTickerProviderStateMixin {
+  late List<String> allImages;
   late int currentLevel;
   late List<_CardData> _cards;
   bool _waiting = true;
@@ -34,17 +41,18 @@ class _MFAdventureModeState extends State<MFAdventureMode> with SingleTickerProv
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
 
-  // Track completed levels to give Tolim only once
-   Set<int> _completedLevels = {};
-
+  Set<int> _completedLevels = {};
 
   @override
   void initState() {
     super.initState();
     currentLevel = widget.startLevel;
-    _stopwatch = Stopwatch();
 
-    _loadCompletedLevels(); // load saved levels
+    // Load images for chosen category
+    allImages = categoryImages[widget.category] ?? [];
+
+    _stopwatch = Stopwatch();
+    _loadCompletedLevels();
 
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 100),
@@ -52,10 +60,8 @@ class _MFAdventureModeState extends State<MFAdventureMode> with SingleTickerProv
       lowerBound: 0.95,
       upperBound: 1.0,
     );
-    _scaleAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    );
+    _scaleAnimation =
+        CurvedAnimation(parent: _animationController, curve: Curves.easeOut);
     _animationController.value = 1.0;
 
     _startLevel();
@@ -63,10 +69,19 @@ class _MFAdventureModeState extends State<MFAdventureMode> with SingleTickerProv
 
   Future<void> _loadCompletedLevels() async {
     final prefs = await SharedPreferences.getInstance();
-    final completed = prefs.getStringList('completedLevels') ?? [];
+    final completed =
+        prefs.getStringList('completedLevels_${widget.category}') ?? [];
     setState(() {
       _completedLevels = completed.map(int.parse).toSet();
     });
+  }
+
+  Future<void> _saveCompletedLevels() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setStringList(
+      'completedLevels_${widget.category}',
+      _completedLevels.map((e) => e.toString()).toList(),
+    );
   }
 
   @override
@@ -169,15 +184,18 @@ class _MFAdventureModeState extends State<MFAdventureMode> with SingleTickerProv
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white.withOpacity(0.9),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('No moves left', style: TextStyle(color: Colors.deepPurple)),
-        content: const Text('You ran out of moves. Restarting level.', style: TextStyle(color: Colors.black87)),
+        title: const Text('No moves left',
+            style: TextStyle(color: Colors.deepPurple)),
+        content: const Text('You ran out of moves. Restarting level.',
+            style: TextStyle(color: Colors.black87)),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
               _startLevel();
             },
-            child: Text('Restart', style: TextStyle(color: Colors.deepPurple.shade700)),
+            child: Text('Restart',
+                style: TextStyle(color: Colors.deepPurple.shade700)),
           ),
         ],
       ),
@@ -185,14 +203,13 @@ class _MFAdventureModeState extends State<MFAdventureMode> with SingleTickerProv
   }
 
   void _finishLevel() async {
-    final xpManager = Provider.of<ExperienceManager>(context, listen : false);
-    xpManager.addXP(context: context,2);
+    final xpManager =
+    Provider.of<ExperienceManager>(context, listen: false);
+    xpManager.addXP(2, context: context);
     if (!_completedLevels.contains(currentLevel)) {
       _completedLevels.add(currentLevel);
       xpManager.addTokenBanner(context, 1); // Give 1 Tolim
-
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setStringList('completedLevels', _completedLevels.map((e) => e.toString()).toList());
+      await _saveCompletedLevels();
     }
 
     int nextLevel = currentLevel + 1;
@@ -203,8 +220,8 @@ class _MFAdventureModeState extends State<MFAdventureMode> with SingleTickerProv
     }
   }
 
-
-  Widget _glassmorphicCard({required Widget child, required VoidCallback? onTap}) {
+  Widget _glassmorphicCard(
+      {required Widget child, required VoidCallback? onTap}) {
     return GestureDetector(
       onTapDown: (_) => _animationController.reverse(),
       onTapUp: (_) => _animationController.forward(),
@@ -250,7 +267,6 @@ class _MFAdventureModeState extends State<MFAdventureMode> with SingleTickerProv
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
     int columns = _cards.length <= 12 ? 3 : 4;
     final elapsed = _stopwatch.elapsed;
     final minutes = elapsed.inMinutes.toString().padLeft(2, '0');
@@ -263,20 +279,21 @@ class _MFAdventureModeState extends State<MFAdventureMode> with SingleTickerProv
         elevation: 0,
         centerTitle: true,
         title: Text(
-          'Level ${currentLevel + 1}',
+          '${widget.category} - Level ${currentLevel + 1}',
           style: TextStyle(
             color: Colors.deepPurple.shade700,
             fontWeight: FontWeight.w900,
-            fontSize: 28,
+            fontSize: 24,
             letterSpacing: 1.1,
           ),
         ),
         iconTheme: IconThemeData(color: Colors.deepPurple.shade700),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Column(
           children: [
+            Userstatutbar(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -297,7 +314,8 @@ class _MFAdventureModeState extends State<MFAdventureMode> with SingleTickerProv
                 ),
                 itemBuilder: (context, index) {
                   final card = _cards[index];
-                  final showFace = _waiting || card.isMatched || _selectedIndices.contains(index);
+                  final showFace =
+                      _waiting || card.isMatched || _selectedIndices.contains(index);
 
                   return _glassmorphicCard(
                     onTap: () => _onCardTap(index),
@@ -355,3 +373,4 @@ class _CardData {
   bool isMatched;
   _CardData(this.imagePath, {this.isMatched = false});
 }
+

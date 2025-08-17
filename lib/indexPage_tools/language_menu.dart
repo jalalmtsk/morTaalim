@@ -25,13 +25,47 @@ class LanguageMenu extends StatelessWidget {
       elevation: 8,
       tooltip: 'Change Language',
       onSelected: (locale) {
-        // ✅ Update locale via ExperienceManager
+        // Update locale via ExperienceManager
         Provider.of<ExperienceManager>(context, listen: false)
             .changeLanguage(locale);
+
+        // Show dialog if Tamazight is selected
+        if (locale.languageCode == 'zgh') {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: Row(
+                children: const [
+                  Icon(Icons.warning, color: Colors.orange),
+                  SizedBox(width: 8),
+                  Text(
+                    "⚠️ Attention",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+              content: const Text(
+                "Amazigh is not fully supported yet.\n"
+                    "ⵜⴰⵎⴰⵣⵉⵖⵜ ⴰⵎⴰⵣⵉⵖⵜ ⵢⵓⵙ ⵢⵓⴷⵓⴷ ⴷⵉⵏⵉⵎ.\n"
+                    "الأمازيغية غير مدعومة بالكامل بعد.\n\n"
+                    "Team Jalnix is working on it!",              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text(
+                    "OK",
+                    style: TextStyle(color: Colors.orange),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
       },
       itemBuilder: (BuildContext context) => const [
         PopupMenuItem(value: Locale("en"), child: _LangRow("🇺🇸", "English")),
-        PopupMenuItem(value: Locale("ar"), child: _LangRow("🇲🇦", "العربية")),
+        PopupMenuItem(value: Locale("ar"), child: _LangRow("🇸🇦", "العربية")),
+        PopupMenuItem(value: Locale("zgh"), child: _LangRow("🇲🇦", "ⵜⴰⵎⴰⵣⵉⵖⵜ")),
         PopupMenuItem(value: Locale("fr"), child: _LangRow("🇫🇷", "Français")),
         PopupMenuItem(value: Locale("de"), child: _LangRow("🇩🇪", "Deutsch")),
       ],

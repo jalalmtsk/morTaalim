@@ -1,26 +1,29 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:mortaalim/games/MemoryFlipGame/AdventureMode/MemoryFlip.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'MFAdventureMode.dart';
 
 class MFLevelSelectorAdventure extends StatefulWidget {
   final int totalLevels;
   final int unlockedLevel;
+  final String category;
 
   const MFLevelSelectorAdventure({
     super.key,
     required this.totalLevels,
     required this.unlockedLevel,
+    required this.category,
   });
 
   @override
   State<MFLevelSelectorAdventure> createState() => _MFLevelSelectorAdventureState();
 }
 
-class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> with SingleTickerProviderStateMixin {
+class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure>
+    with SingleTickerProviderStateMixin {
   int? _currentUnlocked;
-  static const String _prefsKey = 'unlocked_level';
+  static const String _prefsKeyPrefix = 'unlocked_level_';
 
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -43,15 +46,9 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> wit
     _animationController.value = 1.0;
   }
 
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
   Future<void> _loadUnlockedLevel() async {
     final prefs = await SharedPreferences.getInstance();
-    final savedLevel = prefs.getInt(_prefsKey);
+    final savedLevel = prefs.getInt('$_prefsKeyPrefix${widget.category}');
     setState(() {
       _currentUnlocked = savedLevel ?? widget.unlockedLevel;
     });
@@ -59,13 +56,16 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> wit
 
   Future<void> _saveUnlockedLevel(int level) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_prefsKey, level);
+    await prefs.setInt('$_prefsKeyPrefix${widget.category}', level);
   }
 
   Future<void> _startLevel(int index) async {
     int? result = await Navigator.of(context).push<int>(
       MaterialPageRoute(
-        builder: (_) => MFAdventureMode(startLevel: index),
+        builder: (_) => MFAdventureMode(
+          startLevel: index,
+          category: widget.category,
+        ),
       ),
     );
 
@@ -83,10 +83,13 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> wit
     }
   }
 
-  Widget _glassmorphicCard({
-    required Widget child,
-    required VoidCallback? onTap,
-  }) {
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
+  Widget _glassmorphicCard({required Widget child, required VoidCallback? onTap}) {
     return GestureDetector(
       onTapDown: (_) => _animationController.reverse(),
       onTapUp: (_) => _animationController.forward(),
@@ -103,20 +106,20 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> wit
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
-                    Colors.white.withValues(alpha: 0.25),
-                    Colors.white.withValues(alpha: 0.05),
+                    Colors.white.withOpacity(0.25),
+                    Colors.white.withOpacity(0.05),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.3),
+                  color: Colors.white.withOpacity(0.3),
                   width: 2,
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.purple.withValues(alpha: 0.1),
+                    color: Colors.purple.withOpacity(0.1),
                     offset: const Offset(0, 8),
                     blurRadius: 24,
                   ),
@@ -144,9 +147,8 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> wit
     return Scaffold(
       backgroundColor: const Color(0xFFE0F7FA),
       appBar: AppBar(
-        title: const Text("Select Level"),
+        title: Text("${widget.category} Levels"),
         actions: [
-          // Unlock All Levels
           IconButton(
             icon: const Icon(Icons.lock_open),
             tooltip: "Unlock All",
@@ -157,7 +159,6 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> wit
               await _saveUnlockedLevel(widget.totalLevels - 1);
             },
           ),
-          // Reset Progress
           IconButton(
             icon: const Icon(Icons.restart_alt),
             tooltip: "Reset Progress",
@@ -176,12 +177,12 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> wit
             Positioned(
               top: -100,
               left: -50,
-              child: _buildBlob(180, Colors.pinkAccent.withValues(alpha: 0.15)),
+              child: _buildBlob(180, Colors.pinkAccent.withOpacity(0.15)),
             ),
             Positioned(
               bottom: -120,
               right: -40,
-              child: _buildBlob(220, Colors.lightBlueAccent.withValues(alpha: 0.15)),
+              child: _buildBlob(220, Colors.lightBlueAccent.withOpacity(0.15)),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
@@ -195,7 +196,7 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> wit
                       color: Colors.deepPurple.shade700,
                       shadows: [
                         Shadow(
-                          color: Colors.deepPurple.shade200.withValues(alpha: 0.5),
+                          color: Colors.deepPurple.shade200.withOpacity(0.5),
                           offset: const Offset(0, 3),
                           blurRadius: 8,
                         )
@@ -232,12 +233,6 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> wit
                                     key: const ValueKey('star'),
                                     size: 35,
                                     color: Colors.amberAccent.shade700,
-                                    shadows: const [
-                                      Shadow(
-                                        blurRadius: 8,
-                                        color: Colors.orangeAccent,
-                                      )
-                                    ],
                                   )
                                       : Icon(
                                     Icons.lock_rounded,
@@ -273,7 +268,6 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> wit
     );
   }
 
-
   Widget _buildBlob(double size, Color color) {
     return Container(
       width: size,
@@ -283,7 +277,7 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure> wit
         borderRadius: BorderRadius.circular(size),
         boxShadow: [
           BoxShadow(
-            color: color.withValues(alpha: 0.5),
+            color: color.withOpacity(0.5),
             blurRadius: 40,
             spreadRadius: 10,
           )

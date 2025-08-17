@@ -621,59 +621,59 @@ class AppLocalizationsFr extends AppLocalizations {
   String get science => 'Science';
 
   @override
-  String get badges_beginnerReader => 'beginner reader';
+  String get badges_beginnerReader => 'lecteur débutant';
 
   @override
-  String get badges_curiousMind => 'curious mind';
+  String get badges_curiousMind => 'esprit curieux';
 
   @override
-  String get badges_bookLover => 'book lover';
+  String get badges_bookLover => 'amoureux des livres';
 
   @override
-  String get badges_knowledgeSeeker => 'knowledge seeker';
+  String get badges_knowledgeSeeker => 'chercheur de savoir';
 
   @override
-  String get badges_quizExpert => 'quiz expert';
+  String get badges_quizExpert => 'expert en quiz';
 
   @override
-  String get badges_studyMaster => 'study master';
+  String get badges_studyMaster => 'maître d\'étude';
 
   @override
-  String get badges_truthDiscoverer => 'truth discoverer';
+  String get badges_truthDiscoverer => 'découvreur de vérité';
 
   @override
   String get badges_intelligent => 'intelligent';
 
   @override
-  String get badges_theorist => 'theorist';
+  String get badges_theorist => 'théoricien';
 
   @override
-  String get badges_masterOfLogic => 'master of logic';
+  String get badges_masterOfLogic => 'maître de la logique';
 
   @override
-  String get badges_keeperOfWisdom => 'keeper of wisdom';
+  String get badges_keeperOfWisdom => 'gardien de la sagesse';
 
   @override
-  String get badges_ideaArchitect => 'idea architect';
+  String get badges_ideaArchitect => 'architecte d\'idées';
 
   @override
-  String get badges_thoughtLeader => 'thought leader';
+  String get badges_thoughtLeader => 'leader de pensée';
 
   @override
-  String get badges_mindMentor => 'mind mentor';
+  String get badges_mindMentor => 'mentor d\'esprit';
 
   @override
-  String get badges_wizardOfWisdom => 'wizard of wisdom';
+  String get badges_wizardOfWisdom => 'sorcier de la sagesse';
 
   @override
-  String get badges_learningLegend => 'learning legend';
+  String get badges_learningLegend => 'légende de l\'apprentissage';
 
   @override
-  String get badges_sageOfTruth => 'sage of truth';
+  String get badges_sageOfTruth => 'sage de la vérité';
 
   @override
-  String get badges_greatScholar => 'great scholar';
+  String get badges_greatScholar => 'grand érudit';
 
   @override
-  String get badges_pinnacleOfKnowledge => 'pinnacle of knowledge';
+  String get badges_pinnacleOfKnowledge => 'sommet du savoir';
 }

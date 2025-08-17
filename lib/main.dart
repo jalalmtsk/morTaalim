@@ -5,11 +5,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:intl/intl.dart';
 import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Pet/pet_home_page.dart';
 import 'package:mortaalim/TestingBeforeProdcution/DragonGameFruit.dart';
+import 'package:mortaalim/TestingBeforeProdcution/DrawSketch.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
-import 'package:mortaalim/games/MemoryFlipGame/AdventureMode/LevelSeletor.dart';
 import 'package:mortaalim/games/MemoryFlipGame/MemoryFlip_index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/SurvivalMode/MainSurvivalModePage.dart';
 import 'package:mortaalim/tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
@@ -56,6 +57,7 @@ import 'IndexPage.dart';
 import 'TestingBeforeProdcution/WaterFilledANimatuionCotnrol.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
+import 'l10n/amazigh_localizations.dart';
 
 
 final String appVersion = "1.0.0 (Build 1)";
@@ -170,26 +172,52 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
 
-            'Shop': (context) => SurvivalMemoryGame(),
+            'Shop': (context) => MainShopPageIndex(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),
             'Splash': (context) => SplashPage(),
             "Auth": (context) => AuthGate(),
           },
-          localizationsDelegates: const [
+          localizationsDelegates:  [
             AppLocalizations.delegate,
+            AmazighMaterialLocalizations.delegate,
             GlobalMaterialLocalizations.delegate,
+            DefaultMaterialLocalizations.delegate, // Use Default instead of Global
             GlobalCupertinoLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate, // only Cupertino widgets
           ],
+
+          localeResolutionCallback: (locale, supportedLocales) {
+            if (locale == null) return const Locale('en');
+
+            for (var supportedLocale in supportedLocales) {
+              if (supportedLocale.languageCode == locale.languageCode &&
+                  supportedLocale.countryCode == locale.countryCode) {
+                return supportedLocale;
+              }
+            }
+
+            // Only fallback to English for Cupertino widgets if locale is zgh
+            if (locale.languageCode == 'zgh') {
+              return const Locale('en');
+            }
+
+            return supportedLocales.first;
+          },
+
           supportedLocales: const [
             Locale("fr"),
             Locale("ar"),
             Locale("en"),
             Locale("de"),
+            Locale("zgh"),
+            Locale('ber'), // Alternative Amazigh code
           ],
           locale: currentLocale,
+          showPerformanceOverlay: false,
+          showSemanticsDebugger: false,
           initialRoute: 'Auth',
         );
       },
@@ -203,3 +231,20 @@ class _MyAppState extends State<MyApp> {
 
 }
 
+class LocalizationOverrideWidget extends StatelessWidget {
+  final Widget child;
+
+  const LocalizationOverrideWidget({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Localizations(
+      locale: Localizations.localeOf(context),
+      delegates: [
+        DefaultMaterialLocalizations.delegate,
+        DefaultWidgetsLocalizations.delegate,
+      ],
+      child: child,
+    );
+  }
+}

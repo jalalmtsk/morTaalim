@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:mortaalim/games/MemoryFlipGame/AdventureMode/LevelSeletor.dart';
 import 'package:mortaalim/games/MemoryFlipGame/SurvivalMode/MainSurvivalModePage.dart';
+
+import 'AdventureMode/MFCategorySelector.dart';
 // Your Survival mode page
 
 class MFIndexPage extends StatelessWidget {
@@ -71,7 +72,7 @@ class MFIndexPage extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (_) => const MFLevelSelectorAdventure(totalLevels: 50,unlockedLevel: 0,),
+                              builder: (_) => const CategorySelection(),
                             ),
                           );
                         },

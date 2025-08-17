@@ -621,59 +621,59 @@ class AppLocalizationsAr extends AppLocalizations {
   String get science => 'العلوم';
 
   @override
-  String get badges_beginnerReader => 'beginner reader';
+  String get badges_beginnerReader => 'قارئ مبتدئ';
 
   @override
-  String get badges_curiousMind => 'curious mind';
+  String get badges_curiousMind => 'عقل فضولي';
 
   @override
-  String get badges_bookLover => 'book lover';
+  String get badges_bookLover => 'محب للكتب';
 
   @override
-  String get badges_knowledgeSeeker => 'knowledge seeker';
+  String get badges_knowledgeSeeker => 'باحث عن المعرفة';
 
   @override
-  String get badges_quizExpert => 'quiz expert';
+  String get badges_quizExpert => 'خبير الاختبارات';
 
   @override
-  String get badges_studyMaster => 'study master';
+  String get badges_studyMaster => 'ماهر في الدراسة';
 
   @override
-  String get badges_truthDiscoverer => 'truth discoverer';
+  String get badges_truthDiscoverer => 'مكتشف الحقائق';
 
   @override
-  String get badges_intelligent => 'intelligent';
+  String get badges_intelligent => 'ذكي';
 
   @override
-  String get badges_theorist => 'theorist';
+  String get badges_theorist => 'منظر';
 
   @override
-  String get badges_masterOfLogic => 'master of logic';
+  String get badges_masterOfLogic => 'سيد المنطق';
 
   @override
-  String get badges_keeperOfWisdom => 'keeper of wisdom';
+  String get badges_keeperOfWisdom => 'حافظ الحكمة';
 
   @override
-  String get badges_ideaArchitect => 'idea architect';
+  String get badges_ideaArchitect => 'مهندس الأفكار';
 
   @override
-  String get badges_thoughtLeader => 'thought leader';
+  String get badges_thoughtLeader => 'قائد الفكر';
 
   @override
-  String get badges_mindMentor => 'mind mentor';
+  String get badges_mindMentor => 'مرشد العقل';
 
   @override
-  String get badges_wizardOfWisdom => 'wizard of wisdom';
+  String get badges_wizardOfWisdom => 'ساحر الحكمة';
 
   @override
-  String get badges_learningLegend => 'learning legend';
+  String get badges_learningLegend => 'أسطورة التعلم';
 
   @override
-  String get badges_sageOfTruth => 'sage of truth';
+  String get badges_sageOfTruth => 'حكيم الحقيقة';
 
   @override
-  String get badges_greatScholar => 'great scholar';
+  String get badges_greatScholar => 'عالِم كبير';
 
   @override
-  String get badges_pinnacleOfKnowledge => 'pinnacle of knowledge';
+  String get badges_pinnacleOfKnowledge => 'قمة المعرفة';
 }
