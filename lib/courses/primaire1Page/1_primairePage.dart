@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/GlobalStatCard.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/MascotBubble.dart';
 import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/ProgressCard.dart';
@@ -205,6 +207,7 @@ class _Primaire1State extends State<Primaire1> {
   Widget build(BuildContext context) {
     final tr = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     return Scaffold(
       backgroundColor: const Color(0xfffdf6e3),
@@ -248,6 +251,7 @@ class _Primaire1State extends State<Primaire1> {
 
                   return GestureDetector(
                     onTap: () async {
+                      audioManager.playEventSound('clickButton2');
                       await Navigator.push(
                         context,
                         MaterialPageRoute(

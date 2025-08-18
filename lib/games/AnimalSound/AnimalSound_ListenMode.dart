@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:just_audio/just_audio.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 
 import 'Animal_Data.dart';
@@ -19,22 +20,47 @@ class _AnimalFullScreenPageState extends State<ListenMode>
   int currentIndex = 0;
   Random random = Random();
 
+  // --- Banner Ad ---
+  late BannerAd _bannerAd;
+  bool _isAdLoaded = false;
+
   @override
   void initState() {
     super.initState();
+
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _wiggleAnimation =
         Tween<double>(begin: 0, end: 15).animate(_animationController);
+
+    // Initialize Banner Ad
+    _bannerAd = BannerAd(
+      adUnitId: '<YOUR_BANNER_AD_UNIT_ID>', // replace with your Ad Unit ID
+      request: AdRequest(),
+      size: AdSize.banner,
+      listener: BannerAdListener(
+        onAdLoaded: (_) {
+          setState(() {
+            _isAdLoaded = true;
+          });
+        },
+        onAdFailedToLoad: (ad, error) {
+          ad.dispose();
+          print('Ad failed to load: $error');
+        },
+      ),
+    );
+
+    _bannerAd.load();
   }
 
   void playSoundAndAnimate(String soundPath) async {
     _animationController.forward().then((_) => _animationController.reverse());
+    await _audioPlayer.stop();
     await _audioPlayer.setAsset(soundPath);
     _audioPlayer.play();
   }
 
-  /// Floating playful particles (stars instead of white dots)
   Widget buildParticles() {
     return Stack(
       children: List.generate(15, (index) {
@@ -62,18 +88,11 @@ class _AnimalFullScreenPageState extends State<ListenMode>
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Background
-        Image.asset(
-          animal['bgImage'],
-          fit: BoxFit.cover,
-        ),
+        Image.asset(animal['bgImage'], fit: BoxFit.cover),
         buildParticles(),
-
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-
-            // Animal image in playful circle
             GestureDetector(
               onTap: () => playSoundAndAnimate(animal['sound']),
               child: AnimatedBuilder(
@@ -84,21 +103,17 @@ class _AnimalFullScreenPageState extends State<ListenMode>
                     child: child,
                   );
                 },
-                child: Container(
-                  child: Hero(
-                    tag: animal['name'],
-                    child: Image.asset(
-                      animal['image'],
-                      width: MediaQuery.of(context).size.width * 0.55,
-                      height: MediaQuery.of(context).size.width * 0.55,
-                    ),
+                child: Hero(
+                  tag: animal['name'],
+                  child: Image.asset(
+                    animal['image'],
+                    width: MediaQuery.of(context).size.width * 0.55,
+                    height: MediaQuery.of(context).size.width * 0.55,
                   ),
                 ),
               ),
             ),
             SizedBox(height: 30),
-
-            // Animal info card
             Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -155,10 +170,30 @@ class _AnimalFullScreenPageState extends State<ListenMode>
     );
   }
 
+  Widget buildPageIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: List.generate(
+        animals.length,
+            (index) => AnimatedContainer(
+          duration: Duration(milliseconds: 300),
+          margin: EdgeInsets.symmetric(horizontal: 4),
+          width: currentIndex == index ? 14 : 8,
+          height: 8,
+          decoration: BoxDecoration(
+            color: currentIndex == index ? Colors.blueAccent : Colors.grey,
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   void dispose() {
     _audioPlayer.dispose();
     _animationController.dispose();
+    _bannerAd.dispose();
     super.dispose();
   }
 
@@ -166,47 +201,35 @@ class _AnimalFullScreenPageState extends State<ListenMode>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // Transparent background
-        elevation: 0, // Remove shadow
-        surfaceTintColor: Colors.transparent, // Prevent Material3 tint
-        scrolledUnderElevation: 0, // Remove scroll shadow in Material3
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0,
       ),
-      extendBodyBehindAppBar: true, // Lets body go under the AppBar
-      body: Stack(
-        children: [
-          PageView.builder(
-            controller: _pageController,
-            itemCount: animals.length,
-            onPageChanged: (index) => setState(() => currentIndex = index),
-            itemBuilder: (context, index) {
-              return buildAnimalPage(animals[index]);
-            },
-          ),
-          // Page indicator (bottom)
-          Positioned(
-            bottom: 30,
-            left: 0,
-            right: 0,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                animals.length,
-                    (index) => AnimatedContainer(
-                  duration: Duration(milliseconds: 300),
-                  margin: EdgeInsets.symmetric(horizontal: 4),
-                  width: currentIndex == index ? 14 : 8,
-                  height: 8,
-                  decoration: BoxDecoration(
-                    color: currentIndex == index
-                        ? Colors.blueAccent
-                        : Colors.grey,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
+      extendBodyBehindAppBar: true,
+      body: PageView.builder(
+        controller: _pageController,
+        itemCount: animals.length,
+        onPageChanged: (index) => setState(() => currentIndex = index),
+        itemBuilder: (context, index) {
+          return buildAnimalPage(animals[index]);
+        },
+      ),
+      bottomNavigationBar: Container(
+        height: _isAdLoaded ? 80 : 40,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Page dots
+            buildPageIndicator(),
+            // Banner Ad
+            if (_isAdLoaded)
+              Container(
+                height: 50,
+                child: AdWidget(ad: _bannerAd),
               ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

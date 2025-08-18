@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/main.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import '../SavingPreferencesTool_Helper/Preferences_Helper.dart';
 
@@ -32,6 +34,7 @@ class DuaaDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final config = _getDuaaConfig();
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
@@ -98,7 +101,9 @@ class DuaaDialog extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  audioManager.playSfx('cancelButton');
+                  Navigator.pop(context);},
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Colors.black87,
@@ -107,9 +112,7 @@ class DuaaDialog extends StatelessWidget {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                child: const Text(
-                  "Close",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                child:  Text(tr(context).cancel,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
             ),

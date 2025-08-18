@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import 'package:mortaalim/XpSystem.dart'; // for ExperienceManager
 
@@ -13,13 +14,20 @@ class LanguageMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context,listen: false);
     return PopupMenuButton<Locale>(
       icon: Lottie.asset(
-        'assets/animations/translation_anim.json',
-        width: 40,
-        height: 100,
+        'assets/animations/languageSwitch_Animation.json',
+        width: 35,
+        height: 30,
         fit: BoxFit.cover,
       ),
+      onOpened: (){
+        audioManager.playEventSound('toggleButton');
+      },
+      onCanceled: (){
+        audioManager.playEventSound('cancelButton');
+      },
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       color: Colors.white,
       elevation: 8,
@@ -28,6 +36,7 @@ class LanguageMenu extends StatelessWidget {
         // Update locale via ExperienceManager
         Provider.of<ExperienceManager>(context, listen: false)
             .changeLanguage(locale);
+        audioManager.playEventSound('clickButton');
 
         // Show dialog if Tamazight is selected
         if (locale.languageCode == 'zgh') {
@@ -51,7 +60,10 @@ class LanguageMenu extends StatelessWidget {
                     "Team Jalnix is working on it!",              ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () {
+          audioManager.playEventSound('cancelButton');
+          Navigator.of(context).pop();
+                  },
                   child: const Text(
                     "OK",
                     style: TextStyle(color: Colors.orange),

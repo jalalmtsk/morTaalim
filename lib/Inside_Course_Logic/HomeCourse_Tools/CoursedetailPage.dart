@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import '../../Settings/SettingPanelInGame.dart';
-import '../../main.dart';
+import '../../tools/audio_tool/Audio_Manager.dart';
 import '../../widgets/AIChatbot/BotFeatures/BotWithGreeting.dart';
 import '../HomeCourse.dart';
 import '../nestedCourse.dart';
@@ -20,6 +20,7 @@ class CourseDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.orange.shade50,
       body: CustomScrollView(
@@ -128,6 +129,7 @@ class CourseDetailPage extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(16),
                       onTap: () {
+                        audioManager.playEventSound('clickButton');
                         Navigator.push(
                           context,
                           MaterialPageRoute(builder: (_) => CourseNodePage(node: sub)),

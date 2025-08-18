@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/XpSystem.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 
 class BotWithGreeting extends StatefulWidget {
@@ -52,6 +53,9 @@ class _BotWithGreetingState extends State<BotWithGreeting> {
   String? currentGreeting;
 
   void _showGreeting() {
+  final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playEventSound('clickButton2');
+
     setState(() {
       currentGreeting = greetings[Random().nextInt(greetings.length)];
     });

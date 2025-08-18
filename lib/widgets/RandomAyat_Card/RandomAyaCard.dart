@@ -81,6 +81,7 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
   @override
   Widget build(BuildContext context) {
     final cardVisibility = context.watch<CardVisibilityManager>();
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     if (!cardVisibility.showAyatCard) {
       return const SizedBox.shrink();
     }
@@ -120,7 +121,9 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => setState(() => _expanded = !_expanded),
+                    onTap: () {
+                      audioManager.playEventSound('toggleButton');
+                      setState(() => _expanded = !_expanded);},
                     child: Padding(
                       padding: const EdgeInsets.only(left: 8),
                       child: Icon(

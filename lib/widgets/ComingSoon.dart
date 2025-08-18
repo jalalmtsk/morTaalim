@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lottie/lottie.dart';
+
+import '../main.dart';
 
 class ComingSoonPage extends StatelessWidget {
   final double iconSize = 34;
@@ -17,6 +21,7 @@ class ComingSoonPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.teal[50],
       body: Center(
@@ -59,21 +64,29 @@ class ComingSoonPage extends StatelessWidget {
                       icon: FaIcon(FontAwesomeIcons.instagram),
                       iconSize: iconSize,
                       color: Colors.purple,
-                      onPressed: () => _launchUrl('https://instagram.com/YOUR_USERNAME'),
-                    ),
+                        onPressed: () {
+                          audioManager.playEventSound('clickButton');
+                          _launchUrl('https://tiktok.com/@YOUR_USERNAME');
+                        }                     ),
                     const SizedBox(width: 20),
                     IconButton(
                       icon: FaIcon(FontAwesomeIcons.youtube),
                       iconSize: iconSize,
                       color: Colors.red,
-                      onPressed: () => _launchUrl('https://youtube.com/@YOUR_CHANNEL'),
+                        onPressed: () {
+                          audioManager.playEventSound('clickButton');
+                          _launchUrl('https://tiktok.com/@YOUR_USERNAME');
+                        }
                     ),
                     const SizedBox(width: 20),
                     IconButton(
                       icon: FaIcon(FontAwesomeIcons.tiktok),
                       iconSize: iconSize,
                       color: Colors.black,
-                      onPressed: () => _launchUrl('https://tiktok.com/@YOUR_USERNAME'),
+                      onPressed: () {
+                        audioManager.playEventSound('clickButton');
+                        _launchUrl('https://tiktok.com/@YOUR_USERNAME');
+                      }
                     ),
                   ],
                 ),
@@ -84,10 +97,12 @@ class ComingSoonPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 30),
                 ElevatedButton.icon(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    audioManager.playEventSound('cancelButton');
+                    Navigator.pop(context);},
                   icon: Icon(Icons.arrow_back),
                   label: Text(
-                    'Retour',
+                    tr(context).back,
                     style: TextStyle(fontSize: 18),
                   ),
                   style: ElevatedButton.styleFrom(

@@ -1,5 +1,7 @@
 
 import 'package:flutter/material.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 
 class BadgeChip extends StatelessWidget {
   final String title;

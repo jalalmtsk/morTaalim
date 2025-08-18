@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mortaalim/XpSystem.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePage.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePratique.dart' hide Primaire1;
-import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../tools/audio_tool/Audio_Manager.dart';
 
 class Index1Primaire extends StatefulWidget {
   const Index1Primaire({super.key});
@@ -14,7 +13,6 @@ class Index1Primaire extends StatefulWidget {
   @override
   State<Index1Primaire> createState() => _Index1PrimaireState();
 }
-
 
 class _Index1PrimaireState extends State<Index1Primaire>
     with SingleTickerProviderStateMixin {
@@ -24,7 +22,6 @@ class _Index1PrimaireState extends State<Index1Primaire>
 
   Key _keyTab1 = UniqueKey();
   Key _keyTab2 = UniqueKey();
-  Key _keyTab3 = UniqueKey();
 
   static const _titles = [
     'math',
@@ -74,7 +71,6 @@ class _Index1PrimaireState extends State<Index1Primaire>
     setState(() {
       _keyTab1 = UniqueKey();
       _keyTab2 = UniqueKey();
-      _keyTab3 = UniqueKey();
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -88,7 +84,9 @@ class _Index1PrimaireState extends State<Index1Primaire>
 
   @override
   Widget build(BuildContext context) {
-final xpManager = ExperienceManager();
+    final xpManager = ExperienceManager();
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+
     const headerTextStyle = TextStyle(
       fontSize: 24,
       fontWeight: FontWeight.w700,
@@ -101,69 +99,80 @@ final xpManager = ExperienceManager();
     );
 
     return DefaultTabController(
-      length:
-      2,
-      child: Scaffold(
-        backgroundColor: Colors.grey[100],
-        body: Column(
-          children: [
+      length: 2,
+      child: Builder(builder: (context) {
+        final TabController tabController = DefaultTabController.of(context)!;
 
-            Userstatutbar(),
+        // Listen to tab taps
+        tabController.addListener(() {
+          if (!tabController.indexIsChanging) return; // user taps only
+          audioManager.playEventSound('clickButton');
+        });
 
-            SlideTransition(
-              position: _slideAnimation,
-              child: FadeTransition(
-                opacity: _fadeAnimation,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.arrow_back, color: Colors.deepOrange),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                        Expanded(
-                          child: Text(
-                            '1ère Année Primaire',
-                            style: headerTextStyle,
-                            textAlign: TextAlign.center,
+        return Scaffold(
+          backgroundColor: Colors.grey[100],
+          body: Column(
+            children: [
+              Userstatutbar(),
+
+              SlideTransition(
+                position: _slideAnimation,
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.arrow_back,
+                                color: Colors.deepOrange),
+                            onPressed: () {
+                              audioManager.playEventSound('cancelButton');
+                              Navigator.pop(context);
+                            },
                           ),
-                        ),
-                        // Invisible SizedBox for symmetry with back button
-                        const SizedBox(width: 48),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    TabBar(
-                      labelColor: Colors.deepOrange,
-                      unselectedLabelColor: Colors.grey,
-                      indicatorColor: Colors.deepOrange,
-                      indicatorWeight: 3,
-                      labelStyle: tabLabelStyle,
-                      tabs: const [
-                        Tab(icon: Icon(Icons.menu_book), text: 'Cours'),
-                        Tab(icon: Icon(Icons.track_changes_rounded), text: 'Exercices'),
-                      ],
-                    ),
+                          Expanded(
+                            child: Text(
+                              '1ère Année Primaire',
+                              style: headerTextStyle,
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          const SizedBox(width: 48),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      TabBar(
+                        labelColor: Colors.deepOrange,
+                        unselectedLabelColor: Colors.grey,
+                        indicatorColor: Colors.deepOrange,
+                        indicatorWeight: 3,
+                        labelStyle: tabLabelStyle,
+                        tabs: const [
+                          Tab(icon: Icon(Icons.menu_book), text: 'Cours'),
+                          Tab(
+                              icon: Icon(Icons.track_changes_rounded),
+                              text: 'Exercices'),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    Primaire1(key: _keyTab1, experienceManager: xpManager),
+                    Primaire1Pratique(key: _keyTab2),
                   ],
                 ),
               ),
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  // Pass null or actual experienceManager object if you have one
-                  Primaire1(key: _keyTab1, experienceManager: xpManager),
-                  Primaire1Pratique(key: _keyTab2),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      }),
     );
   }
 }

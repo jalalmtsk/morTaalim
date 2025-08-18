@@ -36,11 +36,10 @@ class GamifiedSection {
 }
 
 /// ---------- Main Widget ----------
-///
-///
-
 
 YoutubeProgressManager youtubeProgressManager = YoutubeProgressManager(); // your instance
+
+
 class CoursePage extends StatefulWidget {
   final String jsonFilePath;
   final String courseId;
@@ -69,7 +68,6 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
   // UI
   bool isLoading = true;
   int _currentPage = 0;
-  bool _muted = false;
 
   String? _recentlyUnlockedBadge;
 
@@ -178,6 +176,10 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
 
   void _showCompletionModal(int index, int points, int xpGained) {
     final title = sections[index].title;
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/MarimbaWin_SFX.mp3');
+    audioManager.playSfx('assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3');
+    audioManager.playSfx('assets/audios/QuizGame_Sounds/whistleUkulele4Sec.mp3');
     showDialog(
       context: context,
       builder: (_) {
@@ -197,13 +199,13 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                 children: [
                   Lottie.asset('assets/animations/girl_jumping.json', width: 160, repeat: false),
                   const SizedBox(height: 8),
-                  const Text('Great job!', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                   Text(tr(context).awesome, style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                   const SizedBox(height: 6),
-                  Text('You completed: $title', textAlign: TextAlign.center),
+                  Text("${tr(context).youEarned}: $title", textAlign: TextAlign.center),
                   const SizedBox(height: 12),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(2, (i) {
+                    children: List.generate(1, (i) {
                       final lit = i < points;
                       return Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 6.0),
@@ -220,7 +222,9 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                   const SizedBox(height: 12),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: Colors.deepOrange, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                    onPressed: () => Navigator.of(context).pop(),
+                    onPressed: () {
+                      audioManager.playEventSound('cancelButton');
+                      Navigator.of(context).pop();},
                     child: const Padding(padding: EdgeInsets.symmetric(horizontal: 18.0, vertical: 12), child: Text('Continue')),
                   ),
                 ],
@@ -242,7 +246,6 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
   @override
   Widget build(BuildContext context) {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
-    final locale = AppLocalizations.of(context);
     if (isLoading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
@@ -293,9 +296,10 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                     ),
                     const SizedBox(width: 12),
                     MascotBubble(
-
                       emoji: "🐱",
                       onTap: () {
+                        audioManager.playEventSound('clickButton');
+                        audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3");
                         _confetti.play();
                       },
                     ),
@@ -310,7 +314,7 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                   const Spacer(),
                   IconButton(
                     onPressed: () {
-                      _resetProgression();
+                      audioManager.playEventSound('clickButton');
                       _showSnack('Tip: Tap a card to open activities.');
                     },
                     icon: const Icon(Icons.info_outline),
@@ -343,7 +347,10 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
                           completed: completedFlag,
                           points: points,
                           color: Colors.primaries[index % Colors.primaries.length].shade300,
-                          onTap: () => _openSection(index),
+                          onTap: () {
+                            audioManager.playEventSound('clickButton');
+                            _openSection(index);
+                          },
                           onToggleComplete: completedFlag ? null : () => _completeSection(index),
                           bounceController: _bounceController,
                         ),
@@ -357,7 +364,9 @@ class _CoursePageGamifiedState extends State<CoursePage> with TickerProviderStat
               if (_recentlyUnlockedBadge != null)
                 BadgeUnlockBanner(
                   badgeName: _recentlyUnlockedBadge!,
-                  onClose: () => setState(() => _recentlyUnlockedBadge = null),
+                  onClose: () {
+                    audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/VictoryOrchestral_SFX.mp3');
+                    setState(() => _recentlyUnlockedBadge = null);}
                 ),
               SizedBox(
                 height: 86,

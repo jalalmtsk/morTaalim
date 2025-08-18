@@ -12,7 +12,7 @@ final List<Map<String, dynamic>> highCourses = [
   },
   {
     'titleKey': 'class2',
-    'widget': Index2Primaire(),
+    'widget': ComingSoonPage(),
     'icon': Icons.looks_two,
     'color': Colors.teal,
   },

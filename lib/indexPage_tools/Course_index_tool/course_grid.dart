@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 
 class CourseGrid extends StatelessWidget {
@@ -98,6 +100,7 @@ class _TiltCardState extends State<_TiltCard> {
 
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Listener(
       onPointerMove: (event) {
         final size = context.size ?? const Size(150, 150);
@@ -110,6 +113,7 @@ class _TiltCardState extends State<_TiltCard> {
         onTapUp: (_) => _resetTilt(),
         onTapCancel: _resetTilt,
         onTap: () {
+          audioManager.playEventSound('PopButton');
           Navigator.push(
             context,
             MaterialPageRoute(builder: (_) => widget.course['widget']),

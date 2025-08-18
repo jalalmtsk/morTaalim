@@ -188,8 +188,8 @@ class _KidFriendlyCardState extends State<_KidFriendlyCard>
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         colors: [
-                          Colors.white.withOpacity(0.0),
-                          Colors.black.withOpacity(0.2),
+                          Colors.white.withValues(alpha: 0.0),
+                          Colors.black.withValues(alpha: 0.2),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
