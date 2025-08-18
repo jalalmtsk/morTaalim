@@ -8,6 +8,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart';
 import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Pet/pet_home_page.dart';
+import 'package:mortaalim/TestingBeforeProdcution/ArabicExercice.dart';
 import 'package:mortaalim/TestingBeforeProdcution/DragonGameFruit.dart';
 import 'package:mortaalim/TestingBeforeProdcution/DrawSketch.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
@@ -172,7 +173,7 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
 
-            'Shop': (context) => MainShopPageIndex(),
+            'Shop': (context) => WordArabic(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

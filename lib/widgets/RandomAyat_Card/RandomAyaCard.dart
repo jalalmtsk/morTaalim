@@ -20,9 +20,6 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
   late Timer _timer;
   final _random = Random();
 
-
-
-
   late Map<String, String> _currentAyat;
   int _seconds = 60;
   bool _expanded = false;
