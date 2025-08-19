@@ -140,7 +140,9 @@ class _AnimalSoundsExerciseState extends State<AnimalSoundsExercise> {
   }
 
   void _onReplayPressed() {
-    AdHelper.showInterstitialAd(onDismissed: () {
+    AdHelper.showInterstitialAd(
+        context: context,
+        onDismissed: () {
       resetGame();
     });
   }

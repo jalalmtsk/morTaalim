@@ -4,8 +4,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:intl/intl.dart';
 import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Pet/pet_home_page.dart';
 import 'package:mortaalim/TestingBeforeProdcution/ArabicExercice.dart';
@@ -229,7 +227,6 @@ class _MyAppState extends State<MyApp> {
     Provider.of<ExperienceManager>(navigatorKey.currentContext!, listen: false)
         .setPreferredLanguage(locale.languageCode);
   }
-
 }
 
 class LocalizationOverrideWidget extends StatelessWidget {

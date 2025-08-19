@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class WordArabic extends StatefulWidget {
   const WordArabic({super.key});
 

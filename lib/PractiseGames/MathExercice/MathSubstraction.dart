@@ -134,7 +134,9 @@ class _MathSubtractionExerciseState extends State<MathSubtractionExercise> {
   }
 
   void _onReplayPressed() {
-    AdHelper.showInterstitialAd(onDismissed: () {
+    AdHelper.showInterstitialAd(
+        context: context,
+        onDismissed: () {
       resetGame();
     });
   }

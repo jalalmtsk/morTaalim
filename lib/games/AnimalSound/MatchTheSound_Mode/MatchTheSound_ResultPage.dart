@@ -52,13 +52,14 @@ class _MatchResultPageState extends State<MatchResultPage> {
     if (_isAdLoading) return;
     setState(() => _isAdLoading = true);
 
-    await AdHelper.showInterstitialAd(onDismissed: () {
+    await AdHelper.showInterstitialAd(
+        onDismissed: () {
       setState(() => _isAdLoading = false);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const AS_MatchDrop()),
       );
-    });
+    },    context: context);
   }
 
   Future<bool> _onWillPop() async {
@@ -69,7 +70,8 @@ class _MatchResultPageState extends State<MatchResultPage> {
     await AdHelper.showInterstitialAd(onDismissed: () {
       setState(() => _isAdLoading = false);
       Navigator.of(context).pop();
-    });
+    }, context: context,
+    );
 
     return false; // prevent default back action
   }

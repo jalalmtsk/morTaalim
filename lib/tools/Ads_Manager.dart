@@ -27,12 +27,28 @@ class AdHelper {
   }
 
   /// Interstitial Ad
-  static Future<void> showInterstitialAd({Function? onDismissed}) async {
+  /// Interstitial Ad with loading UI
+  static Future<void> showInterstitialAd({
+    required BuildContext context,
+    Function? onDismissed,
+  }) async {
+    // Show loading dialog while fetching ad
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(color: Colors.deepOrange),
+      ),
+    );
+
     await InterstitialAd.load(
       adUnitId: 'ca-app-pub-9936922975297046/8354774722', // ✅ Replace with your real ID
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {
+          // Close loading safely
+          if (Navigator.canPop(context)) Navigator.of(context).pop();
+
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
               ad.dispose();
@@ -41,22 +57,29 @@ class AdHelper {
             onAdFailedToShowFullScreenContent: (ad, error) {
               ad.dispose();
               debugPrint('❌ InterstitialAd failed to show: ${error.message}');
+              onDismissed?.call();
             },
           );
+
           ad.show();
         },
         onAdFailedToLoad: (error) {
+          // Close loading safely
+          if (Navigator.canPop(context)) Navigator.of(context).pop();
           debugPrint('❌ InterstitialAd failed to load: ${error.message}');
+          onDismissed?.call();
         },
       ),
     );
   }
+
 
   /// Rewarded Ad with Loading UI
   static Future<void> showRewardedAdWithLoading(
       BuildContext context,
       VoidCallback onRewardEarned,
       ) async {
+    // Show loading dialog
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -66,11 +89,12 @@ class AdHelper {
     );
 
     await RewardedAd.load(
-      adUnitId: 'ca-app-pub-9936922975297046/5494650006', // ✅  Real ID
+      adUnitId: 'ca-app-pub-9936922975297046/5494650006', // ✅ Real ID
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (RewardedAd ad) {
-          Navigator.of(context).pop(); // close loading dialog
+          // Close loading safely
+          if (Navigator.canPop(context)) Navigator.of(context).pop();
 
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
@@ -89,7 +113,7 @@ class AdHelper {
           );
         },
         onAdFailedToLoad: (LoadAdError error) {
-          Navigator.of(context).pop(); // close loading dialog
+          if (Navigator.canPop(context)) Navigator.of(context).pop();
           debugPrint('❌ RewardedAd failed to load: ${error.message}');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Ad failed to load. Try again later.')),
@@ -99,9 +123,7 @@ class AdHelper {
     );
   }
 
-
-
-
+  /// Rewarded Ad returning Future<bool>
   static Future<bool> showRewardedAd(BuildContext context) {
     Completer<bool> completer = Completer<bool>();
 
@@ -119,7 +141,7 @@ class AdHelper {
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (RewardedAd ad) {
-          Navigator.of(context).pop(); // Close loading dialog
+          if (Navigator.canPop(context)) Navigator.of(context).pop();
 
           ad.fullScreenContentCallback = FullScreenContentCallback(
             onAdDismissedFullScreenContent: (ad) {
@@ -138,7 +160,7 @@ class AdHelper {
           });
         },
         onAdFailedToLoad: (LoadAdError error) {
-          Navigator.of(context).pop(); // Close loading dialog
+          if (Navigator.canPop(context)) Navigator.of(context).pop();
           if (!completer.isCompleted) completer.complete(false);
           debugPrint('❌ RewardedAd failed to load: ${error.message}');
           ScaffoldMessenger.of(context).showSnackBar(
@@ -150,7 +172,4 @@ class AdHelper {
 
     return completer.future;
   }
-
-
-
 }

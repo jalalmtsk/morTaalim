@@ -155,7 +155,8 @@ class _ScienceQuizExerciseState extends State<ScienceQuizExercise> {
   void _onReplayPressed() {
     AdHelper.showInterstitialAd(onDismissed: () {
       resetGame();
-    });
+
+    },     context: context,);
   }
 
   @override

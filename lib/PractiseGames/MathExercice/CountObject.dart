@@ -7,6 +7,7 @@ import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
 import '../../tools/Ads_Manager.dart';
+import 'Tools/AnimatedHeart.dart';
 
 class CountObject extends StatelessWidget {
   @override
@@ -20,19 +21,20 @@ class CountExercise extends StatefulWidget {
   _CountExerciseState createState() => _CountExerciseState();
 }
 
-class _CountExerciseState extends State<CountExercise> {
+class _CountExerciseState extends State<CountExercise>
+    with SingleTickerProviderStateMixin {
   final MusicPlayer player = MusicPlayer();
   final List<String> objectEmojis = ["🍎", "🏀", "✏️", "🧸", "🐠"];
   late int correctCount;
   late String currentObject;
   int score = 0;
   int wrong = 0;
+  int lives = 3;
+
   bool showGameOver = false;
-
-  bool? _isAnswerCorrect; // for correct/wrong animations
+  bool? _isAnswerCorrect;
   bool _showFinalCelebration = false;
-
-  bool _isProcessingAnswer = false; // <-- Added to block rapid taps
+  bool _isProcessingAnswer = false;
 
   BannerAd? _bannerAd;
   bool _isBannerAdLoaded = false;
@@ -70,9 +72,8 @@ class _CountExerciseState extends State<CountExercise> {
   }
 
   void checkAnswer(int selected) async {
-    if (_isProcessingAnswer) return;  // Ignore taps while processing
-
-    _isProcessingAnswer = true;       // Block input immediately
+    if (_isProcessingAnswer) return;
+    _isProcessingAnswer = true;
 
     if (selected == correctCount) {
       await player.play('assets/audios/QuizGame_Sounds/correct.mp3');
@@ -83,7 +84,8 @@ class _CountExerciseState extends State<CountExercise> {
 
       Future.delayed(Duration(milliseconds: 1500), () {
         if (score >= 10) {
-          final manager = Provider.of<ExperienceManager>(context, listen: false);
+          final manager =
+          Provider.of<ExperienceManager>(context, listen: false);
           if (wrong == 0) {
             manager.addTokenBanner(context, 1);
           }
@@ -91,11 +93,11 @@ class _CountExerciseState extends State<CountExercise> {
             showGameOver = true;
             _isAnswerCorrect = null;
             _showFinalCelebration = true;
-            _isProcessingAnswer = false; // Unlock input after game ends
+            _isProcessingAnswer = false;
           });
         } else {
           setState(() {
-            _isProcessingAnswer = false; // Unlock input before next question
+            _isProcessingAnswer = false;
           });
           generateNewQuestion();
         }
@@ -104,14 +106,23 @@ class _CountExerciseState extends State<CountExercise> {
       await player.play('assets/audios/QuizGame_Sounds/incorrect.mp3');
       setState(() {
         wrong++;
+        lives = (lives > 0) ? lives - 1 : 0;
         _isAnswerCorrect = false;
       });
 
       Future.delayed(Duration(milliseconds: 1500), () {
-        setState(() {
-          _isAnswerCorrect = null;
-          _isProcessingAnswer = false;  // Unlock input after wrong animation
-        });
+        if (lives == 0) {
+          setState(() {
+            showGameOver = true;
+            _isAnswerCorrect = null;
+            _isProcessingAnswer = false;
+          });
+        } else {
+          setState(() {
+            _isAnswerCorrect = null;
+            _isProcessingAnswer = false;
+          });
+        }
       });
     }
   }
@@ -120,172 +131,158 @@ class _CountExerciseState extends State<CountExercise> {
     setState(() {
       score = 0;
       wrong = 0;
+      lives = 3;
       showGameOver = false;
       _showFinalCelebration = false;
       generateNewQuestion();
-      _isProcessingAnswer = false;  // Reset input flag on game reset
+      _isProcessingAnswer = false;
     });
   }
 
-  // New function to show interstitial ad on replay
   void _onReplayPressed() {
     AdHelper.showInterstitialAd(onDismissed: () {
       resetGame();
-    });
+    }, context: context);
   }
 
   @override
   Widget build(BuildContext context) {
-    final themeColor = Colors.orange.shade700;
+    final themeColor = Colors.deepPurple.shade400;
 
     return Scaffold(
-      backgroundColor: Colors.orange.shade50,
-      appBar: AppBar(
-        backgroundColor: themeColor,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Compte les objets', style: TextStyle(fontWeight: FontWeight.bold)),
-          ],
-        ),
-        centerTitle: true,
-      ),
+      backgroundColor: Colors.deepPurple.shade50,
       body: Stack(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-            child: showGameOver
-                ? Center(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    "🎉 Bravo !",
-                    style: TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.bold,
-                        color: themeColor),
-                  ),
-                  SizedBox(height: 16),
-                  Text(
-                    "Tu dois marquer 10 points pour obtenir 1 Tolim.",
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w600,
-                        color: themeColor),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 16),
-                  Text("Score : $score / 10",
-                      style: TextStyle(fontSize: 24)),
-                  Text("Fautes : $wrong",
-                      style:
-                      TextStyle(fontSize: 20, color: Colors.redAccent)),
-                  SizedBox(height: 24),
-
-                  if (_showFinalCelebration)
-                    SizedBox(
-                      width: 150,
-                      height: 150,
-                      child: Lottie.asset(
-                        'assets/animations/QuizzGame_Animation/Champion.json',
-                        repeat: false,
-                      ),
-                    ),
-
-                  ElevatedButton(
-                    onPressed: _onReplayPressed,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: themeColor,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 14),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(25)),
-                    ),
-                    child: Text("Rejouer",
-                        style:
-                        TextStyle(fontSize: 22, color: Colors.white)),
-                  ),
-                ],
+          // 🌈 Gradient background
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.purple.shade200, Colors.orange.shade100],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            )
+            ),
+          ),
+
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            child: showGameOver
+                ? _buildGameOver(themeColor)
                 : Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Userstatutbar(),
+
+                // 🏆 Score + Lives Row
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     _buildStatCard('Score', '$score / 10', themeColor),
-                    _buildStatCard('Fautes', '$wrong', Colors.redAccent),
+                    Row(
+                      children: List.generate(3, (index) {
+                        bool lost = index >= lives;
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          child: AnimatedHeart(lost: lost),
+                        );
+                      }),
+                    ),
+
                   ],
                 ),
-                SizedBox(height: 30),
+                SizedBox(height: 20),
+
+                // 🏆 Progress bar
+                LinearProgressIndicator(
+                  value: score / 10,
+                  backgroundColor: Colors.white,
+                  color: themeColor,
+                  minHeight: 12,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                SizedBox(height: 20),
+
                 Text(
                   "Combien de $currentObject vois-tu ?",
                   style: TextStyle(
-                      fontSize: 26,
-                      fontWeight: FontWeight.bold,
-                      color: themeColor),
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: themeColor,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 24),
+
+                // 🎨 Animated objects
                 Center(
                   child: Wrap(
-                    spacing: 12,
-                    runSpacing: 12,
+                    spacing: 10,
+                    runSpacing: 10,
                     alignment: WrapAlignment.center,
                     children: List.generate(
                       correctCount,
-                          (index) => Container(
-                        width: 50,
-                        height: 50,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Colors.orange.shade100,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          currentObject,
-                          style: TextStyle(fontSize: 40),
+                          (index) => AnimatedScale(
+                        scale: 1,
+                        duration: Duration(milliseconds: 400),
+                        child: Container(
+                          width: 60,
+                          height: 60,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 6,
+                                offset: Offset(2, 2),
+                              )
+                            ],
+                          ),
+                          child: Text(
+                            currentObject,
+                            style: TextStyle(fontSize: 36),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
+
                 Spacer(),
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  child: Wrap(
-                    spacing: 14,
-                    runSpacing: 14,
-                    alignment: WrapAlignment.center,
-                    children: List.generate(10, (index) {
-                      int number = index + 1;
-                      return ElevatedButton(
-                        onPressed: () => checkAnswer(number),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: themeColor,
-                          shape: CircleBorder(),
-                          padding: EdgeInsets.all(20),
-                          elevation: 6,
-                          shadowColor: Colors.orange.shade300,
-                        ),
-                        child: Text(
-                          '$number',
-                          style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                      );
-                    }),
-                  ),
+
+                // 🔢 Answer buttons
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 10,
+                  alignment: WrapAlignment.center,
+                  children: List.generate(10, (index) {
+                    int number = index + 1;
+                    return ElevatedButton(
+                      onPressed: () => checkAnswer(number),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: themeColor,
+                        shape: CircleBorder(),
+                        padding: EdgeInsets.all(24),
+                        elevation: 8,
+                        shadowColor: Colors.deepPurpleAccent,
+                      ),
+                      child: Text(
+                        '$number',
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    );
+                  }),
                 ),
+                SizedBox(height: 20),
               ],
             ),
           ),
 
+          // ✅ Correct/Wrong animation overlay
           if (_isAnswerCorrect != null)
             Container(
               color: Colors.black.withOpacity(0.4),
@@ -314,6 +311,50 @@ class _CountExerciseState extends State<CountExercise> {
         ),
       )
           : null,
+    );
+  }
+
+  Widget _buildGameOver(Color themeColor) {
+    bool win = score >= 10 && lives > 0;
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Lottie.asset(
+              win
+                  ? 'assets/animations/QuizzGame_Animation/Champion.json'
+                  : 'assets/animations/QuizzGame_Animation/wrong.json',
+              width: 200,
+              repeat: false),
+          SizedBox(height: 16),
+          Text(
+            win ? "🎉 Bravo !" : "💔 Game Over",
+            style: TextStyle(
+                fontSize: 40, fontWeight: FontWeight.bold, color: themeColor),
+          ),
+          SizedBox(height: 10),
+          Text("Score : $score / 10",
+              style: TextStyle(fontSize: 24, color: Colors.black87)),
+          Text("Vies restantes : $lives",
+              style: TextStyle(
+                  fontSize: 20,
+                  color: lives > 0 ? Colors.green : Colors.redAccent)),
+
+          SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _onReplayPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: themeColor,
+              padding: EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30)),
+            ),
+            child: Text("Rejouer",
+                style: TextStyle(fontSize: 22, color: Colors.white)),
+          ),
+        ],
+      ),
     );
   }
 

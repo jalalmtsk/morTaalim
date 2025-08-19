@@ -138,7 +138,9 @@ class _ArabicLettersExerciseState extends State<ArabicLettersExercise> {
   }
 
   void _onReplayPressed() {
-    AdHelper.showInterstitialAd(onDismissed: () {
+    AdHelper.showInterstitialAd(
+        context: context,
+        onDismissed: () {
       resetGame();
     });
   }

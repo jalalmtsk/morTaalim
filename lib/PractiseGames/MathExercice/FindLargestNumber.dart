@@ -168,7 +168,7 @@ class _FindLargestNumberExerciseState extends State<FindLargestNumberExercise> {
       setState(() => _isAdLoading = false);
       bgmVictory.dispose();
       resetGame();
-    });
+    }, context: context);
   }
 
   @override

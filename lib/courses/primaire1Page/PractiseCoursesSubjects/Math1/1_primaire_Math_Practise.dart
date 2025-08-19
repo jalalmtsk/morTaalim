@@ -9,6 +9,8 @@ import 'package:mortaalim/PractiseGames/MathExercice/OddNumbers.dart';
 import 'package:mortaalim/PractiseGames/MathExercice/TargetNumber.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 
+import '../../../../widgets/GetReady__Widget.dart';
+
 class IndexMath1Practise extends StatelessWidget {
   const IndexMath1Practise({super.key});
 
@@ -42,8 +44,12 @@ class IndexMath1Practise extends StatelessWidget {
       {
         'title': 'Count Objects',
         'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/CountObject_bg.png',
-        'page': CountObject()
-      },
+        'page': GetReadyPage(
+          onReadyComplete: () {
+          Navigator.pushReplacement(
+        context,
+          MaterialPageRoute(builder: (_) => CountExercise()),);}
+        )},
       {
         'title': 'Compare Numbers',
         'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/GreaterSmallerThan_bg.png',

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 
@@ -69,7 +68,6 @@ class _ExpandableAyatCardState extends State<ExpandableAyatCard> with SingleTick
       _isPlaying = false;
     }
   }
-
 
   @override
   void dispose() {

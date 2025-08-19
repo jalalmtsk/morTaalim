@@ -170,7 +170,9 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise> {
 
   void _onReplayPressed() {
     setState(() => _isAdLoading = true);
-    AdHelper.showInterstitialAd(onDismissed: () {
+    AdHelper.showInterstitialAd(
+        context: context,
+        onDismissed: () {
       setState(() => _isAdLoading = false);
       bgmVictory.dispose();
       resetGame();

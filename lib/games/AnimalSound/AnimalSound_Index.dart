@@ -43,7 +43,9 @@ class _AnimalsoundIndexState extends State<AnimalsoundIndex> {
     );
 
     // Load & show interstitial ad
-    await AdHelper.showInterstitialAd(onDismissed: () {
+    await AdHelper.showInterstitialAd(
+        context: context,
+        onDismissed: () {
       Navigator.of(context).pop(); // Close loading dialog
       Navigator.push(
         context,

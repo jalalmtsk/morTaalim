@@ -126,7 +126,9 @@ class _EvenOddExerciseState extends State<EvenOddExercise> {
   }
 
   void _onReplayPressed() {
-    AdHelper.showInterstitialAd(onDismissed: () {
+    AdHelper.showInterstitialAd(
+        context: context,
+        onDismissed: () {
       resetGame();
     });
   }

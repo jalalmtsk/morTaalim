@@ -149,7 +149,9 @@ class _TargetNumberExerciseState extends State<TargetNumberExercise> {
   }
 
   void _onReplayPressed() {
-    AdHelper.showInterstitialAd(onDismissed: () {
+    AdHelper.showInterstitialAd(
+        context: context,
+        onDismissed: () {
       resetGame();
     });
   }

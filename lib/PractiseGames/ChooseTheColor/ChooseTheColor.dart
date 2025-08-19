@@ -131,7 +131,9 @@ class _ColorMatchingGameExerciseState extends State<ColorMatchingGameExercise> {
   }
 
   void _onReplayPressed() {
-    AdHelper.showInterstitialAd(onDismissed: () {
+    AdHelper.showInterstitialAd(
+        context: context,
+        onDismissed: () {
       resetGame();
     });
   }
