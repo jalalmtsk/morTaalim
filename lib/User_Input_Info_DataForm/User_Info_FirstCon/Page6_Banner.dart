@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/main.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:mortaalim/widgets/AIChatbot/BotFeatures/BotWithGreeting.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -131,7 +133,7 @@ class _UserInfoBannerPageState extends State<UserInfoBannerPage>
   Widget build(BuildContext context) {
     final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
     final experience = Provider.of<ExperienceManager>(context);
-
+    final audioManager  = Provider.of<AudioManager>(context, listen: false);
     return Scaffold(
       body: AnimatedBuilder(
         animation: _gradientController,
@@ -202,6 +204,7 @@ class _UserInfoBannerPageState extends State<UserInfoBannerPage>
 
                                 return GestureDetector(
                                   onTap: () {
+                                    audioManager.playEventSound('clickButton2');
                                     experience.selectBannerImage(bannerPath);
                                     _validateForm();
                                   },
@@ -248,8 +251,7 @@ class _UserInfoBannerPageState extends State<UserInfoBannerPage>
                               },
                             ),
                           ),
-
-                          const SizedBox(height: 80), // Extra spacing for FAB
+                          Lottie.asset("assets/animations/UI_Animations/WakiBot.json")
                         ],
                       ),
                     ),
@@ -268,6 +270,7 @@ class _UserInfoBannerPageState extends State<UserInfoBannerPage>
                             : () async {
                           final success = await saveData();
                           if (success) {
+                            audioManager.playEventSound('clickButton');
                             widget.onNext?.call();
                           }
                         },

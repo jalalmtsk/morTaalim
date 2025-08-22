@@ -30,14 +30,14 @@ class BannerAvatarStatusBar extends StatelessWidget {
       alignment: Alignment.center,
       children: [
         CircleAvatar(
-          radius: 40,
+          radius: 50,
           backgroundColor: Colors.white12,
           child:   ClipOval(
             child: avatarPath.endsWith('.json')
-                ? Lottie.asset(avatarPath, fit: BoxFit.cover, repeat: true, width: 55, height: 55)
+                ? Lottie.asset(avatarPath, fit: BoxFit.cover, repeat: true, width: 75, height: 75)
                 : (avatarPath.contains('assets/')
-                ? Image.asset(avatarPath, width: 55, height: 55, fit: BoxFit.cover)
-                : Text(avatarPath, style: const TextStyle(fontSize: 35))),
+                ? Image.asset(avatarPath, width: 75, height: 75, fit: BoxFit.cover)
+                : Text(avatarPath, style: const TextStyle(fontSize: 55))),
           ),
         )
       ],
@@ -58,19 +58,19 @@ class BannerAvatarStatusBar extends StatelessWidget {
         xpManager.recentlyAddedStars > 0 || xpManager.recentlyAddedTokens > 0;
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(30),
       child: Stack(
         children: [
           // Banner background
           Image.asset(
             banner,
             width: double.infinity,
-            height: 110,
+            height: 100,
             fit: BoxFit.cover,
           ),
           // Dark overlay
           Container(
-            height: 110,
+            height: 100,
             decoration: BoxDecoration(
               color: Colors.black.withOpacity(0.25),
             ),
@@ -79,13 +79,13 @@ class BannerAvatarStatusBar extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: SizedBox(
-              height: 110,
+              height: 100,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // 👉 Place of selected avatar
                   _buildAvatar(xpManager.selectedAvatar, playerName),
-                  const SizedBox(width: 14),
+                  const SizedBox(width: 8),
                   // Name + stats
                   Expanded(
                     child: Row(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
 
@@ -182,9 +183,9 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
       elevation: 8,
       shadowColor: Colors.black45,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 7),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
         child: child,
       ),
     );
@@ -196,8 +197,10 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
     required String validatorMessage,
     IconData? icon,
   }) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return TextFormField(
       controller: controller,
+      onTap: (){audioManager.playEventSound('PopButton');},
       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
       decoration: InputDecoration(
         labelText: label,
@@ -234,43 +237,49 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
     required void Function(String?) onChanged,
     IconData? icon,
   }) {
-    return DropdownButtonFormField<String>(
-      value: items.contains(value) ? value : null, // <-- Prevent invalid value
-      dropdownColor: Colors.deepOrange.shade400,
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: Colors.white70, fontSize: 16),
-        prefixIcon: icon != null ? Icon(icon, color: Colors.white70, size: 24) : null,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.white70.withOpacity(0.6), width: 1.8),
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      child: DropdownButtonFormField<String>(
+        value: items.contains(value) ? value : null, // <-- Prevent invalid value
+        dropdownColor: Colors.deepOrange.shade400.withValues(alpha: 0.5),
+        onTap: (){audioManager.playEventSound('toggleButton');},
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: const TextStyle(color: Colors.white70, fontSize: 16),
+          prefixIcon: icon != null ? Icon(icon, color: Colors.white70, size: 24) : null,
+          enabledBorder: OutlineInputBorder(
+            gapPadding: 1,
+            borderRadius: BorderRadius.circular(25),
+            borderSide: BorderSide(color: Colors.white70.withOpacity(0.6), width: 1.8),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: Colors.white, width: 2),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: const BorderSide(color: Colors.redAccent, width: 2),
+          ),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.white, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 2),
-        ),
+        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        items: items
+            .map((e) => DropdownMenuItem<String>(
+          value: e,
+          child: Text(e, style: const TextStyle(color: Colors.white)),
+        ))
+            .toList(),
+        onChanged: (val) {
+          onChanged(val);
+          _validateForm();
+        },
+        validator: (val) {
+          if (val == null || val.isEmpty) {
+            return validatorMessage;
+          }
+          return null;
+        },
       ),
-      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-      items: items
-          .map((e) => DropdownMenuItem<String>(
-        value: e,
-        child: Text(e, style: const TextStyle(color: Colors.white)),
-      ))
-          .toList(),
-      onChanged: (val) {
-        onChanged(val);
-        _validateForm();
-      },
-      validator: (val) {
-        if (val == null || val.isEmpty) {
-          return validatorMessage;
-        }
-        return null;
-      },
     );
   }
 
@@ -278,7 +287,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
   @override
   Widget build(BuildContext context) {
     final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
-
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Scaffold(
       body: AnimatedBuilder(
         animation: _gradientController,
@@ -468,6 +477,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
                             : () async {
                           final success = await saveData();
                           if (success) {
+                            audioManager.playEventSound('clickButton');
                             widget.onNext?.call();
                           }
                         },

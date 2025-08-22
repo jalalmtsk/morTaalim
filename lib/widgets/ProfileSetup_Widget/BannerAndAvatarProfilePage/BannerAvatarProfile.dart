@@ -6,6 +6,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../XpSystem.dart';
 import '../../../main.dart';
+import 'Tools/AvatarSelection.dart';
+import 'Tools/BAckgroundColor.dart';
+import 'Tools/BannerSelection.dart';
+import 'Tools/FancyFields.dart';
+import 'Tools/Frosted.dart';
+import 'Tools/SelectionHeader.dart';
 
 class BannerAvatarProfile extends StatefulWidget {
   const BannerAvatarProfile({super.key});
@@ -15,26 +21,46 @@ class BannerAvatarProfile extends StatefulWidget {
 }
 
 class _BannerAvatarProfileState extends State<BannerAvatarProfile>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
 
-  late AnimationController _bgAnimationController;
+  final _formKey = GlobalKey<FormState>();
+
+  late final AnimationController _bgController;
+  late final AnimationController _pulseController;
+
+  late final PageController _bannerPage;
+  late final PageController _avatarPage;
 
   @override
   void initState() {
     super.initState();
     _loadProfile();
-    _bgAnimationController = AnimationController(
+
+    _bgController = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 20),
+      duration: const Duration(seconds: 14),
     )..repeat(reverse: true);
+
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+      lowerBound: 0.95,
+      upperBound: 1.05,
+    )..repeat(reverse: true);
+
+    _bannerPage = PageController(viewportFraction: 0.84);
+    _avatarPage = PageController(viewportFraction: 0.34);
   }
 
   @override
   void dispose() {
-    _bgAnimationController.dispose();
+    _bgController.dispose();
+    _pulseController.dispose();
+    _bannerPage.dispose();
+    _avatarPage.dispose();
     super.dispose();
   }
 
@@ -59,12 +85,8 @@ class _BannerAvatarProfileState extends State<BannerAvatarProfile>
 
     audioManager.playEventSound('clickButton');
 
-    if (name.isEmpty || name.length > 12) {
-      _showError("Name must be between 1 and 12 characters");
-      return;
-    }
-    if (username.isEmpty || username.length > 15) {
-      _showError("LastName must be between 1 and 15 characters");
+    if (!_formKey.currentState!.validate()) {
+      _showError("tr(context).pleaseCheckFields");
       return;
     }
 
@@ -77,7 +99,11 @@ class _BannerAvatarProfileState extends State<BannerAvatarProfile>
     xpManager.setLastName(username);
     xpManager.setEmail(email);
 
-    Navigator.pop(context);
+    if (mounted) {
+      _showSuccess();
+      await Future.delayed(const Duration(milliseconds: 500));
+      Navigator.pop(context);
+    }
   }
 
   void _showError(String message) {
@@ -86,12 +112,35 @@ class _BannerAvatarProfileState extends State<BannerAvatarProfile>
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        duration: const Duration(milliseconds: 1200),
+        duration: const Duration(milliseconds: 1400),
+        behavior: SnackBarBehavior.floating,
         backgroundColor: Colors.redAccent,
         content: Text(
           message,
-          style: const TextStyle(
-              fontWeight: FontWeight.bold, color: Colors.white),
+          style: const TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  void _showSuccess() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(milliseconds: 900),
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.green.shade600,
+        content: Row(
+          children: [
+            ScaleTransition(
+              scale: _pulseController,
+              child: const Icon(Icons.check_circle, color: Colors.white),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              "tr(context).profileSaved",
+              style: const TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
+            ),
+          ],
         ),
       ),
     );
@@ -103,338 +152,187 @@ class _BannerAvatarProfileState extends State<BannerAvatarProfile>
     final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       body: Stack(
         children: [
-          // Animated playful background
+          // Animated blob gradient background
           AnimatedBuilder(
-            animation: _bgAnimationController,
-            builder: (context, child) {
+            animation: _bgController,
+            builder: (context, _) {
               return CustomPaint(
-                painter: _BackgroundPainter(_bgAnimationController.value),
-                child: Container(),
+                painter: BlobBackgroundPainter(progress: _bgController.value),
+                child: const SizedBox.expand(),
               );
             },
           ),
-          SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  const BannerAvatarStatusBar(),
-                  const SizedBox(height: 20),
-                  Expanded(
-                    child: SingleChildScrollView(
-                      physics: const BouncingScrollPhysics(),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          _buildFunSectionTitle(tr(context).chooseYourBanner),
-                          const SizedBox(height: 12),
-                          _buildBannerSelector(xpManager, audioManager),
-                          const SizedBox(height: 20),
-                          _buildFunSectionTitle(tr(context).chooseYourAvatar),
-                          const SizedBox(height: 12),
-                          _buildAvatarSelector(xpManager, audioManager),
-                          const SizedBox(height: 20),
-                          _buildFunSectionTitle(tr(context).profileInfo),
-                          const SizedBox(height: 12),
-                          _buildField(_nameController, "${tr(context).name} **", Icons.person),
-                          _buildField(_usernameController, "${tr(context).lastName} **",
-                              Icons.nest_cam_wired_stand),
-                          _buildField(_emailController, tr(context).email, Icons.email,
-                              TextInputType.emailAddress),
-                        ],
+
+          // Glass content with slivers
+          CustomScrollView(
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              SliverAppBar(
+                automaticallyImplyLeading: false, // <-- Remove back arrow
+                pinned: true,
+                floating: false,
+                elevation: 0,
+                backgroundColor: Colors.transparent,
+                expandedHeight: 180,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Padding(
+                      padding: EdgeInsets.only(top: 20, right: 10, left: 10),
+                      child: BannerAvatarStatusBar()),
+                ),
+              ),
+
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 2, 16, 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SectionHeader(
+                        title: tr(context).chooseYourBanner,
+                        icon: Icons.wallpaper,
                       ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildSaveButton(),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+                      const SizedBox(height: 6),
+                      BannerCarousel(
+                        pageController: _bannerPage,
+                        items: xpManager.unlockedBanners,
+                        selected: xpManager.selectedBannerImage,
+                        onTap: (banner) {
+                          audioManager.playEventSound('clickButton2');
+                          xpManager.selectBannerImage(banner);
+                        },
+                      ),
+                      SectionHeader(
+                        title: tr(context).chooseYourAvatar,
+                        icon: Icons.emoji_emotions_outlined,
+                      ),
+                      const SizedBox(height: 4),
+                      AvatarCarousel(
+                        pageController: _avatarPage,
+                        items: xpManager.unlockedAvatars,
+                        selected: xpManager.selectedAvatar,
+                        onTap: (avatar) {
+                          audioManager.playEventSound('clickButton2');
+                          xpManager.selectAvatar(avatar);
+                        },
+                      ),
+                      const SizedBox(height: 12),
 
-  Widget _buildFunSectionTitle(String title) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Colors.orangeAccent, Colors.pinkAccent],
-        ),
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.orange.withOpacity(0.4),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Center(
-        child: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            shadows: [
-              Shadow(
-                color: Colors.black26,
-                offset: Offset(1, 2),
-                blurRadius: 3,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+                      SectionHeader(
+                        title: tr(context).profileInfo,
+                        icon: Icons.badge_outlined,
+                      ),
+                      const SizedBox(height: 10),
 
-  Widget _buildBannerSelector(
-      ExperienceManager xpManager, AudioManager audioManager) {
-    return SizedBox(
-      height: 160,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: xpManager.unlockedBanners.length,
-        itemBuilder: (context, index) {
-          final banner = xpManager.unlockedBanners[index];
-          final isSelected = xpManager.selectedBannerImage == banner;
-
-          return GestureDetector(
-            onTap: () {
-              audioManager.playEventSound('clickButton2');
-              xpManager.selectBannerImage(banner);
-            },
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.elasticOut,
-              margin: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(
-                  color: isSelected ? Colors.yellowAccent : Colors.transparent,
-                  width: 4,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: isSelected
-                        ? Colors.yellowAccent.withOpacity(0.5)
-                        : Colors.black12,
-                    blurRadius: 12,
-                    spreadRadius: 2,
-                    offset: const Offset(0, 5),
-                  )
-                ],
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(30),
-                child: Image.asset(
-                  banner,
-                  width: 260,
-                  height: 150,
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildAvatarSelector(
-      ExperienceManager xpManager, AudioManager audioManager) {
-    bool _isEmoji(String avatar) => !avatar.contains('/');
-
-    return SizedBox(
-      height: 180,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: xpManager.unlockedAvatars.length,
-        itemBuilder: (context, index) {
-          final avatar = xpManager.unlockedAvatars[index];
-          final isSelected = xpManager.selectedAvatar == avatar;
-
-          return GestureDetector(
-            onTap: () {
-              audioManager.playEventSound('clickButton2');
-              xpManager.selectAvatar(avatar);
-            },
-            child: Container(
-              width: 110,
-              margin: const EdgeInsets.symmetric(horizontal: 12),
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  // Glow behind selected avatar
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 400),
-                    width: isSelected ? 120 : 100,
-                    height: isSelected ? 120 : 100,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: isSelected
-                          ? RadialGradient(
-                        colors: [
-                          Colors.yellowAccent.withOpacity(0.7),
-                          Colors.orangeAccent.withOpacity(0.3),
-                        ],
-                      )
-                          : null,
-                      boxShadow: [
-                        if (isSelected)
-                          BoxShadow(
-                            color: Colors.yellowAccent.withOpacity(0.5),
-                            blurRadius: 15,
-                            spreadRadius: 3,
-                          )
-                      ],
-                    ),
-                  ),
-                  // Avatar or emoji
-                  _isEmoji(avatar)
-                      ? TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0, end: 8),
-                    duration: const Duration(seconds: 1),
-                    curve: Curves.easeInOut,
-                    builder: (context, value, child) {
-                      return Transform.translate(
-                        offset: Offset(0, -value),
-                        child: Text(
-                          avatar,
-                          style: TextStyle(
-                            fontSize: isSelected ? 60 : 50,
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                      : ClipRRect(
-                    borderRadius: BorderRadius.circular(50),
-                    child: Image.asset(
-                      avatar,
-                      width: isSelected ? 90 : 80,
-                      height: isSelected ? 90 : 80,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  // Optional: tiny sparkles around avatar
-                  if (isSelected)
-                    ...List.generate(3, (i) {
-                      final angle = (i * 120).toDouble();
-                      final radius = 55.0;
-                      final x = radius * (i % 2 == 0 ? 1 : -1) * 0.5;
-                      final y = radius * 0.3 * (i + 1) / 3;
-                      return Positioned(
-                        left: 50 + x,
-                        top: 50 - y,
-                        child: Container(
-                          width: 6,
-                          height: 6,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.yellowAccent.withOpacity(0.8),
-                                blurRadius: 4,
-                                spreadRadius: 1,
-                              )
+                      Frosted(
+                        padding: const EdgeInsets.all(16),
+                        child: Form(
+                          key: _formKey,
+                          child: Column(
+                            children: [
+                              FancyField(
+                                controller: _nameController,
+                                label: "${tr(context).name} **",
+                                icon: Icons.person,
+                                validator: (v) {
+                                  final s = (v ?? '').trim();
+                                  if (s.isEmpty || s.length > 12) {
+                                    return "tr(context).nameRule"; // "Name must be between 1 and 12 characters"
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 12),
+                              FancyField(
+                                controller: _usernameController,
+                                label: "${tr(context).lastName} **",
+                                icon: Icons.nest_cam_wired_stand,
+                                validator: (v) {
+                                  final s = (v ?? '').trim();
+                                  if (s.isEmpty || s.length > 15) {
+                                    return tr(context).lastName; // "LastName must be between 1 and 15 characters"
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 12),
+                              FancyField(
+                                controller: _emailController,
+                                label: tr(context).email,
+                                icon: Icons.email,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (v) {
+                                  final s = (v ?? '').trim();
+                                  if (s.isEmpty) return null; // optional
+                                  final ok = RegExp(r'^.+@.+\..+\$').hasMatch(s);
+                                  if (!ok) return "tr(context).invalidEmail";
+                                  return null;
+                                },
+                              ),
                             ],
                           ),
                         ),
-                      );
-                    }),
-                ],
+                      ),
+
+                      const SizedBox(height: 80), // space for CTA
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          // Bottom sticky Save CTA
+          Positioned(
+            left: 16,
+            right: 16,
+            bottom: 24 + MediaQuery.of(context).padding.bottom,
+            child: Frosted(
+              radius: 28,
+              child: SizedBox(
+                height: 64,
+                child: Row(
+                  children: [
+                    const SizedBox(width: 16),
+                    const Icon(Icons.tips_and_updates_outlined, color: Colors.white),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        "tr(context).readyToSave",
+                        maxLines: 2,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ElevatedButton.icon(
+                        onPressed: _saveProfile,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.yellowAccent.shade700,
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+                          elevation: 8,
+                        ),
+                        icon: const Icon(Icons.save),
+                        label: Text(
+                          tr(context).save,
+                          style: const TextStyle(fontWeight: FontWeight.w800),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
-
-
-  Widget _buildField(TextEditingController controller, String label, IconData icon,
-      [TextInputType keyboardType = TextInputType.text]) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 14),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon, color: Colors.orangeAccent),
-          filled: true,
-          fillColor: Colors.orange.shade100.withOpacity(0.6),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(24),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(24),
-            borderSide: const BorderSide(color: Colors.orangeAccent, width: 2),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSaveButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: _saveProfile,
-        icon: const Icon(Icons.save, size: 28),
-        label:  Padding(
-          padding: EdgeInsets.symmetric(vertical: 14),
-          child: Text(
-            tr(context).saveProfile,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.yellowAccent.shade700,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(30),
-          ),
-          elevation: 8,
-          shadowColor: Colors.orangeAccent,
-        ),
-      ),
-    );
-  }
-}
-
-// Custom background painter for floating stars, clouds, and playful shapes
-class _BackgroundPainter extends CustomPainter {
-  final double progress;
-
-  _BackgroundPainter(this.progress);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint();
-
-    // Draw floating clouds
-    paint.color = Colors.white.withOpacity(0.6);
-    canvas.drawCircle(Offset(100 + progress * 50, 80), 30, paint);
-    canvas.drawCircle(Offset(200 + progress * 40, 120), 40, paint);
-    canvas.drawCircle(Offset(300 - progress * 60, 60), 25, paint);
-
-    // Draw floating stars
-    paint.color = Colors.yellowAccent.withOpacity(0.8);
-    canvas.drawCircle(Offset(50 + progress * 70, 200), 8, paint);
-    canvas.drawCircle(Offset(150 - progress * 60, 250), 6, paint);
-    canvas.drawCircle(Offset(250 + progress * 50, 180), 10, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant _BackgroundPainter oldDelegate) => true;
 }

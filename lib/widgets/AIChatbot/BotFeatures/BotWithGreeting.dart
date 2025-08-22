@@ -97,6 +97,7 @@ class _BotWithGreetingState extends State<BotWithGreeting> {
           alignment: Alignment.bottomRight,
           child: GestureDetector(
             onTap: _showGreeting,
+            behavior: HitTestBehavior.translucent,
             child: Lottie.asset(
               "assets/animations/UI_Animations/WakiBot.json",
               width: 140,

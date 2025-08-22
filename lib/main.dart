@@ -175,7 +175,7 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
 
-            'Shop': (context) => LoadingFromUserToIndex(firstName: "Jalal", lastName: "Moustakim", age: 12, gender: "Male", banner: "FirstBanner"),
+            'Shop': (context) => UserInfoForm(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

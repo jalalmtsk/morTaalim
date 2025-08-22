@@ -99,13 +99,13 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
     }
   }
 
-
   @override
   void dispose() {
     _fadeController.dispose();
     _gradientController.dispose();
     super.dispose();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +163,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                       child: SlideTransition(
                         position: _slideAnimation,
                         child: SizedBox(
-                          height: 180, // FIXED HEIGHT prevents jumping
+                          height: 230, // FIXED HEIGHT prevents jumping
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
