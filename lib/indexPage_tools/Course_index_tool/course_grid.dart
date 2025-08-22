@@ -15,12 +15,12 @@ class CourseGrid extends StatelessWidget {
 
     return AnimationLimiter(
       child: GridView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(8),
         itemCount: highCourses.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
           crossAxisCount: 2,
-          mainAxisSpacing: 18,
-          crossAxisSpacing: 18,
+          mainAxisSpacing: 16,
+          crossAxisSpacing: 16,
           childAspectRatio: 4 / 3,
         ),
         itemBuilder: (context, index) {
@@ -28,10 +28,10 @@ class CourseGrid extends StatelessWidget {
 
           return AnimationConfiguration.staggeredGrid(
             position: index,
-            duration: const Duration(milliseconds: 450),
+            duration: const Duration(milliseconds: 800),
             columnCount: 2,
             child: ScaleAnimation(
-              scale: 0.85,
+              scale: 1,
               curve: Curves.easeOutBack,
               child: FadeInAnimation(
                 child: _TiltCard(
@@ -140,8 +140,8 @@ class _TiltCardState extends State<_TiltCard> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(widget.course['icon'], size: 48, color: Colors.white),
-                const SizedBox(height: 10),
+                Icon(widget.course['icon'], size: 58, color: Colors.white),
+                const SizedBox(height: 4),
                 Text(
                   widget.title,
                   textAlign: TextAlign.center,

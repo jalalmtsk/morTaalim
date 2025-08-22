@@ -1438,6 +1438,660 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'pinnacle of knowledge'**
   String get badges_pinnacleOfKnowledge;
+
+  /// No description provided for @learningPower.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Power'**
+  String get learningPower;
+
+  /// No description provided for @badges.
+  ///
+  /// In en, this message translates to:
+  /// **'Badges'**
+  String get badges;
+
+  /// No description provided for @global.
+  ///
+  /// In en, this message translates to:
+  /// **'Global'**
+  String get global;
+
+  /// No description provided for @coursesCompleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Courses Completed'**
+  String get coursesCompleted;
+
+  /// No description provided for @exercices.
+  ///
+  /// In en, this message translates to:
+  /// **'Exercises'**
+  String get exercices;
+
+  /// No description provided for @dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboard;
+
+  /// No description provided for @practiseCourses.
+  ///
+  /// In en, this message translates to:
+  /// **'Practice Courses'**
+  String get practiseCourses;
+
+  /// No description provided for @keepUpTheGoodWork.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep Up The Good Work'**
+  String get keepUpTheGoodWork;
+
+  /// No description provided for @classLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Class Level'**
+  String get classLevel;
+
+  /// No description provided for @audioSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio Settings'**
+  String get audioSettings;
+
+  /// No description provided for @backgroundMusic.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Music'**
+  String get backgroundMusic;
+
+  /// No description provided for @soundEffects.
+  ///
+  /// In en, this message translates to:
+  /// **'Sound Effects'**
+  String get soundEffects;
+
+  /// No description provided for @buttonSounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Button Sounds'**
+  String get buttonSounds;
+
+  /// No description provided for @resetAudioSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset Audio Settings'**
+  String get resetAudioSettings;
+
+  /// No description provided for @duaaAndAyat.
+  ///
+  /// In en, this message translates to:
+  /// **'Duaa and Ayat'**
+  String get duaaAndAyat;
+
+  /// No description provided for @showAyat.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Ayat'**
+  String get showAyat;
+
+  /// No description provided for @enableordisabletheAyatcardfromappearinginyourapp.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable or Disable the Ayat Card from Appearing in Your App'**
+  String get enableordisabletheAyatcardfromappearinginyourapp;
+
+  /// No description provided for @showDuaa.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Duaa'**
+  String get showDuaa;
+
+  /// No description provided for @enableorDisableDuaaEveryTimeYouEnter.
+  ///
+  /// In en, this message translates to:
+  /// **'Enable or Disable Duaa Every Time You Enter'**
+  String get enableorDisableDuaaEveryTimeYouEnter;
+
+  /// No description provided for @accountAndBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Account and Backup'**
+  String get accountAndBackup;
+
+  /// No description provided for @preferredSubject.
+  ///
+  /// In en, this message translates to:
+  /// **'Preferred Subject'**
+  String get preferredSubject;
+
+  /// No description provided for @version.
+  ///
+  /// In en, this message translates to:
+  /// **'Version'**
+  String get version;
+
+  /// No description provided for @followUsOnSocialMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Follow Us On Social Media'**
+  String get followUsOnSocialMedia;
+
+  /// No description provided for @weArePreparingSomethingAwesome.
+  ///
+  /// In en, this message translates to:
+  /// **'We Are Preparing Something Awesome'**
+  String get weArePreparingSomethingAwesome;
+
+  /// No description provided for @comingSoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming Soon'**
+  String get comingSoon;
+
+  /// No description provided for @unableToOpenTheLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable To Open The Link'**
+  String get unableToOpenTheLink;
+
+  /// No description provided for @thankYouForYourPatience.
+  ///
+  /// In en, this message translates to:
+  /// **'Thank You For Your Patience'**
+  String get thankYouForYourPatience;
+
+  /// No description provided for @manageBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Backup'**
+  String get manageBackup;
+
+  /// No description provided for @backupAndRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup and Restore'**
+  String get backupAndRestore;
+
+  /// No description provided for @backupYourProgressOrRestoreItUsingABackupCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Backup your progress or restore it using a backup code'**
+  String get backupYourProgressOrRestoreItUsingABackupCode;
+
+  /// No description provided for @saveBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Backup'**
+  String get saveBackup;
+
+  /// No description provided for @loadBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'Load Backup'**
+  String get loadBackup;
+
+  /// No description provided for @howToBackup.
+  ///
+  /// In en, this message translates to:
+  /// **'How to Backup'**
+  String get howToBackup;
+
+  /// No description provided for @makeSureToSaveYourBackupCodeSafelyYouWillNeedItToRestoreYourProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Make sure to save your backup code safely. You will need it to restore your progress'**
+  String get makeSureToSaveYourBackupCodeSafelyYouWillNeedItToRestoreYourProgress;
+
+  /// No description provided for @signedInWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Signed in with Google'**
+  String get signedInWithGoogle;
+
+  /// No description provided for @disconnectedNowinanonymousmode.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected, now in anonymous mode'**
+  String get disconnectedNowinanonymousmode;
+
+  /// No description provided for @failedToDisconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to disconnect'**
+  String get failedToDisconnect;
+
+  /// No description provided for @googleAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Google Account'**
+  String get googleAccount;
+
+  /// No description provided for @connected.
+  ///
+  /// In en, this message translates to:
+  /// **'Connected'**
+  String get connected;
+
+  /// No description provided for @disconnect.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect'**
+  String get disconnect;
+
+  /// No description provided for @connecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Connecting'**
+  String get connecting;
+
+  /// No description provided for @connectGoogleAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Connect Google Account'**
+  String get connectGoogleAccount;
+
+  /// No description provided for @notConnectedYet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not connected yet'**
+  String get notConnectedYet;
+
+  /// No description provided for @disconnected.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnected'**
+  String get disconnected;
+
+  /// No description provided for @areYouSureYouWantToDisconnectYourGoogleAccountYouWillBeSwitchedToAnonymousMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to disconnect your Google account? You will be switched to anonymous mode'**
+  String get areYouSureYouWantToDisconnectYourGoogleAccountYouWillBeSwitchedToAnonymousMode;
+
+  /// No description provided for @selectALanguageToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a language to continue'**
+  String get selectALanguageToContinue;
+
+  /// No description provided for @languageSetTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Language set to'**
+  String get languageSetTo;
+
+  /// No description provided for @letsGetToKnowEachOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Let\'s get to know each other'**
+  String get letsGetToKnowEachOther;
+
+  /// No description provided for @fillInYourInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Fill in your information to personalize your experience'**
+  String get fillInYourInformation;
+
+  /// No description provided for @pleaseEnterYourFirstName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your First Name'**
+  String get pleaseEnterYourFirstName;
+
+  /// No description provided for @pleaseEnterYourLastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your Last Name'**
+  String get pleaseEnterYourLastName;
+
+  /// No description provided for @pleaseEnterYourAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your Age'**
+  String get pleaseEnterYourAge;
+
+  /// No description provided for @pleaseEnterAValidAge.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid Age'**
+  String get pleaseEnterAValidAge;
+
+  /// No description provided for @lastName.
+  ///
+  /// In en, this message translates to:
+  /// **'Last Name'**
+  String get lastName;
+
+  /// No description provided for @firstName.
+  ///
+  /// In en, this message translates to:
+  /// **'First Name'**
+  String get firstName;
+
+  /// No description provided for @schoolInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'School Information'**
+  String get schoolInformation;
+
+  /// No description provided for @pleaseEnterSchoolNameTypeLevelAndClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the school name, type, level, and class'**
+  String get pleaseEnterSchoolNameTypeLevelAndClass;
+
+  /// No description provided for @schoolName.
+  ///
+  /// In en, this message translates to:
+  /// **'School Name'**
+  String get schoolName;
+
+  /// No description provided for @pleaseEnterSchoolName.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter the school name'**
+  String get pleaseEnterSchoolName;
+
+  /// No description provided for @schoolType.
+  ///
+  /// In en, this message translates to:
+  /// **'School Type'**
+  String get schoolType;
+
+  /// No description provided for @selectSchoolType.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the school type'**
+  String get selectSchoolType;
+
+  /// No description provided for @schoolLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'School Level'**
+  String get schoolLevel;
+
+  /// No description provided for @selectSchoolLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the school level'**
+  String get selectSchoolLevel;
+
+  /// No description provided for @classSchool.
+  ///
+  /// In en, this message translates to:
+  /// **'Class'**
+  String get classSchool;
+
+  /// No description provided for @selectClass.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the class'**
+  String get selectClass;
+
+  /// No description provided for @highSchoolTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'High School Track'**
+  String get highSchoolTrack;
+
+  /// No description provided for @selectHighSchoolTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Select the high school track'**
+  String get selectHighSchoolTrack;
+
+  /// No description provided for @yourLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Location'**
+  String get yourLocation;
+
+  /// No description provided for @pleaseEnterYourCityAndCountryToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your city and country to continue'**
+  String get pleaseEnterYourCityAndCountryToContinue;
+
+  /// No description provided for @city.
+  ///
+  /// In en, this message translates to:
+  /// **'City'**
+  String get city;
+
+  /// No description provided for @pleaseEnterYourCity.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your city'**
+  String get pleaseEnterYourCity;
+
+  /// No description provided for @country.
+  ///
+  /// In en, this message translates to:
+  /// **'Country'**
+  String get country;
+
+  /// No description provided for @pleaseEnterYourCountry.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter your country'**
+  String get pleaseEnterYourCountry;
+
+  /// No description provided for @schoolTypePrivate.
+  ///
+  /// In en, this message translates to:
+  /// **'Private'**
+  String get schoolTypePrivate;
+
+  /// No description provided for @schoolTypePublic.
+  ///
+  /// In en, this message translates to:
+  /// **'Public'**
+  String get schoolTypePublic;
+
+  /// No description provided for @schoolTypeOther.
+  ///
+  /// In en, this message translates to:
+  /// **'Other'**
+  String get schoolTypeOther;
+
+  /// No description provided for @schoolLevelPrimary.
+  ///
+  /// In en, this message translates to:
+  /// **'Primary'**
+  String get schoolLevelPrimary;
+
+  /// No description provided for @schoolLevelMiddle.
+  ///
+  /// In en, this message translates to:
+  /// **'Middle School'**
+  String get schoolLevelMiddle;
+
+  /// No description provided for @schoolLevelHigh.
+  ///
+  /// In en, this message translates to:
+  /// **'High School'**
+  String get schoolLevelHigh;
+
+  /// No description provided for @gradesPrimary1.
+  ///
+  /// In en, this message translates to:
+  /// **'1st Grade (CP)'**
+  String get gradesPrimary1;
+
+  /// No description provided for @gradesPrimary2.
+  ///
+  /// In en, this message translates to:
+  /// **'2nd Grade (CE1)'**
+  String get gradesPrimary2;
+
+  /// No description provided for @gradesPrimary3.
+  ///
+  /// In en, this message translates to:
+  /// **'3rd Grade (CE2)'**
+  String get gradesPrimary3;
+
+  /// No description provided for @gradesPrimary4.
+  ///
+  /// In en, this message translates to:
+  /// **'4th Grade (CM1)'**
+  String get gradesPrimary4;
+
+  /// No description provided for @gradesPrimary5.
+  ///
+  /// In en, this message translates to:
+  /// **'5th Grade (CM2)'**
+  String get gradesPrimary5;
+
+  /// No description provided for @gradesPrimary6.
+  ///
+  /// In en, this message translates to:
+  /// **'6th Grade (CM3)'**
+  String get gradesPrimary6;
+
+  /// No description provided for @gradesMiddle1.
+  ///
+  /// In en, this message translates to:
+  /// **'7th Grade (1st year Middle School)'**
+  String get gradesMiddle1;
+
+  /// No description provided for @gradesMiddle2.
+  ///
+  /// In en, this message translates to:
+  /// **'8th Grade (2nd year Middle School)'**
+  String get gradesMiddle2;
+
+  /// No description provided for @gradesMiddle3.
+  ///
+  /// In en, this message translates to:
+  /// **'9th Grade (3rd year Middle School)'**
+  String get gradesMiddle3;
+
+  /// No description provided for @gradesHigh1.
+  ///
+  /// In en, this message translates to:
+  /// **'Common Core (TC)'**
+  String get gradesHigh1;
+
+  /// No description provided for @gradesHigh2.
+  ///
+  /// In en, this message translates to:
+  /// **'1st year Bac (Regional)'**
+  String get gradesHigh2;
+
+  /// No description provided for @gradesHigh3.
+  ///
+  /// In en, this message translates to:
+  /// **'Baccalaureate (National)'**
+  String get gradesHigh3;
+
+  /// No description provided for @lyceeTrackScience.
+  ///
+  /// In en, this message translates to:
+  /// **'Science'**
+  String get lyceeTrackScience;
+
+  /// No description provided for @lyceeTrackLiterature.
+  ///
+  /// In en, this message translates to:
+  /// **'Literature'**
+  String get lyceeTrackLiterature;
+
+  /// No description provided for @errorFillAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill all fields correctly'**
+  String get errorFillAllFields;
+
+  /// No description provided for @pleaseChooseABanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Please choose a banner'**
+  String get pleaseChooseABanner;
+
+  /// No description provided for @male.
+  ///
+  /// In en, this message translates to:
+  /// **'Male'**
+  String get male;
+
+  /// No description provided for @female.
+  ///
+  /// In en, this message translates to:
+  /// **'Female'**
+  String get female;
+
+  /// No description provided for @ourMission.
+  ///
+  /// In en, this message translates to:
+  /// **'Our Mission'**
+  String get ourMission;
+
+  /// No description provided for @futurePlans.
+  ///
+  /// In en, this message translates to:
+  /// **'Future Plans'**
+  String get futurePlans;
+
+  /// No description provided for @chooseYourAvatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Your Avatar'**
+  String get chooseYourAvatar;
+
+  /// No description provided for @profileInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile Information'**
+  String get profileInfo;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @dontShowAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not show again'**
+  String get dontShowAgain;
+
+  /// No description provided for @informationTechnology.
+  ///
+  /// In en, this message translates to:
+  /// **'Information Technology'**
+  String get informationTechnology;
+
+  /// No description provided for @islam.
+  ///
+  /// In en, this message translates to:
+  /// **'Islam'**
+  String get islam;
+
+  /// No description provided for @credits.
+  ///
+  /// In en, this message translates to:
+  /// **'Credits'**
+  String get credits;
+
+  /// No description provided for @info.
+  ///
+  /// In en, this message translates to:
+  /// **'An innovative educational platform blending learning, games, and culture to make education fun and engaging for students in Morocco and beyond.'**
+  String get info;
+
+  /// No description provided for @aboutMission.
+  ///
+  /// In en, this message translates to:
+  /// **'MoorTaalim aims to empower students by providing interactive educational content that respects Moroccan culture and promotes a love of learning. We believe education should be enjoyable, accessible, and culturally relevant.'**
+  String get aboutMission;
+
+  /// No description provided for @aboutFuturePlans.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'re continuously working to add new courses, exciting multiplayer games, and advanced features like personalized learning paths and community forums to connect learners and educators.'**
+  String get aboutFuturePlans;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

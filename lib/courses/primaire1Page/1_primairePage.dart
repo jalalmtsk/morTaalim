@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/GlobalStatCard.dart';
+import 'package:mortaalim/courses/primaire1Page/GlobalStatCard.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -10,6 +10,7 @@ import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/ProgressC
 import '../../XpSystem.dart';
 import '../../l10n/app_localizations.dart';
 import '../../Inside_Course_Logic/HomeCourse.dart';
+import '../../main.dart';
 
 class Primaire1 extends StatefulWidget {
   final ExperienceManager experienceManager;
@@ -205,12 +206,11 @@ class _Primaire1State extends State<Primaire1> {
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context)!;
     final screenWidth = MediaQuery.of(context).size.width;
     final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     return Scaffold(
-      backgroundColor: const Color(0xfffdf6e3),
+      backgroundColor: Colors.transparent,
       body: isLoading
           ? const Center(child: CircularProgressIndicator(color: Colors.orangeAccent))
           : Padding(
@@ -314,7 +314,7 @@ class _Primaire1State extends State<Primaire1> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  getCourseName(title, tr),
+                                  getCourseName(title, tr(context)),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     fontSize: 12,

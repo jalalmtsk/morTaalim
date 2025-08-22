@@ -306,7 +306,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get shop => 'ⵜⵓⵙⴽⵔⴼⵜ';
 
   @override
-  String get age => 'ⵜⴰⵙⵉⵡⵉⵙⵜ';
+  String get age => 'ⴰⵎⵙⵏ';
 
   @override
   String get player1Wins => 'ⵓⵙⵔⵉⴼ ⵉⴼⵔⴰⵙⴻⵏ 1!';
@@ -414,7 +414,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get time => 'ⵙⴰⵡⴰⵙ';
 
   @override
-  String get chooseYourBanner => 'ⵙⴽⵛⵎ ⵜⵉⴼⵉⵙⵜ ⵏⴽ';
+  String get chooseYourBanner => 'ⴰⵙⵙⴰⵏ ⵜⴰⵎⴰⵙⵙⴰ ⵏⵏⴽ';
 
   @override
   String get retry => 'ⵙⴽⵔ ⵏⴰⵡⵉⴹ';
@@ -676,4 +676,331 @@ class AppLocalizationsZgh extends AppLocalizations {
 
   @override
   String get badges_pinnacleOfKnowledge => 'ⵉⵣⵉ ⵏ ⵜⵎⵉⵔⵙⵜ';
+
+  @override
+  String get learningPower => 'ⵜⵉⴳⵎⵉ ⵏ ⵓⵙⴼⵔⵓ';
+
+  @override
+  String get badges => 'ⵜⴰⵣⵎⴻⵔⵜ';
+
+  @override
+  String get global => 'ⴰⴳⵍⵓⴱⴰⵍⴻ';
+
+  @override
+  String get coursesCompleted => 'ⵜⵉⵍⵎⵉⴷⵉⵏ ⵉⵎⴻⵔⵃⵉⵏ';
+
+  @override
+  String get exercices => 'ⵜⵓⴷⴻⵔⵜ';
+
+  @override
+  String get dashboard => 'ⵜⴰⴱⵍⵓⵜ ⵏ ⵓⵙⴳⴻⵍⴷ';
+
+  @override
+  String get practiseCourses => 'ⵜⵉⵍⵎⵉⴷⵉⵏ ⵏ ⵜⴰⵣⵡⴰⵔⴰ';
+
+  @override
+  String get keepUpTheGoodWork => 'ⵙⵔⴰⵖ ⴰⴷ ⴷ-ⵜⵜⵡⵓⵍ';
+
+  @override
+  String get classLevel => 'ⵜⴰⵇⴷⵉⵎⵜ ⵏ ⵜⴰⵡⴻⵏⵣⴰ';
+
+  @override
+  String get audioSettings => 'ⵜⵉⵣⵡⴰⵔ ⵏ ⴰⵡⴰⵍ';
+
+  @override
+  String get backgroundMusic => 'ⴰⵖⵔⵓⵎ ⵏ ⵡⴻⵙⵏ';
+
+  @override
+  String get soundEffects => 'ⵜⵉⵣⵡⴰⵔⵉⵏ ⵏ ⵉⵖⴻⴼⵏ';
+
+  @override
+  String get buttonSounds => 'ⵜⵉⵣⵡⴰⵔ ⵏ ⵜⴰⵣⵣⵉⵛⵜ';
+
+  @override
+  String get resetAudioSettings => 'ⵙⴻⵔⵔ ⵜⴰⵣⵡⴰⵔ ⵏ ⴰⵡⴰⵍ';
+
+  @override
+  String get duaaAndAyat => 'ⴷⵓⴰⵄ ⴷ ⴰⵢⴰⵜ';
+
+  @override
+  String get showAyat => 'ⴰⴼⴼ ⴰⵢⴰⵜ';
+
+  @override
+  String get enableordisabletheAyatcardfromappearinginyourapp => 'ⵙⴻⵄⴷ ⵏⴻⵇⵇⴻⵍ ⵏⴻⵖ ⵙⵔⴷ ⵜⴰⴼⴰⵜ ⵏ ⴰⵢⴰⵜ ⴷⴻⴳ ⵓⵙⴼⵔⵓ';
+
+  @override
+  String get showDuaa => 'ⴰⴼⴼ ⴷⵓⴰⵄ';
+
+  @override
+  String get enableorDisableDuaaEveryTimeYouEnter => 'ⵙⴻⵄⴷ ⵏⴻⵇⵇⴻⵍ ⵏⴻⵖ ⵙⵔⴷ ⴷⵓⴰⵄ ⴽⵓⵍⵍ ⵎⴰ ⵜⵣⴻⵎⵔⴻⴷ';
+
+  @override
+  String get accountAndBackup => 'ⴰⴽⴰⵓⵏⵜ ⴷ ⵜⴰⵣⵡⴰⵔⴰ ⵏ ⵓⵙⴷⵓⴼ';
+
+  @override
+  String get preferredSubject => 'ⴰⵙⴻⴼⵔⵓ ⵉ ⵢⴻⴼⵔⵓⵃ';
+
+  @override
+  String get version => 'ⴰⵙⵎⴽⵀⴻⴷ';
+
+  @override
+  String get followUsOnSocialMedia => 'ⵙⴼⵉⵡⵉⵣ-ⵏⵓⵙ ⴳ ⵍⵉⵙ ⵔⴰⵙⵓⵏ ⵙⵓⵙⵉⴰⵍ';
+
+  @override
+  String get weArePreparingSomethingAwesome => 'ⵙⵉⵔⵉⵎ ⵢⴰⵔ ⵜⵉⵎⴰⵣⵉⵖⵜ ⵜⴰⵎⵎⵓⴽⴽⵔⵜ';
+
+  @override
+  String get comingSoon => 'ⴽⵔⵉⴼ ⴳ ⵜⴰⵙⵔⵓⴼⵜ';
+
+  @override
+  String get unableToOpenTheLink => 'ⵉⵙ ⵍⵍⴰ ⴰⴷ ⵜⵉⵔⵉ ⵉⵙⴻⵏⴳⵍⵉ';
+
+  @override
+  String get thankYouForYourPatience => 'ⴰⵣⵓⵍ ⴼⴰⵡⴰⵏ ⵉⵙ ⵜⵉⵣⵔⵉⴼⵜ ⵉⵏⵓⵙ';
+
+  @override
+  String get manageBackup => 'ⵜⴰⵙⵙⴷⴷⵓⴷ ⵏ ⵜⴰⵣⵡⴰⵔⴰ';
+
+  @override
+  String get backupAndRestore => 'ⵜⴰⵣⵡⴰⵔⴰ ⴷ ⵜⴰⵙⵙⴷⴷⵓⴷ';
+
+  @override
+  String get backupYourProgressOrRestoreItUsingABackupCode => 'ⴰⵣⵡⴰⵔⴰ ⵏ ⵜⵉⵍⵎⵉⴷⵉⵏ ⵏⴻⵎⵎⴰ ⴷ ⵜⴰⵙⵙⴷⴷⵓⴷ ⵏⴻⴳ ⵏⴰⴱⴰⴽ ⵓⵙⵙⴰ';
+
+  @override
+  String get saveBackup => 'ⵜⴰⵣⵡⴰⵔⴰ ⵙⴰⴼⵉ';
+
+  @override
+  String get loadBackup => 'ⵜⴰⵙⵙⴷⴷⵓⴷ ⵏⴻⴳ ⵜⴰⵣⵡⴰⵔⴰ';
+
+  @override
+  String get howToBackup => 'ⴽⴰⴴⵍ ⵏ ⵜⴰⵣⵡⴰⵔⴰ';
+
+  @override
+  String get makeSureToSaveYourBackupCodeSafelyYouWillNeedItToRestoreYourProgress => 'ⴰⵙⵙⴰⵔ ⴰⵣⵡⴰⵔⴰⴽ ⵏⵏⴰⴱⴰⴽ ⵓⵙⵙⴰ ⵎⴰⵙⵙⵓⵍ. ⵙⵙⴰ ⵜⴰⵣⵡⴰⵔⴰ ⵏ ⵜⵉⵍⵎⵉⴷⵉⵏ ⵏⴻⵎⵎⴰ';
+
+  @override
+  String get signedInWithGoogle => 'ⵜⴰⵙⵔⵓⵙ ⴷ Google';
+
+  @override
+  String get disconnectedNowinanonymousmode => 'ⵜⵙⴷⴷⵓⴷ, ⴰⵎⴰⵣⵉ ⴷⴰⵢⴰ ⵏ ⵓⵎⵏⵓⵙ';
+
+  @override
+  String get failedToDisconnect => 'ⴰⴳⵔⴰⵏ ⵏ ⵜⵙⴷⴷⵓⴷ';
+
+  @override
+  String get googleAccount => 'ⴰⴽⴰⵓⵏⵜ Google';
+
+  @override
+  String get connected => 'ⵙⴳⴻⵍⴷ';
+
+  @override
+  String get disconnect => 'ⵜⵙⴷⴷⵓⴷ';
+
+  @override
+  String get connecting => 'ⵜⵙⴳⴻⵍⴷ ⵏ ⵉⵖⵍⴷ';
+
+  @override
+  String get connectGoogleAccount => 'ⵙⴳⴻⵍⴷ ⴰⴽⴰⵓⵏⵜ Google';
+
+  @override
+  String get notConnectedYet => 'ⵎⴰ ⵙⴳⴻⵍⴷ ⵎⴰⵢⵏⴻⵏ';
+
+  @override
+  String get disconnected => 'ⵜⵙⴷⴷⵓⴷ';
+
+  @override
+  String get areYouSureYouWantToDisconnectYourGoogleAccountYouWillBeSwitchedToAnonymousMode => 'ⴰⵏⵙⵙⵓ ⵉⵏⵣⵣⵉⵏ ⵜⴰⵙⵙⴷⴷⵓⴷ ⴰⴽⴰⵓⵏⵜ Google? ⵜⵎⵙⵙⵓ ⴰⵎⴰⵣⵉ ⴷⴰⵢⴰ ⵏ ⵓⵎⵏⵓⵙ';
+
+  @override
+  String get selectALanguageToContinue => 'ⴰⵙⵙⴰⵏ ⵜⴰⵡⴰⵙⵉⵏⵜ ⴰⴳⴷ ⴼⵓⵔ ⴷⴰⵔⴰ';
+
+  @override
+  String get languageSetTo => 'ⵜⴰⵡⴰⵙⵉⵏⵜ ⴰⵙⵏⵙⵍ ⵏ';
+
+  @override
+  String get letsGetToKnowEachOther => 'ⴰⵎⴰⵙ ⴰⵔⵔⵓ ⴰⵔ ⵉⵎⴰⵣⵉⵖ';
+
+  @override
+  String get fillInYourInformation => 'ⵙⵙⴰⵏ ⵉⵙⵔⴰ ⵏⵏⴽ ⴰⴳⴷ ⴰⵙⵙⴰⵏ ⴰⵏⴰⵎⴷⴷⴰⵏ ⴰⴳⴷ ⵢⵉⴹⴰⵍ';
+
+  @override
+  String get pleaseEnterYourFirstName => 'ⵎⴰⵔⵙ ⵎⴰⵖⴰⵣ ⵏⵏⴽ ⴰⴷⴷⴰⴹ';
+
+  @override
+  String get pleaseEnterYourLastName => 'ⵎⴰⵔⵙ ⵉⵙⴽ ⵏⵏⴽ ⴰⴷⴷⴰⴹ';
+
+  @override
+  String get pleaseEnterYourAge => 'ⵎⴰⵔⵙ ⴰⵎⵙⵏ ⵏⵏⴽ ⴰⴷⴷⴰⴹ';
+
+  @override
+  String get pleaseEnterAValidAge => 'ⵎⴰⵔⵙ ⴰⵎⵙⵏ ⴰⴳⴳⴰⵍ ⴰⴷⴷⴰⴹ';
+
+  @override
+  String get lastName => 'ⵉⵙⴽ';
+
+  @override
+  String get firstName => 'ⵎⴰⵖⴰⵣ';
+
+  @override
+  String get schoolInformation => 'ⴰⵏⴼⴰⵢ ⵏ ⵜⵉⵏⴰⵙⵏⴰⵏ';
+
+  @override
+  String get pleaseEnterSchoolNameTypeLevelAndClass => 'ⴰⵎⵎⵓⵔ ⵏ ⵉⵎⵉⵙⴽⵓⵍ, ⵓⴳⵓⵔ, ⵓⵙⵙⴰⵏ ⴷ ⵓⵎⴷⴷⵓⵔ';
+
+  @override
+  String get schoolName => 'ⵏⵉⵎⵉⵙⴽⵓⵍ';
+
+  @override
+  String get pleaseEnterSchoolName => 'ⴰⵎⵎⵓⵔ ⵏ ⵏⵉⵎⵉⵙⴽⵓⵍ';
+
+  @override
+  String get schoolType => 'ⵓⴳⵓⵔ ⵏ ⵜⵉⵏⴰⵙⵏⴰⵏ';
+
+  @override
+  String get selectSchoolType => 'ⵛⴰⵡⵍⵉ ⵓⴳⵓⵔ ⵏ ⵜⵉⵏⴰⵙⵏⴰⵏ';
+
+  @override
+  String get schoolLevel => 'ⵓⵙⵙⴰⵏ';
+
+  @override
+  String get selectSchoolLevel => 'ⵛⴰⵡⵍⵉ ⵓⵙⵙⴰⵏ';
+
+  @override
+  String get classSchool => 'ⴰⴳⴷⴰⵔ';
+
+  @override
+  String get selectClass => 'ⵛⴰⵡⵍⵉ ⴰⴳⴷⴰⵔ';
+
+  @override
+  String get highSchoolTrack => 'ⵜⵉⵏⴰⵙⵏⴰⵏ ⵏ ⵓⵎⵙⵙⴰⵏ ⵓⵏⵏⴰⵎ';
+
+  @override
+  String get selectHighSchoolTrack => 'ⵛⴰⵡⵍⵉ ⵜⵉⵏⴰⵙⵏⴰⵏ ⵏ ⵓⵎⵙⵙⴰⵏ';
+
+  @override
+  String get yourLocation => 'ⴰⵍⵉⵙⵙ ⵏⵉⴷⵔⴰⵏ';
+
+  @override
+  String get pleaseEnterYourCityAndCountryToContinue => 'ⵢⴰⵡⴰ ⵏ ⴰⵙⵉⵜⴰ ⴷ ⵏⴰⵡⴰⵍⵓⵎ ⴷ ⴰⵏⴱⴰⵔ ⵏⵉⴷⵔⴰⵏ ⵉⵏⵉ ⵢⵓⵏⴰⵏ';
+
+  @override
+  String get city => 'ⴰⵙⵉⵜⴰ';
+
+  @override
+  String get pleaseEnterYourCity => 'ⵢⴰⵡⴰ ⵏ ⴰⵙⵉⵜⴰ';
+
+  @override
+  String get country => 'ⵏⴰⵡⴰⵍⵓⵎ';
+
+  @override
+  String get pleaseEnterYourCountry => 'ⵢⴰⵡⴰ ⵏ ⵏⴰⵡⴰⵍⵓⵎ';
+
+  @override
+  String get schoolTypePrivate => 'ⴰⵍⵍⴰⵙⵉ';
+
+  @override
+  String get schoolTypePublic => 'ⴰⵎⵙⵙⵓⴷ';
+
+  @override
+  String get schoolTypeOther => 'ⵓⵎⵎⵓⵔ';
+
+  @override
+  String get schoolLevelPrimary => 'ⵜⴰⵍⵎⵉⴷⵉⵜ';
+
+  @override
+  String get schoolLevelMiddle => 'ⵜⴰⵎⴰⴳⵣⵉⵏⵜ';
+
+  @override
+  String get schoolLevelHigh => 'ⵜⵉⵏⴰⵙⵏⴰⵏ ⵏ ⵓⵎⵙⵙⴰⵏ';
+
+  @override
+  String get gradesPrimary1 => 'ⴰⵎⵙⴽⵓⵍ 1 (CP)';
+
+  @override
+  String get gradesPrimary2 => 'ⴰⵎⵙⴽⵓⵍ 2 (CE1)';
+
+  @override
+  String get gradesPrimary3 => 'ⴰⵎⵙⴽⵓⵍ 3 (CE2)';
+
+  @override
+  String get gradesPrimary4 => 'ⴰⵎⵙⴽⵓⵍ 4 (CM1)';
+
+  @override
+  String get gradesPrimary5 => 'ⴰⵎⵙⴽⵓⵍ 5 (CM2)';
+
+  @override
+  String get gradesPrimary6 => 'ⴰⵎⵙⴽⵓⵍ 6 (CM3)';
+
+  @override
+  String get gradesMiddle1 => 'ⴰⵎⵙⴽⵓⵍ 7 (ⵜⴰⵎⴰⴳⵣⵉⵏⵜ 1)';
+
+  @override
+  String get gradesMiddle2 => 'ⴰⵎⵙⴽⵓⵍ 8 (ⵜⴰⵎⴰⴳⵣⵉⵏⵜ 2)';
+
+  @override
+  String get gradesMiddle3 => 'ⴰⵎⵙⴽⵓⵍ 9 (ⵜⴰⵎⴰⴳⵣⵉⵏⵜ 3)';
+
+  @override
+  String get gradesHigh1 => 'ⵜⵉⵏⴰⵙⵏⴰⵏ ⵜⵓⵔⴰⵏ (TC)';
+
+  @override
+  String get gradesHigh2 => 'ⴰⵎⵙⴽⵓⵍ 1 ⵏ Bac (ⴰⴷⵔⴰⵏⴳⴰⵍ)';
+
+  @override
+  String get gradesHigh3 => 'Baccalaureate (ⴰⵏⴰⵏⵏⴰⵍ)';
+
+  @override
+  String get lyceeTrackScience => 'ⵉⵏⴰⵏⴰⵙ';
+
+  @override
+  String get lyceeTrackLiterature => 'ⵉⵍⵉⵟⵔⴰⵕ';
+
+  @override
+  String get errorFillAllFields => 'ⴰⵎⵎⵓⵔ ⴰⵡⴰⴳⴷ ⵓⴳⵓⵔ ⵏⴰⵡⵢⴰⵏ';
+
+  @override
+  String get pleaseChooseABanner => 'ⵎⴰⵔⵙ ⴰⵙⵙⴰⵏ ⵜⴰⵎⴰⵙⵙⴰ';
+
+  @override
+  String get male => 'ⴰⵎⴰⵣⵉⵖ';
+
+  @override
+  String get female => 'ⵜⴰⵎⴰⵣⵉⵖⵜ';
+
+  @override
+  String get ourMission => 'ⵎⵉⵙⵉⵓⵏ ⵉⵏⵓⴼⵉⵙⵏ';
+
+  @override
+  String get futurePlans => 'ⵜⵉⴳⵔⴰⵡⵉⵏ ⵜⵉⵎⵣⴰⵔⵉⵏ';
+
+  @override
+  String get chooseYourAvatar => 'ⵙⵙⴽⵔ ⴰⴼⴰⵟⴰⵔ ⵉⵎⴰⴷⴰⵏⴰⵙ';
+
+  @override
+  String get profileInfo => 'ⵉⵏⴼⵓⵔⵡⴰⵏ ⵏ ⵉⴼⵔⵓ ⵉⵎⴰⴷⴰⵏⴰⵙ';
+
+  @override
+  String get email => 'ⴰⵎⴰⵣⵉⵍ ⴰⵎⵉⵍⵉⵏⵉ';
+
+  @override
+  String get dontShowAgain => 'ur ssin ara igenwan';
+
+  @override
+  String get informationTechnology => 'ⴰⵎⴰⵣⵉⵖ ⵜⴰⵙⵉⵏⴻⵏⵜ';
+
+  @override
+  String get islam => 'ⵉⵙⵍⴰⵎ';
+
+  @override
+  String get credits => 'ⴰⵎⴰⵙⵓⵏ';
+
+  @override
+  String get info => 'ⴰⵎⵏⴰⵡⵉ ⵓⵎⵓⵔ ⵜⴰⵎⵓⴷⵉⵏⵜ, ⵜⵓⵏⴰⵎⵜ ⵓⴳⴷⵉⵎ ⵏ ⵜⴰⴷⵓⵍⵉⵎⵏ ⵓⵎⴰⵣⵉⵖ ⵏ ⵎⴰⵔⵓⴽⵓ ⴷ ⴷⵓⵏⵢⴰⵏ.';
+
+  @override
+  String get aboutMission => 'ⵎⵓⵔⵜⴰⵄⴰⵍⵉⵎ ⵣⵓⵍ ⵉⵎⵎⵓⵔⵉ ⵏ ⵉⴷⵔⵉⵣⵉ ⵉⵎⵎⴰⵣⵉⵖⵏ ⴷ ⵓⵙⵙⵓⵎⵎ ⵏ ⵎⴰⵔⵓⴽⵓ. ⴰⵎⵏⴰⵡⵉ ⵓⵙⵙⵉⵏ ⵏ ⵓⴳⴷⵉⵎ, ⵓⴳⵏⴰⵡ ⵏ ⵎⴰⵣⵉⵖ ⵓⵙⵙⵓⵎⵎ.';
+
+  @override
+  String get aboutFuturePlans => 'ⵎⴰⵏⴰ ⵣⵓⵍ ⵉⵙⵙⵓⵎⵎ ⵏ ⴷⵓⵍ ⵉⵙⵏⵏⴰⵡⵏ, ⵓⵏⵙⵏⴰ ⵏ ⵉⵎⴰⵙⵉⵏ ⵓⵙⵙⵓⵎⵎ ⵏ ⵉⵎⵎⵓⵔⵉ ⵓⵏⵙⵏⴰ ⵏ ⵎⴰⵔⵓⴽⵓ ⵓⵙⵙⵓⵎⵎ.';
 }

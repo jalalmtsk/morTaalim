@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 
 class WelcomePage extends StatefulWidget {
   final VoidCallback onGetStarted;
@@ -10,70 +13,96 @@ class WelcomePage extends StatefulWidget {
   State<WelcomePage> createState() => _WelcomePageState();
 }
 
-class _WelcomePageState extends State<WelcomePage>
-    with TickerProviderStateMixin {
-  late AnimationController _animationController;
+class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin {
   late AnimationController _gradientController;
-  late Animation<double> _fadeAnimation;
+  late AnimationController _fadeController;
   late Animation<Offset> _slideAnimation;
 
-  List<List<Color>> gradientSets = [
-    [const Color(0xFF6A11CB), const Color(0xFF2575FC)], // Purple → Blue
-    [const Color(0xFF43E97B), const Color(0xFF38F9D7)], // Green → Cyan
-    [const Color(0xFFFF6FD8), const Color(0xFFFF9068)], // Pink → Orange
+  int currentGradientIndex = 0;
+  int currentTextIndex = 0;
+
+  final List<List<Color>> gradientSets = [
+    [const Color(0xFF6A11CB), const Color(0xFF2575FC)],
+    [const Color(0xFF43E97B), const Color(0xFF38F9D7)],
+    [const Color(0xFFFF6FD8), const Color(0xFFFF9068)],
   ];
 
-  int currentGradientIndex = 0;
+  final List<String> buttonTexts = ['Commencer', 'Start', 'ابدأ', 'ⴰⵙⵙⵓⵎ', 'Beginnen'];
+  final List<String> subtitles = [
+    'Découvrez, apprenez et progressez avec nous.\nEnsemble, rendons la connaissance amusante et accessible !',
+    'Discover, learn and progress with us.\nLet\'s make knowledge fun and accessible!',
+    'اكتشف وتعلم وتقدم معنا.\nلنجعل المعرفة ممتعة ومتاحة للجميع!!',
+    'ⵉⵎⵙⵙⴰⴼ, ⵜⴰⵙⵉⴷⵉⵏ ⴷ ⵜⴰⵙⵓⵎⵓⵏ.\nⵙⵉⵏⵏⴰ ⵉⵎⵙⵙⴰⴼ ⵏ ⵉⴳⴻⵔⴻⵏ!',
+    'Entdecken, lernen und Fortschritte mit uns.\nLassen Sie uns Wissen spaßig und zugänglich machen!'
+  ];
+  final List<String> titles = [
+    'Bienvenue dans votre nouvelle aventure',
+    'Welcome to your new adventure',
+    'مرحبا بك في مغامرتك الجديدة',
+    'ⴰⵎⴰⵣⵉⵖ ⴷ ⵉⴳⴻⵔⴻⵏ ⴰⵎⴰⴷⴰⵔⵜ',
+    'Willkommen zu deinem neuen Abenteuer'
+  ];
+
 
   @override
   void initState() {
     super.initState();
 
-    // Fade and slide animations
-    _animationController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    );
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playAlert("assets/audios/logo_introsecond.mp3");
+    audioManager.playBackgroundMusic("assets/audios/BackGround_Audio/FunnyDogUserInfo_bg.mp3");
 
-    _fadeAnimation = Tween<double>(begin: 0, end: 1).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: const Interval(0.4, 1.0, curve: Curves.easeIn),
-      ),
-    );
-
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, 0.2),
-      end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _animationController,
-        curve: Curves.easeOut,
-      ),
-    );
-
-    _animationController.forward();
-
-    // Gradient background animation
+    // Gradient controller
     _gradientController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 6),
     )..addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         setState(() {
-          currentGradientIndex =
-              (currentGradientIndex + 1) % gradientSets.length;
+          currentGradientIndex = (currentGradientIndex + 1) % gradientSets.length;
         });
         _gradientController.forward(from: 0);
       }
     });
-
     _gradientController.forward();
+
+    // Fade controller
+    _fadeController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1750),
+    );
+
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0, 0.1),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _fadeController, curve: Curves.easeOut));
+
+    _startTextLoop();
   }
+
+
+  void _startTextLoop() async {
+    while (mounted) {
+      // Fade out
+      await _fadeController.reverse(from: 1.0);
+
+      // Change text
+      setState(() {
+        currentTextIndex = (currentTextIndex + 1) % titles.length;
+      });
+
+      // Fade in
+      await _fadeController.forward(from: 0.0);
+
+      // Wait before next change
+      await Future.delayed(const Duration(milliseconds: 5000));
+    }
+  }
+
 
   @override
   void dispose() {
-    _animationController.dispose();
+    _fadeController.dispose();
     _gradientController.dispose();
     super.dispose();
   }
@@ -81,16 +110,17 @@ class _WelcomePageState extends State<WelcomePage>
   @override
   Widget build(BuildContext context) {
     final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     return Scaffold(
       body: AnimatedBuilder(
         animation: _gradientController,
-        builder: (context, child) {
+        builder: (context, _) {
           final colors = List<Color>.generate(
             2,
-                (index) => Color.lerp(
-              gradientSets[currentGradientIndex][index],
-              gradientSets[nextIndex][index],
+                (i) => Color.lerp(
+              gradientSets[currentGradientIndex][i],
+              gradientSets[nextIndex][i],
               _gradientController.value,
             )!,
           );
@@ -109,7 +139,6 @@ class _WelcomePageState extends State<WelcomePage>
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Lottie animation
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
@@ -123,89 +152,71 @@ class _WelcomePageState extends State<WelcomePage>
                       ),
                       child: Lottie.asset(
                         'assets/animations/FirstTouchAnimations/Welcome.json',
-                        width: 220,
-                        height: 220,
+                        width: 260,
+                        height: 260,
                         repeat: true,
                       ),
                     ),
-                    const SizedBox(height: 30),
-
-                    // Title animation
+                    // Fade + Slide Animated Texts with fixed height
                     FadeTransition(
-                      opacity: _fadeAnimation,
+                      opacity: _fadeController,
                       child: SlideTransition(
                         position: _slideAnimation,
-                        child: const Text(
-                          'Bienvenue dans votre nouvelle aventure',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            letterSpacing: 0.8,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 8,
-                                color: Colors.black26,
-                                offset: Offset(0, 3),
-                              )
+                        child: SizedBox(
+                          height: 180, // FIXED HEIGHT prevents jumping
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                titles[currentTextIndex],
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  fontSize: 28,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                  shadows: [
+                                    Shadow(
+                                      blurRadius: 8,
+                                      color: Colors.black26,
+                                      offset: Offset(0, 3),
+                                    )
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                subtitles[currentTextIndex],
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white.withOpacity(0.95),
+                                  height: 1.5,
+                                ),
+                              ),
                             ],
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
-
-                    // Subtitle
-                    FadeTransition(
-                      opacity: _fadeAnimation,
-                      child: Text(
-                        'Découvrez, apprenez et progressez avec nous.\nEnsemble, rendons la connaissance amusante et accessible !',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white.withOpacity(0.95),
-                          height: 1.5,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-
-                    // Gradient button
-                    FadeTransition(
-                      opacity: _fadeAnimation,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: const LinearGradient(
-                            colors: [Color(0xFF43E97B), Color(0xFF38F9D7)],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          ),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        audioManager.playEventSound("clickButton");
+                        widget.onGetStarted();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 14),
+                        shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black26,
-                              blurRadius: 8,
-                              offset: Offset(0, 4),
-                            )
-                          ],
                         ),
-                        child: ElevatedButton(
-                          onPressed: widget.onGetStarted,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.transparent,
-                            shadowColor: Colors.transparent,
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 50,
-                              vertical: 14,
-                            ),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                          ),
-                          child: const Text(
-                            'Commencer',
-                            style: TextStyle(
+                        backgroundColor: const Color(0xFF43E97B),
+                      ),
+                      child: SizedBox(
+                        width: 100,
+                        child: Center(
+                          child: Text(
+                            buttonTexts[currentTextIndex],
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                               color: Colors.white,

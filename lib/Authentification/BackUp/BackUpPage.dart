@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 
 import '../../XpSystem.dart';
 import 'LoadBackUp_dialog.dart';
@@ -32,7 +33,7 @@ class BackupPage extends StatelessWidget {
               const SizedBox(height: 24),
 
               Text(
-                "Backup your progress or restore it using a backup code.",
+                tr(context).backupYourProgressOrRestoreItUsingABackupCode,
                 style: theme.textTheme.titleMedium,
                 textAlign: TextAlign.center,
               ),
@@ -49,8 +50,8 @@ class BackupPage extends StatelessWidget {
                 onPressed: () {
                   showSaveBackupDialog(context, experienceManager.saveBackup);
                 },
-                child: const Text(
-                  "Save Backup",
+                child:  Text(
+                  tr(context).saveBackup,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -69,8 +70,8 @@ class BackupPage extends StatelessWidget {
                 onPressed: () {
                   showLoadBackupDialog(context, experienceManager.loadBackup);
                 },
-                child: const Text(
-                  "Load Backup",
+                child:  Text(
+                  tr(context).loadBackup,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                 ),
               ),
@@ -82,8 +83,8 @@ class BackupPage extends StatelessWidget {
                     MaterialPageRoute(builder: (_) =>  BackupTutorialPage()),
                   );
                 },
-                child: const Text(
-                  "How to backup?",
+                child:  Text(
+                  tr(context).howToBackup,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
@@ -95,7 +96,7 @@ class BackupPage extends StatelessWidget {
               const SizedBox(height: 32),
 
               Text(
-                "Make sure to save your backup code safely. You will need it to restore your progress.",
+                tr(context).makeSureToSaveYourBackupCodeSafelyYouWillNeedItToRestoreYourProgress,
                 textAlign: TextAlign.center,
                 style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey[600]),
               ),
@@ -105,8 +106,8 @@ class BackupPage extends StatelessWidget {
               // 🔴 Cancel Button
               TextButton(
                 onPressed: () => Navigator.pop(context),
-                child: const Text(
-                  "Cancel",
+                child:  Text(
+                  tr(context).cancel,
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,

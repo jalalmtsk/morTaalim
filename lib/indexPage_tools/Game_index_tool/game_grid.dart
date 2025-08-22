@@ -1,7 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:mortaalim/Themes/ThemeManager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/AboutMoorTaalim/AboutMoorTaalim.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:lottie/lottie.dart';
@@ -71,6 +73,7 @@ class _GameGridState extends State<GameGrid>
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
     final audioManager = Provider.of<AudioManager>(context, listen: false);
+    final themeManager = Provider.of<ThemeManager>(context);
 
     return Stack(
       children: [
@@ -80,29 +83,72 @@ class _GameGridState extends State<GameGrid>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(6.0),
                   child: Text(
                     tr(context).chooseGame,
-                    style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+                    style: TextStyle(
+                      fontSize: 24,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      shadows: [
+                        Shadow(
+                          offset: Offset(1.0, 2.0), // horizontal & vertical shadow
+                          blurRadius: 3.0,          // how blurry the shadow is
+                          color: themeManager.currentTheme.primaryColor.withOpacity(0.4), // shadow color
+                        ),
+                        Shadow(
+                          offset: Offset(-1.0, -1.0),
+                          blurRadius: 2.0,
+                          color: themeManager.currentTheme.primaryColor.withOpacity(0.2),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    audioManager.playEventSound('PopButton');
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => AboutMoorTaalimPage()));
-                  },
-                  icon: const Icon(Icons.info_outlined),
+                Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        audioManager.playEventSound('PopButton');
+
+                        // Example: text to share
+                        String shareText = "Check out my magical profile on MoorTaalim! ✨\n"
+                            "Name: ${xpManager.userProfile.fullName} ${xpManager.userProfile.lastName}\n"
+                            "Age: ${xpManager.userProfile.age}\n"
+                            "Gender: ${xpManager.userProfile.gender}\n"
+                            "Tolim: ${xpManager.Tolims}\n"
+                            "Stars: ${xpManager.stars}\n"
+
+                            "xp: ${xpManager.xp}";
+ 
+                        Share.share(shareText); // triggers system share dialog
+                      },
+                      icon: Icon(
+                        Icons.share,
+                        color: themeManager.currentTheme.accentColor,
+                      ),
+                    ),
+
+
+                    IconButton(
+                      onPressed: () {
+                        audioManager.playEventSound('PopButton');
+                        Navigator.push(context, MaterialPageRoute(builder: (_) => AboutMoorTaalimPage()));
+                      },
+                      icon:  Icon(Icons.info_outlined, color:themeManager.currentTheme.primaryColor ),
+                    ),
+                  ],
                 ),
+
               ],
             ),
             Expanded(
               child: GridView.builder(
-                padding: const EdgeInsets.all(8),
                 itemCount: widget.games.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  mainAxisSpacing: 18,
-                  crossAxisSpacing: 18,
+                  mainAxisSpacing: 12,
+                  crossAxisSpacing: 14,
                   childAspectRatio: 4 / 3,
                 ),
                 itemBuilder: (context, index) {
@@ -113,7 +159,7 @@ class _GameGridState extends State<GameGrid>
 
                   return AnimatedGridItem(
                     index: index,
-                    columnCount: 2,
+                    columnCount: 1,
                     onTap: () {
                       if (isUnlocked) {
                         audioManager.playEventSound('PopButton');

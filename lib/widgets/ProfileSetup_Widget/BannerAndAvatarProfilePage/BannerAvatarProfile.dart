@@ -64,12 +64,7 @@ class _BannerAvatarProfileState extends State<BannerAvatarProfile>
       return;
     }
     if (username.isEmpty || username.length > 15) {
-      _showError("Username must be between 1 and 15 characters");
-      return;
-    }
-    if (email.isEmpty ||
-        !RegExp(r'^[\w\.\-]+@([\w\-]+\.)+[\w\-]{2,4}$').hasMatch(email)) {
-      _showError("Please enter a valid email");
+      _showError("LastName must be between 1 and 15 characters");
       return;
     }
 
@@ -133,20 +128,20 @@ class _BannerAvatarProfileState extends State<BannerAvatarProfile>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          _buildFunSectionTitle("Choose Your Banner"),
+                          _buildFunSectionTitle(tr(context).chooseYourBanner),
                           const SizedBox(height: 12),
                           _buildBannerSelector(xpManager, audioManager),
                           const SizedBox(height: 20),
-                          _buildFunSectionTitle("Choose Your Avatar"),
+                          _buildFunSectionTitle(tr(context).chooseYourAvatar),
                           const SizedBox(height: 12),
                           _buildAvatarSelector(xpManager, audioManager),
                           const SizedBox(height: 20),
-                          _buildFunSectionTitle("Profile Info"),
+                          _buildFunSectionTitle(tr(context).profileInfo),
                           const SizedBox(height: 12),
-                          _buildField(_nameController, "Name", Icons.person),
-                          _buildField(_usernameController, "Username",
-                              Icons.alternate_email),
-                          _buildField(_emailController, "Email", Icons.email,
+                          _buildField(_nameController, "${tr(context).name} **", Icons.person),
+                          _buildField(_usernameController, "${tr(context).lastName} **",
+                              Icons.nest_cam_wired_stand),
+                          _buildField(_emailController, tr(context).email, Icons.email,
                               TextInputType.emailAddress),
                         ],
                       ),
@@ -396,10 +391,10 @@ class _BannerAvatarProfileState extends State<BannerAvatarProfile>
       child: ElevatedButton.icon(
         onPressed: _saveProfile,
         icon: const Icon(Icons.save, size: 28),
-        label: const Padding(
+        label:  Padding(
           padding: EdgeInsets.symmetric(vertical: 14),
           child: Text(
-            "Save Profile",
+            tr(context).saveProfile,
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
         ),

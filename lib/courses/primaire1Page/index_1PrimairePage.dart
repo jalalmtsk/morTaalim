@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mortaalim/XpSystem.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePage.dart';
@@ -6,6 +7,8 @@ import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../../main.dart';
 
 class Index1Primaire extends StatefulWidget {
   const Index1Primaire({super.key});
@@ -90,7 +93,8 @@ class _Index1PrimaireState extends State<Index1Primaire>
     const headerTextStyle = TextStyle(
       fontSize: 24,
       fontWeight: FontWeight.w700,
-      color: Colors.black87,
+      color: Colors.white,
+      shadows: [Shadow(blurRadius: 3, color: Colors.black54)],
     );
 
     const tabLabelStyle = TextStyle(
@@ -103,71 +107,118 @@ class _Index1PrimaireState extends State<Index1Primaire>
       child: Builder(builder: (context) {
         final TabController tabController = DefaultTabController.of(context)!;
 
-        // Listen to tab taps
         tabController.addListener(() {
-          if (!tabController.indexIsChanging) return; // user taps only
+          if (!tabController.indexIsChanging) return;
           audioManager.playEventSound('clickButton');
         });
 
         return Scaffold(
-          backgroundColor: Colors.grey[100],
-          body: Column(
+          backgroundColor: Colors.transparent,
+          body: Stack(
             children: [
-              Userstatutbar(),
-
-              SlideTransition(
-                position: _slideAnimation,
-                child: FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back,
-                                color: Colors.deepOrange),
-                            onPressed: () {
-                              audioManager.playEventSound('cancelButton');
-                              Navigator.pop(context);
-                            },
-                          ),
-                          Expanded(
-                            child: Text(
-                              '1ère Année Primaire',
-                              style: headerTextStyle,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          const SizedBox(width: 48),
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      TabBar(
-                        labelColor: Colors.deepOrange,
-                        unselectedLabelColor: Colors.grey,
-                        indicatorColor: Colors.deepOrange,
-                        indicatorWeight: 3,
-                        labelStyle: tabLabelStyle,
-                        tabs: const [
-                          Tab(icon: Icon(Icons.menu_book), text: 'Cours'),
-                          Tab(
-                              icon: Icon(Icons.track_changes_rounded),
-                              text: 'Exercices'),
-                        ],
-                      ),
-                    ],
-                  ),
+              // Background Image
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/UI/BackGrounds/bg2.jpg',
+                  fit: BoxFit.cover,
                 ),
               ),
 
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    Primaire1(key: _keyTab1, experienceManager: xpManager),
-                    Primaire1Pratique(key: _keyTab2),
-                  ],
+              // Blurred overlay for entire page
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: Container(color: Colors.black.withOpacity(0.25)),
                 ),
+              ),
+
+              Column(
+                children: [
+                  // User status bar with blur
+         Userstatutbar(),
+                  SlideTransition(
+                    position: _slideAnimation,
+                    child: FadeTransition(
+                      opacity: _fadeAnimation,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                            child: Container(
+                              color: Colors.black.withOpacity(0.25),
+                              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.arrow_back,
+                                            color: Colors.deepOrange),
+                                        onPressed: () {
+                                          audioManager.playEventSound('cancelButton');
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          tr(context).class1,
+                                          style: headerTextStyle,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 48),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 8),
+                                  // Blurred TabBar
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: BackdropFilter(
+                                      filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                                      child: Container(
+                                        color: Colors.black.withOpacity(0.3),
+                                        child: TabBar(
+                                          indicatorSize: TabBarIndicatorSize.tab,
+                                          indicator: BoxDecoration(
+                                            color: Colors.white.withValues(alpha: 0.8),
+                                            borderRadius: BorderRadius.circular(12),
+                                          ),
+                                          labelColor: Colors.deepOrange,
+                                          unselectedLabelColor: Colors.white70,
+                                          indicatorColor: Colors.deepOrange,
+                                          indicatorWeight: 3,
+                                          labelStyle: tabLabelStyle,
+                                          tabs: [
+                                            Tab(icon: const Icon(Icons.menu_book), text: tr(context).courses),
+                                             Tab(
+                                                icon: Icon(Icons.track_changes_rounded),
+                                                text: tr(context).exercices),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        Primaire1(key: _keyTab1, experienceManager: xpManager),
+                        Primaire1Pratique(key: _keyTab2),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

@@ -72,78 +72,83 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Background
-        Positioned.fill(
-          child: Image.asset(
-            _backgroundImage,
-            fit: BoxFit.cover,
-          ),
-        ),
-        Container(color: Colors.black.withOpacity(0.5)),
-
-        // Show App logo fading in after 800ms
-        Center(
-          child: _showAppLogo
-              ? FadeTransition(
-            opacity: _fadeAnimation,
-            child: GlowingLogo(
-              imagePath: 'assets/icons/logo3.png',
-              size: 160,
-            ),
-          )
-              : const SizedBox.shrink(),  // Nothing shown before 800ms
-        ),
-
-        // Bottom progress bar & text
-        Align(
-          alignment: Alignment.bottomCenter,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ElegantProgressBar(progress: widget.progress),
-                const SizedBox(height: 16),
-                Text(
-                  widget.loadingComplete ? "Ready!" : "Loading...",
-                  style: TextStyle(
-                    color: Colors.orange.shade50,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    letterSpacing: 1.2,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 6,
-                        color: Colors.orange.shade900.withOpacity(0.7),
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  "${(widget.progress * 100).toInt()}%",
-                  style: TextStyle(
-                    color: Colors.orange.shade200.withOpacity(0.95),
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 1.1,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 4,
-                        color: Colors.orange.shade900.withOpacity(0.6),
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+    return AnimatedOpacity(
+      opacity: 1.0,
+      duration: const Duration(milliseconds: 1000),
+      curve: Curves.easeInOut,
+      child: Stack(
+        children: [
+          // Background
+          Positioned.fill(
+            child: Image.asset(
+              _backgroundImage,
+              fit: BoxFit.cover,
             ),
           ),
-        ),
-      ],
+          Container(color: Colors.black.withOpacity(0.5)),
+
+          // Show App logo fading in after 800ms
+          Center(
+            child: _showAppLogo
+                ? FadeTransition(
+              opacity: _fadeAnimation,
+              child: GlowingLogo(
+                imagePath: 'assets/icons/logo3.png',
+                size: 160,
+              ),
+            )
+                : const SizedBox.shrink(),  // Nothing shown before 800ms
+          ),
+
+          // Bottom progress bar & text
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElegantProgressBar(progress: widget.progress),
+                  const SizedBox(height: 16),
+                  Text(
+                    widget.loadingComplete ? "Ready!" : "Loading...",
+                    style: TextStyle(
+                      color: Colors.orange.shade50,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 6,
+                          color: Colors.orange.shade900.withOpacity(0.7),
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    "${(widget.progress * 100).toInt()}%",
+                    style: TextStyle(
+                      color: Colors.orange.shade200.withOpacity(0.95),
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 1.1,
+                      shadows: [
+                        Shadow(
+                          blurRadius: 4,
+                          color: Colors.orange.shade900.withOpacity(0.6),
+                          offset: const Offset(0, 1),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

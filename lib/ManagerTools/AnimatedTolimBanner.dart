@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 
 class AnimatedTokenBanner extends StatefulWidget {
   final int tokenAmount;
@@ -20,14 +22,12 @@ class AnimatedTokenBanner extends StatefulWidget {
 class _AnimatedTokenBannerState extends State<AnimatedTokenBanner>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  final MusicPlayer _player = MusicPlayer();
 
   @override
   void initState() {
     super.initState();
-
-    _player.play("assets/audios/sound_effects/retro-coin.mp3");
-
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playAlert("assets/audios/UI_Audio/SFX_Audio/TolimSound.mp3");
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -84,7 +84,7 @@ class _AnimatedTokenBannerState extends State<AnimatedTokenBanner>
                       width: 60,
                       height: 60,
                       child: Lottie.asset(
-                        'assets/animations/LvlUnlocked/MedalUnlocked.json',
+                        'assets/animations/LvlUnlocked/TolilmBanner.json',
                         repeat: false,
                       ),
                     ),
@@ -122,7 +122,7 @@ class _AnimatedTokenBannerState extends State<AnimatedTokenBanner>
                       width: 60,
                       height: 60,
                       child: Lottie.asset(
-                        'assets/animations/LvlUnlocked/MedalUnlocked.json',
+                        'assets/animations/LvlUnlocked/TolilmBanner.json',
                         repeat: false,
                       ),
                     ),

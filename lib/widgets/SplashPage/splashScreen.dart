@@ -9,6 +9,7 @@ import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoFo
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/XpSystem.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'CompanyLogoScreen.dart';
 import 'LoadingScreen.dart';
@@ -74,27 +75,24 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       await _animateProgress((i + 1) / _tasks.length);
     }
 
-    if (mounted) {
-      setState(() => _loadingComplete = true);
-      await Future.delayed(const Duration(milliseconds: 500));
+    if (!mounted) return;
 
-      final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-      final user = xpManager.userProfile;
-      debugPrint("Loaded language: ${user.preferredLanguage}");
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
 
-      // ✅ Check if onboarding is needed
-      final bool needsOnboarding = xpManager.isFirstLogin;
+    // ✅ Use SharedPreferences to check if onboarding was completed
+    final prefs = await SharedPreferences.getInstance();
+    final bool onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (_) => needsOnboarding
-              ? const UserInfoForm() // 👈 Go to onboarding
-              : const Index(),          // 👈 Or go to main index page
-        ),
-      );
-    }
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => onboardingCompleted
+            ? const Index()           // Go to IndexPage if onboarding was completed
+            : const UserInfoForm(),  // First launch or app reinstall -> onboarding
+      ),
+    );
   }
+
 
 
   Future<void> _runWithTimeout(String name, Future<void> Function() action) async {
@@ -162,7 +160,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 800),
+        duration: const Duration(milliseconds: 1200), // longer fade
         switchInCurve: Curves.easeInOut,
         switchOutCurve: Curves.easeInOut,
         child: _showLoadingScreen
@@ -178,6 +176,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
       ),
     );
   }
+
 }
 
 class _PreloadTask {

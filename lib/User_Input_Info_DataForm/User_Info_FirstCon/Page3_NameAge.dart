@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../XpSystem.dart';
+import '../../tools/audio_tool/Audio_Manager.dart';
 
 class NameAgePage extends StatefulWidget {
   final VoidCallback? onNext;
@@ -150,7 +152,7 @@ class _NameAgePageState extends State<NameAgePage>
   @override
   Widget build(BuildContext context) {
     final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
-
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Scaffold(
       body: AnimatedBuilder(
         animation: _gradientController,
@@ -193,8 +195,8 @@ class _NameAgePageState extends State<NameAgePage>
 
                           const SizedBox(height: 10),
 
-                          const Text(
-                            "Faisons connaissance",
+                           Text(
+                            tr(context).letsGetToKnowEachOther,
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -213,7 +215,7 @@ class _NameAgePageState extends State<NameAgePage>
                           const SizedBox(height: 4),
 
                           Text(
-                            "Remplissez vos informations pour personnaliser votre expérience.",
+                            tr(context).fillInYourInformation,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 16,
@@ -235,44 +237,54 @@ class _NameAgePageState extends State<NameAgePage>
 
                           _buildInputField(
                             controller: _nameController,
-                            label: "Prénom",
+                            label: tr(context).name,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return "Veuillez saisir votre Prénom.";
+                                return tr(context).pleaseEnterYourFirstName;
                               }
                               return null;
                             },
+                            onTap: ()
+                            {
+                              audioManager.playEventSound('PopButton');
+                            }
                           ),
 
                           const SizedBox(height: 16),
 
                           _buildInputField(
                             controller: _lastNameController,
-                            label: "Nom",
+                            label: tr(context).lastName,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return "Veuillez saisir votre Nom.";
+                                return tr(context).pleaseEnterYourLastName;
                               }
                               return null;
                             },
+                            onTap: (){
+                              audioManager.playEventSound('PopButton');}
                           ),
 
                           const SizedBox(height: 16),
 
                           _buildInputField(
                             controller: _ageController,
-                            label: "Âge",
+                            label: tr(context).age,
                             keyboardType: TextInputType.number,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return "Veuillez saisir votre âge.";
+                                return tr(context).pleaseEnterYourAge;
                               }
                               final age = int.tryParse(value.trim());
                               if (age == null || age <= 0) {
-                                return "Veuillez saisir un âge valide.";
+                                return tr(context).pleaseEnterAValidAge;
                               }
                               return null;
                             },
+                            onTap: ()
+                            {
+                              audioManager.playEventSound('PopButton');
+                            }
                           ),
                         ],
                       ),
@@ -287,6 +299,7 @@ class _NameAgePageState extends State<NameAgePage>
                         backgroundColor: Colors.white,
                         foregroundColor: Colors.deepOrange,
                         onPressed: () async {
+                          audioManager.playEventSound('clickButton');
                           final success = await saveData();
                           if (success) {
                             widget.onNext?.call();
@@ -296,6 +309,21 @@ class _NameAgePageState extends State<NameAgePage>
                         elevation: 6,
                       ),
                     ),
+
+                  Positioned(
+                    bottom: -10,
+                    right: -10,
+                    child: _isFormValid
+                        ? IgnorePointer(
+                      ignoring: true, // <-- this makes it non-clickable
+                      child: Lottie.asset(
+                        'assets/animations/TutorielGesture/click_Tuto.json',
+                        width: 100,
+                        height: 100,
+                      ),
+                    )
+                        : SizedBox.shrink(),
+                  ),
                 ],
               ),
             ),
@@ -308,12 +336,14 @@ class _NameAgePageState extends State<NameAgePage>
   Widget _buildInputField({
     required TextEditingController controller,
     required String label,
+     Function()? onTap,
     TextInputType keyboardType = TextInputType.text,
     String? Function(String?)? validator,
   }) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
+      onTap: onTap,
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,

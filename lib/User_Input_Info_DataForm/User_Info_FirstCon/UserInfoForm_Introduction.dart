@@ -1,13 +1,13 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/Page5_Banner.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/Page5_SchoolInfo.dart';
-import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/Page6_AvatarAndGender.dart';
+import 'package:provider/provider.dart';
+import '../../tools/audio_tool/Audio_Manager.dart';
 import 'Page1_Welcome.dart';
 import 'Page2_LanguageSelector.dart';
 import 'Page3_NameAge.dart';
 import 'Page4_CityCountry.dart';
+import 'Page6_Banner.dart';
+import 'Page7_AvatarAndGender.dart';
 
 
 
@@ -21,7 +21,7 @@ class UserInfoForm extends StatefulWidget {
 class _UserInfoFormState extends State<UserInfoForm> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  final int totalPages = 8;
+  final int totalPages = 7;
 
 
   bool canGoNextFromLanguage = false;
@@ -66,7 +66,7 @@ class _UserInfoFormState extends State<UserInfoForm> {
   @override
   Widget build(BuildContext context) {
     final progress = (_currentPage + 1) / totalPages;
-
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -84,9 +84,7 @@ class _UserInfoFormState extends State<UserInfoForm> {
                 onPageChanged: (index) {
                   setState(() => _currentPage = index);
                 },
-                physics: _currentPage == 1 && !canGoNextFromLanguage
-                    ? const NeverScrollableScrollPhysics()
-                    : const BouncingScrollPhysics(),
+                physics: NeverScrollableScrollPhysics(),
                 children: [
                   WelcomePage(onGetStarted: _nextPage),
                   LanguageTouch(
@@ -95,7 +93,7 @@ class _UserInfoFormState extends State<UserInfoForm> {
                   CityCountryPage(onNext: _nextPage),
                   SchoolInfoPage(onNext: _nextPage),
                   UserInfoBannerPage(onNext: _nextPage),
-                  UserInfoAvatarAndGender(onNext: _nextPage,),
+                  UserInfoAvatarAndGender(),
 
                 ],
               ),
@@ -153,7 +151,11 @@ class _UserInfoFormState extends State<UserInfoForm> {
                       backgroundColor: Colors.white.withOpacity(0.9),
                       foregroundColor: Colors.deepOrange,
                       elevation: 4,
-                      onPressed: _prevPage,
+                      onPressed: ()
+                      {
+                        audioManager.playEventSound('cancelButton');
+                        _prevPage();
+                      },
                       child: const Icon(Icons.arrow_back, size: 24),
                     ),
                   ),

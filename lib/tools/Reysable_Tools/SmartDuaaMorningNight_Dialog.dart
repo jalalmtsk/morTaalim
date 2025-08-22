@@ -2,10 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
-import '../SavingPreferencesTool_Helper/Preferences_Helper.dart';
+import '../../Manager/Services/CardVisibiltyManager.dart';
 
-class DuaaDialog extends StatelessWidget {
+class DuaaDialog extends StatefulWidget {
   const DuaaDialog({Key? key}) : super(key: key);
+
+  @override
+  _DuaaDialogState createState() => _DuaaDialogState();
+}
+
+class _DuaaDialogState extends State<DuaaDialog>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<double> _scaleAnimation;
+  late Animation<double> _textFadeAnimation;
+  late Animation<double> _buttonFadeAnimation;
 
   Map<String, dynamic> _getDuaaConfig() {
     final hour = DateTime.now().hour;
@@ -32,6 +44,46 @@ class DuaaDialog extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1500),
+    );
+
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.0, 0.3, curve: Curves.easeInOut),
+    );
+
+    _textFadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.3, 0.7, curve: Curves.easeIn),
+    );
+
+    _buttonFadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: const Interval(0.7, 1.0, curve: Curves.easeIn),
+    );
+
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    );
+
+    // Delay the appearance by 800ms
+    Future.delayed(const Duration(milliseconds: 800), () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final config = _getDuaaConfig();
     final audioManager = Provider.of<AudioManager>(context, listen: false);
@@ -39,84 +91,104 @@ class DuaaDialog extends StatelessWidget {
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       backgroundColor: Colors.transparent,
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          gradient: LinearGradient(
-            colors: config['colors'],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+      child: ScaleTransition(
+        scale: _scaleAnimation,
+        child: Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            gradient: LinearGradient(
+              colors: config['colors'],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black26,
+                blurRadius: 10,
+                offset: Offset(0, 4),
+              ),
+            ],
           ),
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 10,
-              offset: Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(config['icon'], size: 48, color: Colors.white),
-            const SizedBox(height: 16),
-            Text(
-              config['duaa'],
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 18,
-                height: 1.5,
-                fontWeight: FontWeight.w500,
-                color: Colors.white,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: Icon(config['icon'], size: 48, color: Colors.white),
               ),
-            ),
-            const SizedBox(height: 24),
-            // Checkbox toggle row
-            Consumer<CardVisibilityManager>(
-              builder: (context, manager, _) => Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Checkbox(
-                    value: !manager.showDuaaDialog,
-                    onChanged: (value) {
-                      manager.toggleDuaaDialog(!(value ?? false));
-                    },
-                    activeColor: Colors.white,
-                    checkColor: Colors.black87,
+              const SizedBox(height: 16),
+              FadeTransition(
+                opacity: _textFadeAnimation,
+                child: Text(
+                  config['duaa'],
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    height: 1.5,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white,
                   ),
-                  const SizedBox(width: 8),
-                  const Flexible(
-                    child: Text(
-                      "Don't show again",
-                      style: TextStyle(color: Colors.white, fontSize: 16),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-
-            // Close button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  audioManager.playSfx('cancelButton');
-                  Navigator.pop(context);},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.white,
-                  foregroundColor: Colors.black87,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                ),
-                child:  Text(tr(context).cancel,style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+              FadeTransition(
+                opacity: _buttonFadeAnimation,
+                child: Consumer<CardVisibilityManager>(
+                  builder: (context, manager, _) => Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Checkbox(
+                            value: !manager.showDuaaDialog,
+                            onChanged: (value) {
+                              audioManager.playEventSound('toggleButton');
+                              manager.toggleDuaaDialog(!(value ?? false));
+                            },
+                            activeColor: Colors.white,
+                            checkColor: Colors.black87,
+                          ),
+                          const SizedBox(width: 2),
+                          Flexible(
+                            child: Text(
+                              tr(context).dontShowAgain,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            audioManager.playEventSound('cancelButton');
+                            Navigator.pop(context);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.black87,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: Text(
+                            tr(context).awesome,
+                            style: const TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

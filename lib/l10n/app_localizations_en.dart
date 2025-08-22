@@ -676,4 +676,331 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get badges_pinnacleOfKnowledge => 'pinnacle of knowledge';
+
+  @override
+  String get learningPower => 'Learning Power';
+
+  @override
+  String get badges => 'Badges';
+
+  @override
+  String get global => 'Global';
+
+  @override
+  String get coursesCompleted => 'Courses Completed';
+
+  @override
+  String get exercices => 'Exercises';
+
+  @override
+  String get dashboard => 'Dashboard';
+
+  @override
+  String get practiseCourses => 'Practice Courses';
+
+  @override
+  String get keepUpTheGoodWork => 'Keep Up The Good Work';
+
+  @override
+  String get classLevel => 'Class Level';
+
+  @override
+  String get audioSettings => 'Audio Settings';
+
+  @override
+  String get backgroundMusic => 'Background Music';
+
+  @override
+  String get soundEffects => 'Sound Effects';
+
+  @override
+  String get buttonSounds => 'Button Sounds';
+
+  @override
+  String get resetAudioSettings => 'Reset Audio Settings';
+
+  @override
+  String get duaaAndAyat => 'Duaa and Ayat';
+
+  @override
+  String get showAyat => 'Show Ayat';
+
+  @override
+  String get enableordisabletheAyatcardfromappearinginyourapp => 'Enable or Disable the Ayat Card from Appearing in Your App';
+
+  @override
+  String get showDuaa => 'Show Duaa';
+
+  @override
+  String get enableorDisableDuaaEveryTimeYouEnter => 'Enable or Disable Duaa Every Time You Enter';
+
+  @override
+  String get accountAndBackup => 'Account and Backup';
+
+  @override
+  String get preferredSubject => 'Preferred Subject';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get followUsOnSocialMedia => 'Follow Us On Social Media';
+
+  @override
+  String get weArePreparingSomethingAwesome => 'We Are Preparing Something Awesome';
+
+  @override
+  String get comingSoon => 'Coming Soon';
+
+  @override
+  String get unableToOpenTheLink => 'Unable To Open The Link';
+
+  @override
+  String get thankYouForYourPatience => 'Thank You For Your Patience';
+
+  @override
+  String get manageBackup => 'Manage Backup';
+
+  @override
+  String get backupAndRestore => 'Backup and Restore';
+
+  @override
+  String get backupYourProgressOrRestoreItUsingABackupCode => 'Backup your progress or restore it using a backup code';
+
+  @override
+  String get saveBackup => 'Save Backup';
+
+  @override
+  String get loadBackup => 'Load Backup';
+
+  @override
+  String get howToBackup => 'How to Backup';
+
+  @override
+  String get makeSureToSaveYourBackupCodeSafelyYouWillNeedItToRestoreYourProgress => 'Make sure to save your backup code safely. You will need it to restore your progress';
+
+  @override
+  String get signedInWithGoogle => 'Signed in with Google';
+
+  @override
+  String get disconnectedNowinanonymousmode => 'Disconnected, now in anonymous mode';
+
+  @override
+  String get failedToDisconnect => 'Failed to disconnect';
+
+  @override
+  String get googleAccount => 'Google Account';
+
+  @override
+  String get connected => 'Connected';
+
+  @override
+  String get disconnect => 'Disconnect';
+
+  @override
+  String get connecting => 'Connecting';
+
+  @override
+  String get connectGoogleAccount => 'Connect Google Account';
+
+  @override
+  String get notConnectedYet => 'Not connected yet';
+
+  @override
+  String get disconnected => 'Disconnected';
+
+  @override
+  String get areYouSureYouWantToDisconnectYourGoogleAccountYouWillBeSwitchedToAnonymousMode => 'Are you sure you want to disconnect your Google account? You will be switched to anonymous mode';
+
+  @override
+  String get selectALanguageToContinue => 'Select a language to continue';
+
+  @override
+  String get languageSetTo => 'Language set to';
+
+  @override
+  String get letsGetToKnowEachOther => 'Let\'s get to know each other';
+
+  @override
+  String get fillInYourInformation => 'Fill in your information to personalize your experience';
+
+  @override
+  String get pleaseEnterYourFirstName => 'Please enter your First Name';
+
+  @override
+  String get pleaseEnterYourLastName => 'Please enter your Last Name';
+
+  @override
+  String get pleaseEnterYourAge => 'Please enter your Age';
+
+  @override
+  String get pleaseEnterAValidAge => 'Please enter a valid Age';
+
+  @override
+  String get lastName => 'Last Name';
+
+  @override
+  String get firstName => 'First Name';
+
+  @override
+  String get schoolInformation => 'School Information';
+
+  @override
+  String get pleaseEnterSchoolNameTypeLevelAndClass => 'Please enter the school name, type, level, and class';
+
+  @override
+  String get schoolName => 'School Name';
+
+  @override
+  String get pleaseEnterSchoolName => 'Please enter the school name';
+
+  @override
+  String get schoolType => 'School Type';
+
+  @override
+  String get selectSchoolType => 'Select the school type';
+
+  @override
+  String get schoolLevel => 'School Level';
+
+  @override
+  String get selectSchoolLevel => 'Select the school level';
+
+  @override
+  String get classSchool => 'Class';
+
+  @override
+  String get selectClass => 'Select the class';
+
+  @override
+  String get highSchoolTrack => 'High School Track';
+
+  @override
+  String get selectHighSchoolTrack => 'Select the high school track';
+
+  @override
+  String get yourLocation => 'Your Location';
+
+  @override
+  String get pleaseEnterYourCityAndCountryToContinue => 'Please enter your city and country to continue';
+
+  @override
+  String get city => 'City';
+
+  @override
+  String get pleaseEnterYourCity => 'Please enter your city';
+
+  @override
+  String get country => 'Country';
+
+  @override
+  String get pleaseEnterYourCountry => 'Please enter your country';
+
+  @override
+  String get schoolTypePrivate => 'Private';
+
+  @override
+  String get schoolTypePublic => 'Public';
+
+  @override
+  String get schoolTypeOther => 'Other';
+
+  @override
+  String get schoolLevelPrimary => 'Primary';
+
+  @override
+  String get schoolLevelMiddle => 'Middle School';
+
+  @override
+  String get schoolLevelHigh => 'High School';
+
+  @override
+  String get gradesPrimary1 => '1st Grade (CP)';
+
+  @override
+  String get gradesPrimary2 => '2nd Grade (CE1)';
+
+  @override
+  String get gradesPrimary3 => '3rd Grade (CE2)';
+
+  @override
+  String get gradesPrimary4 => '4th Grade (CM1)';
+
+  @override
+  String get gradesPrimary5 => '5th Grade (CM2)';
+
+  @override
+  String get gradesPrimary6 => '6th Grade (CM3)';
+
+  @override
+  String get gradesMiddle1 => '7th Grade (1st year Middle School)';
+
+  @override
+  String get gradesMiddle2 => '8th Grade (2nd year Middle School)';
+
+  @override
+  String get gradesMiddle3 => '9th Grade (3rd year Middle School)';
+
+  @override
+  String get gradesHigh1 => 'Common Core (TC)';
+
+  @override
+  String get gradesHigh2 => '1st year Bac (Regional)';
+
+  @override
+  String get gradesHigh3 => 'Baccalaureate (National)';
+
+  @override
+  String get lyceeTrackScience => 'Science';
+
+  @override
+  String get lyceeTrackLiterature => 'Literature';
+
+  @override
+  String get errorFillAllFields => 'Please fill all fields correctly';
+
+  @override
+  String get pleaseChooseABanner => 'Please choose a banner';
+
+  @override
+  String get male => 'Male';
+
+  @override
+  String get female => 'Female';
+
+  @override
+  String get ourMission => 'Our Mission';
+
+  @override
+  String get futurePlans => 'Future Plans';
+
+  @override
+  String get chooseYourAvatar => 'Choose Your Avatar';
+
+  @override
+  String get profileInfo => 'Profile Information';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get dontShowAgain => 'Do not show again';
+
+  @override
+  String get informationTechnology => 'Information Technology';
+
+  @override
+  String get islam => 'Islam';
+
+  @override
+  String get credits => 'Credits';
+
+  @override
+  String get info => 'An innovative educational platform blending learning, games, and culture to make education fun and engaging for students in Morocco and beyond.';
+
+  @override
+  String get aboutMission => 'MoorTaalim aims to empower students by providing interactive educational content that respects Moroccan culture and promotes a love of learning. We believe education should be enjoyable, accessible, and culturally relevant.';
+
+  @override
+  String get aboutFuturePlans => 'We\'re continuously working to add new courses, exciting multiplayer games, and advanced features like personalized learning paths and community forums to connect learners and educators.';
 }

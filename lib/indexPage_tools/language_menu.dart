@@ -45,7 +45,6 @@ class LanguageMenu extends StatelessWidget {
             builder: (context) => AlertDialog(
               title: Row(
                 children: const [
-                  Icon(Icons.warning, color: Colors.orange),
                   SizedBox(width: 8),
                   Text(
                     "⚠️ Attention",
@@ -54,9 +53,9 @@ class LanguageMenu extends StatelessWidget {
                 ],
               ),
               content: const Text(
-                "Amazigh is not fully supported yet.\n"
-                    "ⵜⴰⵎⴰⵣⵉⵖⵜ ⴰⵎⴰⵣⵉⵖⵜ ⵢⵓⵙ ⵢⵓⴷⵓⴷ ⴷⵉⵏⵉⵎ.\n"
-                    "الأمازيغية غير مدعومة بالكامل بعد.\n\n"
+                "⚠️ Amazigh is not fully supported yet.\n"
+                    "⚠️ ⵜⴰⵎⴰⵣⵉⵖⵜ ⴰⵎⴰⵣⵉⵖⵜ ⵢⵓⵙ ⵢⵓⴷⵓⴷ ⴷⵉⵏⵉⵎ.\n"
+                    " ⚠️الأمازيغية غير مدعومة بالكامل بعد.\n\n"
                     "Team Jalnix is working on it!",              ),
               actions: [
                 TextButton(

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
@@ -105,6 +106,76 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> with SingleTi
         };
         break;
 
+      case 'amazigh':
+        _letters = [
+          "ⴰ", "ⴱ", "ⴲ", "ⴳ", "ⴴ", "ⴵ", "ⴶ", "ⴷ", "ⴸ", "ⴹ",
+          "ⴺ", "ⴻ", "ⴼ", "ⴽ", "ⴾ", "ⴿ", "ⵀ", "ⵁ", "ⵂ", "ⵃ",
+          "ⵄ", "ⵅ", "ⵆ", "ⵇ", "ⵈ", "ⵉ", "ⵊ", "ⵋ", "ⵌ", "ⵍ",
+          "ⵎ", "ⵏ", "ⵐ", "ⵑ", "ⵒ", "ⵓ", "ⵔ", "ⵕ", "ⵖ", "ⵗ",
+          "ⵘ", "ⵙ", "ⵚ", "ⵛ", "ⵜ", "ⵝ", "ⵞ", "ⵟ", "ⵠ", "ⵡ",
+          "ⵢ", "ⵣ", "ⵤ", "ⵥ"
+        ];
+
+        _letterDetails = {
+          'ⴰ': {'pronunciation': 'A', 'example': 'ⴰⵙⴷ (Asd) – Lion'},
+          'ⴱ': {'pronunciation': 'B', 'example': 'ⴱⵉⵜ (Bit) – House'},
+          'ⴲ': {'pronunciation': 'P', 'example': 'ⴲⵓⵙ (Pus) – Water'},
+          'ⴳ': {'pronunciation': 'G', 'example': 'ⴳⴰⵎⴰⵍ (Gamal) – Camel'},
+          'ⴴ': {'pronunciation': 'Ḡ', 'example': 'ⴴⴰⵣⴰⵍ (Ḡazal) – Gazelle'},
+          'ⴵ': {'pronunciation': 'J', 'example': 'ⴵⴰⵎⴰⵍ (Jamal) – Camel'},
+          'ⴶ': {'pronunciation': 'V', 'example': 'ⴶⴰⵣ (Vaz) – Flower'},
+          'ⴷ': {'pronunciation': 'D', 'example': 'ⴷⴰⵊⴰ (Daja) – Chicken'},
+          'ⴸ': {'pronunciation': 'Ḍ', 'example': 'ⴸⴰⵡ (Ḍaw) – Light'},
+          'ⴹ': {'pronunciation': 'Ḍh', 'example': 'ⴹⴰⵣⴰⵍ (Ḍhazal) – Sun'},
+          'ⴺ': {'pronunciation': 'DJ', 'example': 'ⴺⴰⴹⵉ (DJadi) – Eagle'},
+          'ⴻ': {'pronunciation': 'E', 'example': 'ⴻⵍⵍⴰⵎ (Ellam) – Water'},
+          'ⴼ': {'pronunciation': 'F', 'example': 'ⴼⵉⵍ (Fil) – Elephant'},
+          'ⴽ': {'pronunciation': 'K', 'example': 'ⴽⵉⵜⴰⴱ (Kitab) – Book'},
+          'ⴾ': {'pronunciation': 'KH', 'example': 'ⴾⴰⵣ (Khaz) – Tree'},
+          'ⴿ': {'pronunciation': 'KHʼ', 'example': 'ⴿⴰⵡ (Khʼaw) – Mountain'},
+          'ⵀ': {'pronunciation': 'H', 'example': 'ⵀⴰⵡⴰ (Hawa) – Wind'},
+          'ⵁ': {'pronunciation': 'HH', 'example': 'ⵁⴰⵣⴰ (Hhaza) – Sun'},
+          'ⵂ': {'pronunciation': 'Ɣ', 'example': 'ⵂⴰⵣⴰⵍ (Ɣazal) – Gazelle'},
+          'ⵃ': {'pronunciation': 'Ḥ', 'example': 'ⵃⴰⵎⵎⴰⵍ (Ḥammal) – Worker'},
+          'ⵄ': {'pronunciation': 'ʿ', 'example': 'ⵄⴰⵎⴰⵍ (ʿAmal) – Hope'},
+          'ⵅ': {'pronunciation': 'KH', 'example': 'ⵅⴰⵣⴰⵍ (Khazal) – Plant'},
+          'ⵆ': {'pronunciation': 'GH', 'example': 'ⵆⴰⵎⴰⵍ (Ghamal) – Camel'},
+          'ⵇ': {'pronunciation': 'Q', 'example': 'ⵇⴰⵎ (Qam) – Leader'},
+          'ⵈ': {'pronunciation': 'KHʼ', 'example': 'ⵈⴰⵣ (Khʼaz) – Hill'},
+          'ⵉ': {'pronunciation': 'I', 'example': 'ⵉⵣⵓⵍ (Izul) – Moon'},
+          'ⵊ': {'pronunciation': 'J', 'example': 'ⵊⴰⵎⴰⵍ (Jamal) – Camel'},
+          'ⵋ': {'pronunciation': 'CH', 'example': 'ⵋⴰⵎⴰⵍ (Chamal) – Road'},
+          'ⵌ': {'pronunciation': 'CHʼ', 'example': 'ⵌⴰⵣ (Chʼaz) – Tree'},
+          'ⵍ': {'pronunciation': 'L', 'example': 'ⵍⴰⵢⵎⵓⵏ (Laymun) – Lemon'},
+          'ⵎ': {'pronunciation': 'M', 'example': 'ⵎⴰⴷⵉⵏⴰ (Madina) – City'},
+          'ⵏ': {'pronunciation': 'N', 'example': 'ⵏⴰⵎⵉⵔ (Namir) – Tiger'},
+          'ⵐ': {'pronunciation': 'NY', 'example': 'ⵐⴰⵣⴰⵍ (Nyazal) – Flower'},
+          'ⵑ': {'pronunciation': 'NG', 'example': 'ⵑⴰⵎⴰⵍ (Ngamal) – Camel'},
+          'ⵒ': {'pronunciation': 'QH', 'example': 'ⵒⴰⵣⴰⵍ (Qhazal) – Gazelle'},
+          'ⵓ': {'pronunciation': 'U', 'example': 'ⵓⵔⴷⴰ (Urda) – Rose'},
+          'ⵔ': {'pronunciation': 'R', 'example': 'ⵔⵓⵎⵎⴰⵏ (Rumman) – Pomegranate'},
+          'ⵕ': {'pronunciation': 'Ḍ', 'example': 'ⵕⴰⵎⵎⴰⵍ (Ḍammal) – Worker'},
+          'ⵖ': {'pronunciation': 'GH', 'example': 'ⵖⴰⵣⴰⵍ (Ghazal) – Gazelle'},
+          'ⵗ': {'pronunciation': 'TH', 'example': 'ⵗⴰⵣ (Thaz) – Hill'},
+          'ⵘ': {'pronunciation': 'TCH', 'example': 'ⵘⴰⵎⴰⵍ (Tchamal) – Road'},
+          'ⵙ': {'pronunciation': 'S', 'example': 'ⵙⴰⵎⴰⵍ (Samal) – Sun'},
+          'ⵚ': {'pronunciation': 'Ṣ', 'example': 'ⵚⴰⵎⴰⵍ (Ṣamal) – Sand'},
+          'ⵛ': {'pronunciation': 'CH', 'example': 'ⵛⴰⵎⴰⵍ (Chamal) – Road'},
+          'ⵜ': {'pronunciation': 'T', 'example': 'ⵜⴰⵢⵢⴰⵔⴰ (Tayyara) – Airplane'},
+          'ⵝ': {'pronunciation': 'Ṭ', 'example': 'ⵝⴰⵎⴰⵍ (Ṭamal) – Worker'},
+          'ⵞ': {'pronunciation': 'TS', 'example': 'ⵞⴰⵎⴰⵍ (Tsamal) – Path'},
+          'ⵟ': {'pronunciation': 'ḌH', 'example': 'ⵟⴰⵣ (Ḍhaz) – Sun'},
+          'ⵠ': {'pronunciation': 'V', 'example': 'ⵠⴰⵎⴰⵍ (Vamal) – Worker'},
+          'ⵡ': {'pronunciation': 'W', 'example': 'ⵡⴰⵡ (Waw) – Hand'},
+          'ⵢ': {'pronunciation': 'Y', 'example': 'ⵢⴰⴷ (Yad) – Hand'},
+          'ⵣ': {'pronunciation': 'Z', 'example': 'ⵣⴰⵢⵜⵓⵏ (Zaytun) – Olive'},
+          'ⵤ': {'pronunciation': 'ZH', 'example': 'ⵤⴰⵎⴰⵍ (Zhamal) – Camel'},
+          'ⵥ': {'pronunciation': 'DH', 'example': 'ⵥⴰⵎⴰⵍ (Dhamal) – Worker'},
+        };
+        break;
+
+
+
       case 'russian':
         _letters = [
           'А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ё', 'Ж', 'З', 'И', 'Й',
@@ -145,6 +216,39 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> with SingleTi
           'Э': {'pronunciation': 'E', 'example': 'Это (Eto) – This'},
           'Ю': {'pronunciation': 'Yu', 'example': 'Юла (Yula) – Spinning Top'},
           'Я': {'pronunciation': 'Ya', 'example': 'Яблоко (Yabloko) – Apple'},
+        };
+        break;
+
+      case 'greek':
+        _letters = [
+          'Α', 'Β', 'Γ', 'Δ', 'Ε', 'Ζ', 'Η', 'Θ', 'Ι', 'Κ', 'Λ', 'Μ',
+          'Ν', 'Ξ', 'Ο', 'Π', 'Ρ', 'Σ', 'Τ', 'Υ', 'Φ', 'Χ', 'Ψ', 'Ω'
+        ];
+        _letterDetails = {
+          'Α': {'pronunciation': 'A', 'example': 'Αθήνα (Athína) – Athens'},
+          'Β': {'pronunciation': 'V', 'example': 'Βιβλίο (Vivlío) – Book'},
+          'Γ': {'pronunciation': 'G', 'example': 'Γάτα (Gáta) – Cat'},
+          'Δ': {'pronunciation': 'D', 'example': 'Δέντρο (Déntro) – Tree'},
+          'Ε': {'pronunciation': 'E', 'example': 'Ελέφαντας (Eléfántas) – Elephant'},
+          'Ζ': {'pronunciation': 'Z', 'example': 'Ζάρι (Zári) – Dice'},
+          'Η': {'pronunciation': 'I', 'example': 'Ημέρα (Iméra) – Day'},
+          'Θ': {'pronunciation': 'Th', 'example': 'Θάλασσα (Thálassa) – Sea'},
+          'Ι': {'pronunciation': 'I', 'example': 'Ιπποπόταμος (Ippopótamos) – Hippopotamus'},
+          'Κ': {'pronunciation': 'K', 'example': 'Καράβι (Karávi) – Ship'},
+          'Λ': {'pronunciation': 'L', 'example': 'Λεμόνι (Lemóni) – Lemon'},
+          'Μ': {'pronunciation': 'M', 'example': 'Μήλο (Mílo) – Apple'},
+          'Ν': {'pronunciation': 'N', 'example': 'Νερό (Neró) – Water'},
+          'Ξ': {'pronunciation': 'X', 'example': 'Ξενοδοχείο (Xenodocheío) – Hotel'},
+          'Ο': {'pronunciation': 'O', 'example': 'Όνομα (Ónoma) – Name'},
+          'Π': {'pronunciation': 'P', 'example': 'Ποδήλατο (Podílato) – Bicycle'},
+          'Ρ': {'pronunciation': 'R', 'example': 'Ρολόι (Rolói) – Clock'},
+          'Σ': {'pronunciation': 'S', 'example': 'Σπίτι (Spíti) – House'},
+          'Τ': {'pronunciation': 'T', 'example': 'Τραπέζι (Trapézi) – Table'},
+          'Υ': {'pronunciation': 'Y', 'example': 'Υπόστεγο (Ypóstego) – Shelter'},
+          'Φ': {'pronunciation': 'F', 'example': 'Φως (Fos) – Light'},
+          'Χ': {'pronunciation': 'Ch', 'example': 'Χέρι (Chéri) – Hand'},
+          'Ψ': {'pronunciation': 'Ps', 'example': 'Ψάρι (Psári) – Fish'},
+          'Ω': {'pronunciation': 'O', 'example': 'Ωκεανός (Okeanós) – Ocean'},
         };
         break;
 
@@ -357,24 +461,78 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> with SingleTi
 
   }
 
+  void _showConfetti() {
+    final overlay = Overlay.of(context);
+    if (overlay == null) return;
+
+    final entry = OverlayEntry(
+      builder: (context) => Center(
+        child: Lottie.asset(
+          "assets/animations/UI_Animations/Confetti1.json",
+          width: 500,
+          height: 500,
+          repeat: false,
+        ),
+      ),
+    );
+
+    overlay.insert(entry);
+
+    // Remove after animation completes (3s for example)
+    Future.delayed(const Duration(seconds: 3), () {
+      entry.remove();
+    });
+  }
+
+  void _showConfettiTolim() {
+    final overlay = Overlay.of(context);
+    if (overlay == null) return;
+
+    final entry = OverlayEntry(
+      builder: (context) => Center(
+        child: Lottie.asset(
+          "assets/animations/UI_Animations/Confetti2.json",
+          width: 500,
+          height: 500,
+          repeat: false,
+        ),
+      ),
+    );
+
+    overlay.insert(entry);
+
+    // Remove after animation completes (3s for example)
+    Future.delayed(const Duration(seconds: 3), () {
+      entry.remove();
+    });
+  }
+
   void _giveTolimAndXP() {
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
     xpManager.addXP(1, context: context);
     setState(() {
       score += 1;
     });
-
+    _showConfetti();
+    _showConfettiTolim();
     _showGlow = true;
     _glowController.forward();
 
-    Provider.of<AudioManager>(context, listen: false).playSfx("assets/audios/success.mp3");
+    Provider.of<AudioManager>(context, listen: false).playSfx("assets/audios/UI_Audio/SFX_Audio/MarimbaWin_SFX.mp3");
+    Provider.of<AudioManager>(context, listen: false).playSfx("assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3");
 
-    if (score >= 10) {
-      xpManager.addTokenBanner(context, 1);
-      setState(() {
-        score = 0;
-      });
-    }
+    Future.delayed(const Duration(milliseconds: 2500) ,()
+    {
+
+      if (score >= 10) {
+        xpManager.addTokenBanner(context, 1);
+        Provider.of<AudioManager>(context, listen: false).playSfx("assets/audios/UI_Audio/SFX_Audio/victory1_SFX.mp3");
+        _showConfettiTolim;
+        setState(() {
+          score = 0;
+        });
+      }
+    });
   }
 
   double _calculateTotalDrawnDistance(List<Offset?> points) {

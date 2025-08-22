@@ -414,7 +414,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get time => 'Temps';
 
   @override
-  String get chooseYourBanner => 'Choisis ta bannière';
+  String get chooseYourBanner => 'Choisissez votre bannière';
 
   @override
   String get retry => 'Réessayer';
@@ -676,4 +676,331 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get badges_pinnacleOfKnowledge => 'sommet du savoir';
+
+  @override
+  String get learningPower => 'Pouvoir d\'apprentissage';
+
+  @override
+  String get badges => 'Badges';
+
+  @override
+  String get global => 'Global';
+
+  @override
+  String get coursesCompleted => 'Cours terminés';
+
+  @override
+  String get exercices => 'Exercices';
+
+  @override
+  String get dashboard => 'Tableau de bord';
+
+  @override
+  String get practiseCourses => 'Cours pratiques';
+
+  @override
+  String get keepUpTheGoodWork => 'Continuez le bon travail';
+
+  @override
+  String get classLevel => 'Niveau de classe';
+
+  @override
+  String get audioSettings => 'Paramètres audio';
+
+  @override
+  String get backgroundMusic => 'Musique de fond';
+
+  @override
+  String get soundEffects => 'Effets sonores';
+
+  @override
+  String get buttonSounds => 'Sons des boutons';
+
+  @override
+  String get resetAudioSettings => 'Réinitialiser les paramètres audio';
+
+  @override
+  String get duaaAndAyat => 'Duaa et Versets';
+
+  @override
+  String get showAyat => 'Afficher les versets';
+
+  @override
+  String get enableordisabletheAyatcardfromappearinginyourapp => 'Activer ou désactiver l\'apparition de la carte des versets dans l\'application';
+
+  @override
+  String get showDuaa => 'Afficher Duaa';
+
+  @override
+  String get enableorDisableDuaaEveryTimeYouEnter => 'Activer ou désactiver Duaa à chaque entrée';
+
+  @override
+  String get accountAndBackup => 'Compte et sauvegarde';
+
+  @override
+  String get preferredSubject => 'Matière préférée';
+
+  @override
+  String get version => 'Version';
+
+  @override
+  String get followUsOnSocialMedia => 'Suivez-nous sur les réseaux sociaux';
+
+  @override
+  String get weArePreparingSomethingAwesome => 'Nous préparons quelque chose de génial';
+
+  @override
+  String get comingSoon => 'Bientôt disponible';
+
+  @override
+  String get unableToOpenTheLink => 'Impossible d’ouvrir le lien';
+
+  @override
+  String get thankYouForYourPatience => 'Merci pour votre patience';
+
+  @override
+  String get manageBackup => 'Gérer la sauvegarde';
+
+  @override
+  String get backupAndRestore => 'Sauvegarder et restaurer';
+
+  @override
+  String get backupYourProgressOrRestoreItUsingABackupCode => 'Sauvegardez votre progression ou restaurez-la en utilisant un code de sauvegarde';
+
+  @override
+  String get saveBackup => 'Enregistrer la sauvegarde';
+
+  @override
+  String get loadBackup => 'Charger la sauvegarde';
+
+  @override
+  String get howToBackup => 'Comment sauvegarder';
+
+  @override
+  String get makeSureToSaveYourBackupCodeSafelyYouWillNeedItToRestoreYourProgress => 'Assurez-vous de sauvegarder votre code de sauvegarde en toute sécurité. Vous en aurez besoin pour restaurer votre progression';
+
+  @override
+  String get signedInWithGoogle => 'Connecté avec Google';
+
+  @override
+  String get disconnectedNowinanonymousmode => 'Déconnecté, maintenant en mode anonyme';
+
+  @override
+  String get failedToDisconnect => 'Échec de la déconnexion';
+
+  @override
+  String get googleAccount => 'Compte Google';
+
+  @override
+  String get connected => 'Connecté';
+
+  @override
+  String get disconnect => 'Se déconnecter';
+
+  @override
+  String get connecting => 'Connexion en cours';
+
+  @override
+  String get connectGoogleAccount => 'Connecter le compte Google';
+
+  @override
+  String get notConnectedYet => 'Pas encore connecté';
+
+  @override
+  String get disconnected => 'Déconnecté';
+
+  @override
+  String get areYouSureYouWantToDisconnectYourGoogleAccountYouWillBeSwitchedToAnonymousMode => 'Êtes-vous sûr de vouloir déconnecter votre compte Google ? Vous serez basculé en mode anonyme';
+
+  @override
+  String get selectALanguageToContinue => 'Sélectionnez une langue pour continuer';
+
+  @override
+  String get languageSetTo => 'Langue définie sur';
+
+  @override
+  String get letsGetToKnowEachOther => 'Faisons connaissance';
+
+  @override
+  String get fillInYourInformation => 'Remplissez vos informations pour personnaliser votre expérience';
+
+  @override
+  String get pleaseEnterYourFirstName => 'Veuillez saisir votre prénom';
+
+  @override
+  String get pleaseEnterYourLastName => 'Veuillez saisir votre nom';
+
+  @override
+  String get pleaseEnterYourAge => 'Veuillez saisir votre âge';
+
+  @override
+  String get pleaseEnterAValidAge => 'Veuillez saisir un âge valide';
+
+  @override
+  String get lastName => 'Nom';
+
+  @override
+  String get firstName => 'Prénom';
+
+  @override
+  String get schoolInformation => 'Informations sur l\'école';
+
+  @override
+  String get pleaseEnterSchoolNameTypeLevelAndClass => 'Veuillez entrer le nom de l\'école, le type, le niveau et la classe';
+
+  @override
+  String get schoolName => 'Nom de l\'école';
+
+  @override
+  String get pleaseEnterSchoolName => 'Veuillez entrer le nom de l\'école';
+
+  @override
+  String get schoolType => 'Type d\'école';
+
+  @override
+  String get selectSchoolType => 'Sélectionnez le type d\'école';
+
+  @override
+  String get schoolLevel => 'Niveau scolaire';
+
+  @override
+  String get selectSchoolLevel => 'Sélectionnez le niveau scolaire';
+
+  @override
+  String get classSchool => 'Classe';
+
+  @override
+  String get selectClass => 'Sélectionnez la classe';
+
+  @override
+  String get highSchoolTrack => 'Filière du lycée';
+
+  @override
+  String get selectHighSchoolTrack => 'Sélectionnez la filière du lycée';
+
+  @override
+  String get yourLocation => 'Votre localisation';
+
+  @override
+  String get pleaseEnterYourCityAndCountryToContinue => 'Veuillez entrer votre ville et votre pays pour continuer';
+
+  @override
+  String get city => 'Ville';
+
+  @override
+  String get pleaseEnterYourCity => 'Veuillez saisir votre ville';
+
+  @override
+  String get country => 'Pays';
+
+  @override
+  String get pleaseEnterYourCountry => 'Veuillez saisir votre pays';
+
+  @override
+  String get schoolTypePrivate => 'Privée';
+
+  @override
+  String get schoolTypePublic => 'Publique';
+
+  @override
+  String get schoolTypeOther => 'Autre';
+
+  @override
+  String get schoolLevelPrimary => 'Primaire';
+
+  @override
+  String get schoolLevelMiddle => 'Collège';
+
+  @override
+  String get schoolLevelHigh => 'Lycée';
+
+  @override
+  String get gradesPrimary1 => '1ère année primaire (CP)';
+
+  @override
+  String get gradesPrimary2 => '2ème année primaire (CE1)';
+
+  @override
+  String get gradesPrimary3 => '3ème année primaire (CE2)';
+
+  @override
+  String get gradesPrimary4 => '4ème année primaire (CM1)';
+
+  @override
+  String get gradesPrimary5 => '5ème année primaire (CM2)';
+
+  @override
+  String get gradesPrimary6 => '6ème année primaire (CM3)';
+
+  @override
+  String get gradesMiddle1 => '7ème année (1ère année collège)';
+
+  @override
+  String get gradesMiddle2 => '8ème année (2ème année collège)';
+
+  @override
+  String get gradesMiddle3 => '9ème année (3ème année collège)';
+
+  @override
+  String get gradesHigh1 => 'Tronc Commun (TC)';
+
+  @override
+  String get gradesHigh2 => '1ère année Bac (Régional)';
+
+  @override
+  String get gradesHigh3 => 'Baccalauréat (National)';
+
+  @override
+  String get lyceeTrackScience => 'Science';
+
+  @override
+  String get lyceeTrackLiterature => 'Littérature';
+
+  @override
+  String get errorFillAllFields => 'Veuillez remplir correctement tous les champs';
+
+  @override
+  String get pleaseChooseABanner => 'Veuillez choisir une bannière';
+
+  @override
+  String get male => 'Homme';
+
+  @override
+  String get female => 'Femme';
+
+  @override
+  String get ourMission => 'Notre mission';
+
+  @override
+  String get futurePlans => 'Plans futurs';
+
+  @override
+  String get chooseYourAvatar => 'Choisissez votre avatar';
+
+  @override
+  String get profileInfo => 'Informations du profil';
+
+  @override
+  String get email => 'E-mail';
+
+  @override
+  String get dontShowAgain => 'Ne plus afficher';
+
+  @override
+  String get informationTechnology => 'Technologies de l\'information';
+
+  @override
+  String get islam => 'Islam';
+
+  @override
+  String get credits => 'Crédits';
+
+  @override
+  String get info => 'Une plateforme éducative innovante combinant apprentissage, jeux et culture pour rendre l\'éducation amusante et captivante pour les élèves au Maroc et au-delà.';
+
+  @override
+  String get aboutMission => 'MoorTaalim vise à autonomiser les élèves en fournissant du contenu éducatif interactif qui respecte la culture marocaine et favorise l\'amour de l\'apprentissage. Nous croyons que l\'éducation doit être agréable, accessible et culturellement pertinente.';
+
+  @override
+  String get aboutFuturePlans => 'Nous travaillons continuellement à ajouter de nouveaux cours, des jeux multijoueurs passionnants et des fonctionnalités avancées telles que des parcours d\'apprentissage personnalisés et des forums communautaires pour connecter les apprenants et les éducateurs.';
 }

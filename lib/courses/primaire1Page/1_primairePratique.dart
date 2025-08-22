@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/courses/primaire1Page/PractiseCoursesSubjects/Arabic1/1_primaire_Arabic_Practise.dart';
 import 'package:mortaalim/l10n/app_localizations.dart';
+import '../../main.dart';
 import 'PractiseCoursesSubjects/French1/1_primaire_French_Practise.dart';
 import 'PractiseCoursesSubjects/Math1/1_primaire_Math_Practise.dart';
 import 'PractiseCoursesSubjects/Science1/1_primaire_Science_Practise.dart';
@@ -105,40 +106,26 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
     super.initState();
     infoCards.addAll([
       InfoCardData(
-        title: 'Preferred Subject',
+        title: "Pereferred Subject",
         content: 'Math',
         icon: Icons.calculate_rounded,
         color: Colors.orangeAccent,
-        subtitle: 'Keep up the good work!',
+        subtitle: "Keep Up the Good Work",
       ),
       InfoCardData(
-        title: 'Class Level',
-        content: '1ère Primaire',
+        title: "Class Level",
+        content: "Grade 1",
         icon: Icons.school_outlined,
         color: Colors.deepOrangeAccent,
-      ),
-      InfoCardData(
-        title: 'Next Exam',
-        content: '12 Sep 2025',
-        icon: Icons.event_note_outlined,
-        color: Colors.lightBlueAccent,
-      ),
-      InfoCardData(
-        title: 'Progress',
-        content: '67%',
-        icon: Icons.show_chart_rounded,
-        color: Colors.green,
-        subtitle: 'Keep going!',
       ),
     ]);
   }
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context)!;
 
     return Scaffold(
-      backgroundColor: const Color(0xfffef9f4),
+      backgroundColor: Colors.transparent,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -148,7 +135,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
-                  'Your Dashboard',
+                  tr(context).dashboard,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.w700,
@@ -183,7 +170,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
-                  'Practice Courses',
+                  tr(context).practiseCourses,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -204,7 +191,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                     final title = course['title'] as String;
                     final route = course['route'] as String;
                     final icon = getIcon(title);
-                    final label = getLabel(title, tr);
+                    final label = getLabel(title, tr(context));
                     final image = course['image'] as String;
                     final color = course['color'] as Color;
 

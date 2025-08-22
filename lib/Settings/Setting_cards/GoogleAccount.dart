@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mortaalim/main.dart';
 
 class GoogleAccountCard extends StatefulWidget {
   final Function()? onDisconnectCallback;
@@ -35,7 +36,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Signed in with Google!')),
+           SnackBar(content: Text(tr(context).signedInWithGoogle)),
         );
         setState(() {});
       }
@@ -61,7 +62,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Disconnected. Now in anonymous mode.")),
+             SnackBar(content: Text(tr(context).disconnectedNowinanonymousmode)),
           );
           widget.onDisconnectCallback?.call();
           setState(() {});
@@ -70,7 +71,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to disconnect: $e")),
+          SnackBar(content: Text("${tr(context).failedToDisconnect}: $e")),
         );
       }
     }
@@ -89,7 +90,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text("Google Account",
+             Text(tr(context).googleAccount,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
             const SizedBox(height: 8),
             if (user != null &&
@@ -103,7 +104,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
-                          "Connected: ${user.email ?? "Google Account"}",
+                          "${tr(context).connected}: ${user.email ?? "${tr(context).googleAccount}"}",
                           style: const TextStyle(color: Colors.green),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -113,7 +114,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
                   const SizedBox(height: 8),
                   ElevatedButton.icon(
                     icon: const Icon(Icons.logout),
-                    label: const Text("Disconnect"),
+                    label:  Text(tr(context).disconnect),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
@@ -122,18 +123,18 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder: (ctx) => AlertDialog(
-                          title: const Text("Disconnect Google Account"),
-                          content: const Text(
-                              "Are you sure you want to disconnect your Google account? You will be switched to anonymous mode."),
+                          title:  Text("${tr(context).disconnected} ${tr(context).googleAccount}"),
+                          content:  Text(
+                              tr(context).areYouSureYouWantToDisconnectYourGoogleAccountYouWillBeSwitchedToAnonymousMode),
                           actions: [
                             TextButton(
                               onPressed: () => Navigator.of(ctx).pop(false),
-                              child: const Text("Cancel"),
+                              child:  Text(tr(context).cancel),
                             ),
                             ElevatedButton(
                               onPressed: () => Navigator.of(ctx).pop(true),
                               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                              child: const Text("Disconnect"),
+                              child:  Text(tr(context).disconnected),
                             ),
                           ],
                         ),
@@ -149,7 +150,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text("Not connected yet", style: TextStyle(color: Colors.orange)),
+                   Text(tr(context).notConnectedYet, style: TextStyle(color: Colors.orange)),
                   const SizedBox(height: 8),
                   ElevatedButton.icon(
                     icon: _isConnecting
@@ -160,7 +161,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
                     )
                         : const Icon(Icons.login),
                     label: Text(
-                      _isConnecting ? "Connecting..." : "Connect Google Account",
+                      _isConnecting ? "${tr(context).connecting}..." : "${tr(context).connectGoogleAccount}",
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(

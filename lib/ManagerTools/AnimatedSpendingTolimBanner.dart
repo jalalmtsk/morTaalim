@@ -1,7 +1,11 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:provider/provider.dart';
+
+import '../tools/audio_tool/Audio_Manager.dart';
 
 class AnimatedTokenSpentBanner extends StatefulWidget {
   final int tokenAmount;
@@ -19,13 +23,12 @@ class AnimatedTokenSpentBanner extends StatefulWidget {
 class _AnimatedTokenSpentBannerState extends State<AnimatedTokenSpentBanner>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  final MusicPlayer _player = MusicPlayer();
 
   @override
   void initState() {
     super.initState();
-
-    _player.play("assets/audios/sound_effects/cash-register.mp3"); // 🔁 Replace if you have a better sound
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playAlert("assets/audios/UI_Audio/SFX_Audio/PurchaseSound.mp3"); // 🔁 Replace if you have a better sound
 
     _controller = AnimationController(
       vsync: this,

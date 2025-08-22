@@ -9,10 +9,11 @@ import 'package:mortaalim/Pet/pet_home_page.dart';
 import 'package:mortaalim/TestingBeforeProdcution/ArabicExercice.dart';
 import 'package:mortaalim/TestingBeforeProdcution/DragonGameFruit.dart';
 import 'package:mortaalim/TestingBeforeProdcution/DrawSketch.dart';
+import 'package:mortaalim/Themes/ThemeSelectorPage.dart';
+import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/LoadingFromUserToIndex.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/MemoryFlip_index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/SurvivalMode/MainSurvivalModePage.dart';
-import 'package:mortaalim/tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/BannerAndAvatarProfilePage/BannerAvatarProfile.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/MainProfile_Page/Widgets/UserDataProfileEntering.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
@@ -22,7 +23,7 @@ import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
 import 'package:mortaalim/games/PuzzzleGame/Puzzle_Game.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
 import 'package:mortaalim/indexPage_tools/Dashboard_Index_tool/Home_Page.dart';
-import 'package:mortaalim/tasbiheTest.dart';
+import 'package:mortaalim/TestingBeforeProdcution/tasbiheTest.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 
 import 'package:mortaalim/Settings/setting_Page.dart';
@@ -53,7 +54,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import '../../l10n/app_localizations.dart';
 
 import 'IndexPage.dart';
+import 'Manager/Services/CardVisibiltyManager.dart';
 import 'TestingBeforeProdcution/WaterFilledANimatuionCotnrol.dart';
+import 'Themes/AppTheme.dart';
+import 'Themes/ThemeManager.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
 import 'l10n/amazigh_localizations.dart';
@@ -98,8 +102,8 @@ void main() async {
         ChangeNotifierProvider.value(value: xpManager),
         ChangeNotifierProvider.value(value: audioManager),
         ChangeNotifierProvider(create: (_) => ConnectivityService()),
-        ChangeNotifierProvider(create: (_) => CardVisibilityManager(),
-        )
+        ChangeNotifierProvider(create: (_) => CardVisibilityManager()),
+        ChangeNotifierProvider(create: (_) => ThemeManager(themes: appThemes)),
       ],
         child: AppLifecycleManager( child: MyApp(),
         )
@@ -171,7 +175,7 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
 
-            'Shop': (context) => MainShopPageIndex(),
+            'Shop': (context) => LoadingFromUserToIndex(firstName: "Jalal", lastName: "Moustakim", age: 12, gender: "Male", banner: "FirstBanner"),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

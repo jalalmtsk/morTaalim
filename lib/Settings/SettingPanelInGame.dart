@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../Manager/Services/CardVisibiltyManager.dart';
 import '../main.dart';
 
-import '../tools/SavingPreferencesTool_Helper/Preferences_Helper.dart';
 import '../tools/audio_tool/Audio_Manager.dart';
 import 'Setting_cards/BackUp_card.dart';
 import 'Setting_cards/GoogleAccount.dart';
@@ -144,8 +144,8 @@ class _SettingsDialogState extends State<SettingsDialog> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    "Settings",
+                   Text(
+                    tr(context).settings,
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -166,9 +166,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                 child: ListView(
                   children: [
                     // === AUDIO SETTINGS ===
-                    buildSectionTitle("Audio Settings"),
+                    buildSectionTitle(tr(context).audioSettings),
                     buildVolumeControl(
-                      title: "Background Music",
+                      title: tr(context).backgroundMusic,
                       expanded: bgExpanded,
                       onExpandChanged: (v) => setState(() => bgExpanded = v),
                       isMuted: audioManager.isBgMuted,
@@ -179,7 +179,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       color: Colors.deepOrange,
                     ),
                     buildVolumeControl(
-                      title: "Sound Effects",
+                      title: tr(context).soundEffects,
                       expanded: sfxExpanded,
                       onExpandChanged: (v) => setState(() => sfxExpanded = v),
                       isMuted: audioManager.isSfxMuted,
@@ -194,7 +194,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       ),
                     ),
                     buildVolumeControl(
-                      title: "Button Sounds",
+                      title: tr(context).buttonSounds,
                       expanded: buttonExpanded,
                       onExpandChanged: (v) => setState(() => buttonExpanded = v),
                       isMuted: audioManager.isButtonMuted,
@@ -208,7 +208,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       padding: const EdgeInsets.symmetric(horizontal: 14.0, vertical: 4),
                       child: ElevatedButton.icon(
                         icon: const Icon(Icons.refresh),
-                        label: const Text("Reset Audio Settings"),
+                        label:  Text(tr(context).resetAudioSettings),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey[700],
                           foregroundColor: Colors.white,
@@ -221,9 +221,9 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     ),
 
                     // === UI ELEMENTS ===
-                    buildSectionTitle("UI Elements"),
+                    buildSectionTitle(tr(context).duaaAndAyat),
                     buildAyatCardToggle(
-                      title: "Show Ayat",
+                      title: tr(context).showAyat,
                       expanded: ayatExpanded,
                       onExpandChanged: (v) => setState(() => ayatExpanded = v),
                       isEnabled: context.watch<CardVisibilityManager>().showAyatCard,
@@ -231,13 +231,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
                         context.read<CardVisibilityManager>().toggleAyatCard(value);
                         audioManager.playEventSound('toggleButton');
                       },
-                      content: "Enable or disable the Ayat card from appearing in your app",
+                      content: tr(context).enableordisabletheAyatcardfromappearinginyourapp,
                       icon: Icons.menu_book,
                       color: Colors.orange,
                     ),
 
                     buildAyatCardToggle(
-                      title: "Show Duaa",
+                      title: tr(context).showDuaa,
                       expanded: DuaaDialogExpanded,
                       onExpandChanged: (v) => setState(() => DuaaDialogExpanded = v),
                       isEnabled: context.watch<CardVisibilityManager>().showDuaaDialog,
@@ -245,13 +245,13 @@ class _SettingsDialogState extends State<SettingsDialog> {
                         context.read<CardVisibilityManager>().toggleDuaaDialog(value);
                         audioManager.playEventSound('toggleButton');
                       },
-                      content: "Enable or Disable Duaa Every Time You Enter",
+                      content: tr(context).enableorDisableDuaaEveryTimeYouEnter,
                       icon: Icons.border_outer,
                       color: Colors.deepOrange,
                     ),
 
                     // === ACCOUNT & BACKUP ===
-                    buildSectionTitle("Account & Backup"),
+                    buildSectionTitle(tr(context).accountAndBackup),
                     GoogleAccountCard(
                       onDisconnectCallback: () {
                         setState(() {});
@@ -262,7 +262,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                     const SizedBox(height: 22),
                     ElevatedButton.icon(
                       icon: const Icon(Icons.exit_to_app),
-                      label: const Text('Close'),
+                      label:  Text(tr(context).close),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.redAccent,
                         foregroundColor: Colors.white,
@@ -275,7 +275,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                       },
                     ),
                     const SizedBox(height: 12),
-                    Center(child: Text("Version $appVersion")),
+                    Center(child: Text("${tr(context).version} $appVersion")),
                   ],
                 )
 

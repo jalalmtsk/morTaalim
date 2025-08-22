@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/widgets/RandomAyat_Card/RandomAyaCard.dart';
 import 'package:provider/provider.dart';
-import '../../Inside_Course_Logic/HomeCourse_Tools/Widgets/IstighfarBanner.dart';
-import '../../XpSystem.dart';
-import '../../l10n/app_localizations.dart';
+
 import 'package:mortaalim/indexPage_tools/Course_index_tool/course_data.dart';
 import 'package:mortaalim/indexPage_tools/Course_index_tool/course_grid.dart';
 
 import '../../tools/ConnectivityManager/Connectivity_Manager.dart';
-import '../../tools/ConnectivityManager/ConexionWidget.dart';
 
 class CourseTab extends StatefulWidget {
   const CourseTab({super.key});
@@ -33,7 +30,6 @@ class _CourseTabState extends State<CourseTab> {
 
   @override
   Widget build(BuildContext context) {
-    final tr = AppLocalizations.of(context)!;
     final connectivity = Provider.of<ConnectivityService>(context); // UI can still listen
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

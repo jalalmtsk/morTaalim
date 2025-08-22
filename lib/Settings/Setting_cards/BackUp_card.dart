@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import '../../Authentification/BackUp/BackUpPage.dart';
 import '../../XpSystem.dart';
@@ -17,14 +18,14 @@ class BackupCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              "Backup & Restore",
+             Text(
+              tr(context).backupAndRestore,
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
             const SizedBox(height: 8),
             ElevatedButton.icon(
               icon: const Icon(Icons.backup),
-              label: const Text("Manage Backup"),
+              label:  Text(tr(context).manageBackup),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.teal,
                 foregroundColor: Colors.white,

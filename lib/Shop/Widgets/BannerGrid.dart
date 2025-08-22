@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import '../../ManagerTools/StarDeductionOverlay.dart';
 import '../../XpSystem.dart';
-import '../../tools/StarCountPulse.dart';
-import '../../tools/StarDeductionOverlay.dart';
+import '../../ManagerTools/StarCountPulse.dart';
 import '../../widgets/userStatutBar.dart';
 
 class ImageBannerGrid extends StatefulWidget {

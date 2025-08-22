@@ -99,7 +99,7 @@ final List<Map<String, dynamic>> animals = [
   {
     'name': 'Deer',
     'image': 'assets/images/Animals/Animal_images/Deer_image.png',
-    'sound': 'assets/sounds/deer.mp3',
+    'sound': 'assets/audios/Animals_sounds/Animals_sound/Deer_sound.mp3',
     'habitat': 'Forest',
     'info': 'Deer are graceful herbivores found in forests worldwide.',
     'bgImage': 'assets/images/Animals/Animal_Houses/Forest2_bg.png'

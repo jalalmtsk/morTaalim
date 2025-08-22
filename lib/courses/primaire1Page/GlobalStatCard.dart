@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
+import '../../main.dart';
+
 class GlobalStatsCard extends StatelessWidget {
   final double progress; // 0.0 .. 1.0
   final int badges;
@@ -20,10 +22,9 @@ class GlobalStatsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final percentText = (progress * 100).toStringAsFixed(0);
-
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: Colors.white.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(18),
         boxShadow: [
           BoxShadow(
@@ -57,8 +58,8 @@ class GlobalStatsCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  "Global",
+                 Text(
+                  tr(context).global,
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
@@ -68,15 +69,15 @@ class GlobalStatsCard extends StatelessWidget {
                 const SizedBox(height: 8),
                 Row(
                   children: [
-                    _statItem(Icons.star, "$badges Badges"),
+                    _statItem(Icons.wine_bar, "$badges ${tr(context).badges}"),
                     const SizedBox(width: 16),
-                    _statItem(Icons.flash_on, "$courseXp Learning Power"),
+                    _statItem(Icons.flash_on, "$courseXp ${tr(context).learningPower}"),
                   ],
                 ),
                 const SizedBox(height: 6),
                 _statItem(
                   Icons.check_circle,
-                  "$completedCourses / $totalCourses Courses Completed",
+                  "$completedCourses / $totalCourses ${tr(context).coursesCompleted}",
                 ),
               ],
             ),

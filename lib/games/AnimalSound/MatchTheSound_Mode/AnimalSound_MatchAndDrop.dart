@@ -1,12 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/XpSystem.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart'; // ✅ Import AdMob
 
 import '../Animal_Data.dart';
 import 'MatchTheSound_ResultPage.dart';
@@ -66,8 +66,7 @@ class _AS_MatchDropState extends State<AS_MatchDrop>
 
     // ✅ Initialize Banner Ad
     _bannerAd = BannerAd(
-      adUnitId:
-      "ca-app-pub-3940256099942544/6300978111", // ⚠️ Replace with your real AdMob ID
+      adUnitId: 'ca-app-pub-9936922975297046/2736323402', // ✅ real ID
       size: AdSize.banner,
       request: const AdRequest(),
       listener: BannerAdListener(

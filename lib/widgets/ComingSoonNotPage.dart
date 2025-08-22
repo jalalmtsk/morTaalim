@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mortaalim/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:lottie/lottie.dart';
 
@@ -18,6 +19,7 @@ class ComingSoonNotPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black.withValues(alpha: 0.2),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -33,22 +35,22 @@ class ComingSoonNotPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Bientôt disponible !',
+                  '${tr(context).comingSoon} !',
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
-                    color: Colors.teal[800],
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Nous préparons quelque chose de génial 🤩',
-                  style: TextStyle(fontSize: 18, color: Colors.teal[700]),
+                  "${tr(context).weArePreparingSomethingAwesome} 🤩",
+                  style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
                 const SizedBox(height: 30),
                 Text(
-                  'Suivez-nous sur les réseaux sociaux :',
-                  style: TextStyle(fontSize: 16),
+                  "${tr(context).followUsOnSocialMedia} :",
+                  style: TextStyle(fontSize: 16, color: Colors.white),
                 ),
                 const SizedBox(height: 16),
                 Row(
@@ -78,8 +80,8 @@ class ComingSoonNotPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  'Merci pour votre patience ❤️',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  "${tr(context).thankYouForYourPatience} ❤️",
+                  style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
                 const SizedBox(height: 30),
               ],

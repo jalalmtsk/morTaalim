@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/IndexPage.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../XpSystem.dart';
+import '../../main.dart';
+import 'LoadingFromUserToIndex.dart';
 
 class UserInfoAvatarAndGender extends StatefulWidget {
-  final VoidCallback? onNext;
-
-  const UserInfoAvatarAndGender({Key? key, this.onNext}) : super(key: key);
+  const UserInfoAvatarAndGender({Key? key}) : super(key: key);
 
   @override
   _UserInfoAvatarAndGenderState createState() => _UserInfoAvatarAndGenderState();
@@ -60,31 +61,42 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
     super.dispose();
   }
 
-  Future<bool> saveSelection(ExperienceManager xpManager) async {
+  Future<void> _completeOnboarding(ExperienceManager xpManager) async {
     setState(() {
-      _errorMessage = null;
       _isSaving = true;
+      _errorMessage = null;
     });
 
+    // Validate avatar
     if (xpManager.selectedAvatar.isEmpty) {
       setState(() {
         _errorMessage = "Veuillez sélectionner un avatar.";
         _isSaving = false;
       });
-      return false;
+      return;
     }
 
+    // Validate gender
     if (xpManager.userProfile.gender.isEmpty) {
       setState(() {
         _errorMessage = "Veuillez sélectionner votre genre.";
         _isSaving = false;
       });
-      return false;
+      return;
     }
 
     final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboarding_completed', true);
     await prefs.setString('gender', xpManager.userProfile.gender);
-    return true;
+
+    if (!mounted) return;
+
+    // Navigate to IndexPage and remove all previous routes
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) =>
+          LoadingFromUserToIndex(firstName: '', lastName: '', age: 20, gender: '', banner: '',)),
+          (route) => false,
+    );
   }
 
   bool _isEmoji(String avatar) => !avatar.contains('/');
@@ -93,93 +105,90 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
     final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
-    bool isSelectionValid = xpManager.selectedAvatar.isNotEmpty && xpManager.userProfile.gender.isNotEmpty;
+    final isSelectionValid = xpManager.selectedAvatar.isNotEmpty && xpManager.userProfile.gender.isNotEmpty;
 
-    return Scaffold(
-      body: AnimatedBuilder(
-        animation: _gradientController,
-        builder: (context, _) {
-          final colors = List<Color>.generate(
-            2,
-                (i) => Color.lerp(
-              gradientSets[currentGradientIndex][i],
-              gradientSets[nextIndex][i],
-              _gradientController.value,
-            )!,
-          );
+    return WillPopScope(
+      onWillPop: () async => false, // Prevent back button
+      child: Scaffold(
+        body: AnimatedBuilder(
+          animation: _gradientController,
+          builder: (context, _) {
+            final colors = List<Color>.generate(
+              2,
+                  (i) => Color.lerp(
+                gradientSets[currentGradientIndex][i],
+                gradientSets[nextIndex][i],
+                _gradientController.value,
+              )!,
+            );
 
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: colors,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: colors,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
-            ),
-            child: SafeArea(
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        const Userstatutbar(),
-                        const SizedBox(height: 20),
-
-                        _buildAvatarPreview(xpManager),
-                        const SizedBox(height: 16),
-
-                        _buildAvatarCarousel(xpManager),
-                        const SizedBox(height: 20),
-
-                        _buildGenderToggle(xpManager),
-                      ],
-                    ),
-                  ),
-
-                  if (isSelectionValid)
-                    Positioned(
-                      bottom: 20,
-                      right: 20,
-                      child: FloatingActionButton(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.deepOrange,
-                        elevation: 6,
-                        onPressed: _isSaving
-                            ? null
-                            : () async {
-                          final success = await saveSelection(xpManager);
-                          if (success) widget.onNext?.call();
-                        },
-                        child: _isSaving
-                            ? const CircularProgressIndicator(color: Colors.deepOrange)
-                            : const Icon(Icons.arrow_forward, size: 28),
+              child: SafeArea(
+                child: Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        children: [
+                          const Userstatutbar(),
+                          const SizedBox(height: 20),
+                          _buildAvatarPreview(xpManager),
+                          const SizedBox(height: 16),
+                          _buildAvatarCarousel(xpManager),
+                          const SizedBox(height: 20),
+                          _buildGenderToggle(xpManager),
+                        ],
                       ),
                     ),
 
-                  if (_errorMessage != null)
-                    Positioned(
-                      bottom: 80,
-                      left: 24,
-                      right: 24,
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.redAccent.withValues(alpha: 0.85),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Text(
-                          _errorMessage!,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    // Floating button shows only when selections are valid
+                    if (isSelectionValid)
+                      Positioned(
+                        bottom: 20,
+                        right: 20,
+                        child: FloatingActionButton(
+                          backgroundColor: Colors.white,
+                          foregroundColor: Colors.deepOrange,
+                          elevation: 6,
+                          onPressed: _isSaving ? null : () => _completeOnboarding(xpManager),
+                          child: _isSaving
+                              ? const CircularProgressIndicator(color: Colors.deepOrange)
+                              : const Icon(Icons.check, size: 28),
                         ),
                       ),
-                    ),
-                ],
+
+                    // Error message
+                    if (_errorMessage != null)
+                      Positioned(
+                        bottom: 80,
+                        left: 24,
+                        right: 24,
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.redAccent.withOpacity(0.85),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            _errorMessage!,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -204,8 +213,8 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
           xpManager.userProfile.gender.isEmpty
               ? "Sélectionnez votre genre"
               : xpManager.userProfile.gender == "male"
-              ? "Homme"
-              : "Femme",
+              ? tr(context).male
+              : tr(context).female,
           style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
         ),
       ],
@@ -246,7 +255,7 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
                     boxShadow: [
                       BoxShadow(
                         color: index == _currentAvatarIndex
-                            ? Colors.deepOrange.withValues(alpha: 0.5)
+                            ? Colors.deepOrange.withOpacity(0.5)
                             : Colors.black26,
                         blurRadius: 10,
                         offset: const Offset(0, 4),
@@ -269,7 +278,7 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.9),
+        color: Colors.white.withOpacity(0.9),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Row(
@@ -301,7 +310,7 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
             Icon(icon, color: isSelected ? Colors.white : Colors.deepOrange),
             const SizedBox(width: 6),
             Text(
-              gender == "male" ? "Homme" : "Femme",
+              gender == "male" ? tr(context).male : tr(context).female,
               style: TextStyle(
                 color: isSelected ? Colors.white : Colors.deepOrange,
                 fontWeight: FontWeight.bold,

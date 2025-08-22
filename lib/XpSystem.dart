@@ -9,8 +9,7 @@ import 'package:mortaalim/Manager/Services/YoutubeProgressManager.dart';
 import 'package:mortaalim/Manager/models/CourseProgressionManager.dart';
 import 'package:mortaalim/Manager/models/InventoryPet.dart';
 
-import 'package:mortaalim/tools/StarCountPulse.dart';
-import 'package:mortaalim/tools/StarDeductionOverlay.dart';
+import 'package:mortaalim/ManagerTools/StarCountPulse.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 
 import 'package:provider/provider.dart';
@@ -31,6 +30,7 @@ import 'ManagerTools/AnimatedTolimBanner.dart';
 import 'ManagerTools/AnimatedXpBanner.dart';
 import 'package:mortaalim/ManagerTools/LevelUpOverlayHelper.dart';
 
+import 'ManagerTools/StarDeductionOverlay.dart';
 import 'main.dart';
 
 class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
@@ -661,7 +661,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   }
 
 
-  void addXP(int amount, {BuildContext? context}) {
+  void addXP(int amount, {BuildContext? context}) async {
     final int oldLevel = level;
     _xp += amount;
     final int newLevel = level;
@@ -669,30 +669,23 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     if (newLevel > oldLevel) {
       addStarBanner(context!, newLevel - oldLevel);
     }
-
     _saveData();
     notifyListeners();
 
-    if (context != null) {
-      Future.delayed(const Duration(milliseconds: 100), () {
-        if (context.mounted) {
-          _showOverlayXPAddedBanner(context, amount);
-        }
-      });
+    if (context != null && context.mounted) {
+      // Slight delay to allow UI to update
+      await Future.delayed(const Duration(milliseconds: 100));
 
-      if (newLevel > oldLevel) {
-        Future.delayed(const Duration(milliseconds: 300), () {
-          if (context.mounted) {
-            Provider.of<AudioManager>(context, listen: false)
-                .playSfx("assets/audios/sound_effects/correct_anwser.mp3");
-            Provider.of<AudioManager>(context, listen: false)
-                .playSfx("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
-            LevelUpOverlayHelper.showOverlayLevelUpBanner(context, newLevel);
-          }
-        });
+      // 1️⃣ Show XP banner and wait until it disappears
+      await AnimatedXPBanner.show(context, amount);
+
+      // 2️⃣ Only after XP banner ends, show Level Up banner if level increased
+      if (newLevel > oldLevel && context.mounted) {
+        await LevelUpOverlayHelper.showOverlayLevelUpBanner(context, newLevel);
       }
     }
   }
+
 
 
 //----------------------------------------------------------------------------------

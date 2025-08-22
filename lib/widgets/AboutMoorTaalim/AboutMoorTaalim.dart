@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/AboutMoorTaalim/FeedbackPage.dart';
 import 'package:mortaalim/widgets/AboutMoorTaalim/PrivacyPolicyPage.dart';
@@ -207,7 +208,7 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
           ),
           const SizedBox(height: 5),
           Text(
-            "Version $appVersion",
+            "${tr(context).version} $appVersion",
             style: TextStyle(fontSize: 14, color: Colors.grey[600]),
           ),
           const SizedBox(height: 15),
@@ -219,9 +220,8 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
                 Center(
                   child: Column(
                     children: [
-                      const Text(
-                        "An innovative educational platform blending learning, games, and culture "
-                            "to make education fun and engaging for students in Morocco and beyond.",
+                       Text(
+                       tr(context).info,
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 16, height: 1.4),
                       ),
@@ -232,12 +232,10 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
                 const SizedBox(height: 20),
 
                 _buildExpandableCard(
-                  title: "Our Mission",
+                  title: tr(context).ourMission,
                   icon: Icons.flag,
                   content:
-                  "MoorTaalim aims to empower students by providing interactive educational content "
-                      "that respects Moroccan culture and promotes a love of learning. We believe education "
-                      "should be enjoyable, accessible, and culturally relevant.",
+                 tr(context).aboutMission,
                   expanded: _expandedMission,
                   onToggle: () {
                     audioManager.playEventSound("PopClick");
@@ -248,12 +246,9 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
                 const SizedBox(height: 12),
 
                 _buildExpandableCard(
-                  title: "Future Plans",
+                  title: tr(context).futurePlans,
                   icon: Icons.upcoming,
-                  content:
-                  "We're continuously working to add new courses, exciting multiplayer games, "
-                      "and advanced features like personalized learning paths and community forums "
-                      "to connect learners and educators.",
+                  content:tr(context).aboutFuturePlans,
                   expanded: _expandedFuture,
                   onToggle: () {
                     audioManager.playEventSound("PopClick");
@@ -268,8 +263,8 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
                 const SizedBox(height: 10),
 
                 // Social Media Section
-                const Text(
-                  "Follow us on",
+                 Text(
+                  tr(context).followUsOnSocialMedia,
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   textAlign: TextAlign.center,
                 ),
@@ -318,7 +313,7 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: ListTile(
                     leading: const Icon(Icons.email, color: Colors.deepOrange),
-                    title: const Text("Contact Us"),
+                    title:  Text(tr(context).contactSupport),
                     subtitle: const Text("moortaalim@gmail.com"),
                     onTap: () => _launchURL("mailto:moortaalim@gmail.com"),
                   ),
@@ -329,7 +324,7 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: ListTile(
                     leading: const Icon(Icons.privacy_tip, color: Colors.blueGrey),
-                    title: const Text("Privacy Policy"),
+                    title:  Text(tr(context).privacyPolicy),
                     onTap: () {
                       audioManager.playEventSound("clickButton");
                       Navigator.push(context, MaterialPageRoute(
@@ -343,7 +338,7 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: ListTile(
                     leading: const Icon(Icons.gavel, color: Colors.brown),
-                    title: const Text("Terms of Use"),
+                    title:  Text(tr(context).termsOfUse),
                     onTap: () {
                       audioManager.playEventSound("clickButton");
                       Navigator.push(context,
@@ -357,7 +352,7 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                   child: ListTile(
                     leading: const Icon(Icons.people, color: Colors.green),
-                    title: const Text("Credits"),
+                    title:  Text(tr(context).credits),
                     onTap: () {
                       audioManager.playEventSound("clickButton");
                       Navigator.of(context).pushNamed("Credits");

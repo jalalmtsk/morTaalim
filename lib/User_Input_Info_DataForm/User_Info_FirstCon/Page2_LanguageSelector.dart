@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
-import 'package:mortaalim/XpSystem.dart'; // ExperienceManager
+import 'package:mortaalim/XpSystem.dart';
+
+import '../../tools/audio_tool/Audio_Manager.dart'; // ExperienceManager
 
 class LanguageTouch extends StatefulWidget {
   final VoidCallback? onLanguageSelected;
@@ -59,9 +62,11 @@ class _LanguageTouchState extends State<LanguageTouch>
 
     final Map<String, Map<String, String>> languagesMap = {
       'en': {'flag': '🇺🇸', 'label': 'English'},
-      'ar': {'flag': '🇲🇦', 'label': 'العربية'},
+      'ar': {'flag': '🇸🇦', 'label': 'العربية'},
       'fr': {'flag': '🇫🇷', 'label': 'Français'},
       'de': {'flag': '🇩🇪', 'label': 'Deutsch'},
+      'zgh': {'flag': '🇲🇦', 'label': 'Amazigh'},
+
     };
 
     List<String> unlockedLanguages = expManager.unlockedLanguages
@@ -113,7 +118,7 @@ class _LanguageTouchState extends State<LanguageTouch>
 
                       // **Title**
                       Text(
-                        'Choisissez votre langue',
+                       tr(context).chooseALanguage,
                         style: const TextStyle(
                           fontSize: 26,
                           fontWeight: FontWeight.bold,
@@ -132,7 +137,7 @@ class _LanguageTouchState extends State<LanguageTouch>
 
                       // **Subtitle**
                       Text(
-                        'Sélectionnez une langue pour continuer',
+                       tr(context).selectALanguageToContinue,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white.withOpacity(0.9),
@@ -157,7 +162,7 @@ class _LanguageTouchState extends State<LanguageTouch>
                             final langCode = unlockedLanguages[index];
                             final langInfo = languagesMap[langCode]!;
                             final isSelected = _selectedLanguage == langCode;
-
+                            final audioManager = Provider.of<AudioManager>(context, listen: false);
                             return GestureDetector(
                               onTap: () {
                                 setState(() {
@@ -169,11 +174,13 @@ class _LanguageTouchState extends State<LanguageTouch>
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content:
-                                    Text('Langue définie sur ${langInfo['label']}'),
+                                    Text('${tr(context).languageSetTo} ${langInfo['label']}'),
                                     backgroundColor: Colors.black87,
                                     duration: const Duration(milliseconds: 800),
                                   ),
                                 );
+                                audioManager.playEventSound('clickButton2');
+
                               },
                               child: AnimatedContainer(
                                 duration: const Duration(milliseconds: 300),
@@ -225,20 +232,11 @@ class _LanguageTouchState extends State<LanguageTouch>
                         ),
                       ),
 
-                      const SizedBox(height: 10),
-
-                      // **Bottom Lottie animation**
-                      Lottie.asset(
-                        'assets/animations/FirstTouchAnimations/SwipeLeft.json',
-                        width: 80,
-                        height: 80,
-                      ),
-
-                      const SizedBox(height: 10),
                     ],
                   ),
 
                   // Floating "Next" button bottom right
+
                   Positioned(
                     bottom: 20,
                     right: 20,
@@ -251,12 +249,29 @@ class _LanguageTouchState extends State<LanguageTouch>
                           : Colors.deepOrange.withOpacity(0.5),
                       onPressed: _selectedLanguage != null
                           ? () {
+                        final audioManager = Provider.of<AudioManager>(context, listen: false);
+                        audioManager.playEventSound('clickButton');
                         widget.onLanguageSelected?.call();
                       }
                           : null,
                       child: const Icon(Icons.arrow_forward, size: 28),
                       elevation: 6,
                     ),
+                  ),
+
+                  Positioned(
+                    bottom: -10,
+                    right: -10,
+                    child: _selectedLanguage != null
+                        ? IgnorePointer(
+                      ignoring: true, // <-- this makes it non-clickable
+                      child: Lottie.asset(
+                        'assets/animations/TutorielGesture/click_Tuto.json',
+                        width: 100,
+                        height: 100,
+                      ),
+                    )
+                        : SizedBox.shrink(),
                   ),
                 ],
               ),

@@ -2,7 +2,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
@@ -24,7 +26,16 @@ class CountExercise extends StatefulWidget {
 class _CountExerciseState extends State<CountExercise>
     with SingleTickerProviderStateMixin {
   final MusicPlayer player = MusicPlayer();
-  final List<String> objectEmojis = ["🍎", "🏀", "✏️", "🧸", "🐠"];
+  final List<String> objectEmojis =
+  [
+  "🍎", "🏀", "✏️", "🧸", "🐠",
+  "🍌", "⚽", "📚", "🎨", "🚗",
+  "🦋", "🍓", "🎵", "🐢", "🚀",
+  "🌻", "🎲", "🐶", "🐱", "🦄",
+  "🍕", "🥕", "🚴", "🏓", "🎧",
+  "🐒", "🐼", "🏖️", "⛄", "🌈"
+  ];
+
   late int correctCount;
   late String currentObject;
   int score = 0;
@@ -72,10 +83,12 @@ class _CountExerciseState extends State<CountExercise>
   }
 
   void checkAnswer(int selected) async {
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
     if (_isProcessingAnswer) return;
     _isProcessingAnswer = true;
 
     if (selected == correctCount) {
+      xpManager.addXP(1, context: context);
       await player.play('assets/audios/QuizGame_Sounds/correct.mp3');
       setState(() {
         score++;
@@ -84,10 +97,12 @@ class _CountExerciseState extends State<CountExercise>
 
       Future.delayed(Duration(milliseconds: 1500), () {
         if (score >= 10) {
-          final manager =
-          Provider.of<ExperienceManager>(context, listen: false);
-          if (wrong == 0) {
-            manager.addTokenBanner(context, 1);
+          final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+          final audioManager = Provider.of<AudioManager>(context, listen: false);
+          if (lives >= 1) {
+            xpManager.addTokenBanner(context, 1);
+            audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/VictoryOrchestral_SFX.mp3');
+            audioManager.playSfx('assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3');
           }
           setState(() {
             showGameOver = true;
@@ -112,6 +127,9 @@ class _CountExerciseState extends State<CountExercise>
 
       Future.delayed(Duration(milliseconds: 1500), () {
         if (lives == 0) {
+          audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/FailMeme_SFX.mp3");
+          audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/victory1_SFX.mp3");
+
           setState(() {
             showGameOver = true;
             _isAnswerCorrect = null;
@@ -140,6 +158,8 @@ class _CountExerciseState extends State<CountExercise>
   }
 
   void _onReplayPressed() {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playEventSound('cancelButton');
     AdHelper.showInterstitialAd(onDismissed: () {
       resetGame();
     }, context: context);
@@ -324,12 +344,12 @@ class _CountExerciseState extends State<CountExercise>
           Lottie.asset(
               win
                   ? 'assets/animations/QuizzGame_Animation/Champion.json'
-                  : 'assets/animations/QuizzGame_Animation/wrong.json',
-              width: 200,
-              repeat: false),
+                  : 'assets/animations/QuizzGame_Animation/CuteTigerCrying.json',
+              width: 300,
+              repeat: true),
           SizedBox(height: 16),
           Text(
-            win ? "🎉 Bravo !" : "💔 Game Over",
+            win ? "🎉 ${tr(context).awesome} !" : "💔 ${tr(context).gameOver}",
             style: TextStyle(
                 fontSize: 40, fontWeight: FontWeight.bold, color: themeColor),
           ),
@@ -350,7 +370,7 @@ class _CountExerciseState extends State<CountExercise>
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30)),
             ),
-            child: Text("Rejouer",
+            child: Text(tr(context).playAgain,
                 style: TextStyle(fontSize: 22, color: Colors.white)),
           ),
         ],

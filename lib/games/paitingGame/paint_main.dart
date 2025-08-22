@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
 import 'dart:async';
-
+import 'dart:ui' as ui;
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart' hide useWhiteForeground;
 import 'package:flutter/rendering.dart';
@@ -11,8 +12,10 @@ import 'package:intl/intl.dart';
 import 'package:mortaalim/games/paitingGame/singleDrawing.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../XpSystem.dart';
+import '../../l10n/app_localizations.dart';
 import '../../main.dart';
 import '../../tools/Ads_Manager.dart';
 import 'model_logic_page.dart';
@@ -216,8 +219,10 @@ class GalleryPage extends StatelessWidget {
     return "$minutes:$seconds";
   }
 
+
   @override
   Widget build(BuildContext context) {
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text('🖼️ ${tr(context).gallery}', style: TextStyle(fontFamily: 'Comic Sans MS', fontWeight: FontWeight.bold)),
@@ -245,57 +250,154 @@ class GalleryPage extends StatelessWidget {
           ),
           itemBuilder: (context, index) {
             final drawing = savedDrawings[index];
+            final tr = AppLocalizations.of(context)!;
             return Stack(
               children: [
                 GestureDetector(
-                  child: Card(
-                    elevation: 8,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                    clipBehavior: Clip.antiAlias,
-                    shadowColor: Colors.deepOrangeAccent,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: Image.memory(drawing.imageData, fit: BoxFit.cover),
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.deepPurple.withValues(alpha: 0.85),
-                            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Time: ${_formatDuration(drawing.drawDuration)}',
-                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'Comic Sans MS'),
+                  child: Expanded(
+                    child: TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0.8, end: 1.0), // scale from 0.8 to 1
+                      duration: Duration(milliseconds: 500 + (index * 100)), // stagger animation by index
+                      curve: Curves.easeOutBack,
+                      builder: (context, scale, child) {
+                        return Transform.scale(
+                          scale: scale,
+                          child: child,
+                        );
+                      },
+                      child: Card(
+                        elevation: 8,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                        clipBehavior: Clip.antiAlias,
+                        shadowColor: Colors.deepOrangeAccent,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Expanded(
+                              child: Image.memory(drawing.imageData, fit: BoxFit.cover),
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.deepPurple.withOpacity(0.85),
+                                borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
                               ),
-                              SizedBox(height: 4),
-                              Text(
-                                _formatDate(drawing.savedAt),
-                                style: TextStyle(color: Colors.white70, fontFamily: 'Comic Sans MS', fontSize: 12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Time: ${_formatDuration(drawing.drawDuration)}',
+                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'Comic Sans MS'),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    _formatDate(drawing.savedAt),
+                                    style: TextStyle(color: Colors.white70, fontFamily: 'Comic Sans MS', fontSize: 12),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   ),
+
                 ),
                 Positioned(
                   top: 4,
                   right: 4,
-                  child: IconButton(
-                    icon: Icon(Icons.delete_forever, color: Colors.redAccent),
-                    onPressed: () {
-                      _confirmDelete(context, index);
-                    },
-                    tooltip: tr(context).deleteDrawing,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.share, color: Colors.black),
+                        onPressed: () async {
+                          // Play sound if needed
+                          audioManager.playEventSound('PopButton');
+
+                          // Decode the drawing image
+                          final image = await decodeImageFromList(drawing.imageData);
+
+                          // Create a canvas with white background
+                          final recorder = ui.PictureRecorder();
+                          final canvas = Canvas(recorder);
+
+                          // White background
+                          canvas.drawRect(
+                            Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble()),
+                            Paint()..color = Colors.white,
+                          );
+
+                          // Draw the original image
+                          canvas.drawImage(image, Offset.zero, Paint());
+
+                          // Add signature text "MoorTaalim" at bottom-right
+                          final moorPainter = TextPainter(
+                            text: TextSpan(
+                              text: "MoorTaalim",
+                              style: TextStyle(
+                                color: Colors.black.withValues(alpha: 0.9), // semi-transparent black
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Comic Sans MS',
+                              ),
+                            ),
+                            textDirection: ui.TextDirection.ltr,
+                          );
+                          moorPainter.layout();
+                          moorPainter.paint(
+                            canvas,
+                            Offset(
+                              image.width - moorPainter.width - 16,
+                              image.height - moorPainter.height - 16,
+                            ),
+                          );
+
+                          // Add user's signature at bottom-left
+                          final userPainter = TextPainter(
+                            text: TextSpan(
+                              text: "By ${xpManager.userProfile.fullName}", // user's name
+                              style: TextStyle(
+                                color: Colors.black.withValues(alpha: 0.8),
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Comic Sans MS',
+                              ),
+                            ),
+                            textDirection: ui.TextDirection.ltr,
+                          );
+                          userPainter.layout();
+                          userPainter.paint(
+                            canvas,
+                            Offset(
+                              16, // 16px from left
+                              image.height - userPainter.height - 16, // 16px from bottom
+                            ),
+                          );
+
+                          // Convert canvas to image bytes
+                          final picture = recorder.endRecording();
+                          final finalImage = await picture.toImage(image.width, image.height);
+                          final bytes = await finalImage.toByteData(format: ui.ImageByteFormat.png);
+
+                          // Save temporary file
+                          final tempDir = await getTemporaryDirectory();
+                          final file = File('${tempDir.path}/drawing_${drawing.savedAt.millisecondsSinceEpoch}.png');
+                          await file.writeAsBytes(bytes!.buffer.asUint8List());
+                          // Share the image
+                          // TODO: CHANGE THIS
+                          await Share.shareXFiles([XFile(file.path)], text: "tr.lookAtMyDrawing");
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete_forever, color: Colors.redAccent),
+                        onPressed: () => _confirmDelete(context, index),
+                        tooltip: tr.deleteDrawing,
+                      ),
+                    ],
                   ),
                 ),
-
               ],
             );
           },

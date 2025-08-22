@@ -414,7 +414,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get time => 'الوقت';
 
   @override
-  String get chooseYourBanner => 'اختر رايتك';
+  String get chooseYourBanner => 'اختر شعارك';
 
   @override
   String get retry => 'إعادة المحاولة';
@@ -676,4 +676,331 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get badges_pinnacleOfKnowledge => 'قمة المعرفة';
+
+  @override
+  String get learningPower => 'قوة التعلم';
+
+  @override
+  String get badges => 'الشارات';
+
+  @override
+  String get global => 'عالمي';
+
+  @override
+  String get coursesCompleted => 'الدورات المكتملة';
+
+  @override
+  String get exercices => 'التمارين';
+
+  @override
+  String get dashboard => 'لوحة التحكم';
+
+  @override
+  String get practiseCourses => 'دورات التدريب';
+
+  @override
+  String get keepUpTheGoodWork => 'استمر في العمل الجيد';
+
+  @override
+  String get classLevel => 'مستوى الصف';
+
+  @override
+  String get audioSettings => 'إعدادات الصوت';
+
+  @override
+  String get backgroundMusic => 'الموسيقى الخلفية';
+
+  @override
+  String get soundEffects => 'المؤثرات الصوتية';
+
+  @override
+  String get buttonSounds => 'أصوات الأزرار';
+
+  @override
+  String get resetAudioSettings => 'إعادة ضبط إعدادات الصوت';
+
+  @override
+  String get duaaAndAyat => 'الدعاء والآيات';
+
+  @override
+  String get showAyat => 'عرض الآيات';
+
+  @override
+  String get enableordisabletheAyatcardfromappearinginyourapp => 'تفعيل أو تعطيل ظهور بطاقة الآيات في التطبيق';
+
+  @override
+  String get showDuaa => 'عرض الدعاء';
+
+  @override
+  String get enableorDisableDuaaEveryTimeYouEnter => 'تفعيل أو تعطيل الدعاء عند كل دخول';
+
+  @override
+  String get accountAndBackup => 'الحساب والنسخ الاحتياطي';
+
+  @override
+  String get preferredSubject => 'المادة المفضلة';
+
+  @override
+  String get version => 'الإصدار';
+
+  @override
+  String get followUsOnSocialMedia => 'تابعنا على وسائل التواصل الاجتماعي';
+
+  @override
+  String get weArePreparingSomethingAwesome => 'نحن نحضر شيئًا رائعًا';
+
+  @override
+  String get comingSoon => 'قريبًا';
+
+  @override
+  String get unableToOpenTheLink => 'غير قادر على فتح الرابط';
+
+  @override
+  String get thankYouForYourPatience => 'شكرًا على صبرك';
+
+  @override
+  String get manageBackup => 'إدارة النسخ الاحتياطي';
+
+  @override
+  String get backupAndRestore => 'النسخ الاحتياطي والاستعادة';
+
+  @override
+  String get backupYourProgressOrRestoreItUsingABackupCode => 'قم بعمل نسخة احتياطية من تقدمك أو استعادته باستخدام رمز النسخ الاحتياطي';
+
+  @override
+  String get saveBackup => 'حفظ النسخة الاحتياطية';
+
+  @override
+  String get loadBackup => 'تحميل النسخة الاحتياطية';
+
+  @override
+  String get howToBackup => 'كيفية النسخ الاحتياطي';
+
+  @override
+  String get makeSureToSaveYourBackupCodeSafelyYouWillNeedItToRestoreYourProgress => 'تأكد من حفظ رمز النسخ الاحتياطي بأمان. ستحتاج إليه لاستعادة تقدمك';
+
+  @override
+  String get signedInWithGoogle => 'تم تسجيل الدخول باستخدام جوجل';
+
+  @override
+  String get disconnectedNowinanonymousmode => 'تم قطع الاتصال، الآن في وضع الضيف';
+
+  @override
+  String get failedToDisconnect => 'فشل في قطع الاتصال';
+
+  @override
+  String get googleAccount => 'حساب جوجل';
+
+  @override
+  String get connected => 'متصل';
+
+  @override
+  String get disconnect => 'قطع الاتصال';
+
+  @override
+  String get connecting => 'جارٍ الاتصال';
+
+  @override
+  String get connectGoogleAccount => 'اتصال بحساب جوجل';
+
+  @override
+  String get notConnectedYet => 'لم يتم الاتصال بعد';
+
+  @override
+  String get disconnected => 'تم قطع الاتصال';
+
+  @override
+  String get areYouSureYouWantToDisconnectYourGoogleAccountYouWillBeSwitchedToAnonymousMode => 'هل أنت متأكد أنك تريد قطع الاتصال بحساب جوجل الخاص بك؟ سيتم تحويلك إلى وضع الضيف';
+
+  @override
+  String get selectALanguageToContinue => 'اختر لغة للمتابعة';
+
+  @override
+  String get languageSetTo => 'تم تعيين اللغة إلى';
+
+  @override
+  String get letsGetToKnowEachOther => 'لنتعرف على بعضنا';
+
+  @override
+  String get fillInYourInformation => 'املأ معلوماتك لتخصيص تجربتك';
+
+  @override
+  String get pleaseEnterYourFirstName => 'يرجى إدخال اسمك الأول';
+
+  @override
+  String get pleaseEnterYourLastName => 'يرجى إدخال اسم عائلتك';
+
+  @override
+  String get pleaseEnterYourAge => 'يرجى إدخال عمرك';
+
+  @override
+  String get pleaseEnterAValidAge => 'يرجى إدخال عمر صالح';
+
+  @override
+  String get lastName => 'اسم العائلة';
+
+  @override
+  String get firstName => 'الاسم الأول';
+
+  @override
+  String get schoolInformation => 'معلومات المدرسة';
+
+  @override
+  String get pleaseEnterSchoolNameTypeLevelAndClass => 'يرجى إدخال اسم المدرسة، النوع، المستوى، والفصل';
+
+  @override
+  String get schoolName => 'اسم المدرسة';
+
+  @override
+  String get pleaseEnterSchoolName => 'يرجى إدخال اسم المدرسة';
+
+  @override
+  String get schoolType => 'نوع المدرسة';
+
+  @override
+  String get selectSchoolType => 'اختر نوع المدرسة';
+
+  @override
+  String get schoolLevel => 'المستوى الدراسي';
+
+  @override
+  String get selectSchoolLevel => 'اختر المستوى الدراسي';
+
+  @override
+  String get classSchool => 'الفصل';
+
+  @override
+  String get selectClass => 'اختر الفصل';
+
+  @override
+  String get highSchoolTrack => 'مسار الثانوية';
+
+  @override
+  String get selectHighSchoolTrack => 'اختر مسار الثانوية';
+
+  @override
+  String get yourLocation => 'موقعك';
+
+  @override
+  String get pleaseEnterYourCityAndCountryToContinue => 'يرجى إدخال مدينتك وبلدك للمتابعة';
+
+  @override
+  String get city => 'المدينة';
+
+  @override
+  String get pleaseEnterYourCity => 'يرجى إدخال مدينتك';
+
+  @override
+  String get country => 'البلد';
+
+  @override
+  String get pleaseEnterYourCountry => 'يرجى إدخال بلدك';
+
+  @override
+  String get schoolTypePrivate => 'خاصة';
+
+  @override
+  String get schoolTypePublic => 'عامة';
+
+  @override
+  String get schoolTypeOther => 'أخرى';
+
+  @override
+  String get schoolLevelPrimary => 'ابتدائي';
+
+  @override
+  String get schoolLevelMiddle => 'متوسط';
+
+  @override
+  String get schoolLevelHigh => 'ثانوي';
+
+  @override
+  String get gradesPrimary1 => 'السنة الأولى ابتدائي (CP)';
+
+  @override
+  String get gradesPrimary2 => 'السنة الثانية ابتدائي (CE1)';
+
+  @override
+  String get gradesPrimary3 => 'السنة الثالثة ابتدائي (CE2)';
+
+  @override
+  String get gradesPrimary4 => 'السنة الرابعة ابتدائي (CM1)';
+
+  @override
+  String get gradesPrimary5 => 'السنة الخامسة ابتدائي (CM2)';
+
+  @override
+  String get gradesPrimary6 => 'السنة السادسة ابتدائي (CM3)';
+
+  @override
+  String get gradesMiddle1 => 'السنة السابعة (السنة الأولى متوسط)';
+
+  @override
+  String get gradesMiddle2 => 'السنة الثامنة (السنة الثانية متوسط)';
+
+  @override
+  String get gradesMiddle3 => 'السنة التاسعة (السنة الثالثة متوسط)';
+
+  @override
+  String get gradesHigh1 => 'السنة المشتركة (TC)';
+
+  @override
+  String get gradesHigh2 => 'السنة الأولى بكالوريا (جهوي)';
+
+  @override
+  String get gradesHigh3 => 'البكالوريا (وطني)';
+
+  @override
+  String get lyceeTrackScience => 'علوم';
+
+  @override
+  String get lyceeTrackLiterature => 'أدب';
+
+  @override
+  String get errorFillAllFields => 'يرجى ملء جميع الحقول بشكل صحيح';
+
+  @override
+  String get pleaseChooseABanner => 'يرجى اختيار شعار';
+
+  @override
+  String get male => 'ذكر';
+
+  @override
+  String get female => 'أنثى';
+
+  @override
+  String get ourMission => 'مهمتنا';
+
+  @override
+  String get futurePlans => 'خططنا المستقبلية';
+
+  @override
+  String get chooseYourAvatar => 'اختر صورتك الرمزية';
+
+  @override
+  String get profileInfo => 'معلومات الملف الشخصي';
+
+  @override
+  String get email => 'البريد الإلكتروني';
+
+  @override
+  String get dontShowAgain => 'لا تُظهر مرة أخرى';
+
+  @override
+  String get informationTechnology => 'تكنولوجيا المعلومات';
+
+  @override
+  String get islam => 'الإسلام';
+
+  @override
+  String get credits => 'المصادر';
+
+  @override
+  String get info => 'منصة تعليمية مبتكرة تمزج بين التعلم والألعاب والثقافة لجعل التعليم ممتعًا وجذابًا للطلاب في المغرب وخارجه.';
+
+  @override
+  String get aboutMission => 'تهدف MoorTaalim إلى تمكين الطلاب من خلال توفير محتوى تعليمي تفاعلي يحترم الثقافة المغربية ويعزز حب التعلم. نحن نؤمن أن التعليم يجب أن يكون ممتعًا ومتيسرًا وملائمًا ثقافيًا.';
+
+  @override
+  String get aboutFuturePlans => 'نعمل باستمرار على إضافة دورات جديدة، وألعاب متعددة اللاعبين مثيرة، وميزات متقدمة مثل مسارات تعلم شخصية ومنتديات مجتمعية لربط المتعلمين والمعلمين.';
 }

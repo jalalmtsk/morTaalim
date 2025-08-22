@@ -21,7 +21,7 @@ class LanguageSelectorPage extends StatelessWidget {
 
     final languages = [
       LanguageOption(
-        name: 'French Letters (A, B, C...)',
+        name: 'Lettres Francais (A, B, C...)',
         languageCode: 'french',
         icon: "🇫🇷",
         imagePath: 'assets/images/FlagImagesForTracingLetters/FrenchLetters.png',
@@ -35,12 +35,28 @@ class LanguageSelectorPage extends StatelessWidget {
         locked: false,
       ),
       LanguageOption(
+        name: 'Tifinagh (ⴱ,ⴳ,ⴷ,ⴻ,ⴼ,ⴽ...)',
+        languageCode: 'amazigh',
+        icon: "🇲🇦",
+        imagePath: 'assets/images/FlagImagesForTracingLetters/TifinaghLetters.png',
+        locked: false,
+      ),
+
+      LanguageOption(
         name: 'Русс Russian',
         languageCode: 'russian',
         icon: "🇷🇺",
         imagePath: 'assets/images/FlagImagesForTracingLetters/RussianLetters.png',
         locked: true,
-        cost: 15,
+        cost: 20,
+      ),
+      LanguageOption(
+        name: 'Ελληνικά Greek',
+        languageCode: 'greek',
+        icon: "🇬🇷",
+        imagePath: 'assets/images/FlagImagesForTracingLetters/Greece_Letters.png',
+        locked: true,
+        cost: 25,
       ),
       LanguageOption(
         name: 'ひら Japanese',
@@ -48,7 +64,7 @@ class LanguageSelectorPage extends StatelessWidget {
         icon: "🇯🇵",
         imagePath: 'assets/images/FlagImagesForTracingLetters/JapaneseLetters.png',
         locked: true,
-        cost: 50,
+        cost: 25,
       ),
       LanguageOption(
         name: '한글 Korean',
@@ -56,7 +72,7 @@ class LanguageSelectorPage extends StatelessWidget {
         icon: "🇰🇷",
         imagePath: 'assets/images/FlagImagesForTracingLetters/KoreanLetters.png',
         locked: true,
-        cost: 15,
+        cost: 30,
       ),
       LanguageOption(
         name: '汉字 Chinese',
@@ -64,8 +80,9 @@ class LanguageSelectorPage extends StatelessWidget {
         icon: "🇨🇳",
         imagePath: 'assets/images/FlagImagesForTracingLetters/ChineseLetters.png',
         locked: true,
-        cost: 15,
+        cost: 35,
       ),
+
     ];
 
     final user = FirebaseAuth.instance.currentUser;
@@ -82,7 +99,7 @@ class LanguageSelectorPage extends StatelessWidget {
               ),
             ),
             Container(
-              color: Colors.black.withOpacity(0.4),
+              color: Colors.black.withValues(alpha: 0.3),
             ),
 
             // CONTENT
@@ -118,17 +135,19 @@ class LanguageSelectorPage extends StatelessWidget {
                           elevation: 6,
                         ),
                         onPressed: () async {
-                          xpManager.addXP(200, context: context);
-                          await Future.delayed(const Duration(milliseconds: 1000));
-                          xpManager.addTokenBanner(context, 20);
 
-                          await Future.delayed(const Duration(milliseconds: 500));
+                        // xpManager.addXP(200, context: context);
+                         // await Future.delayed(const Duration(milliseconds: 1000));
+
+
+                          //xpManager.addTokenBanner(context, 20);
+
                           xpManager.addStarBanner(
                             context,
                             300,
                             starIconKey: AppGlobals.starIconKey,
-                            animationFrom: const Offset(100, 600),
-                            animationTo: const Offset(300, 100),
+                            animationFrom: const Offset(0, 1000),
+                            animationTo: const Offset(500, 150),
                           );
                         },
                         icon: const Icon(Icons.add, color: Colors.white),
@@ -165,13 +184,13 @@ class LanguageSelectorPage extends StatelessWidget {
                 // LANGUAGES GRID
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: GridView.builder(
                       itemCount: languages.length,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 2,
-                        crossAxisSpacing: 18,
-                        mainAxisSpacing: 18,
+                        crossAxisSpacing: 6,
+                        mainAxisSpacing: 6,
                         childAspectRatio: 0.95,
                       ),
                       itemBuilder: (context, index) {

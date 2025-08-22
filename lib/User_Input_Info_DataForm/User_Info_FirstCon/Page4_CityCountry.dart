@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import '../../XpSystem.dart';
-import '../../IndexPage.dart'; // Adjust as needed
+import '../../IndexPage.dart';
+import '../../tools/audio_tool/Audio_Manager.dart'; // Adjust as needed
 
 class CityCountryPage extends StatefulWidget {
   final VoidCallback? onNext;
@@ -18,6 +21,10 @@ class _CityCountryPageState extends State<CityCountryPage>
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _cityController = TextEditingController();
   final TextEditingController _countryController = TextEditingController();
+
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode _cityFocus = FocusNode();
+  final FocusNode _countryFocus = FocusNode();
 
   late AnimationController _gradientController;
   int currentGradientIndex = 0;
@@ -40,6 +47,22 @@ class _CityCountryPageState extends State<CityCountryPage>
     _cityController.addListener(_validateForm);
     _countryController.addListener(_validateForm);
 
+    // Scroll to active field when focused
+    _cityFocus.addListener(() {
+      if (_cityFocus.hasFocus) _scrollToField(0);
+    });
+    _countryFocus.addListener(() {
+      if (_countryFocus.hasFocus) _scrollToField(1);
+    });
+
+    // Keyboard visibility listener
+    KeyboardVisibilityController().onChange.listen((visible) {
+      if (visible) {
+        if (_cityFocus.hasFocus) _scrollToField(0);
+        if (_countryFocus.hasFocus) _scrollToField(1);
+      }
+    });
+
     _gradientController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 6),
@@ -56,6 +79,16 @@ class _CityCountryPageState extends State<CityCountryPage>
     _gradientController.forward();
   }
 
+  void _scrollToField(int index) {
+    // Adjust these offsets depending on layout
+    double offset = index == 0 ? 200 : 300;
+    _scrollController.animateTo(
+      offset,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
   void _validateForm() {
     final cityValid = _cityController.text.trim().isNotEmpty;
     final countryValid = _countryController.text.trim().isNotEmpty;
@@ -70,7 +103,8 @@ class _CityCountryPageState extends State<CityCountryPage>
   }
 
   Future<void> _loadProfile() async {
-    final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
+    final experienceManager =
+    Provider.of<ExperienceManager>(context, listen: false);
     final user = experienceManager.userProfile;
 
     setState(() {
@@ -126,6 +160,9 @@ class _CityCountryPageState extends State<CityCountryPage>
     _countryController.removeListener(_validateForm);
     _cityController.dispose();
     _countryController.dispose();
+    _cityFocus.dispose();
+    _countryFocus.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -134,9 +171,13 @@ class _CityCountryPageState extends State<CityCountryPage>
     required String label,
     required String validatorMessage,
     IconData? icon,
+    FocusNode? focusNode,
+    Function() ? onTap,
   }) {
     return TextFormField(
       controller: controller,
+      focusNode: focusNode,
+      onTap: onTap,
       style: const TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: label,
@@ -167,6 +208,7 @@ class _CityCountryPageState extends State<CityCountryPage>
   @override
   Widget build(BuildContext context) {
     final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     return Scaffold(
       body: AnimatedBuilder(
@@ -197,6 +239,7 @@ class _CityCountryPageState extends State<CityCountryPage>
                     child: Form(
                       key: _formKey,
                       child: ListView(
+                        controller: _scrollController,
                         children: [
                           SizedBox(
                             height: 300,
@@ -208,8 +251,8 @@ class _CityCountryPageState extends State<CityCountryPage>
                             ),
                           ),
 
-                          const Text(
-                            "Votre localisation",
+                           Text(
+                            tr(context).yourLocation,
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -228,7 +271,7 @@ class _CityCountryPageState extends State<CityCountryPage>
                           const SizedBox(height: 10),
 
                           Text(
-                            "Veuillez entrer votre ville et votre pays pour continuer.",
+                            tr(context).pleaseEnterYourCityAndCountryToContinue,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 16,
@@ -250,18 +293,29 @@ class _CityCountryPageState extends State<CityCountryPage>
 
                           _buildInputField(
                             controller: _cityController,
-                            label: "Ville",
-                            validatorMessage: "Veuillez saisir votre ville.",
+                            focusNode: _cityFocus,
+                            label: tr(context).city,
+                            validatorMessage: tr(context).pleaseEnterYourCity,
                             icon: Icons.location_city,
+                              onTap : ()
+                              {
+                                audioManager.playEventSound('PopButton');
+                              }
                           ),
 
                           const SizedBox(height: 16),
 
                           _buildInputField(
                             controller: _countryController,
-                            label: "Pays",
-                            validatorMessage: "Veuillez saisir votre pays.",
+                            focusNode: _countryFocus,
+                            label: tr(context).country,
+                            validatorMessage: tr(context).pleaseEnterYourCountry,
                             icon: Icons.flag,
+                            onTap : ()
+                            {
+                              audioManager.playEventSound('PopButton');
+
+                            }
                           ),
                         ],
                       ),
@@ -280,6 +334,7 @@ class _CityCountryPageState extends State<CityCountryPage>
                             : () async {
                           final success = await saveData();
                           if (success) {
+                            audioManager.playEventSound("clickButton");
                             widget.onNext?.call();
                           }
                         },

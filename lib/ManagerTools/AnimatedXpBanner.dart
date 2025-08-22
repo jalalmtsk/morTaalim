@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:ui';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
+
+import '../tools/audio_tool/Audio_Manager.dart';
 
 class AnimatedXPBanner extends StatefulWidget {
   final int xpAmount;
@@ -10,10 +13,35 @@ class AnimatedXPBanner extends StatefulWidget {
   const AnimatedXPBanner({
     required this.xpAmount,
     required this.onDismiss,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<AnimatedXPBanner> createState() => _AnimatedXPBannerState();
+
+  /// ==============================
+  /// Static helper method to show XP banner as a Future
+  /// ==============================
+  static Future<void> show(BuildContext context, int xpAmount) async {
+    final overlay = Overlay.of(context);
+    if (overlay == null || !context.mounted) return;
+
+    final completer = Completer<void>();
+    late OverlayEntry entry;
+
+    entry = OverlayEntry(
+      builder: (_) => AnimatedXPBanner(
+        xpAmount: xpAmount,
+        onDismiss: () {
+          entry.remove();
+          completer.complete();
+        },
+      ),
+    );
+
+    overlay.insert(entry);
+    return completer.future; // completes when banner disappears
+  }
 }
 
 class _AnimatedXPBannerState extends State<AnimatedXPBanner>
@@ -23,7 +51,8 @@ class _AnimatedXPBannerState extends State<AnimatedXPBanner>
   @override
   void initState() {
     super.initState();
-
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playAlert("assets/audios/sound_effects/correct_anwser.mp3");
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -32,7 +61,7 @@ class _AnimatedXPBannerState extends State<AnimatedXPBanner>
     _controller.forward();
 
     // Auto-dismiss after 2.5 seconds
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(milliseconds: 2500), () {
       if (mounted) _controller.reverse().then((_) => widget.onDismiss());
     });
   }
@@ -60,16 +89,16 @@ class _AnimatedXPBannerState extends State<AnimatedXPBanner>
             child: Container(
               padding: const EdgeInsets.all(6),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.1),
+                color: Colors.white.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20),
-                boxShadow: [
+                boxShadow: const [
                   BoxShadow(
                     color: Colors.black26,
                     blurRadius: 12,
-                    offset: const Offset(0, 6),
+                    offset: Offset(0, 6),
                   ),
                 ],
-                border: Border.all(color: Colors.white.withOpacity(0.3)),
+                border: Border.all(color: Colors.white30),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(20),

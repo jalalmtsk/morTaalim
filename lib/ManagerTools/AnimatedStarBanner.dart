@@ -31,7 +31,7 @@ class _AnimatedStarBannerState extends State<AnimatedStarBanner>
 
     // 🎵 Play sound
     final audioManager = Provider.of<AudioManager>(context, listen: false);
-    audioManager.playAlert('assets/audios/sound_effects/retro-coin.mp3');
+    audioManager.playAlert('assets/audios/UI_Audio/SFX_Audio/StarSound.mp3');
 
     _controller = AnimationController(
       vsync: this,

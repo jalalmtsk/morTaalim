@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -46,6 +47,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
   @override
   void initState() {
     super.initState();
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playBackgroundMusic('assets/audios/BackGround_Audio/CuteBabySong_bg.mp3');
     _setupLogoAnimation();
     _startTypewriterEffect();
   }
@@ -202,11 +205,18 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         content: Text(message, style: const TextStyle(fontSize: 15)),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
+            onPressed: () {
+              audioManager.playEventSound("cancelButton");
+              Navigator.of(context).pop(false);
+    } ,
             child: const Text("Annuler"),
           ),
           ElevatedButton(
-            onPressed: () => Navigator.of(context).pop(true),
+            onPressed: () {
+              audioManager.playEventSound('clickButton');
+              Navigator.of(context).pop(true);
+              audioManager.stopMusic();
+               },
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFFF8C42),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -254,7 +264,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    final audioManager = Provider.of<AudioManager>(context);
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -282,7 +292,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 Text(
                   _displayedText,
                   style: const TextStyle(
-                    fontSize: 26,
+                    fontSize: 40,
                     fontWeight: FontWeight.bold,
                     color: Colors.black87,
                   ),
@@ -292,8 +302,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 // Lottie animation
                 Lottie.asset(
                   'assets/animations/FirstTouchAnimations/progerss.json',
-                  width: 220,
-                  height: 200,
+                  width: 240,
+                  height: 240,
                 ),
 
                 if (_errorMessage != null)
@@ -324,14 +334,20 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
                 _buildLoginButton(
                   text: "Se Connecter Avec Google",
-                  onPressed: _signInWithGoogle,
+                  onPressed: (){
+                    audioManager.playEventSound("clickButton");
+                    _signInWithGoogle();
+                  } ,
                   color: Colors.blueAccent,
                   icon: Icons.g_mobiledata,
                 ),
                 const SizedBox(height: 12),
                 _buildLoginButton(
                   text: "Se Connecter Sans Google",
-                  onPressed: _signInAnonymously,
+                  onPressed: (){
+                    audioManager.playEventSound("clickButton");
+                    _signInAnonymously();
+                  },
                   color: Colors.deepOrange,
                   icon: Icons.person_outline,
                 ),

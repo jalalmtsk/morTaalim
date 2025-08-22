@@ -228,14 +228,14 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
 
   Widget _buildDropdownField({
     required String label,
-    required String? value,
+    String? value,
     required List<String> items,
     required String validatorMessage,
     required void Function(String?) onChanged,
     IconData? icon,
   }) {
     return DropdownButtonFormField<String>(
-      value: value,
+      value: items.contains(value) ? value : null, // <-- Prevent invalid value
       dropdownColor: Colors.deepOrange.shade400,
       decoration: InputDecoration(
         labelText: label,
@@ -273,6 +273,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
