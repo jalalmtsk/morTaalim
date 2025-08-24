@@ -87,44 +87,50 @@ class _LoadingPageState extends State<LoadingPage> {
 
     final phrase = phraseMap[selectedPhraseKey] ?? tr.loadingPhrase1;
 
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: Column(
-          children: [
-            const Spacer(flex: 2),
+    return WillPopScope(
+      onWillPop: () async => false, // Prevent back button
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Spacer(flex: 2),
 
-            /// Top Lottie
-            Lottie.asset(
-              'assets/animations/CuteBunnies.json',
-              width: 350,
-              height: 350,
-              fit: BoxFit.contain,
-            ),
-
-            const SizedBox(height: 16),
-
-            /// Random funny phrase
-            Text(
-              phrase,
-              style: const TextStyle(fontSize: 24, color: Colors.black),
-              textAlign: TextAlign.center,
-            ),
-
-            const Spacer(flex: 2),
-
-            /// Optional bottom cat animation (50% chance)
-            if (showBottomCat)
-              Padding(
-                padding: const EdgeInsets.only(bottom: 3.0),
+              /// Top Lottie
+              Center(
                 child: Lottie.asset(
-                  'assets/animations/cuteCat.json',
-                  width: 200,
-                  height: 200,
+                  'assets/animations/UI_Animations/CuteGiraffe.json',
+                  width: 350,
+                  height: 340,
                   fit: BoxFit.contain,
                 ),
               ),
-          ],
+
+              const SizedBox(height: 16),
+
+              /// Random funny phrase
+              Text(
+                phrase,
+                style: const TextStyle(fontSize: 24, color: Colors.black),
+                textAlign: TextAlign.center,
+              ),
+
+              const Spacer(flex: 2),
+
+              /// Optional bottom cat animation (50% chance)
+              if (showBottomCat)
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 3.0),
+                  child: Lottie.asset(
+                    'assets/animations/cuteCat.json',
+                    width: 200,
+                    height: 200,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );

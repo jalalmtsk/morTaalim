@@ -300,6 +300,36 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get loadingPhrase10 => 'ⵎⵔⵔⵓⵡ! ⴰⵔ ⵜⴰⵎⵙⵎⵉⵔ!';
 
   @override
+  String get motivationalPhrase1 => 'ⴰⵎⴰⵣⵉⵖ ⴰⵎⵣⵉⴷ!';
+
+  @override
+  String get motivationalPhrase2 => 'ⴰⵣⴳ ⵏ ⵢⵉⵏ ⵓⵏⴳ ⵓⴷⵍⴰⵏ!';
+
+  @override
+  String get motivationalPhrase3 => 'ⵉⵎⴰⵣⵉⵖ ⵉⵎⵣⵓⵍⵍ ⵢⴰⴼ ⴰⵣⵓⵏⵏ.';
+
+  @override
+  String get motivationalPhrase4 => 'ⴷ ⵉⴷ ⴰⵎⵙⵙⴰⵍ ⴰⵏⴷⵏ ⵢⴰⴷ!';
+
+  @override
+  String get motivationalPhrase5 => 'ⴰⴳⵯⴰⴷ, ⴰⵏⵓⴷ ⵓⵙ ⵉⵎⵣⵉⵖ!';
+
+  @override
+  String get motivationalPhrase6 => 'ⴰⵙⴷⵉⴷ ⵏ ⵉⵎⵣⵉⵖ ⵢⴰⵎⵣⵓⵍ ⴰⵎⵣⵉⵖ!';
+
+  @override
+  String get motivationalPhrase7 => 'ⵎⵣⵓⵍ ⴰⵙⵍⵍⵉ ⴰⴷ ⴷⵓⴷ ⵢⴰⵎⵣⵓⵍ!';
+
+  @override
+  String get motivationalPhrase8 => 'ⵉⵏⵓⵙⵙⵉ ⵏ ⴰⵎⵣⵓⵍ ⵉⵎⵣⵓⵍ!';
+
+  @override
+  String get motivationalPhrase9 => 'ⴰⵏⴳ ⵏ ⵉⵎⵣⵓⵍ ⵢⴰⴷ!';
+
+  @override
+  String get motivationalPhrase10 => 'ⵣⴰⵍ, ⴰⵎⵣⵉⵖ, ⵓⵙ ⵓⴷⵍⴰⵏ!';
+
+  @override
   String get this_avatar_is_locked_unlock_it_in_the => 'ⴰⴼⴰⵜⴰⵔ ⴰⵎⴰⵣⵉⵖ ⵓⵔ ⵉⵙⴽⵔⴼ. ⵙⵔⵙⴽⵔⴼⴻⵏ ⴳ';
 
   @override

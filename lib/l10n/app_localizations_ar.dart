@@ -300,6 +300,36 @@ class AppLocalizationsAr extends AppLocalizations {
   String get loadingPhrase10 => 'مروو! اقتربنا من الانتهاء!';
 
   @override
+  String get motivationalPhrase1 => 'أنت رائع!';
+
+  @override
+  String get motivationalPhrase2 => 'استمر أيها البطل الصغير!';
+
+  @override
+  String get motivationalPhrase3 => 'الأحلام الكبيرة تبدأ صغيرة.';
+
+  @override
+  String get motivationalPhrase4 => 'كل يوم مغامرة جديدة!';
+
+  @override
+  String get motivationalPhrase5 => 'كن طيبًا، شجاعًا، وكن نفسك!';
+
+  @override
+  String get motivationalPhrase6 => 'التعلم هو قوتك الخارقة!';
+
+  @override
+  String get motivationalPhrase7 => 'تألّق أكثر كل يوم!';
+
+  @override
+  String get motivationalPhrase8 => 'الأخطاء تصنع السحر!';
+
+  @override
+  String get motivationalPhrase9 => 'آمن ببريقك!';
+
+  @override
+  String get motivationalPhrase10 => 'نمُ، العب، وابتسم!';
+
+  @override
   String get this_avatar_is_locked_unlock_it_in_the => 'هذه الصورة الرمزية مقفلة. قم بفتحها في';
 
   @override

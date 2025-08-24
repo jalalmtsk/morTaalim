@@ -7,8 +7,14 @@ import 'package:flutter/services.dart';
 import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Pet/pet_home_page.dart';
 import 'package:mortaalim/TestingBeforeProdcution/ArabicExercice.dart';
+import 'package:mortaalim/TestingBeforeProdcution/CardConcept.dart';
+import 'package:mortaalim/TestingBeforeProdcution/ColorLineMatchingGame.dart';
 import 'package:mortaalim/TestingBeforeProdcution/DragonGameFruit.dart';
 import 'package:mortaalim/TestingBeforeProdcution/DrawSketch.dart';
+import 'package:mortaalim/TestingBeforeProdcution/Hezz2Game.dart';
+import 'package:mortaalim/TestingBeforeProdcution/MazeGame.dart';
+import 'package:mortaalim/TestingBeforeProdcution/SnakeLadder.dart';
+import 'package:mortaalim/TestingBeforeProdcution/UNOLIKE%20GAME.dart';
 import 'package:mortaalim/Themes/ThemeSelectorPage.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/LoadingFromUserToIndex.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
@@ -55,6 +61,7 @@ import '../../l10n/app_localizations.dart';
 
 import 'IndexPage.dart';
 import 'Manager/Services/CardVisibiltyManager.dart';
+import 'TestingBeforeProdcution/Hezz2/hezz_gamePage.dart';
 import 'TestingBeforeProdcution/WaterFilledANimatuionCotnrol.dart';
 import 'Themes/AppTheme.dart';
 import 'Themes/ThemeManager.dart';
@@ -175,7 +182,7 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
 
-            'Shop': (context) => UserInfoForm(),
+            'Shop': (context) => GameLauncher(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

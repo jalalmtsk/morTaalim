@@ -300,6 +300,36 @@ class AppLocalizationsDe extends AppLocalizations {
   String get loadingPhrase10 => 'Mrrrow! Fast fertig!';
 
   @override
+  String get motivationalPhrase1 => 'Du bist großartig!';
+
+  @override
+  String get motivationalPhrase2 => 'Mach weiter, kleiner Held!';
+
+  @override
+  String get motivationalPhrase3 => 'Große Träume fangen klein an.';
+
+  @override
+  String get motivationalPhrase4 => 'Jeder Tag ist ein neues Abenteuer!';
+
+  @override
+  String get motivationalPhrase5 => 'Sei freundlich, mutig und du selbst!';
+
+  @override
+  String get motivationalPhrase6 => 'Lernen ist deine Superkraft!';
+
+  @override
+  String get motivationalPhrase7 => 'Glänze jeden Tag ein bisschen mehr!';
+
+  @override
+  String get motivationalPhrase8 => 'Fehler machen Magie möglich!';
+
+  @override
+  String get motivationalPhrase9 => 'Glaube an deinen Funken!';
+
+  @override
+  String get motivationalPhrase10 => 'Wachse, spiele und lächle!';
+
+  @override
   String get this_avatar_is_locked_unlock_it_in_the => 'Dieser Avatar ist gesperrt. Schalte ihn frei im';
 
   @override

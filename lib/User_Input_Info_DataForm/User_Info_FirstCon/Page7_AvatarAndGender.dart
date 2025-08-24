@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/IndexPage.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -88,13 +89,15 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool('onboarding_completed', true);
     await prefs.setString('gender', xpManager.userProfile.gender);
+    final userProfile = xpManager.userProfile;
 
     if (!mounted) return;
 
     // Navigate to IndexPage and remove all previous routes
     Navigator.of(context).pushAndRemoveUntil(
+
       MaterialPageRoute(builder: (_) =>
-          LoadingFromUserToIndex(firstName: '', lastName: '', age: 20, gender: '', banner: '',)),
+          LoadingFromUserToIndex()),
           (route) => false,
     );
   }
@@ -157,10 +160,13 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.deepOrange,
                           elevation: 6,
-                          onPressed: _isSaving ? null : () => _completeOnboarding(xpManager),
+                          onPressed: _isSaving ? null : () {
+                            final audioManager = Provider.of<AudioManager>(context, listen: false);
+                            audioManager.playSfx('assets/audios/sound_effects/NextButton_Sound.mp3');
+                            _completeOnboarding(xpManager);},
                           child: _isSaving
                               ? const CircularProgressIndicator(color: Colors.deepOrange)
-                              : const Icon(Icons.check, size: 28),
+                              : const Icon(Icons.check_circle_outline, size: 32),
                         ),
                       ),
 
@@ -222,12 +228,14 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
   }
 
   Widget _buildAvatarCarousel(ExperienceManager xpManager) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return SizedBox(
       height: 200,
       child: PageView.builder(
         controller: _avatarPageController,
         itemCount: xpManager.unlockedAvatars.length,
         onPageChanged: (index) {
+          audioManager.playEventSound("PopButton");
           setState(() {
             _currentAvatarIndex = index;
             xpManager.selectAvatar(xpManager.unlockedAvatars[index]);
@@ -293,8 +301,12 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
 
   Widget _buildGenderButton(String gender, IconData icon, ExperienceManager xpManager) {
     final isSelected = xpManager.userProfile.gender == gender;
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return GestureDetector(
-      onTap: () => xpManager.setGender(gender),
+      onTap: () {
+        audioManager.playEventSound('clickButton2');
+        xpManager.setGender(gender);
+      },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 250),
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),

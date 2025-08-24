@@ -49,7 +49,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
     super.initState();
 
     final audioManager = Provider.of<AudioManager>(context, listen: false);
-    audioManager.playAlert("assets/audios/logo_introsecond.mp3");
+    audioManager.playAlert("assets/audios/sound_effects/WelcomeSoundPage.mp3");
     audioManager.playBackgroundMusic("assets/audios/BackGround_Audio/FunnyDogUserInfo_bg.mp3");
 
     // Gradient controller

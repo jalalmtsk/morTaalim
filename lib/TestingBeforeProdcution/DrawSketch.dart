@@ -3,8 +3,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:async';
-import 'dart:math';
-
 
 class ColoringPage extends StatefulWidget {
   const ColoringPage({super.key});
@@ -17,7 +15,15 @@ class _ColoringPageState extends State<ColoringPage> {
   ui.Image? originalImage;
   ui.Image? coloredImage;
   Uint32List? pixels;
-  int selectedColor = 0xFFFF0000; // Default red ARGB
+  int selectedColor = 0xFFFF0000; // Default red in RGBA format
+  final TransformationController _transformationController = TransformationController();
+
+  // Undo/Redo stack
+  final List<Uint32List> _undoStack = [];
+  final List<Uint32List> _redoStack = [];
+
+  // Prevent overlapping taps
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -32,13 +38,15 @@ class _ColoringPageState extends State<ColoringPage> {
     originalImage = frame.image;
     coloredImage = originalImage;
 
-    final byteData = await originalImage!.toByteData(format: ui.ImageByteFormat.rawRgba);
+    final byteData =
+    await originalImage!.toByteData(format: ui.ImageByteFormat.rawRgba);
     pixels = byteData!.buffer.asUint32List();
 
     setState(() {});
   }
 
-  Future<ui.Image> _imageFromPixels(Uint32List pixels, int width, int height) async {
+  Future<ui.Image> _imageFromPixels(
+      Uint32List pixels, int width, int height) async {
     final completer = Completer<ui.Image>();
     ui.decodeImageFromPixels(
       pixels.buffer.asUint8List(),
@@ -50,16 +58,17 @@ class _ColoringPageState extends State<ColoringPage> {
     return completer.future;
   }
 
-  // Flood-fill with tolerance
-  void _floodFill(int x, int y, int targetColor, int replacementColor, int width, int height, {int tolerance = 32}) {
+  void _floodFill(int x, int y, int targetColor, int replacementColor,
+      int width, int height,
+      {int tolerance = 32}) {
     if (targetColor == replacementColor) return;
 
     final stack = <Offset>[];
     stack.add(Offset(x.toDouble(), y.toDouble()));
 
-    int getRed(int color) => (color >> 16) & 0xFF;
+    int getRed(int color) => color & 0xFF;
     int getGreen(int color) => (color >> 8) & 0xFF;
-    int getBlue(int color) => color & 0xFF;
+    int getBlue(int color) => (color >> 16) & 0xFF;
 
     bool similarColor(int c1, int c2) {
       return (getRed(c1) - getRed(c2)).abs() <= tolerance &&
@@ -87,28 +96,78 @@ class _ColoringPageState extends State<ColoringPage> {
   }
 
   void _onTapDown(BuildContext context, TapDownDetails details) async {
-    if (coloredImage == null) return;
+    if (coloredImage == null || _isProcessing) return; // Ignore if busy
+    _isProcessing = true;
 
-    RenderBox box = context.findRenderObject() as RenderBox;
+    // Save current state for undo
+    _undoStack.add(Uint32List.fromList(pixels!));
+    _redoStack.clear();
+
+    final RenderBox box = context.findRenderObject() as RenderBox;
     final localPos = box.globalToLocal(details.globalPosition);
 
-    // Scale tap to image pixels
+    // Reverse transformation (zoom/pan)
+    final Matrix4 matrix = _transformationController.value.clone();
+    final Matrix4 inverseMatrix = Matrix4.inverted(matrix);
+    final transformedPos = MatrixUtils.transformPoint(inverseMatrix, localPos);
+
     double scaleX = coloredImage!.width / box.size.width;
     double scaleY = coloredImage!.height / box.size.height;
 
-    int x = (localPos.dx * scaleX).toInt();
-    int y = (localPos.dy * scaleY).toInt();
+    int x = (transformedPos.dx * scaleX).toInt();
+    int y = (transformedPos.dy * scaleY).toInt();
 
     int pixelIndex = y * coloredImage!.width + x;
     int targetColor = pixels![pixelIndex];
 
-    _floodFill(x, y, targetColor, selectedColor, coloredImage!.width, coloredImage!.height, tolerance: 32);
+    _floodFill(x, y, targetColor, selectedColor, coloredImage!.width,
+        coloredImage!.height,
+        tolerance: 32);
 
-    final newImage = await _imageFromPixels(pixels!, coloredImage!.width, coloredImage!.height);
+    final newImage =
+    await _imageFromPixels(pixels!, coloredImage!.width, coloredImage!.height);
 
     setState(() {
       coloredImage = newImage;
+      _isProcessing = false; // Done processing
     });
+  }
+
+  void _undo() async {
+    if (_undoStack.isEmpty) return;
+    _redoStack.add(Uint32List.fromList(pixels!));
+    pixels = _undoStack.removeLast();
+    coloredImage =
+    await _imageFromPixels(pixels!, coloredImage!.width, coloredImage!.height);
+    setState(() {});
+  }
+
+  void _redo() async {
+    if (_redoStack.isEmpty) return;
+    _undoStack.add(Uint32List.fromList(pixels!));
+    pixels = _redoStack.removeLast();
+    coloredImage =
+    await _imageFromPixels(pixels!, coloredImage!.width, coloredImage!.height);
+    setState(() {});
+  }
+
+  void _reset() async {
+    pixels = (await originalImage!.toByteData(format: ui.ImageByteFormat.rawRgba))!
+        .buffer
+        .asUint32List();
+    _undoStack.clear();
+    _redoStack.clear();
+    coloredImage =
+    await _imageFromPixels(pixels!, originalImage!.width, originalImage!.height);
+    setState(() {});
+  }
+
+  int colorToPixel(Color color) {
+    int r = color.red;
+    int g = color.green;
+    int b = color.blue;
+    int a = color.alpha;
+    return (a << 24) | (b << 16) | (g << 8) | r;
   }
 
   @override
@@ -120,9 +179,7 @@ class _ColoringPageState extends State<ColoringPage> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sketch Coloring'),
-      ),
+      appBar: AppBar(title: const Text('Sketch Coloring')),
       body: Column(
         children: [
           Expanded(
@@ -131,11 +188,19 @@ class _ColoringPageState extends State<ColoringPage> {
                 builder: (context, constraints) {
                   return GestureDetector(
                     onTapDown: (details) => _onTapDown(context, details),
-                    child: FittedBox(
-                      fit: BoxFit.contain,
-                      child: CustomPaint(
-                        size: Size(coloredImage!.width.toDouble(), coloredImage!.height.toDouble()),
-                        painter: ImagePainter(coloredImage!),
+                    child: InteractiveViewer(
+                      transformationController: _transformationController,
+                      panEnabled: true,
+                      scaleEnabled: true,
+                      minScale: 1.0,
+                      maxScale: 5.0,
+                      child: FittedBox(
+                        fit: BoxFit.contain,
+                        child: CustomPaint(
+                          size: Size(coloredImage!.width.toDouble(),
+                              coloredImage!.height.toDouble()),
+                          painter: ImagePainter(coloredImage!),
+                        ),
                       ),
                     ),
                   );
@@ -144,9 +209,21 @@ class _ColoringPageState extends State<ColoringPage> {
             ),
           ),
           SizedBox(
-            height: 80,
-            child: _buildColorPalette(),
-          )
+            height: 120,
+            child: Column(
+              children: [
+                Expanded(child: _buildColorPalette()),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton(onPressed: _undo, child: Text("Undo")),
+                    ElevatedButton(onPressed: _redo, child: Text("Redo")),
+                    ElevatedButton(onPressed: _reset, child: Text("Reset")),
+                  ],
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -164,32 +241,47 @@ class _ColoringPageState extends State<ColoringPage> {
       Colors.pink,
       Colors.cyan,
       Colors.black,
+      Colors.white, // Added white color for eraser
     ];
 
-    return ListView.builder(
-      scrollDirection: Axis.horizontal,
-      itemCount: colors.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            setState(() {
-              selectedColor = 0xFF000000 | (colors[index].value & 0x00FFFFFF);
-            });
-          },
-          child: Container(
-            width: 60,
-            margin: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: colors[index],
-              shape: BoxShape.circle,
-              border: Border.all(
-                width: selectedColor == (0xFF000000 | (colors[index].value & 0x00FFFFFF)) ? 3 : 0,
-                color: Colors.white,
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      color: Colors.grey[200],
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        physics: BouncingScrollPhysics(),
+        itemCount: colors.length,
+        itemBuilder: (context, index) {
+          bool isSelected = selectedColor == colorToPixel(colors[index]);
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedColor = colorToPixel(colors[index]);
+              });
+            },
+            child: AnimatedContainer(
+              duration: Duration(milliseconds: 200),
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              width: isSelected ? 70 : 60,
+              height: isSelected ? 70 : 60,
+              decoration: BoxDecoration(
+                color: colors[index],
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black26,
+                    blurRadius: 5,
+                    offset: Offset(0, 3),
+                  )
+                ],
+                border: isSelected
+                    ? Border.all(color: Colors.white, width: 4)
+                    : null,
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }
@@ -201,7 +293,8 @@ class ImagePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint();
-    final src = Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
+    final src =
+    Rect.fromLTWH(0, 0, image.width.toDouble(), image.height.toDouble());
     final dst = Rect.fromLTWH(0, 0, size.width, size.height);
     canvas.drawImageRect(image, src, dst, paint);
   }

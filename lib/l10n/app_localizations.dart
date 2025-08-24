@@ -683,6 +683,66 @@ abstract class AppLocalizations {
   /// **'Mrrrow! Almost done!'**
   String get loadingPhrase10;
 
+  /// No description provided for @motivationalPhrase1.
+  ///
+  /// In en, this message translates to:
+  /// **'You are amazing!'**
+  String get motivationalPhrase1;
+
+  /// No description provided for @motivationalPhrase2.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going, little hero!'**
+  String get motivationalPhrase2;
+
+  /// No description provided for @motivationalPhrase3.
+  ///
+  /// In en, this message translates to:
+  /// **'Big dreams start small.'**
+  String get motivationalPhrase3;
+
+  /// No description provided for @motivationalPhrase4.
+  ///
+  /// In en, this message translates to:
+  /// **'Every day is an adventure!'**
+  String get motivationalPhrase4;
+
+  /// No description provided for @motivationalPhrase5.
+  ///
+  /// In en, this message translates to:
+  /// **'Be kind, be brave, be you!'**
+  String get motivationalPhrase5;
+
+  /// No description provided for @motivationalPhrase6.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning is your superpower!'**
+  String get motivationalPhrase6;
+
+  /// No description provided for @motivationalPhrase7.
+  ///
+  /// In en, this message translates to:
+  /// **'Shine brighter every day!'**
+  String get motivationalPhrase7;
+
+  /// No description provided for @motivationalPhrase8.
+  ///
+  /// In en, this message translates to:
+  /// **'Mistakes make magic happen!'**
+  String get motivationalPhrase8;
+
+  /// No description provided for @motivationalPhrase9.
+  ///
+  /// In en, this message translates to:
+  /// **'Believe in your sparkle!'**
+  String get motivationalPhrase9;
+
+  /// No description provided for @motivationalPhrase10.
+  ///
+  /// In en, this message translates to:
+  /// **'Grow, play, and smile!'**
+  String get motivationalPhrase10;
+
   /// No description provided for @this_avatar_is_locked_unlock_it_in_the.
   ///
   /// In en, this message translates to:
