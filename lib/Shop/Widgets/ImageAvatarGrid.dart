@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../XpSystem.dart';
+import '../../tools/audio_tool/Audio_Manager.dart';
+import '../Tools/UnlockedAnimations/AvatarImageUnlockedAnimationBanner.dart';
 import 'ImageAvatarWidget.dart';
 
 class ImageAvatarGrid extends StatelessWidget {
@@ -12,6 +13,7 @@ class ImageAvatarGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     void showPurchaseDialog(BuildContext parentContext, String imagePath, int cost) {
       showDialog(
@@ -27,21 +29,29 @@ class ImageAvatarGrid extends StatelessWidget {
             TextButton(
               onPressed: () async {
                 Navigator.pop(context); // close dialog first
-                xpManager.addXP(20, context: parentContext);
 
-                await Future.delayed(const Duration(milliseconds: 1500));
-
+                // Spend stars
                 xpManager.SpendStarBanner(parentContext, cost);
+
+                // Play sound effects
+                audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/MarimbaWin_SFX.mp3");
+                audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/victory1_SFX.mp3");
+
+                await Future.delayed(const Duration(milliseconds: 500));
+
+                // Unlock and select avatar
+                // Show animated Avatar Unlocked dialog
+               await  showDialog(
+                  context: parentContext,
+                  barrierDismissible: true,
+                  builder: (_) => AvatarUnlockedDialog(
+                    avatarImage: imagePath,
+                    xpReward: 20,
+                  ),
+                );
                 xpManager.unlockAvatar(imagePath);
                 xpManager.selectAvatar(imagePath);
 
-                ScaffoldMessenger.of(parentContext).showSnackBar(
-                  const SnackBar(
-                    content: Text('Avatar Unlocked! Enjoy!'),
-                    backgroundColor: Colors.deepOrange,
-                    behavior: SnackBarBehavior.floating,
-                  ),
-                );
               },
               child: const Text("Buy", style: TextStyle(color: Colors.deepOrange)),
             ),
@@ -49,7 +59,6 @@ class ImageAvatarGrid extends StatelessWidget {
         ),
       );
     }
-
 
     return GridView.builder(
       padding: const EdgeInsets.all(16),
@@ -74,7 +83,7 @@ class ImageAvatarGrid extends StatelessWidget {
           selected: selected,
           userStars: xpManager.stars,
           onSelect: () => xpManager.selectAvatar(imagePath),
-          onBuy: () => showPurchaseDialog(context ,imagePath, cost),
+          onBuy: () => showPurchaseDialog(context, imagePath, cost),
         );
       },
     );

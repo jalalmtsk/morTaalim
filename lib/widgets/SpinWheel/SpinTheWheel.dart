@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:confetti/confetti.dart';
@@ -27,9 +28,7 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
   late AnimationController _controller;
   late Animation<double> _animation;
   late ConfettiController _confettiController;
-  final MusicPlayer audioTool = MusicPlayer();
-  final MusicPlayer audioTool1 = MusicPlayer();
-  final MusicPlayer audioTool2 = MusicPlayer();
+
   int _selectedIndex = 0;
 
   final List<String> _rewards = [
@@ -86,6 +85,7 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
   }
 
   void _startCountdown() {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (_timeLeft.inSeconds <= 1) {
@@ -117,7 +117,7 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
     final double spinDegrees = 5 * 360 + 180 -
         (_selectedIndex * anglePerReward + anglePerReward / 2);
 
-    audioTool.play("assets/audios/sound_effects/spin.mp3");
+    audioManager.playSfx("assets/audios/sound_effects/spin.mp3");
 
     _animation = Tween<double>(begin: 0, end: spinDegrees).animate(
       CurvedAnimation(parent: _controller, curve: Curves.easeOut),
@@ -140,10 +140,9 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
           _applyReward(_rewards[_selectedIndex]);
 
           // 🎉 Show reward
-          audioTool.play("assets/audios/sound_effects/victory2_SFX.mp3");
-          audioTool1.play("assets/audios/sound_effects/unlock_sound.mp3");
-          audioTool2.play(
-              "assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
+          audioManager.playSfx("assets/audios/sound_effects/victory2_SFX.mp3");
+          audioManager.playSfx("assets/audios/sound_effects/unlock_sound.mp3");
+          audioManager.playSfx("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
           _confettiController.play();
           _showResultDialog(_rewards[_selectedIndex]);
         }
@@ -210,6 +209,7 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
       _showSnackBar('${tr(context).youEarned}  $starAmount Star${starAmount > 1 ? 's' : ''}!');
     } else if (reward == 'Try Again') {
       _showSnackBar('${tr(context).tryAgain} ');
+      _canSpin = true;
     } else if (reward == 'Nothing') {
       _showSnackBar('${tr(context).noRewardThisTime}');
     }
@@ -320,9 +320,20 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
                                 child: child,
                               );
                             },
-                            child: CustomPaint(
-                              painter: WheelPainter(_rewards),
-                              size: Size(wheelRadius * 2, wheelRadius * 2),
+                            child: GestureDetector(
+                              onTap: (){
+                                if(_canSpin && !_controller.isAnimating){
+                                  audioManager.playEventSound("clickButton");
+                                  _spinWheel();
+                                }else{
+                                  audioManager.playEventSound("invalid");
+                                  null;
+                                }
+                              },
+                              child: CustomPaint(
+                                painter: WheelPainter(_rewards),
+                                size: Size(wheelRadius * 2, wheelRadius * 2),
+                              ),
                             ),
                           ),
                           Positioned(
@@ -341,9 +352,15 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
 
                       // Glowing Spin Button
                       GestureDetector(
-                        onTap: _canSpin && !_controller.isAnimating
-                            ? _spinWheel
-                            : null,
+                        onTap: (){
+                          if(_canSpin && !_controller.isAnimating){
+                            audioManager.playEventSound("clickButton");
+                            _spinWheel();
+                          }else{
+                            audioManager.playEventSound("invalid");
+                            null;
+                          }
+                        },
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 500),
                           padding: const EdgeInsets.symmetric(horizontal: 40,
@@ -393,19 +410,7 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
                                 borderRadius: BorderRadius.circular(20)),
                           ),
                         ),
-
-    ElevatedButton(
-    onPressed: () async {
-    final userId = FirebaseAuth.instance.currentUser?.uid;
-    if (userId != null) {
-    await Provider.of<ExperienceManager>(context, listen: false).onAppClose();
-    }
-    await FirebaseAuth.instance.signOut();
-    },
-    child: const Text("Se déconnecter"),
-    ),
-
-    ],
+                    ],
                   ),
                 ),
               ),

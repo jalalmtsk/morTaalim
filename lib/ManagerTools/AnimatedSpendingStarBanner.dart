@@ -29,7 +29,6 @@ class _AnimatedStarSpentBannerState extends State<AnimatedStarSpentBanner>
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     // 💸 Optional: play a "spending" sound
     audioManager.playAlert('assets/audios/UI_Audio/SFX_Audio/PurchaseSound.mp3'); // Replace with your asset
-    audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/VictoryEpic_SFX.mp3'); // Replace with your asset
 
     _controller = AnimationController(
       vsync: this,

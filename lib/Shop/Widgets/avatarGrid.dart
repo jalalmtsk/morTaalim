@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../XpSystem.dart';
+import '../Tools/UnlockedAnimations/EmojiesUnlockedAnimations.dart';
 import 'avatarItems.dart';
 
 class AvatarGrid extends StatelessWidget {
@@ -25,17 +25,25 @@ class AvatarGrid extends StatelessWidget {
               child: const Text("Cancel"),
             ),
             TextButton(
-              onPressed: () async{
-                Navigator.pop(context);
-                await Future.delayed(Duration(milliseconds: 300));
-                xpManager.addXP(20, context: parentContext);
-                await Future.delayed(Duration(milliseconds: 1800));
+              onPressed: () async {
+                Navigator.pop(context); // Close the purchase dialog
+                await Future.delayed(const Duration(milliseconds: 300));
+
+                // Deduct stars & unlock avatar
                 xpManager.SpendStarBanner(parentContext, cost);
+
+
+                // Show the fancy unlocked dialog with Lottie, confetti, sounds
+               await   showDialog(
+                  context: parentContext,
+                  barrierDismissible: false,
+                  builder: (_) => EmojiUnlockedDialog(
+                    xpReward: 20,
+                    emoji: emoji,
+                  ),
+                );
                 xpManager.unlockAvatar(emoji);
                 xpManager.selectAvatar(emoji);
-                ScaffoldMessenger.of(parentContext).showSnackBar(
-                  SnackBar(content: Text('$emoji Unlocked! Enjoy!')),
-                );
               },
               child: const Text("Buy", style: TextStyle(color: Colors.deepOrange)),
             ),
@@ -43,7 +51,6 @@ class AvatarGrid extends StatelessWidget {
         ),
       );
     }
-
 
     return GridView.builder(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -68,7 +75,7 @@ class AvatarGrid extends StatelessWidget {
           selected: selected,
           userStars: xpManager.stars,
           onSelect: () => xpManager.selectAvatar(emoji),
-          onBuy: () => showPurchaseDialog(context, emoji, cost), // Pass parent context
+          onBuy: () => showPurchaseDialog(context, emoji, cost),
         );
       },
     );

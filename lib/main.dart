@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Pet/pet_home_page.dart';
+import 'package:mortaalim/Shop/Collection.dart';
 import 'package:mortaalim/TestingBeforeProdcution/ArabicExercice.dart';
 import 'package:mortaalim/TestingBeforeProdcution/CardConcept.dart';
 import 'package:mortaalim/TestingBeforeProdcution/ColorLineMatchingGame.dart';
@@ -17,9 +18,13 @@ import 'package:mortaalim/TestingBeforeProdcution/SnakeLadder.dart';
 import 'package:mortaalim/TestingBeforeProdcution/UNOLIKE%20GAME.dart';
 import 'package:mortaalim/Themes/ThemeSelectorPage.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/LoadingFromUserToIndex.dart';
+import 'package:mortaalim/WebSocketServer/Client.dart';
+import 'package:mortaalim/WebSocketServer/OnlineCardGame.dart';
+import 'package:mortaalim/WebSocketServer/Small%20ConectCardApp.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/MemoryFlip_index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/SurvivalMode/MainSurvivalModePage.dart';
+import 'package:mortaalim/widgets/Collection/AllAssets.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/BannerAndAvatarProfilePage/BannerAvatarProfile.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/MainProfile_Page/Widgets/UserDataProfileEntering.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
@@ -182,13 +187,14 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
 
-            'Shop': (context) => GameLauncher(),
+            'Shop': (context) => CollectionPage( allBanners: xpManager.unlockedBanners, allLotties: AllAssets.allLotties, avatarCategories: {},),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),
             'Splash': (context) => SplashPage(),
             "Auth": (context) => AuthGate(),
           },
+
           localizationsDelegates:  [
             AppLocalizations.delegate,
             AmazighMaterialLocalizations.delegate,

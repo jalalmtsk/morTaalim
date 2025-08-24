@@ -7,6 +7,7 @@ import '../../ManagerTools/StarDeductionOverlay.dart';
 import '../../XpSystem.dart';
 import '../../ManagerTools/StarCountPulse.dart';
 import '../../widgets/userStatutBar.dart';
+import '../Tools/UnlockedAnimations/BannerUnlockedAnimation.dart';
 
 class ImageBannerGrid extends StatefulWidget {
   final List<Map<String, dynamic>> banners;
@@ -69,80 +70,41 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
             onPressed: () async {
               Navigator.pop(context);
 
-              // Get global position of the star icon inside UserStatutBar
-              final RenderBox? starBox = starIconKey.currentContext?.findRenderObject() as RenderBox?;
-              final Offset starPos = starBox?.localToGlobal(Offset.zero) ?? Offset.zero;
+              // Deduct stars
+              xpManager.SpendStarBanner(context, cost);
 
-              // You can adjust these offsets to better align the animation with your star icon
-              const double starAnimationOffsetX = -20;
-              const double starAnimationOffsetY = -20;
+              // Unlock & select the banner
+              xpManager.unlockBanner(path);
+              xpManager.selectBannerImage(path);
 
-              StarDeductionOverlay.showStarAnimation(
-                context,
-                from: starPos, // Use star icon global position
-                to: Offset.zero, // Or your desired target position
-                starCount: 5,
-                onComplete: () async {
-                  final oldStars = xpManager.stars;
+              // Sync or save state if needed
+              await xpManager.syncWithFirebaseIfOnline();
 
-                  OverlayEntry? overlayEntry;
-                  overlayEntry = OverlayEntry(
-                    builder: (_) => Positioned(
-                      top: starPos.dy + starAnimationOffsetY,
-                      left: starPos.dx + starAnimationOffsetX,
-                      child: Material(
-                        color: Colors.transparent,
-                        child: StarCountPulse(
-                          oldStars: oldStars,
-                          deduction: cost,
-                          onFinish: () async {
-                            overlayEntry?.remove();
-
-                            final localXpManager = xpManager;
-
-                            // Deduct stars
-                            localXpManager.SpendStarBanner(context, cost);
-
-                            // Then unlock and select banner
-                            localXpManager.unlockBanner(path);
-                            localXpManager.selectBannerImage(path);
-
-                            // Force save once to ensure correct state
-                            await localXpManager.syncWithFirebaseIfOnline();
-
-                            await Future.delayed(const Duration(seconds: 1));
-
-                            if (!mounted) return;
-
-                            localXpManager.addXP(25, context: context);
-
-                            if (!mounted) return;
-
-                            setState(() {
-                              selectedIndex = index;
-                              recentlyUnlockedIndex = index;
-                              showSparkle = true;
-                            });
-
-                            Future.delayed(const Duration(milliseconds: 1200), () {
-                              if (mounted) setState(() => showSparkle = false);
-                            });
-
-                            Future.delayed(const Duration(milliseconds: 700), () {
-                              if (mounted) setState(() => recentlyUnlockedIndex = null);
-                            });
-                          },
-
-
-                          // Remove starIconKey parameter entirely here
-                        ),
-                      ),
-                    ),
-                  );
-
-                  Overlay.of(context).insert(overlayEntry);
-                },
+              // Show the unlock dialog with animation
+              if (!mounted) return;
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) => BannerUnlockedDialog(
+                  bannerImage: path,
+                  xpReward: 25,
+                ),
               );
+
+              // Update the grid state for glow/scale effect
+              setState(() {
+                selectedIndex = index;
+                recentlyUnlockedIndex = index;
+                showSparkle = true;
+              });
+
+              Future.delayed(const Duration(milliseconds: 1200), () {
+                if (mounted) setState(() => showSparkle = false);
+              });
+
+              Future.delayed(const Duration(milliseconds: 700), () {
+                if (mounted) setState(() => recentlyUnlockedIndex = null);
+              });
             },
             child: const Text("Unlock"),
           ),

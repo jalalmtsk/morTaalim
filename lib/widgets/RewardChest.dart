@@ -118,6 +118,8 @@ class _RewardChestState extends State<RewardChest> with SingleTickerProviderStat
     _showRewardPopup();
     _confettiController.play();
     audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3');
+    audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/victory1_SFX.mp3');
+    audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/MarimbaWin_SFX.mp3');
 
     widget.onRewardCollected(isRare: _isRare);
 
@@ -135,13 +137,14 @@ class _RewardChestState extends State<RewardChest> with SingleTickerProviderStat
       transitionDuration: const Duration(milliseconds: 400),
       pageBuilder: (context, animation, secondaryAnimation) {
         return GestureDetector(
-          behavior: HitTestBehavior.opaque, // tap anywhere to dismiss
+          behavior: HitTestBehavior.opaque,
           onTap: () => Navigator.pop(context),
           child: Scaffold(
             backgroundColor: Colors.transparent,
             body: Stack(
+              alignment: Alignment.center,
               children: [
-                // Confetti Background
+                // Confetti Background (Full Screen)
                 Positioned.fill(
                   child: IgnorePointer(
                     child: ConfettiWidget(
@@ -153,7 +156,19 @@ class _RewardChestState extends State<RewardChest> with SingleTickerProviderStat
                   ),
                 ),
 
-                // Reward Content Centered
+                // Top Lottie (confetti)
+                Positioned(
+                  top: 50,
+                  left: 0,
+                  right: 0,
+                  child: Lottie.asset(
+                    "assets/animations/UI_Animations/Confetti1.json",
+                    height: 100,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+
+                // Centered Content
                 Center(
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
@@ -176,18 +191,15 @@ class _RewardChestState extends State<RewardChest> with SingleTickerProviderStat
                       ),
                       const SizedBox(height: 30),
 
-                      // Centered Lottie animation for both rewards
-                      Center(
-                        child: Lottie.asset(
-                          _isRare
-                              ? 'assets/animations/GiftStar.json'
-                              : 'assets/animations/girl_jumping.json',
-                          height: 250,
-                          repeat: true,
-                          fit: BoxFit.contain,
-                        ),
+                      // Main Lottie in Center
+                      Lottie.asset(
+                        _isRare
+                            ? 'assets/animations/GiftStar.json'
+                            : 'assets/animations/girl_jumping.json',
+                        height: 290,
+                        repeat: true,
+                        fit: BoxFit.contain,
                       ),
-
                       const SizedBox(height: 20),
                       const Text(
                         "Tap anywhere to continue",

@@ -1,7 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 import 'CardConcept_resultPage.dart';
+
+enum GameMode { local, online }
 
 
 class CardGameApp extends StatelessWidget {
@@ -27,6 +31,9 @@ class GameLauncher extends StatefulWidget {
 }
 
 class _GameLauncherState extends State<GameLauncher> {
+
+  GameMode mode = GameMode.local; // default
+
   int handSize = 7;
   int botCount = 2; // default 2 bots
 
@@ -75,6 +82,22 @@ class _GameLauncherState extends State<GameLauncher> {
                   ),
                 ],
               ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Mode:'),
+                  const SizedBox(width: 10),
+                  DropdownButton<GameMode>(
+                    value: mode,
+                    items: const [
+                      DropdownMenuItem(value: GameMode.local, child: Text('Local (Bots)')),
+                      DropdownMenuItem(value: GameMode.online, child: Text('Online (Players)')),
+                    ],
+                    onChanged: (v) => setState(() => mode = v ?? GameMode.local),
+                  ),
+                ],
+              ),
+
 
               const SizedBox(height: 20),
               ElevatedButton.icon(
@@ -83,12 +106,14 @@ class _GameLauncherState extends State<GameLauncher> {
                     builder: (_) => GameScreen(
                       startHandSize: handSize,
                       botCount: botCount,
+                      mode: mode, // <-- pass it here
                     ),
                   ),
                 ),
                 icon: const Icon(Icons.play_arrow),
                 label: const Text('Start'),
               ),
+
             ],
           ),
         ),
@@ -128,7 +153,8 @@ class Deck {
 class GameScreen extends StatefulWidget {
   final int startHandSize;
   final int botCount;
-  const GameScreen({required this.startHandSize, required this.botCount, super.key});
+  final GameMode mode; // <-- new
+  const GameScreen({required this.startHandSize, required this.botCount, super.key, required this.mode});
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
@@ -164,11 +190,47 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   final Duration drawDur = const Duration(milliseconds: 200);
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     hands = List.generate(widget.botCount + 1, (_) => []);
-    _start();
+
+    if (widget.mode == GameMode.online) {
+      _connectOnline();
+    } else {
+      _start(); // local bots
+    }
   }
+
+  WebSocketChannel? channel;
+
+  void _connectOnline() {
+    channel = WebSocketChannel.connect(Uri.parse('ws://YOUR_SERVER_IP:8080'));
+
+    // Join game message
+    channel!.sink.add(jsonEncode({
+      'type': 'join_game',
+      'gameId': 'game123', // generate or select a game
+      'player': 'Player_${Random().nextInt(1000)}',
+    }));
+
+    channel!.stream.listen((message) {
+      final data = jsonDecode(message);
+      _handleOnlineMessage(data);
+    });
+  }
+
+  void _handleOnlineMessage(Map<String, dynamic> data) {
+    // Here you can update hands, topCard, etc., based on online messages
+    // This keeps your local game logic intact
+  }
+
+  @override
+  void dispose() {
+    channel?.sink.close();
+    super.dispose();
+  }
+
+
 
   Future<void> _start() async {
     isAnimating = true; // block input during shuffling/deal
@@ -358,6 +420,7 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   void _maybeAutoPlay() {
     if (gameOver) return;
     if (currentPlayer == 0) return;
+    if (widget.mode == GameMode.online) return; // skip bots if online
     if (currentPlayer > widget.botCount) return; // safety
     Future.delayed(Duration(milliseconds: 600 + Random().nextInt(700)), () async {
       if (gameOver) return;
@@ -559,7 +622,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         },
       );
     });
-
     overlay.insert(entry);
     await ctrl.forward();
     entry.remove();

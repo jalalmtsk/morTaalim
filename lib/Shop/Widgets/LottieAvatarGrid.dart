@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mortaalim/Shop/Widgets/LottieAvatarWidget.dart';
 import 'package:provider/provider.dart';
-
+import 'package:lottie/lottie.dart';
+import 'package:confetti/confetti.dart';
 import '../../XpSystem.dart';
+import '../../tools/audio_tool/Audio_Manager.dart';
+import '../Tools/UnlockedAnimations/LottieAvatarUnlockedAnimation.dart';
+import 'LottieAvatarWidget.dart';
 
 class LottieAvatarGrid extends StatelessWidget {
   final List<Map<String, dynamic>> lottieAvatars;
@@ -12,6 +15,14 @@ class LottieAvatarGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
+
+    void showUnlockDialog(String lottiePath) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => LottieAvatarUnlockedDialog(lottiePath: lottiePath),
+      );
+    }
 
     void showPurchaseDialog(String lottiePath, int cost) {
       showDialog(
@@ -25,13 +36,15 @@ class LottieAvatarGrid extends StatelessWidget {
               child: const Text("Cancel"),
             ),
             TextButton(
-              onPressed: () async{
-                xpManager.addXP(500,context: context);
-                await Future.delayed(Duration(seconds: 1));
+              onPressed: () async {
+                Navigator.pop(context); // Close purchase dialog
                 xpManager.SpendStarBanner(context, cost);
+
+                // Show unlock dialog with animations
+                showUnlockDialog(lottiePath);
+
                 xpManager.unlockAvatar(lottiePath);
                 xpManager.selectAvatar(lottiePath);
-                Navigator.pop(context);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('Avatar Unlocked! Enjoy!'),
