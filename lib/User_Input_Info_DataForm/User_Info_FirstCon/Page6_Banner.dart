@@ -6,7 +6,6 @@ import 'package:mortaalim/widgets/AIChatbot/BotFeatures/BotWithGreeting.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
-
 import '../../XpSystem.dart';
 
 class UserInfoBannerPage extends StatefulWidget {

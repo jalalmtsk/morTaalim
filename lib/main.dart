@@ -6,7 +6,8 @@ import 'package:flutter/services.dart';
 
 import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Pet/pet_home_page.dart';
-import 'package:mortaalim/Shop/Collection.dart';
+import 'package:mortaalim/TestingBeforeProdcution/Hezz2FinalGame/Screen/CardGameLauncher.dart';
+import 'package:mortaalim/widgets/Collection/Collection.dart';
 import 'package:mortaalim/TestingBeforeProdcution/ArabicExercice.dart';
 import 'package:mortaalim/TestingBeforeProdcution/CardConcept.dart';
 import 'package:mortaalim/TestingBeforeProdcution/ColorLineMatchingGame.dart';
@@ -18,13 +19,9 @@ import 'package:mortaalim/TestingBeforeProdcution/SnakeLadder.dart';
 import 'package:mortaalim/TestingBeforeProdcution/UNOLIKE%20GAME.dart';
 import 'package:mortaalim/Themes/ThemeSelectorPage.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/LoadingFromUserToIndex.dart';
-import 'package:mortaalim/WebSocketServer/Client.dart';
-import 'package:mortaalim/WebSocketServer/OnlineCardGame.dart';
-import 'package:mortaalim/WebSocketServer/Small%20ConectCardApp.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/MemoryFlip_index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/SurvivalMode/MainSurvivalModePage.dart';
-import 'package:mortaalim/widgets/Collection/AllAssets.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/BannerAndAvatarProfilePage/BannerAvatarProfile.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/MainProfile_Page/Widgets/UserDataProfileEntering.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
@@ -33,8 +30,7 @@ import 'package:mortaalim/firebase_options.dart';
 import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
 import 'package:mortaalim/games/PuzzzleGame/Puzzle_Game.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
-import 'package:mortaalim/indexPage_tools/Dashboard_Index_tool/Home_Page.dart';
-import 'package:mortaalim/TestingBeforeProdcution/tasbiheTest.dart';
+
 import 'package:mortaalim/tools/Ads_Manager.dart';
 
 import 'package:mortaalim/Settings/setting_Page.dart';
@@ -187,7 +183,7 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
 
-            'Shop': (context) => CollectionPage( allBanners: xpManager.unlockedBanners, allLotties: AllAssets.allLotties, avatarCategories: {},),
+            'Shop': (context) => CardGameLauncher(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

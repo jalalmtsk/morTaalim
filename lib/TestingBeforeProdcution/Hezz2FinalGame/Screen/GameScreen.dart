@@ -1,166 +1,13 @@
-/*import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:mortaalim/TestingBeforeProdcution/Hezz2FinalGame/Models/GameCardEnums.dart';
 
-enum GameMode { local, online }
-enum GameModeType { playToWin, elimination }
-
-class CardGameApp extends StatelessWidget {
-  const CardGameApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Bright Cards',
-      theme: ThemeData.light().copyWith(
-        scaffoldBackgroundColor: const Color(0xFFF6F6F8),
-        appBarTheme: const AppBarTheme(backgroundColor: Color(0xFF6ECF9A), elevation: 0),
-      ),
-      home: const GameLauncher(),
-    );
-  }
-}
-
-class GameLauncher extends StatefulWidget {
-  const GameLauncher({super.key});
-  @override
-  State<GameLauncher> createState() => _GameLauncherState();
-}
-
-class _GameLauncherState extends State<GameLauncher> {
-  GameMode mode = GameMode.local;
-  GameModeType gameMode = GameModeType.playToWin;
-  int handSize = 7;
-  int botCount = 2;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text('Bright Cards', style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 12),
-              const Text(
-                'Match suit or rank. Special cards: 2 (draw2+skip), 1 (skip), 7 (change suit).',
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Starting hand size:'),
-                  const SizedBox(width: 10),
-                  DropdownButton<int>(
-                    value: handSize,
-                    items: List.generate(11, (i) => i + 5)
-                        .map((v) => DropdownMenuItem(value: v, child: Text('$v')))
-                        .toList(),
-                    onChanged: (v) => setState(() => handSize = v ?? 7),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Number of Bots:'),
-                  const SizedBox(width: 10),
-                  DropdownButton<int>(
-                    value: botCount,
-                    items: [1, 2, 3, 4].map((v) => DropdownMenuItem(value: v, child: Text('$v'))).toList(),
-                    onChanged: (v) => setState(() => botCount = v ?? 2),
-                  ),
-                ],
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Connection:'),
-                  const SizedBox(width: 10),
-                  DropdownButton<GameMode>(
-                    value: mode,
-                    items: const [
-                      DropdownMenuItem(value: GameMode.local, child: Text('Local (Bots)')),
-                      DropdownMenuItem(value: GameMode.online, child: Text('Online (Players)')),
-                    ],
-                    onChanged: (v) => setState(() => mode = v ?? GameMode.local),
-                  ),
-                ],
-              ),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text('Game Mode:'),
-                  const SizedBox(width: 10),
-                  DropdownButton<GameModeType>(
-                    value: gameMode,
-                    items: const [
-                      DropdownMenuItem(value: GameModeType.playToWin, child: Text('Play To Win')),
-                      DropdownMenuItem(value: GameModeType.elimination, child: Text('Elimination')),
-                    ],
-                    onChanged: (v) => setState(() => gameMode = v ?? GameModeType.playToWin),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 20),
-              ElevatedButton.icon(
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => GameScreen(
-                      startHandSize: handSize,
-                      botCount: botCount,
-                      mode: mode,
-                      gameModeType: gameMode,
-                    ),
-                  ),
-                ),
-                icon: const Icon(Icons.play_arrow),
-                label: const Text('Start'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class PlayingCard {
-  final String suit;
-  final int rank;
-  final String id;
-  PlayingCard({required this.suit, required this.rank}) : id = UniqueKey().toString();
-
-  String get assetName => 'assets/images/cards/${suit.toLowerCase()}_${rank.toString()}.png';
-  String get backAsset => 'assets/images/cards/backCard.png';
-  String get label => '$rank of $suit';
-}
-
-class Deck {
-  final List<PlayingCard> cards = [];
-  Deck() { _build(); }
-  void _build(){
-    cards.clear();
-    final suits = ['Coins','Cups','Swords','Clubs'];
-    final ranks = [1,2,3,4,5,6,7,10,11,12];
-    for(final s in suits) for(final r in ranks) cards.add(PlayingCard(suit: s, rank: r));
-  }
-  void shuffle() => cards.shuffle(Random());
-  PlayingCard draw() => cards.removeLast();
-  bool get isEmpty => cards.isEmpty;
-  int get length => cards.length;
-}
+import '../Models/Cards.dart';
+import '../Models/Deck.dart';
+import 'endGameScreen.dart';
 
 class GameScreen extends StatefulWidget {
   final int startHandSize;
@@ -175,7 +22,6 @@ class GameScreen extends StatefulWidget {
     required this.gameModeType,
     super.key
   });
-
   @override
   State<GameScreen> createState() => _GameScreenState();
 }
@@ -866,11 +712,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     });
   }
 
+
   void _startNextRound() {
     setState(() {
       isBetweenRounds = true;
       isSpectating = false; // Reset spectating state
-
     });
 
     Future.delayed(const Duration(seconds: 2), () {
@@ -884,7 +730,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         for (int i = 0; i < hands.length; i++) {
           hands[i].clear();
           if (!eliminatedPlayers[i]) {
-            // Deal new cards to non-eliminated players
             for (int j = 0; j < widget.startHandSize; j++) {
               if (deck.isEmpty) _recycle();
               hands[i].add(deck.draw());
@@ -898,19 +743,25 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
         discard.clear();
         discard.add(topCard!);
 
-        // Reset game state
+        // Reset round state
         pendingDraw = 0;
         skipNext = false;
         qualifiedPlayers.clear();
 
-        // Set current player to first non-eliminated player
+        // Set current player to first non-eliminated
         currentPlayer = 0;
         while (eliminatedPlayers[currentPlayer]) {
           currentPlayer = (currentPlayer + 1) % (widget.botCount + 1);
         }
       });
+
+      // 🔑 Kick the bots after UI updates
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _maybeAutoPlay();
+      });
     });
   }
+
 
   void _showEnd() {
     int winnerIndex = -1;
@@ -1076,8 +927,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
                   )
               ),
 
-              // In the player hand section of the build method
-// In the player hand section of the build method
               Positioned(
                 bottom: 12,
                 left: 0,
@@ -1306,52 +1155,3 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     );
   }
 }
-
-class EndGameScreen extends StatelessWidget {
-  final List<List<PlayingCard>> hands;
-  final int winnerIndex;
-  final GameModeType gameModeType;
-  final int currentRound;
-
-  const EndGameScreen({
-    required this.hands,
-    required this.winnerIndex,
-    required this.gameModeType,
-    required this.currentRound,
-    super.key
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Game Over')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              '${winnerIndex == 0 ? 'You' : 'Bot $winnerIndex'} Win!',
-              style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Game Mode: ${gameModeType == GameModeType.playToWin ? 'Play To Win' : 'Elimination'}',
-              style: const TextStyle(fontSize: 18),
-            ),
-            if (gameModeType == GameModeType.elimination)
-              Text(
-                'Rounds Played: $currentRound',
-                style: const TextStyle(fontSize: 18),
-              ),
-            const SizedBox(height: 30),
-            ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Back to Main Menu'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-*/
