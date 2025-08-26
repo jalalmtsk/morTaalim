@@ -68,8 +68,8 @@ class ImageAvatarItemWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 child: Image.asset(
                   imagePath,
-                  width: 70,
-                  height: 70,
+                  width: 80,
+                  height: 80,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -88,7 +88,7 @@ class ImageAvatarItemWidget extends StatelessWidget {
               ),
             if (!unlocked)
               Positioned(
-                bottom: 8,
+                bottom: 1,
                 left: 0,
                 right: 0,
                 child: Center(

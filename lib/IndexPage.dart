@@ -15,6 +15,7 @@ import 'package:mortaalim/tools/AnimatedGrid.dart';
 import 'package:mortaalim/tools/Reysable_Tools/SmartDuaaMorningNight_Dialog.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/loading_page.dart';
+import 'package:mortaalim/widgets/Collection/Collection.dart';
 import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/MainProfile_Page/MainProfile_page.dart';
 import 'package:provider/provider.dart';
@@ -230,6 +231,13 @@ class _IndexState extends State<Index>
                                 ),
                               ),
                             ),
+
+
+                            IconButton(onPressed: (){
+                              Navigator.push(context, MaterialPageRoute(builder: (_) => CollectionPagePremium()));
+                            },
+                                icon: Icon(Icons.collections, color: themeManager.currentTheme.accentColor,)),
+
                             IconButton(
                               onPressed: () {
                                 audioManager.playEventSound('clickButton');
@@ -259,12 +267,6 @@ class _IndexState extends State<Index>
                                 );
                               },
                             ),
-
-                            //TODO: PRODUCTION
-                            IconButton(onPressed: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (_) => ThemeSelectorPage()));
-                            },
-                                icon: Icon(Icons.bento_sharp))
 
                           ],
                         ),

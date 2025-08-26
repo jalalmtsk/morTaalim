@@ -69,8 +69,8 @@ class LottieAvatarItemWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 child: Lottie.asset(
                   lottiePath,
-                  width: 80,
-                  height: 80,
+                  width: 90,
+                  height: 90,
                   fit: BoxFit.cover,
                   repeat: true,
                 ),
@@ -90,7 +90,7 @@ class LottieAvatarItemWidget extends StatelessWidget {
               ),
             if (!unlocked)
               Positioned(
-                bottom: 8,
+                bottom: 2,
                 left: 0,
                 right: 0,
                 child: Center(

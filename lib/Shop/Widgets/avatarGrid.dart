@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
+import '../../main.dart';
 import '../Tools/UnlockedAnimations/EmojiesUnlockedAnimations.dart';
 import 'avatarItems.dart';
 
@@ -22,7 +23,7 @@ class AvatarGrid extends StatelessWidget {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
+              child:  Text(tr(context).cancel),
             ),
             TextButton(
               onPressed: () async {
@@ -57,8 +58,8 @@ class AvatarGrid extends StatelessWidget {
       itemCount: avatarItems.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        mainAxisSpacing: 20,
-        crossAxisSpacing: 20,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
         childAspectRatio: 0.85,
       ),
       itemBuilder: (_, index) {

@@ -61,7 +61,7 @@ class _AvatarItemWidgetState extends State<AvatarItemWidget>
   @override
   Widget build(BuildContext context) {
     final canBuy = !widget.unlocked && (widget.userStars >= widget.cost);
-    final isExpensive = widget.cost >= 30;
+    final isExpensive = widget.cost >= 300;
 
     return GestureDetector(
       onTapDown: _onTapDown,
@@ -146,8 +146,8 @@ class _AvatarItemWidgetState extends State<AvatarItemWidget>
                         left: 45 + offset.dx,
                         child: Opacity(
                           opacity: 0.8,
-                          child: Icon(Icons.star,
-                              size: 12, color: Colors.yellow.shade600),
+                          child: Icon(Icons.swipe_left_alt,
+                              size: 20, color: Colors.yellow.shade600),
                         ),
                       );
                     }),
@@ -193,7 +193,7 @@ class _AvatarItemWidgetState extends State<AvatarItemWidget>
                   // Cost for locked avatars
                   if (!widget.unlocked)
                     Positioned(
-                      bottom: 8,
+                      bottom: 4,
                       left: 0,
                       right: 0,
                       child: Center(
