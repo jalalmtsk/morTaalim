@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'dart:math';
 import 'package:just_audio/just_audio.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:mortaalim/widgets/userStatutBar.dart';
+import 'package:mortaalim/main.dart';
+import 'package:provider/provider.dart';
 
+import '../../XpSystem.dart';
+import '../../tools/Ads_Manager.dart';
 import 'Animal_Data.dart';
 
 class ListenMode extends StatefulWidget {
@@ -21,37 +24,19 @@ class _AnimalFullScreenPageState extends State<ListenMode>
   Random random = Random();
 
   // --- Banner Ad ---
-  late BannerAd _bannerAd;
-  bool _isAdLoaded = false;
-
+  BannerAd? _bannerAd;
+  bool _isBannerAdLoaded = false;
   @override
   void initState() {
     super.initState();
-
     _animationController =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     _wiggleAnimation =
         Tween<double>(begin: 0, end: 15).animate(_animationController);
 
     // Initialize Banner Ad
-    _bannerAd = BannerAd(
-      adUnitId: '<YOUR_BANNER_AD_UNIT_ID>', // replace with your Ad Unit ID
-      request: AdRequest(),
-      size: AdSize.banner,
-      listener: BannerAdListener(
-        onAdLoaded: (_) {
-          setState(() {
-            _isAdLoaded = true;
-          });
-        },
-        onAdFailedToLoad: (ad, error) {
-          ad.dispose();
-          print('Ad failed to load: $error');
-        },
-      ),
-    );
+    _loadBannerAd();
 
-    _bannerAd.load();
   }
 
   void playSoundAndAnimate(String soundPath) async {
@@ -59,6 +44,20 @@ class _AnimalFullScreenPageState extends State<ListenMode>
     await _audioPlayer.stop();
     await _audioPlayer.setAsset(soundPath);
     _audioPlayer.play();
+  }
+
+  void _loadBannerAd() {
+    _bannerAd?.dispose();
+    _isBannerAdLoaded = false;
+
+    _bannerAd = AdHelper.getBannerAd(() {
+      setState(() {
+        _isBannerAdLoaded = true;
+      });
+    });
+  }
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _loadBannerAd();
   }
 
   Widget buildParticles() {
@@ -155,7 +154,7 @@ class _AnimalFullScreenPageState extends State<ListenMode>
                   ),
                   SizedBox(height: 12),
                   Text(
-                    '👆 Tap the animal to hear its sound!',
+                    '👆 ${tr(context).tapTheAnimalToHearItsSound!}',
                     style: TextStyle(
                         fontSize: 16,
                         color: Colors.redAccent,
@@ -164,6 +163,7 @@ class _AnimalFullScreenPageState extends State<ListenMode>
                 ],
               ),
             ),
+
           ],
         ),
       ],
@@ -193,7 +193,7 @@ class _AnimalFullScreenPageState extends State<ListenMode>
   void dispose() {
     _audioPlayer.dispose();
     _animationController.dispose();
-    _bannerAd.dispose();
+    _bannerAd?.dispose();
     super.dispose();
   }
 
@@ -207,30 +207,54 @@ class _AnimalFullScreenPageState extends State<ListenMode>
         scrolledUnderElevation: 0,
       ),
       extendBodyBehindAppBar: true,
-      body: PageView.builder(
-        controller: _pageController,
-        itemCount: animals.length,
-        onPageChanged: (index) => setState(() => currentIndex = index),
-        itemBuilder: (context, index) {
-          return buildAnimalPage(animals[index]);
-        },
-      ),
-      bottomNavigationBar: Container(
-        height: _isAdLoaded ? 80 : 40,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Page dots
-            buildPageIndicator(),
-            // Banner Ad
-            if (_isAdLoaded)
-              Container(
-                height: 50,
-                child: AdWidget(ad: _bannerAd),
+      body: Stack(
+        children: [
+          // Fullscreen background image
+          PageView.builder(
+            controller: _pageController,
+            itemCount: animals.length,
+            onPageChanged: (index) => setState(() => currentIndex = index),
+            itemBuilder: (context, index) {
+              // Wrap your existing buildAnimalPage in a Container
+              return Container(
+                width: double.infinity,
+                height: double.infinity,
+                child: buildAnimalPage(animals[index]),
+              );
+            },
+          ),
+
+          // Page indicator
+          Positioned(
+            bottom: (context.watch<ExperienceManager>().adsEnabled &&
+                _bannerAd != null &&
+                _isBannerAdLoaded)
+                ? _bannerAd!.size.height.toDouble() + 20
+                : 20,
+            left: 0,
+            right: 0,
+            child: buildPageIndicator(),
+          ),
+
+          // Banner Ad
+          if (context.watch<ExperienceManager>().adsEnabled &&
+              _bannerAd != null &&
+              _isBannerAdLoaded)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: SafeArea(
+                child: SizedBox(
+                  width: _bannerAd!.size.width.toDouble(),
+                  height: _bannerAd!.size.height.toDouble(),
+                  child: AdWidget(ad: _bannerAd!),
+                ),
               ),
-          ],
-        ),
+            ),
+        ],
       ),
     );
   }
+
 }

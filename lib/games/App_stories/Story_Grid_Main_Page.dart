@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import '../../tools/Ads_Manager.dart';
 import 'Stories.dart';
 import 'story_book_page.dart';
 

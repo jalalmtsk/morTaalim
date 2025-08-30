@@ -187,6 +187,9 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
       case QuizLanguage.spanish:
         await flutterTts.setLanguage("es-ES");
         break;
+      case QuizLanguage.amazigh:
+        // TODO: Handle this case.
+        throw UnimplementedError();
     }
   }
 

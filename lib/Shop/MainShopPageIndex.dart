@@ -46,6 +46,7 @@ class _MainShopPageIndexState extends State<MainShopPageIndex>
 
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     final theme = Theme.of(context);
 
     final ColorScheme colorScheme = theme.colorScheme.copyWith(
@@ -68,7 +69,10 @@ class _MainShopPageIndexState extends State<MainShopPageIndex>
                 children: [
                   _circularButton(
                     icon: Icons.arrow_back,
-                    onTap: () => Navigator.pop(context),
+                    onTap: () {
+                     audioManager.playEventSound("cancelButton");
+                      Navigator.pop(context);
+                    },
                     color: colorScheme.primary,
                   ),
                   const SizedBox(width: 8),
@@ -160,9 +164,9 @@ class _MainShopPageIndexState extends State<MainShopPageIndex>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _rewardCard(context, 15, 2, 1, "Quick", colorScheme),
+                  _rewardCard(context, 15, 2, 1, tr(context).quick, colorScheme),
                   _rewardCard(context, 30, 5, 2, tr(context).medium, colorScheme),
-                  _rewardCard(context, 60, 15, 3, "Rare", colorScheme),
+                  _rewardCard(context, 60, 15, 3, tr(context).rare, colorScheme),
                 ],
               ),
             ),

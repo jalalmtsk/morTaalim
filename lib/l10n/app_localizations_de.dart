@@ -789,6 +789,12 @@ class AppLocalizationsDe extends AppLocalizations {
   String get thankYouForYourPatience => 'Vielen Dank für Ihre Geduld';
 
   @override
+  String get traceEachLetterToEarnOneXp => 'Verfolge jeden Buchstaben, um 1 XP zu verdienen';
+
+  @override
+  String get collectTenXpToEarnOneTolimToken => 'Sammle 10 XP, um 1 Tolim-Token zu verdienen';
+
+  @override
   String get manageBackup => 'Backup verwalten';
 
   @override
@@ -1033,4 +1039,226 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get aboutFuturePlans => 'Wir arbeiten kontinuierlich daran, neue Kurse, spannende Mehrspieler-Spiele und fortschrittliche Funktionen wie personalisierte Lernpfade und Community-Foren hinzuzufügen, um Lernende und Lehrende zu verbinden.';
+
+  @override
+  String get thanksForYourPurchase => 'Danke für deinen Einkauf';
+
+  @override
+  String get transactionComplete => 'Transaktion abgeschlossen';
+
+  @override
+  String get keepShining => 'Weiter strahlen';
+
+  @override
+  String get keepCollecting => 'Weiter sammeln';
+
+  @override
+  String get badgeUnlocked => 'Abzeichen freigeschaltet';
+
+  @override
+  String get level => 'LEVEL';
+
+  @override
+  String get quick => 'Schnell';
+
+  @override
+  String get rare => 'Selten';
+
+  @override
+  String get rewardScreen => 'Belohnungsbildschirm';
+
+  @override
+  String get tapAnywhereToContinue => 'Überall tippen, um fortzufahren';
+
+  @override
+  String get collected => 'Gesammelt';
+
+  @override
+  String get earnMoreToUnlockThisAvatar => 'Sammle mehr, um diesen Avatar freizuschalten';
+
+  @override
+  String get selected => 'AUSGEWÄHLT';
+
+  @override
+  String get unlocked => 'FREIGESCHALTET';
+
+  @override
+  String get unlockBanner => 'Banner freischalten';
+
+  @override
+  String get banner => 'Banner';
+
+  @override
+  String get unlockThis => 'Dies freischalten';
+
+  @override
+  String get confirmPurchase => 'Kauf bestätigen';
+
+  @override
+  String get avatarUnlocked => 'Avatar freigeschaltet';
+
+  @override
+  String get enjoy => 'Viel Spaß';
+
+  @override
+  String get doYouWantToUnlockThis => 'Möchtest du das freischalten?';
+
+  @override
+  String get go => 'Los';
+
+  @override
+  String get profileSaved => 'Profil gespeichert';
+
+  @override
+  String get nameRule => 'Der Name muss mindestens 3 Zeichen enthalten';
+
+  @override
+  String get invalidEmail => 'Ungültige E-Mail-Adresse';
+
+  @override
+  String get readyToSave => 'Bereit zum Speichern';
+
+  @override
+  String get royalty => 'Adel';
+
+  @override
+  String get babies => 'Babys';
+
+  @override
+  String get myMasterpiece => 'Mein Meisterwerk';
+
+  @override
+  String get youCanSpendONETolimToSaveOrWatchTwoAdsToSaveForFree => 'Du kannst 5 Tolim ausgeben, um zu speichern, oder 2 Anzeigen ansehen, um kostenlos zu speichern';
+
+  @override
+  String get spendONETolim => '5 Tolim ausgeben';
+
+  @override
+  String get confirmSpending => 'Ausgabe bestätigen';
+
+  @override
+  String get thisWillDeductONEtolimProceed => 'Dies wird 5 Tolim abziehen. Fortfahren?';
+
+  @override
+  String get failedToSaveDrawing => 'Speichern der Zeichnung fehlgeschlagen';
+
+  @override
+  String get chooseColor => 'Farbe wählen';
+
+  @override
+  String get brush => 'Pinsel';
+
+  @override
+  String get brushSize => 'Pinselgröße';
+
+  @override
+  String get eraser => 'Radiergummi';
+
+  @override
+  String get eraserOff => 'Radiergummi aus';
+
+  @override
+  String get eraserOn => 'Radiergummi an';
+
+  @override
+  String get clearCanvas => 'Leinwand löschen';
+
+  @override
+  String get animalSound => 'Tiergeräusch';
+
+  @override
+  String get listenMode => 'Hörmodus';
+
+  @override
+  String get tapAnimalsToHearTheirSounds => 'Tippe auf die Tiere, um ihre Geräusche zu hören';
+
+  @override
+  String get matchAndDrop => 'Zuordnen und ablegen';
+
+  @override
+  String get dragAnimalsToMatchTheirSounds => 'Ziehe die Tiere, um ihre Geräusche zuzuordnen';
+
+  @override
+  String get tapTheAnimalToHearItsSound => 'Tippe auf das Tier, um sein Geräusch zu hören';
+
+  @override
+  String get matchTheSound => 'Ordne das Geräusch zu';
+
+  @override
+  String get listenThenDragTheCorrectAnimalIntoTheGlowingRing => 'Höre zu und ziehe dann das richtige Tier in den leuchtenden Ring';
+
+  @override
+  String get rewarded => 'Belohnt';
+
+  @override
+  String get youFinishedWith => 'Du hast abgeschlossen mit';
+
+  @override
+  String get dontWorry => 'Keine Sorge';
+
+  @override
+  String get youCanTryAgain => 'Du kannst es noch einmal versuchen';
+
+  @override
+  String get adventureMode => 'Abenteuermodus';
+
+  @override
+  String get memoryFlip => 'Memory Flip';
+
+  @override
+  String get playThroughLevelsAndEarn => 'Spiele Levels durch und verdiene Belohnungen';
+
+  @override
+  String get survivalMode => 'Überlebensmodus';
+
+  @override
+  String get seeHowLongYouCanSurviveWithLimitedMoves => 'Sieh, wie lange du mit begrenzten Zügen überleben kannst';
+
+  @override
+  String get selectLevel => 'Level auswählen';
+
+  @override
+  String get chooseCategory => 'Kategorie wählen';
+
+  @override
+  String get moves => 'Züge';
+
+  @override
+  String get matches => 'Paarungen';
+
+  @override
+  String get noMovesLeft => 'Keine Züge mehr übrig';
+
+  @override
+  String get restartingLevel => 'Level wird neu gestartet';
+
+  @override
+  String get restart => 'Neustarten';
+
+  @override
+  String get youRanOutOfMoves => 'Du hast keine Züge mehr';
+
+  @override
+  String get highlights => 'Highlights';
+
+  @override
+  String get youSurvivedFor => 'Du hast überlebt für';
+
+  @override
+  String get best => 'Beste';
+
+  @override
+  String get andMade => 'und hast gemacht';
+
+  @override
+  String get seconds => 'Sekunden';
+
+  @override
+  String get matchesIn => 'Paarungen in';
+
+  @override
+  String get survivalHighlights => 'Überlebens-Highlights';
+
+  @override
+  String get bestSurvivalScore => 'Beste Überlebenspunktzahl';
 }

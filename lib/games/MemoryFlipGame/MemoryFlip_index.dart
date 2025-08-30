@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/games/MemoryFlipGame/SurvivalMode/MainSurvivalModePage.dart';
+import 'package:mortaalim/main.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 
 import 'AdventureMode/MFCategorySelector.dart';
 // Your Survival mode page
@@ -10,9 +13,16 @@ class MFIndexPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(onPressed: ()
+        {
+          audioManager.playEventSound("cancelButton");
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_circle_left_sharp,
+          size: 50,
+          color: Colors.orangeAccent,)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         excludeHeaderSemantics: true,
@@ -50,7 +60,7 @@ class MFIndexPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'Memory Mania',
+                  tr(context).memoryFlip,
                   style: TextStyle(
                     fontSize: 36,
                     fontWeight: FontWeight.bold,
@@ -64,12 +74,13 @@ class MFIndexPage extends StatelessWidget {
                   child: Column(
                     children: [
                       _ModeCard(
-                        title: 'Adventure Mode',
+                        title: tr(context).adventureMode,
                         description:
-                        'Play through levels and earn Tolim & XP!',
+                        '${tr(context).playThroughLevelsAndEarn} Tolim & XP!',
                         icon: Icons.explore,
                         colors: [Colors.orange.shade400, Colors.deepOrange.shade300],
                         onTap: () {
+                          audioManager.playEventSound("clickButton");
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => const CategorySelection(),
@@ -79,12 +90,13 @@ class MFIndexPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 24),
                       _ModeCard(
-                        title: 'Survival Mode',
+                        title: tr(context).survivalMode,
                         description:
-                        'See how long you can survive with limited moves!',
+                        tr(context).seeHowLongYouCanSurviveWithLimitedMoves,
                         icon: Icons.timer,
                         colors: [Colors.purple.shade400, Colors.deepPurple.shade300],
                         onTap: () {
+                          audioManager.playEventSound("clickButton");
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (_) => const SurvivalMemoryGame(),

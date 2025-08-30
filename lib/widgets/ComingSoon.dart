@@ -39,7 +39,7 @@ class ComingSoonPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                  'Bientôt disponible !',
+                  tr(context).comingSoon,
                   style: TextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
@@ -48,12 +48,12 @@ class ComingSoonPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Nous préparons quelque chose de génial 🤩',
+                  '${tr(context).weArePreparingSomethingAwesome} 🤩',
                   style: TextStyle(fontSize: 18, color: Colors.teal[700]),
                 ),
                 const SizedBox(height: 30),
                 Text(
-                  'Suivez-nous sur les réseaux sociaux :',
+                  '${tr(context).followUsOnSocialMedia} :',
                   style: TextStyle(fontSize: 16),
                 ),
                 const SizedBox(height: 16),
@@ -92,7 +92,7 @@ class ComingSoonPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 40),
                 Text(
-                  'Merci pour votre patience ❤️',
+                  '${tr(context).thankYouForYourPatience} ❤️',
                   style: TextStyle(fontSize: 14, color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 30),

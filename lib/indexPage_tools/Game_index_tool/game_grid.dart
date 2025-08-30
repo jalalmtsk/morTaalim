@@ -427,7 +427,9 @@ class _GameGridState extends State<GameGrid>
       case 'MagicPainting':
         return tr.magicPainting;
       case 'AnimalSounds':
-        return tr.animated;
+        return tr.animalSound;
+      case 'MemoryFlip':
+        return tr.memoryFlip;
       case 'SugarSmash':
         return tr.sugarSmash;
       case 'shapeSorter':

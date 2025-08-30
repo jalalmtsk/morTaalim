@@ -10,13 +10,15 @@ import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../XpSystem.dart';
+import 'LanguageManager.dart';
 import 'Stories.dart';
 import 'story_page_widget.dart';
 
 class StoryBookPage extends StatefulWidget {
   final Story story;
+  final AppLanguage language;
 
-  const StoryBookPage({super.key, required this.story});
+  const StoryBookPage({super.key, required this.story, this.language = AppLanguage.en});
 
   @override
   State<StoryBookPage> createState() => _StoryBookPageState();
@@ -26,7 +28,6 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
   BannerAd? _bannerAd;
   late final PageController _pageController;
   final FlutterTts flutterTts = FlutterTts();
-
 
   int currentPageIndex = 0;
   int highlightedWordIndex = 0;
@@ -39,9 +40,8 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
 
   bool isNightMode = false;
   String voiceType = 'child_female';
-
-  // Added for text size control
   double _textSize = 35;
+  AppLanguage currentLanguage = AppLanguage.en;
 
   final List<Color> confettiColors = [
     Color(0xFF8ADA15),
@@ -55,13 +55,16 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _loadBannerAd();
     _pageController = PageController(initialPage: 0);
+    currentLanguage = widget.language;
+
     _initTts();
     _loadPrefs();
+    _loadLanguage();
+    _loadBannerAd();
 
     _audioPlayer = MusicPlayer();
-    _confettiController = ConfettiController(duration: Duration(seconds: 3));
+    _confettiController = ConfettiController(duration: const Duration(seconds: 3));
 
     _bounceController = AnimationController(
       vsync: this,
@@ -75,6 +78,11 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
     _playBackgroundMusic();
   }
 
+  Future<void> _loadLanguage() async {
+    final savedLang = await LanguageManager.getLanguage();
+    setState(() => currentLanguage = savedLang);
+  }
+
   Future<void> _loadPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     isNightMode = prefs.getBool('nightMode') ?? false;
@@ -83,9 +91,7 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
 
   void _loadBannerAd() {
     _bannerAd?.dispose();
-    _bannerAd = AdHelper.getBannerAd(() {
-      setState(() {});
-    });
+    _bannerAd = AdHelper.getBannerAd(() => setState(() {}));
   }
 
   Future<void> _playBackgroundMusic() async {
@@ -103,7 +109,7 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
     if (type == 'child_female') {
       await flutterTts.setVoice({"name": "en-US-language", "locale": "en-US"});
       await flutterTts.setPitch(1.3);
-    } else if (type == 'adult_male') {
+    } else {
       await flutterTts.setPitch(0.9);
     }
     setState(() {});
@@ -115,7 +121,44 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
     prefs.setBool('nightMode', isNightMode);
   }
 
-  Future<void> _initTts() async {
+  Future<void> speak(String text, AppLanguage lang) async {
+    switch (lang) {
+      case AppLanguage.en:
+        await flutterTts.setLanguage("en-US");
+        break;
+      case AppLanguage.fr:
+        await flutterTts.setLanguage("fr-FR");
+        break;
+      case AppLanguage.ar:
+        await flutterTts.setLanguage("ar-SA");
+        break;
+      case AppLanguage.de:
+        await flutterTts.setLanguage("de-DE");
+        break;
+      case AppLanguage.es:
+        await flutterTts.setLanguage("es-ES");
+        break;
+      case AppLanguage.amazigh:
+        await flutterTts.setLanguage("fr-FR"); // No native TTS, fallback
+        break;
+      case AppLanguage.ru:
+        await flutterTts.setLanguage("ru-RU");
+        break;
+      case AppLanguage.it:
+        await flutterTts.setLanguage("it-IT");
+        break;
+      case AppLanguage.zh:
+        await flutterTts.setLanguage("zh-CN"); // or zh-TW for Traditional
+        break;
+      case AppLanguage.ko:
+        await flutterTts.setLanguage("ko-KR");
+        break;
+    }
+    await flutterTts.speak(text);
+  }
+
+
+  void _initTts() {
     flutterTts.setStartHandler(() {
       setState(() {
         isPlaying = true;
@@ -126,52 +169,42 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
     flutterTts.setCompletionHandler(() {
       setState(() {
         isPlaying = false;
-        highlightedWordIndex = widget.story.pages[currentPageIndex].words.length - 1;
+        final words = widget.story.pages[currentPageIndex].getWords(currentLanguage);
+        highlightedWordIndex = words.length - 1;
       });
     });
 
-    flutterTts.setCancelHandler(() {
-      setState(() {
-        isPlaying = false;
-      });
+    flutterTts.setCancelHandler(() => setState(() => isPlaying = false));
+
+    flutterTts.setProgressHandler((text, start, end, word) {
+      final spokenWords = text.substring(0, end).split(RegExp(r'\s+'));
+      final words = widget.story.pages[currentPageIndex].getWords(currentLanguage);
+      setState(() => highlightedWordIndex = (spokenWords.length - 1).clamp(0, words.length - 1));
     });
 
-    flutterTts.setProgressHandler((String text, int start, int end, String word) {
-      final spokenText = text.substring(0, end);
-      final spokenWords = spokenText.split(RegExp(r'\s+'));
-      setState(() {
-        highlightedWordIndex = (spokenWords.length - 1).clamp(0, widget.story.pages[currentPageIndex].words.length - 1);
-      });
-    });
-
-    await flutterTts.setLanguage('en-US');
-    await flutterTts.setSpeechRate(0.45);
-    await flutterTts.setPitch(1.0);
+    flutterTts.setLanguage('en-US');
+    flutterTts.setSpeechRate(0.45);
+    flutterTts.setPitch(1.0);
   }
 
   Future<void> _speak() async {
-    final text = widget.story.pages[currentPageIndex].fullText;
+    final words = widget.story.pages[currentPageIndex].getWords(currentLanguage);
+    final text = words.join(' ');
     if (text.isEmpty) return;
-
     if (isPlaying) {
       await flutterTts.stop();
       setState(() => isPlaying = false);
     } else {
-      await flutterTts.speak(text);
+      await speak(text, currentLanguage);
     }
   }
 
   void _goToPage(int index) async {
     if (index < 0 || index >= widget.story.pages.length) return;
-     _playFlipSound();
+    _playFlipSound();
+    if (isPlaying) await flutterTts.stop();
 
-    if (isPlaying) {
-      await flutterTts.stop();
-    }
-
-    if (index == widget.story.pages.length - 1) {
-      _confettiController.play();
-    }
+    if (index == widget.story.pages.length - 1) _confettiController.play();
 
     setState(() {
       currentPageIndex = index;
@@ -184,28 +217,18 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
   }
 
   void _onCharacterTap() {
-    final funnyLine = widget.story.pages[currentPageIndex].funnyLine;
-    final characterName = widget.story.pages[currentPageIndex].characterName;
+    final page = widget.story.pages[currentPageIndex];
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('$characterName says: "$funnyLine"'),
+        content: Text('${page.characterName} says: "${page.funnyLine}"'),
         duration: const Duration(seconds: 2),
         backgroundColor: Colors.deepOrange,
       ),
     );
   }
 
-  void _increaseTextSize() {
-    setState(() {
-      if (_textSize < 50) _textSize += 2;
-    });
-  }
-
-  void _decreaseTextSize() {
-    setState(() {
-      if (_textSize > 20) _textSize -= 2;
-    });
-  }
+  void _increaseTextSize() { if (_textSize < 50) setState(() => _textSize += 2); }
+  void _decreaseTextSize() { if (_textSize > 20) setState(() => _textSize -= 2); }
 
   @override
   void dispose() {
@@ -221,248 +244,210 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final pages = widget.story.pages;
+    final isRtl = currentLanguage == AppLanguage.ar || currentLanguage == AppLanguage.amazigh;
 
-    return Scaffold(
-      backgroundColor: isNightMode ? const Color(0xFF121212) : const Color(0xFFFFF3E0),
-      extendBodyBehindAppBar: true,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black87),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-        actions: [
-          IconButton(
-            icon: Icon(
-              voiceType == 'child_female'
-                  ? Icons.child_care   // icon representing child voice
-                  : Icons.record_voice_over_rounded, // icon for adult voice
-              color: Colors.black87,
+    return Directionality(
+      textDirection: isRtl ? TextDirection.rtl : TextDirection.ltr,
+      child: Scaffold(
+        backgroundColor: isNightMode ? const Color(0xFF121212) : const Color(0xFFFFF3E0),
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.black87),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          actions: [
+            IconButton(
+              icon: Icon(voiceType == 'child_female' ? Icons.child_care : Icons.record_voice_over_rounded),
+              tooltip: voiceType == 'child_female' ? 'Switch to Adult Voice' : 'Switch to Child Voice',
+              onPressed: () {
+                _changeVoice(voiceType == 'child_female' ? 'adult_male' : 'child_female');
+              },
             ),
-            tooltip: voiceType == 'child_female' ? 'Switch to Adult Voice' : 'Switch to Child Voice',
-            onPressed: () {
-              final newVoice = voiceType == 'child_female' ? 'adult_male' : 'child_female';
-              _changeVoice(newVoice);
-            },
-          ),
-          IconButton(
-            icon: Icon(isNightMode ? Icons.nightlight_round : Icons.wb_sunny, color: Colors.black87),
-            onPressed: _toggleNightMode,
-          ),
-        ],
-      ),
-      body: Stack(
-        children: [
-          Positioned.fill(
-            child: Stack(
-              children: [
-                Image.asset(
-                  isNightMode
-                      ? 'assets/images/UI/BackGrounds/bg10.jpg'
-                      : 'assets/images/UI/BackGrounds/bg10.jpg',
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: isNightMode
-                          ? [Colors.black.withValues(alpha: 0.7), Colors.black.withValues(alpha: 0.3)]
-                          : [Colors.white.withValues(alpha: 0.6), Colors.transparent],
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                    ),
-                  ),
-                ),
+            IconButton(
+              icon: Icon(isNightMode ? Icons.nightlight_round : Icons.wb_sunny, color: Colors.black87),
+              onPressed: _toggleNightMode,
+            ),
+            PopupMenuButton<AppLanguage>(
+              icon: const Icon(Icons.language, color: Colors.black87),
+              onSelected: (lang) {
+                setState(() {
+                  currentLanguage = lang;
+                  LanguageManager.setLanguage(lang);
+                });
+              },
+              itemBuilder: (context) => const [
+                PopupMenuItem(value: AppLanguage.en, child: Text("English")),
+                PopupMenuItem(value: AppLanguage.fr, child: Text("Français")),
+                PopupMenuItem(value: AppLanguage.ar, child: Text("العربية")),
+                PopupMenuItem(value: AppLanguage.de, child: Text("Deutch")),
+                PopupMenuItem(value: AppLanguage.es, child: Text("Spanish")),
+                PopupMenuItem(value: AppLanguage.amazigh, child: Text("Amazigh")),
+                PopupMenuItem(value: AppLanguage.it, child: Text("Italian")),
+                PopupMenuItem(value: AppLanguage.ko, child: Text("Korean")),
+                PopupMenuItem(value: AppLanguage.ru, child: Text("Russian")),
+                PopupMenuItem(value: AppLanguage.zh, child: Text("Chinese")),
               ],
             ),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _confettiController,
-              blastDirectionality: BlastDirectionality.explosive,
-              shouldLoop: false,
-              colors: confettiColors,
-              gravity: 0.3,
+          ],
+        ),
+        body: Stack(
+          children: [
+            Positioned.fill(
+              child: Stack(
+                children: [
+                  Image.asset(
+                    'assets/images/UI/BackGrounds/bg10.jpg',
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: isNightMode
+                            ? [Colors.black.withOpacity(0.7), Colors.black.withOpacity(0.3)]
+                            : [Colors.white.withOpacity(0.6), Colors.transparent],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          SafeArea(
-            child: Column(
-              children: [
-                Userstatutbar(),
-                Text(
-                  widget.story.title,
-                  style: const TextStyle(
-                      fontSize: 25,
-                      color: Colors.deepOrange, fontWeight: FontWeight.bold),
-                ),
-                Expanded(
-                  child: PageView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    controller: _pageController,
-                    itemCount: pages.length,
-                    itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24),
-                          color: isNightMode
-                              ? Colors.white.withValues(alpha: 0.1)
-                              : Colors.white.withValues(alpha: 0.95),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 15,
-                              offset: const Offset(0, 6),
-                            )
-                          ],
-                        ),
-                        padding: const EdgeInsets.symmetric(horizontal: 16,),
-                        child: Column(
-                          children: [
-                            Expanded( flex: 1,
-                              child: StoryPageWidget(
-                                pageData: pages[index],
-                                highlightedWordIndex: highlightedWordIndex,
-                                isCurrentPage: index == currentPageIndex,
-                                bounceAnimation: _bounceAnimation,
-                                onCharacterTap: _onCharacterTap,
-                                textSize: _textSize,
+            Align(
+              alignment: Alignment.topCenter,
+              child: ConfettiWidget(
+                confettiController: _confettiController,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
+                colors: confettiColors,
+                gravity: 0.3,
+              ),
+            ),
+            SafeArea(
+              child: Column(
+                children: [
+                  Userstatutbar(),
+                  Text(widget.story.title,
+                      style: const TextStyle(fontSize: 25, color: Colors.deepOrange, fontWeight: FontWeight.bold)),
+                  Expanded(
+                    child: PageView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      controller: _pageController,
+                      itemCount: pages.length,
+                      itemBuilder: (context, index) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(24),
+                            color: isNightMode ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.95),
+                            boxShadow: [
+                              BoxShadow(color: Colors.black12, blurRadius: 15, offset: const Offset(0, 6))
+                            ],
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: StoryPageWidget(
+                                  pageData: pages[index],
+                                  highlightedWordIndex: highlightedWordIndex,
+                                  isCurrentPage: index == currentPageIndex,
+                                  bounceAnimation: _bounceAnimation,
+                                  onCharacterTap: _onCharacterTap,
+                                  textSize: _textSize,
+                                  language: currentLanguage,
+                                ),
                               ),
-                            ),
-                            // Text size controls
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                IconButton(
-                                  icon: const Icon(Icons.text_decrease, color: Colors.deepOrange),
-                                  onPressed: _decreaseTextSize,
-                                ),
-                                const SizedBox(width: 16),
-                                IconButton(
-                                  icon: const Icon(Icons.text_increase, color: Colors.deepOrange),
-                                  onPressed: _increaseTextSize,
-                                ),
-                              ],
-                            ),
-                          ],
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  IconButton(icon: const Icon(Icons.text_decrease, color: Colors.deepOrange), onPressed: _decreaseTextSize),
+                                  const SizedBox(width: 16),
+                                  IconButton(icon: const Icon(Icons.text_increase, color: Colors.deepOrange), onPressed: _increaseTextSize),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
-                  child: LinearProgressIndicator(
-                    value: (currentPageIndex + 1) / pages.length,
-                    backgroundColor: Colors.grey.shade300,
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.deepOrangeAccent),
-                    minHeight: 6,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                    child: LinearProgressIndicator(
+                      value: (currentPageIndex + 1) / pages.length,
+                      backgroundColor: Colors.grey.shade300,
+                      valueColor: const AlwaysStoppedAnimation<Color>(Colors.deepOrangeAccent),
+                      minHeight: 6,
+                    ),
                   ),
-                ),
-                Container(
-                  margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
-                  decoration: BoxDecoration(
-                    color: isNightMode ? Colors.white.withValues(alpha: 0.1) : Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: isNightMode
-                        ? [
-                      BoxShadow(
-                        color: Colors.black54,
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      )
-                    ]
-                        : [
-                      BoxShadow(
-                        color: Colors.deepOrange.withValues(alpha: 0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
-                      )
-                    ],
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back_ios_new),
-                            onPressed: currentPageIndex == 0 ? null : () => _goToPage(currentPageIndex - 1),
-                            color: currentPageIndex == 0 ?
-                            (isNightMode ? Colors.grey.shade700 : Colors.grey) : (isNightMode ? Colors.white : Colors.deepOrange),
-                          ),
-                          GestureDetector(
-                            onTap: _speak,
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: isPlaying
-                                    ? const LinearGradient(colors: [Colors.deepOrange, Colors.orangeAccent])
-                                    : LinearGradient(
-                                  colors: isNightMode
-                                      ? [Colors.grey.shade800, Colors.grey.shade700]
-                                      : [Colors.grey.shade300, Colors.grey.shade200],
-                                ),
-                                boxShadow: isPlaying
-                                    ? [
-                                  BoxShadow(
-                                    color: Colors.deepOrange.withValues(alpha: 0.5),
-                                    blurRadius: 12,
-                                    spreadRadius: 2,
-                                  )
-                                ]
-                                    : isNightMode
-                                    ? [
-                                  BoxShadow(
-                                    color: Colors.black54,
-                                    blurRadius: 6,
-                                    offset: Offset(0, 3),
-                                  )
-                                ]
-                                    : [],
-                              ),
-                              child: Icon(
-                                isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill,
-                                color: Colors.white,
-                                size: 28,
-                              ),
+                  Container(
+                    margin: const EdgeInsets.symmetric(vertical: 2, horizontal: 20),
+                    decoration: BoxDecoration(
+                      color: isNightMode ? Colors.white.withOpacity(0.1) : Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: isNightMode
+                          ? [const BoxShadow(color: Colors.black54, blurRadius: 12, offset: Offset(0, 6))]
+                          : [BoxShadow(color: Colors.deepOrange.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 6))],
+                    ),
+                    padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new),
+                          onPressed: currentPageIndex == 0 ? null : () => _goToPage(currentPageIndex - 1),
+                          color: currentPageIndex == 0 ? (isNightMode ? Colors.grey.shade700 : Colors.grey) : (isNightMode ? Colors.white : Colors.deepOrange),
+                        ),
+                        GestureDetector(
+                          onTap: _speak,
+                          child: AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: isPlaying
+                                  ? const LinearGradient(colors: [Colors.deepOrange, Colors.orangeAccent])
+                                  : LinearGradient(colors: isNightMode ? [Colors.grey.shade800, Colors.grey.shade700] : [Colors.grey.shade300, Colors.grey.shade200]),
+                              boxShadow: isPlaying
+                                  ? [BoxShadow(color: Colors.deepOrange.withOpacity(0.5), blurRadius: 12, spreadRadius: 2)]
+                                  : isNightMode
+                                  ? const [BoxShadow(color: Colors.black54, blurRadius: 6, offset: Offset(0, 3))]
+                                  : [],
                             ),
-
+                            child: Icon(isPlaying ? Icons.pause_circle_filled : Icons.play_circle_fill, color: Colors.white, size: 28),
                           ),
-                          IconButton(
-                            icon: const Icon(Icons.arrow_forward_ios),
-                            onPressed: currentPageIndex == pages.length - 1 ? null : () => _goToPage(currentPageIndex + 1),
-                            color: currentPageIndex == pages.length - 1  ? (isNightMode ? Colors.black : Colors.grey)
-                                : (isNightMode ? Colors.white : Colors.deepOrange),
-                          ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_forward_ios),
+                          onPressed: currentPageIndex == pages.length - 1 ? null : () => _goToPage(currentPageIndex + 1),
+                          color: currentPageIndex == pages.length - 1 ? (isNightMode ? Colors.black : Colors.grey) : (isNightMode ? Colors.white : Colors.deepOrange),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null
-          ? SafeArea(
-        child: Container(
-          padding: const EdgeInsets.only(bottom: 4),
-          color: Colors.transparent,
-          height: _bannerAd!.size.height.toDouble(),
-          width: _bannerAd!.size.width.toDouble(),
-          child: AdWidget(ad: _bannerAd!),
+          ],
         ),
-      )
-          : null,
+        bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null
+            ? SafeArea(
+          child: Container(
+            padding: const EdgeInsets.only(bottom: 4),
+            color: Colors.transparent,
+            height: _bannerAd!.size.height.toDouble(),
+            width: _bannerAd!.size.width.toDouble(),
+            child: AdWidget(ad: _bannerAd!),
+          ),
+        )
+            : null,
+      ),
     );
   }
 }

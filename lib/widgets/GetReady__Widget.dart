@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import '../tools/audio_tool/Audio_Manager.dart';
 
@@ -59,7 +60,7 @@ class GetReadyPage extends StatefulWidget {
               ),
               SizedBox(height: 20),
               Text(
-                countdown > 0 ? '$countdown' : 'Go!',
+                countdown > 0 ? "$countdown" : "${tr(context).go}",
                 style: TextStyle(
                   fontSize: 72,
                   fontWeight: FontWeight.bold,

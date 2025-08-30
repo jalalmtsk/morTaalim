@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:mortaalim/games/paitingGame/paintOnSketch/SketchSelectorIndex.dart';
 import 'package:mortaalim/games/paitingGame/paintOnSketch/paintonSketchPage.dart';
 import 'package:mortaalim/games/paitingGame/paint_main.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/ComingSoon.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
+import 'package:provider/provider.dart';
 import '../../main.dart';
 
 
@@ -17,6 +19,7 @@ class MyApp extends StatelessWidget {
 class DrawingIndex extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.orange.shade50,
       body: SafeArea(
@@ -27,7 +30,10 @@ class DrawingIndex extends StatelessWidget {
               children: [
                 IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.orange.shade700),
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {
+                    audioManager.playEventSound("cancelButton");
+                    Navigator.pop(context);
+                  }
                 ),
               ],
             ),
@@ -43,10 +49,11 @@ class DrawingIndex extends StatelessWidget {
                       description: "${tr(context).drawWhateverYouLike} !",
                       icon: Icons.brush,
                       color: Colors.orangeAccent,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => DrawingApp()),
-                      ),
+                      onTap: () {
+                        audioManager.playEventSound("clickButton");
+                        Navigator.push(
+                          context, MaterialPageRoute(builder: (context) => DrawingApp()),);
+                      }
                     ),
                     SizedBox(height: 20),
 
@@ -56,10 +63,14 @@ class DrawingIndex extends StatelessWidget {
                       description: " ${tr(context).colorBeautifulTemplates}",
                       icon: Icons.image,
                       color: Colors.deepOrange.shade400,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SketchSelectorPage()),
-                      ),
+                      onTap: () {
+                        audioManager.playEventSound("clickButton");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              SketchSelectorPage()),
+                        );
+                      }
                     ),
                     SizedBox(height: 20),
                     _buildOptionCard(
@@ -68,10 +79,14 @@ class DrawingIndex extends StatelessWidget {
                       description: "${tr(context).stepByStepPaintingLessons}",
                       icon: Icons.school,
                       color: Colors.orange.shade300,
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => ComingSoonPage()),
-                      ),
+                      onTap: () {
+                        audioManager.playEventSound("clickButton");
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>
+                              ComingSoonPage()),
+                        );
+                      }
                     ),
                   ],
                 ),

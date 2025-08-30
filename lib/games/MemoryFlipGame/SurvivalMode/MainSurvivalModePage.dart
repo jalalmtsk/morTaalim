@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mortaalim/XpSystem.dart';
@@ -182,9 +183,9 @@ class _SurvivalMemoryGameState extends State<SurvivalMemoryGame>
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white.withOpacity(0.9),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Game Over', style: TextStyle(color: Colors.deepPurple)),
+        title:  Text(tr(context).gameOver, style: TextStyle(color: Colors.deepPurple)),
         content: Text(
-            'You survived for ${elapsedSeconds}s and made $_matchesMade matches.\n\nBest: $bestMatches matches in $bestTimeSeconds seconds.'),
+            '${tr(context).youSurvivedFor} ${elapsedSeconds}${tr(context).seconds} ${tr(context).andMade} $_matchesMade ${tr(context).matches}.\n\n${tr(context).best}: $bestMatches ${tr(context).matchesIn} $bestTimeSeconds ${tr(context).seconds}.'),
         actions: [
           TextButton(
             onPressed: () {
@@ -196,7 +197,7 @@ class _SurvivalMemoryGameState extends State<SurvivalMemoryGame>
                 _startRound();
               });
             },
-            child: Text('Restart', style: TextStyle(color: Colors.deepPurple.shade700)),
+            child: Text(tr(context).restart, style: TextStyle(color: Colors.deepPurple.shade700)),
           ),
           TextButton(
             onPressed: () {
@@ -210,7 +211,7 @@ class _SurvivalMemoryGameState extends State<SurvivalMemoryGame>
                 ),
               );
             },
-            child: Text('Highlights', style: TextStyle(color: Colors.deepPurple.shade700)),
+            child: Text(tr(context).highlights, style: TextStyle(color: Colors.deepPurple.shade700)),
           ),
         ],
       ),
@@ -288,7 +289,7 @@ class _SurvivalMemoryGameState extends State<SurvivalMemoryGame>
         ],
         centerTitle: true,
         title: Text(
-          'Survival Mode',
+          tr(context).survivalMode,
           style: TextStyle(
             color: Colors.deepPurple.shade700,
             fontWeight: FontWeight.w900,
@@ -306,8 +307,8 @@ class _SurvivalMemoryGameState extends State<SurvivalMemoryGame>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 StatusTile(icon: Icons.timer, label: '$minutes:$seconds'),
-                StatusTile(icon: Icons.swap_calls, label: 'Moves: $_movesLeft'),
-                StatusTile(icon: Icons.star, label: 'Matches: $_matchesMade'),
+                StatusTile(icon: Icons.swap_calls, label: '${tr(context).moves}: $_movesLeft'),
+                StatusTile(icon: Icons.star, label: '${tr(context).matches}: $_matchesMade'),
               ],
             ),
             const SizedBox(height: 20),

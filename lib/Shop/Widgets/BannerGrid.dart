@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../ManagerTools/StarDeductionOverlay.dart';
@@ -56,18 +58,23 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
 
   void showPurchaseDialog(BuildContext context, String path, int cost,
       ExperienceManager xpManager, int index) {
+    final audiManager = Provider.of<AudioManager>(context, listen: false);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Unlock Banner"),
-        content: Text("Unlock this banner for $cost ⭐?"),
+        title:  Text(tr(context).unlockBanner),
+        content: Text("${tr(context).unlockThis} ${tr(context).banner} ${tr(context).forb} $cost ⭐?"),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Cancel"),
+            onPressed: () {
+              audiManager.playEventSound("cancelButton");
+              Navigator.pop(context);
+            },
+            child:  Text(tr(context).cancel),
           ),
           TextButton(
             onPressed: () async {
+              audiManager.playEventSound("clickButton");
               Navigator.pop(context);
 
               // Deduct stars
@@ -106,7 +113,7 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
                 if (mounted) setState(() => recentlyUnlockedIndex = null);
               });
             },
-            child: const Text("Unlock"),
+            child:  Text(tr(context).unlock),
           ),
         ],
       ),
@@ -248,6 +255,7 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     return GridView.builder(
       padding: const EdgeInsets.all(16),
@@ -295,14 +303,17 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
         return GestureDetector(
           onTap: () {
             if (unlocked) {
+              audioManager.playEventSound("clickButton2");
               xpManager.selectBannerImage(path);
               setState(() => selectedIndex = index);
             } else if (xpManager.stars >= cost) {
+              audioManager.playEventSound("PopButton");
               showPurchaseDialog(context, path, cost, xpManager, index);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text("Not enough stars!")),
               );
+              audioManager.playEventSound("invalid");
             }
           },
           child: TweenAnimationBuilder<double>(

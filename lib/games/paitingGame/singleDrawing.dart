@@ -9,6 +9,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart' hide useWhiteForeground;
 import 'package:confetti/confetti.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 
@@ -107,6 +108,8 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
   }
 
   void _startTimer() {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/CinematicStart_SFX.mp3");
     if (!_timerRunning) {
       _timerRunning = true;
       _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -146,8 +149,9 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
   }
 
   void clearCanvas() {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playAlert("assets/audios/UI_Audio/SFX_Audio/TransisitonPages_SFX.mp3");
     _confettiController.play();
-
     setState(() {
       points.clear();
       _elapsed = Duration.zero;
@@ -165,8 +169,9 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
     }
 
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
-    if (xpManager.saveTokenCount < 1) {
+    if (xpManager.saveTokenCount < 5) {
       // No tokens, force watching two ads
       await _watchTwoAdsAndSave(xpManager);
       return;
@@ -176,20 +181,26 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
     final choice = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Save Drawing'),
-        content: Text('You can spend 1 tolim to save or watch two ads to save for free.'),
+        title: Text(tr(context).save),
+        content: Text(tr(context).youCanSpendONETolimToSaveOrWatchTwoAdsToSaveForFree),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop('ad'),
-            child: Text('Watch Ads'),
+            onPressed: () {
+              audioManager.playEventSound("clickButton2");
+              Navigator.of(context).pop('ad');},
+            child: Text(tr(context).watchAd),
           ),
           ElevatedButton(
-            onPressed: () => Navigator.of(context).pop('spend'),
-            child: Text('Spend 1 Tolim'),
+            onPressed: () {
+              audioManager.playEventSound("clickButton2");
+              Navigator.of(context).pop('spend');},
+            child: Text(tr(context).spendONETolim),
           ),
           TextButton(
-            onPressed: () => Navigator.of(context).pop(null),
-            child: Text('Cancel'),
+            onPressed: () {
+              audioManager.playEventSound("clickButton2");
+              Navigator.of(context).pop(null);},
+            child: Text(tr(context).cancel),
           ),
         ],
       ),
@@ -205,22 +216,26 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
       final confirm = await showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
-          title: Text('Confirm Spending'),
+          title: Text(tr(context).confirmSpending),
           content: Row(
             children: [
-              Text('This will deduct 1 tolim. Proceed?'),
+              Text(' ${tr(context).thisWillDeductONEtolimProceed}?'),
               SizedBox(width: 8),
               Icon(Icons.generating_tokens_rounded, color: Colors.green),
             ],
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text('Cancel'),
+              onPressed: () {
+                audioManager.playEventSound("cancelButton");
+                Navigator.of(context).pop(false);},
+              child: Text(tr(context).cancel),
             ),
             ElevatedButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text('Confirm'),
+              onPressed: () {
+                audioManager.playEventSound("clickButton2");
+                Navigator.of(context).pop(true);},
+              child: Text(tr(context).confirm),
             ),
           ],
         ),
@@ -235,31 +250,41 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
   Future<void> _watchTwoAdsAndSave(ExperienceManager xpManager) async {
     await AdHelper.showRewardedAdWithLoading(context, () async {
       await AdHelper.showRewardedAdWithLoading(context, () async {
+        if (!mounted) return;
         await _saveDrawing();
       });
     });
   }
 
   Future<void> _saveAndDeductToken(ExperienceManager xpManager) async {
+    // Save the drawing first
     await _saveDrawing();
 
-    // Deduct 1 token
-    xpManager.SpendTokenBanner(context, 1);
+    // Check if widget is still active
+    if (!mounted) return;
 
+    // Deduct tokens
+    xpManager.SpendTokenBanner(context, 5);
+
+    // Clear the canvas
     clearCanvas();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            Text('Drawing saved!  '),
-            Text('-1 ', style: TextStyle(fontWeight: FontWeight.bold, color: CupertinoColors.activeGreen)),
-            Icon(Icons.generating_tokens_rounded, color: CupertinoColors.systemGreen),
-          ],
+    // Show snackbar
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            children: [
+              Text(tr(context).drawingSaved),
+              Text('-5 ', style: TextStyle(fontWeight: FontWeight.bold, color: CupertinoColors.activeGreen)),
+              Icon(Icons.generating_tokens_rounded, color: CupertinoColors.systemGreen),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
+
 
   Future<void> _saveDrawing() async {
     try {
@@ -280,7 +305,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
     } catch (e) {
       print("Error saving drawing: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to save drawing.')),
+        SnackBar(content: Text(tr(context).failedToSaveDrawing)),
       );
     }
   }
@@ -296,6 +321,8 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return SafeArea(
       child: Stack(
         children: [
@@ -381,8 +408,8 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
 
           // 🧰 Tools Row (Top Right)
           Positioned(
-            top: 93, // ⬅️ moved down below the status bar
-            right: 12,
+            top: 120, // ⬅️ moved down below the status bar
+            right: 25,
             child: Row(
               children: [
                 FloatingActionButton(
@@ -390,47 +417,53 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
                   mini: true,
                   backgroundColor: selectedColor,
                   child: Icon(Icons.color_lens, color: useWhiteForeground(selectedColor) ? Colors.white : Colors.black),
-                  onPressed: () => pickColor(context),
-                  tooltip: 'Choose Color',
+                  onPressed: () {
+                    audioManager.playEventSound("PopButton");
+                    pickColor(context);},
+                  tooltip: tr(context).chooseColor,
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 4),
                 FloatingActionButton(
-                  heroTag: 'brush',
+                  heroTag: "brush",
                   mini: true,
                   backgroundColor: Colors.orange,
                   child: Icon(Icons.brush),
                   onPressed: () => pickStrokeWidth(context),
-                  tooltip: 'Brush Size',
+                  tooltip: tr(context).brushSize,
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 4),
                 FloatingActionButton(
-                  heroTag: 'eraser',
+                  heroTag: "eraser",
                   mini: true,
                   backgroundColor: isErasing ? Colors.redAccent : Colors.grey,
                   child: Icon(isErasing ? Icons.remove_circle_outline : Icons.remove_circle),
                   onPressed: () => setState(() {
+                    audioManager.playEventSound("PopButton");
                     isErasing = !isErasing;
                     widget.onChanged(points, selectedColor, strokeWidth, isErasing, _elapsed);
                   }),
-                  tooltip: isErasing ? 'Eraser On' : 'Eraser Off',
+                  tooltip: isErasing ? tr(context).eraserOn : tr(context).eraserOff,
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 4),
                 FloatingActionButton(
-                  heroTag: 'clear',
+                  heroTag: "clear",
                   mini: true,
                   backgroundColor: Colors.orangeAccent,
                   child: Icon(Icons.delete_forever),
                   onPressed: clearCanvas,
-                  tooltip: 'Clear Canvas',
+                  tooltip: tr(context).clearCanvas,
                 ),
-                SizedBox(width: 8),
+                SizedBox(width: 4),
                 FloatingActionButton(
-                  heroTag: 'save',
+                  heroTag: tr(context).save,
                   mini: true,
                   backgroundColor: Colors.green,
                   child: Icon(Icons.save),
-                  onPressed: saveDrawing,
-                  tooltip: 'Save Drawing',
+                  onPressed: (){
+                    audioManager.playEventSound("PopButton");
+                    saveDrawing();
+                  },
+                  tooltip: tr(context).save,
                 ),
               ],
             ),
@@ -445,8 +478,10 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
               mini: true,
               backgroundColor: Colors.black87,
               child: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
-              tooltip: 'Back',
+              onPressed: () {
+                audioManager.playEventSound("cancelButton");
+                Navigator.of(context).pop();},
+              tooltip: tr(context).back,
             ),
           ),
 
@@ -470,15 +505,16 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
 
   Future<void> pickColor(BuildContext context) async {
     Color picked = selectedColor;
-
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     await showDialog<Color>(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text('Pick a color 🎨', style: TextStyle(fontFamily: 'Comic Sans MS')),
+        title: Text('${tr(context).chooseColor} 🎨', style: TextStyle(fontFamily: 'Comic Sans MS')),
         content: SingleChildScrollView(
           child: BlockPicker(
             pickerColor: picked,
             onColorChanged: (color) {
+              audioManager.playEventSound("PopButton");
               picked = color;
             },
           ),
@@ -489,6 +525,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
         actions: [
           TextButton(
             onPressed: () {
+              audioManager.playEventSound("cancelButton");
               Navigator.of(context).pop();
             },
             child: Text(tr(context).ok),
@@ -506,7 +543,6 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
 
   Future<void> pickStrokeWidth(BuildContext context) async {
     double tempStroke = strokeWidth;
-
     double? selectedWidth = await showDialog<double>(
       context: context,
       builder: (context) {
@@ -530,9 +566,9 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text('🖊', style: TextStyle(fontSize: 20)),
+                      Text('🖊', style: TextStyle(fontSize: 16)),
                       Text('✏️', style: TextStyle(fontSize: 26)),
-                      Text('🖌', style: TextStyle(fontSize: 32)),
+                      Text('🖌', style: TextStyle(fontSize: 36)),
                     ],
                   ),
                 ],
@@ -544,8 +580,10 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
           contentPadding: EdgeInsets.all(20),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(tempStroke),
-              child: Text('OK', style: TextStyle(fontFamily: 'Comic Sans MS', fontWeight: FontWeight.bold)),
+              onPressed: () {
+                audioManager.playEventSound("cancelButton");
+                Navigator.of(context).pop(tempStroke);},
+              child: Text(tr(context).ok, style: TextStyle(fontFamily: 'Comic Sans MS', fontWeight: FontWeight.bold)),
             ),
           ],
         );

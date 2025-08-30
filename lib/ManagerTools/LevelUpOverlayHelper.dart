@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,7 @@ class LevelUpOverlayHelper {
                               duration: const Duration(milliseconds: 400),
                               opacity: showText ? 1 : 0,
                               child: Text(
-                                "LEVEL $newLevel",
+                                "${tr(context).level} $newLevel",
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w900,

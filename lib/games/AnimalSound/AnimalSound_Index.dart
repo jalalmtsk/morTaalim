@@ -4,6 +4,7 @@ import 'package:mortaalim/games/AnimalSound/AnimalSound_ListenMode.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_GuessTheSound.dart';
 import 'package:mortaalim/games/AnimalSound/MatchTheSound_Mode/AnimalSound_MatchAndDrop.dart';
 
+import '../../main.dart';
 import '../../tools/Ads_Manager.dart';
 
 class AnimalsoundIndex extends StatefulWidget {
@@ -61,7 +62,7 @@ class _AnimalsoundIndexState extends State<AnimalsoundIndex> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('🐾 Animal Sound Game'),
+        title:  Text('🐾${tr(context).animalSound}'),
         centerTitle: true,
         backgroundColor: Colors.green[700],
       ),
@@ -83,22 +84,16 @@ class _AnimalsoundIndexState extends State<AnimalsoundIndex> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GameModeCard(
-                        title: '🎧 Listen Mode',
-                        description: 'Tap animals to hear their sounds!',
+                        title: '🎧 ${tr(context).listenMode}',
+                        description: '${tr(context).tapAnimalsToHearTheirSounds}!',
                         color: Colors.orangeAccent,
                         onTap: () => _handleGameTap(ListenMode()),
                       ),
                       const SizedBox(height: 20),
-                      GameModeCard(
-                        title: '❓ Guess the Sound',
-                        description: 'Listen and select the correct animal!',
-                        color: Colors.lightBlueAccent,
-                        onTap: () => _handleGameTap(GuessSound()),
-                      ),
                       const SizedBox(height: 20),
                       GameModeCard(
-                        title: '🖐 Match & Drop',
-                        description: 'Drag animals to match their sounds!',
+                        title: '🖐 ${tr(context).matchAndDrop}',
+                        description: '${tr(context).dragAnimalsToMatchTheirSounds}!',
                         color: Colors.pinkAccent,
                         onTap: () => _handleGameTap(AS_MatchDrop()),
                       ),

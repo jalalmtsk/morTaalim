@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/games/AnimalSound/MatchTheSound_Mode/AnimalSound_MatchAndDrop.dart';
+import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
@@ -80,8 +81,8 @@ class _MatchResultPageState extends State<MatchResultPage> {
   Widget build(BuildContext context) {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     final message = widget.failed
-        ? 'Don’t worry! You can try again.\nTolim rewarded: 0'
-        : 'Amazing! You finished with ${widget.score}/${widget.maxScore}.\nTolim rewarded: 1';
+        ? '${tr(context).dontWorry}! ${tr(context).youCanTryAgain}.\nTolim ${tr(context).rewarded}: 0'
+        : '${tr(context).awesome}! ${tr(context).youFinishedWith} ${widget.score}/${widget.maxScore}.\nTolim ${tr(context).rewarded}: 1';
 
     return WillPopScope(
       onWillPop: _onWillPop,
@@ -112,7 +113,7 @@ class _MatchResultPageState extends State<MatchResultPage> {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  widget.failed ? 'Game Over' : 'Great Job!',
+                  widget.failed ? '${tr(context).gameOver}' : '${tr(context).greatJob}!',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.w900,
@@ -130,7 +131,7 @@ class _MatchResultPageState extends State<MatchResultPage> {
                   spacing: 12,
                   children: [
                     _resultChip(Icons.star, Colors.amber,
-                        'Score: ${widget.score}/${widget.maxScore}'),
+                        '${tr(context).score}: ${widget.score}/${widget.maxScore}'),
                   ],
                 ),
                 const SizedBox(height: 22),
@@ -146,7 +147,7 @@ class _MatchResultPageState extends State<MatchResultPage> {
                     ),
                   )
                       : const Icon(Icons.replay),
-                  label: const Text('Play Again'),
+                  label:  Text(tr(context).playAgain),
                   style: ElevatedButton.styleFrom(
                     shape: const StadiumBorder(),
                     padding:

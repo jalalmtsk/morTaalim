@@ -1,7 +1,10 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../main.dart';
 import 'MFAdventureMode.dart';
 
 class MFLevelSelectorAdventure extends StatefulWidget {
@@ -90,11 +93,12 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure>
   }
 
   Widget _glassmorphicCard({required Widget child, required VoidCallback? onTap}) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return GestureDetector(
       onTapDown: (_) => _animationController.reverse(),
       onTapUp: (_) => _animationController.forward(),
       onTapCancel: () => _animationController.forward(),
-      onTap: onTap,
+      onTap:onTap,
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: ClipRRect(
@@ -147,7 +151,7 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure>
     return Scaffold(
       backgroundColor: const Color(0xFFE0F7FA),
       appBar: AppBar(
-        title: Text("${widget.category} Levels"),
+        title: Text(widget.category),
         actions: [
           IconButton(
             icon: const Icon(Icons.lock_open),
@@ -189,7 +193,7 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure>
               child: Column(
                 children: [
                   Text(
-                    'Select Level',
+                    tr(context).selectLevel,
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.w900,
@@ -211,17 +215,22 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure>
                       itemCount: widget.totalLevels,
                       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: columns,
-                        mainAxisSpacing: 24,
-                        crossAxisSpacing: 24,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 20,
                         childAspectRatio: 1,
                       ),
                       itemBuilder: (context, index) {
                         final unlocked = index <= _currentUnlocked!;
-
                         return _glassmorphicCard(
-                          onTap: unlocked ? () => _startLevel(index) : null,
+                          onTap:
+                          unlocked ? ()
+                          {
+                            audioManager.playEventSound("clickButton2");
+                            _startLevel(index);}
+                              : null,
+
                           child: Container(
-                            padding: const EdgeInsets.all(16),
+                            padding: const EdgeInsets.all(12),
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -231,21 +240,22 @@ class _MFLevelSelectorAdventureState extends State<MFLevelSelectorAdventure>
                                       ? Icon(
                                     Icons.star_rounded,
                                     key: const ValueKey('star'),
-                                    size: 35,
+                                    size: 30,
                                     color: Colors.amberAccent.shade700,
                                   )
                                       : Icon(
                                     Icons.lock_rounded,
                                     key: const ValueKey('lock'),
-                                    size: 35,
+                                    size: 30,
                                     color: Colors.deepPurple.shade300,
                                   ),
                                 ),
-                                const SizedBox(height: 4),
+                                const SizedBox(height: 2),
                                 Text(
-                                  'Level ${index + 1}',
+                                  textAlign: TextAlign.center,
+                                  '${tr(context).level} \n${index + 1}',
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                     color: unlocked
                                         ? Colors.deepPurple.shade700

@@ -82,8 +82,8 @@ class _BannerUnlockedDialogState extends State<BannerUnlockedDialog>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      "🎉 Banner Unlocked!",
+                     Text(
+                      "🎉 ${tr(context).banner} ${tr(context).unlocked}!",
                       style: TextStyle(
                           fontSize: 26, fontWeight: FontWeight.bold, color: Colors.amber),
                     ),
@@ -119,8 +119,9 @@ class _BannerUnlockedDialogState extends State<BannerUnlockedDialog>
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () {
-                        final xpManager =
-                        Provider.of<ExperienceManager>(context, listen: false);
+                        final audioManager = Provider.of<AudioManager>(context, listen: false);
+                        audioManager.playEventSound("cancelButton");
+                        final xpManager = Provider.of<ExperienceManager>(context, listen: false);
                         xpManager.addXP(widget.xpReward, context: context);
                         Navigator.of(context).pop();
                       },

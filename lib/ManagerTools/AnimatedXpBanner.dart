@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 
 import '../tools/audio_tool/Audio_Manager.dart';
@@ -121,7 +122,7 @@ class _AnimatedXPBannerState extends State<AnimatedXPBanner>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '+${widget.xpAmount} XP gained!',
+                              '+${widget.xpAmount} XP ${tr(context).gained}!',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 17,
@@ -135,8 +136,7 @@ class _AnimatedXPBannerState extends State<AnimatedXPBanner>
                                 ],
                               ),
                             ),
-                            const Text(
-                              'Well Done',
+                             Text(tr(context).wellDone,
                               style: TextStyle(
                                 color: Colors.white70,
                                 fontSize: 14,

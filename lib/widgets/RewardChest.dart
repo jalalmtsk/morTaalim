@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:confetti/confetti.dart';
+import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../tools/audio_tool/Audio_Manager.dart';
@@ -132,7 +133,7 @@ class _RewardChestState extends State<RewardChest> with SingleTickerProviderStat
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
-      barrierLabel: "Reward Screen",
+      barrierLabel: tr(context).rewardScreen,
       barrierColor: Colors.black.withOpacity(0.9),
       transitionDuration: const Duration(milliseconds: 400),
       pageBuilder: (context, animation, secondaryAnimation) {
@@ -174,7 +175,7 @@ class _RewardChestState extends State<RewardChest> with SingleTickerProviderStat
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        _isRare ? "🌟 RARE STAR COLLECTED!" : "🔥 XP COLLECTED!",
+                        _isRare ? "🌟STAR ${tr(context).collected}!" : "🔥 XP ${tr(context).collected}!",
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 36,
@@ -201,8 +202,7 @@ class _RewardChestState extends State<RewardChest> with SingleTickerProviderStat
                         fit: BoxFit.contain,
                       ),
                       const SizedBox(height: 20),
-                      const Text(
-                        "Tap anywhere to continue",
+                       Text(tr(context).tapAnywhereToContinue,
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.white70,

@@ -120,6 +120,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
                       foregroundColor: Colors.white,
                     ),
                     onPressed: () async {
+                      audioManager.playEventSound("clickButton");
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder: (ctx) => AlertDialog(
@@ -132,7 +133,9 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
                               child:  Text(tr(context).cancel),
                             ),
                             ElevatedButton(
-                              onPressed: () => Navigator.of(ctx).pop(true),
+                              onPressed: () {
+                                audioManager.playEventSound("cancelButton");
+                                Navigator.of(ctx).pop(true);},
                               style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
                               child:  Text(tr(context).disconnected),
                             ),
@@ -140,6 +143,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
                         ),
                       );
                       if (confirm == true) {
+                        audioManager.playEventSound("clickButton2");
                         await _disconnectGoogle();
                       }
                     },

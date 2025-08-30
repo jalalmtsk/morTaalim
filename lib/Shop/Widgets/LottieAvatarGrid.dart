@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import 'package:lottie/lottie.dart';
 import 'package:confetti/confetti.dart';
@@ -28,7 +29,7 @@ class LottieAvatarGrid extends StatelessWidget {
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
-          title: const Text("Confirm Purchase"),
+          title:  Text(tr(context).confirmPurchase),
           content: Text("Do you want to unlock this avatar for $cost ⭐?"),
           actions: [
             TextButton(
@@ -46,14 +47,14 @@ class LottieAvatarGrid extends StatelessWidget {
                 xpManager.unlockAvatar(lottiePath);
                 xpManager.selectAvatar(lottiePath);
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Avatar Unlocked! Enjoy!'),
+                   SnackBar(
+                    content: Text("${tr(context).avatarUnlocked}! ${tr(context).enjoy}"),
                     backgroundColor: Colors.deepOrange,
                     behavior: SnackBarBehavior.floating,
                   ),
                 );
               },
-              child: const Text("Buy", style: TextStyle(color: Colors.deepOrange)),
+              child:  Text(tr(context).pay, style: TextStyle(color: Colors.deepOrange)),
             ),
           ],
         ),

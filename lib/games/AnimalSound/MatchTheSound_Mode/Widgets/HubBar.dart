@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:mortaalim/main.dart';
 
 class HudBar extends StatelessWidget {
   const HudBar({
@@ -26,7 +27,7 @@ class HudBar extends StatelessWidget {
         children: [
           Row(
             children: [
-              _hudChip(Icons.score, Colors.amber, 'Score: $score/$maxScore'),
+              _hudChip(Icons.score, Colors.amber, '${tr(context).score}: $score/$maxScore'),
               const SizedBox(width: 8),
               const SizedBox(width: 8),
               const Spacer(),

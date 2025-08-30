@@ -271,6 +271,7 @@ class _SettingsDialogState extends State<SettingsDialog> {
                         minimumSize: const Size(double.infinity, 45),
                       ),
                       onPressed: () {
+                        audioManager.playEventSound("cancelButton");
                         Navigator.of(context).pop();
                       },
                     ),

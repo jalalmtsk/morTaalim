@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
@@ -87,7 +88,7 @@ class _AnimatedStarSpentBannerState extends State<AnimatedStarSpentBanner>
                         width: 60,
                         height: 60,
                         child: Lottie.asset(
-                          'assets/animations/unlock_key.json', // Replace with your animation
+                          'assets/animations/unlock_key.json',
                           repeat: false,
                         ),
                       ),
@@ -111,8 +112,8 @@ class _AnimatedStarSpentBannerState extends State<AnimatedStarSpentBanner>
                                 ],
                               ),
                             ),
-                            const Text(
-                              'Thanks for your purchase!',
+                             Text(
+                              '${tr(context).thanksForYourPurchase}!',
                               style: TextStyle(
                                 color: Colors.white70,
                                 fontSize: 14,

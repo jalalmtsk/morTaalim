@@ -9,7 +9,7 @@ import 'quiz_Page.dart';
 import '../../l10n/app_localizations.dart';
 import 'package:mortaalim/games/Quiz_Game/game_mode.dart' hide GameMode;
 
-enum QuizLanguage { english, french, arabic, deutch, spanish }
+enum QuizLanguage { english, french, arabic, deutch, spanish, amazigh }
 
 class ModeSelectorPage extends StatefulWidget {
   const ModeSelectorPage({super.key});
@@ -337,9 +337,10 @@ class _ModeSelectorPageState extends State<ModeSelectorPage>
                           final label = {
                             QuizLanguage.english: '🇬🇧 English',
                             QuizLanguage.french: '🇫🇷 Français',
-                            QuizLanguage.arabic: '🇲🇦 العربية',
+                            QuizLanguage.arabic: '🇸🇦العربية',
                             QuizLanguage.deutch: '🇩🇪 Deutch',
-                            QuizLanguage.spanish: '🇪🇸 Spanish'
+                            QuizLanguage.spanish: '🇪🇸 Spanish',
+                            QuizLanguage.amazigh: '🇲🇦 Amazigh'
                           }[lang] ?? lang.name;
 
                           return AnimatedContainer(

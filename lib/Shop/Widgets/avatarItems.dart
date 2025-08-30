@@ -2,7 +2,11 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+
+import '../../main.dart';
 
 class AvatarItemWidget extends StatefulWidget {
   final String emoji;
@@ -60,6 +64,7 @@ class _AvatarItemWidgetState extends State<AvatarItemWidget>
 
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     final canBuy = !widget.unlocked && (widget.userStars >= widget.cost);
     final isExpensive = widget.cost >= 30;
 
@@ -73,15 +78,18 @@ class _AvatarItemWidgetState extends State<AvatarItemWidget>
       onTap: () {
         if (widget.unlocked) {
           widget.onSelect();
+          audioManager.playEventSound("clickButton2");
         } else if (canBuy) {
+          audioManager.playEventSound("PopClick");
           widget.onBuy();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Not enough stars! Earn more to unlock this avatar.'),
+             SnackBar(
+              content: Text("${tr(context).notEnoughStars}! ${tr(context).earnMoreToUnlockThisAvatar}"),
               behavior: SnackBarBehavior.floating,
             ),
           );
+          audioManager.playEventSound("invalid");
         }
       },
       child: AnimatedScale(
@@ -176,7 +184,7 @@ class _AvatarItemWidgetState extends State<AvatarItemWidget>
                       top: 6,
                       right: 6,
                       child: _GradientBadge(
-                        text: 'SELECTED',
+                        text: tr(context).selected,
                         colors: [Colors.greenAccent, Colors.green],
                       ),
                     )
@@ -185,7 +193,7 @@ class _AvatarItemWidgetState extends State<AvatarItemWidget>
                       top: 6,
                       right: 6,
                       child: _GradientBadge(
-                        text: 'UNLOCKED',
+                        text: tr(context).unlocked,
                         colors: [Colors.orangeAccent, Colors.deepOrange],
                       ),
                     ),
@@ -193,7 +201,7 @@ class _AvatarItemWidgetState extends State<AvatarItemWidget>
                   // Cost for locked avatars
                   if (!widget.unlocked)
                     Positioned(
-                      bottom: 8,
+                      bottom: 2,
                       left: 0,
                       right: 0,
                       child: Center(

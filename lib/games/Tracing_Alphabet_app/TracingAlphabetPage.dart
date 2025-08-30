@@ -60,11 +60,11 @@ class _AlphabetTracingPageState extends State<AlphabetTracingPage> with SingleTi
         context: context,
         barrierDismissible: false,
         builder: (_) => InfoDialog(
-          title: 'How to Play',
+          title: tr(context).howToPlay,
           message:
-          'Trace each letter to earn 1 XP.\nCollect 10 XP to earn 1 Tolim token.',
+          '${tr(context).traceEachLetterToEarnOneXp}.\n${tr(context).collectTenXpToEarnOneTolimToken}.',
           lottieAssetPath: 'assets/animations/UI_Animations/WakiBot.json',
-          buttonText: 'Start',
+          buttonText: tr(context).startGame,
         ),
       );
     });

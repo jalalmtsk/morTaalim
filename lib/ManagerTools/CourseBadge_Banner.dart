@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/main.dart';
 
 class BadgeUnlockBanner extends StatelessWidget {
   final String badgeName;
@@ -26,7 +27,7 @@ class BadgeUnlockBanner extends StatelessWidget {
               const Icon(Icons.emoji_events, color: Colors.white, size: 28),
               const SizedBox(width: 10),
               Text(
-                "Badge Unlocked: $badgeName!",
+                "${tr(context).badgeUnlocked}: $badgeName!",
                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               IconButton(

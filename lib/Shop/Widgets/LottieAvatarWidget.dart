@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:shimmer/shimmer.dart';
 
 class LottieAvatarItemWidget extends StatelessWidget {
@@ -34,8 +35,8 @@ class LottieAvatarItemWidget extends StatelessWidget {
           onBuy();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Not enough stars! Keep playing to earn more.'),
+             SnackBar(
+              content: Text(tr(context).notEnoughStars),
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -80,17 +81,17 @@ class LottieAvatarItemWidget extends StatelessWidget {
               Positioned(
                 top: 8,
                 right: 8,
-                child: _badge('SELECTED', Colors.green),
+                child: _badge(tr(context).selected, Colors.green),
               )
             else if (unlocked)
               Positioned(
                 top: 8,
                 right: 8,
-                child: _badge('UNLOCKED', Colors.orange),
+                child: _badge(tr(context).unlocked, Colors.orange),
               ),
             if (!unlocked)
               Positioned(
-                bottom: 8,
+                bottom: 2,
                 left: 0,
                 right: 0,
                 child: Center(

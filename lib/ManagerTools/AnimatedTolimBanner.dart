@@ -2,6 +2,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
@@ -108,8 +109,8 @@ class _AnimatedTokenBannerState extends State<AnimatedTokenBanner>
                               ],
                             ),
                           ),
-                          const Text(
-                            'Keep collecting!',
+                           Text(
+                            '${tr(context).keepCollecting}!',
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 14,

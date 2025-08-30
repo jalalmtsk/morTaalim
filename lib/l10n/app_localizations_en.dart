@@ -789,6 +789,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get thankYouForYourPatience => 'Thank You For Your Patience';
 
   @override
+  String get traceEachLetterToEarnOneXp => 'Trace each letter to earn 1 XP';
+
+  @override
+  String get collectTenXpToEarnOneTolimToken => 'Collect 10 XP to earn 1 Tolim token';
+
+  @override
   String get manageBackup => 'Manage Backup';
 
   @override
@@ -1033,4 +1039,226 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aboutFuturePlans => 'We\'re continuously working to add new courses, exciting multiplayer games, and advanced features like personalized learning paths and community forums to connect learners and educators.';
+
+  @override
+  String get thanksForYourPurchase => 'Thanks for your purchase';
+
+  @override
+  String get transactionComplete => 'Transaction complete';
+
+  @override
+  String get keepShining => 'Keep shining';
+
+  @override
+  String get keepCollecting => 'Keep collecting';
+
+  @override
+  String get badgeUnlocked => 'Badge unlocked';
+
+  @override
+  String get level => 'LEVEL';
+
+  @override
+  String get quick => 'Quick';
+
+  @override
+  String get rare => 'Rare';
+
+  @override
+  String get rewardScreen => 'Reward screen';
+
+  @override
+  String get tapAnywhereToContinue => 'Tap anywhere to continue';
+
+  @override
+  String get collected => 'Collected';
+
+  @override
+  String get earnMoreToUnlockThisAvatar => 'Earn more to unlock this avatar';
+
+  @override
+  String get selected => 'SELECTED';
+
+  @override
+  String get unlocked => 'UNLOCKED';
+
+  @override
+  String get unlockBanner => 'Unlock banner';
+
+  @override
+  String get banner => 'Banner';
+
+  @override
+  String get unlockThis => 'Unlock this';
+
+  @override
+  String get confirmPurchase => 'Confirm purchase';
+
+  @override
+  String get avatarUnlocked => 'Avatar unlocked';
+
+  @override
+  String get enjoy => 'Enjoy';
+
+  @override
+  String get doYouWantToUnlockThis => 'Do you want to unlock this?';
+
+  @override
+  String get go => 'Go';
+
+  @override
+  String get profileSaved => 'Profile saved';
+
+  @override
+  String get nameRule => 'Name must be at least 3 characters';
+
+  @override
+  String get invalidEmail => 'Invalid email address';
+
+  @override
+  String get readyToSave => 'Ready to save';
+
+  @override
+  String get royalty => 'Royalty';
+
+  @override
+  String get babies => 'Babies';
+
+  @override
+  String get myMasterpiece => 'My Masterpiece';
+
+  @override
+  String get youCanSpendONETolimToSaveOrWatchTwoAdsToSaveForFree => 'You can spend 5 Tolim to save or watch 2 ads to save for free';
+
+  @override
+  String get spendONETolim => 'Spend 5 Tolim';
+
+  @override
+  String get confirmSpending => 'Confirm Spending';
+
+  @override
+  String get thisWillDeductONEtolimProceed => 'This will deduct 5 Tolim. Proceed?';
+
+  @override
+  String get failedToSaveDrawing => 'Failed to save drawing';
+
+  @override
+  String get chooseColor => 'Choose Color';
+
+  @override
+  String get brush => 'Brush';
+
+  @override
+  String get brushSize => 'Brush Size';
+
+  @override
+  String get eraser => 'Eraser';
+
+  @override
+  String get eraserOff => 'Eraser Off';
+
+  @override
+  String get eraserOn => 'Eraser On';
+
+  @override
+  String get clearCanvas => 'Clear Canvas';
+
+  @override
+  String get animalSound => 'Animal Sound';
+
+  @override
+  String get listenMode => 'Listen Mode';
+
+  @override
+  String get tapAnimalsToHearTheirSounds => 'Tap animals to hear their sounds';
+
+  @override
+  String get matchAndDrop => 'Match and Drop';
+
+  @override
+  String get dragAnimalsToMatchTheirSounds => 'Drag animals to match their sounds';
+
+  @override
+  String get tapTheAnimalToHearItsSound => 'Tap the animal to hear its sound';
+
+  @override
+  String get matchTheSound => 'Match the sound';
+
+  @override
+  String get listenThenDragTheCorrectAnimalIntoTheGlowingRing => 'Listen, then drag the correct animal into the glowing ring';
+
+  @override
+  String get rewarded => 'Rewarded';
+
+  @override
+  String get youFinishedWith => 'You finished with';
+
+  @override
+  String get dontWorry => 'Don\'t worry';
+
+  @override
+  String get youCanTryAgain => 'You can try again';
+
+  @override
+  String get adventureMode => 'Adventure Mode';
+
+  @override
+  String get memoryFlip => 'Memory Flip';
+
+  @override
+  String get playThroughLevelsAndEarn => 'Play through levels and earn rewards';
+
+  @override
+  String get survivalMode => 'Survival Mode';
+
+  @override
+  String get seeHowLongYouCanSurviveWithLimitedMoves => 'See how long you can survive with limited moves';
+
+  @override
+  String get selectLevel => 'Select Level';
+
+  @override
+  String get chooseCategory => 'Choose Category';
+
+  @override
+  String get moves => 'Moves';
+
+  @override
+  String get matches => 'Matches';
+
+  @override
+  String get noMovesLeft => 'No moves left';
+
+  @override
+  String get restartingLevel => 'Restarting level';
+
+  @override
+  String get restart => 'Restart';
+
+  @override
+  String get youRanOutOfMoves => 'You ran out of moves';
+
+  @override
+  String get highlights => 'Highlights';
+
+  @override
+  String get youSurvivedFor => 'You survived for';
+
+  @override
+  String get best => 'Best';
+
+  @override
+  String get andMade => 'and made';
+
+  @override
+  String get seconds => 'seconds';
+
+  @override
+  String get matchesIn => 'matches in';
+
+  @override
+  String get survivalHighlights => 'Survival Highlights';
+
+  @override
+  String get bestSurvivalScore => 'Best Survival Score';
 }

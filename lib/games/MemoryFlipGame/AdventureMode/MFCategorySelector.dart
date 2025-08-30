@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
+import '../../../main.dart';
 import 'CategoryOfImages_Data.dart';
 import 'MFLevelSelectorAdventure.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
@@ -34,11 +37,18 @@ class _CategorySelectionState extends State<CategorySelection>
   @override
   Widget build(BuildContext context) {
     final categories = categoryImages.keys.toList();
-
+    final audioManager = Provider.of<AudioManager>(context, listen : false);
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: const Text("Choose Category"),
+        leading: IconButton(onPressed: ()
+        {
+          audioManager.playEventSound("cancelButton");
+          Navigator.pop(context);
+        }, icon: Icon(Icons.arrow_circle_left_sharp,
+          size: 50,
+          color: Colors.orangeAccent,)),
+        title:  Text(tr(context).chooseCategory),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -73,6 +83,7 @@ class _CategorySelectionState extends State<CategorySelection>
                     category: cat,
                     imagePath: thumbnail,
                     onTap: () {
+                      audioManager.playEventSound("clickButton");
                       Navigator.push(
                         context,
                         MaterialPageRoute(

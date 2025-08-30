@@ -1,19 +1,18 @@
+import 'LanguageManager.dart';
+
 class StoryPageData {
-  final List<String> words;
+  final Map<AppLanguage, List<String>> wordsByLang;
   final String imageUrl;
   final String characterName;
   final String funnyLine;
 
-  // New optional field for Arabic audio asset path
-  final String? arabicAudioPath;
-
   StoryPageData({
-    required this.words,
+    required this.wordsByLang,
     required this.imageUrl,
     required this.characterName,
     required this.funnyLine,
-    this.arabicAudioPath,
   });
 
-  String get fullText => words.join(' ');
+  List<String> getWords(AppLanguage lang) => wordsByLang[lang] ?? wordsByLang[AppLanguage.en]!;
+  String get fullText => getWords(AppLanguage.en).join(' '); // default English for TTS
 }

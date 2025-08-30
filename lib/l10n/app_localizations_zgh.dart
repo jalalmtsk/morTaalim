@@ -789,6 +789,12 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get thankYouForYourPatience => 'ⴰⵣⵓⵍ ⴼⴰⵡⴰⵏ ⵉⵙ ⵜⵉⵣⵔⵉⴼⵜ ⵉⵏⵓⵙ';
 
   @override
+  String get traceEachLetterToEarnOneXp => 'ⵜⴰⵙⵎⵉ ⴽⵍⵍⴰ ⴰⵣⵓⵍ ⵏ ⴰⵎⴰⵣⵉⵖ ⴰⵏⴰ ⴷ 1 XP';
+
+  @override
+  String get collectTenXpToEarnOneTolimToken => 'ⵙⵙⵏⵉ ⵉⵙⵎⴹⴰⵔ 10 XP ⴰⴷ ⵜⴰⵙⵎⵉ 1 ⵜⴰⴳⴻⵎⵜ ⵏ Tolim';
+
+  @override
   String get manageBackup => 'ⵜⴰⵙⵙⴷⴷⵓⴷ ⵏ ⵜⴰⵣⵡⴰⵔⴰ';
 
   @override
@@ -1033,4 +1039,226 @@ class AppLocalizationsZgh extends AppLocalizations {
 
   @override
   String get aboutFuturePlans => 'ⵎⴰⵏⴰ ⵣⵓⵍ ⵉⵙⵙⵓⵎⵎ ⵏ ⴷⵓⵍ ⵉⵙⵏⵏⴰⵡⵏ, ⵓⵏⵙⵏⴰ ⵏ ⵉⵎⴰⵙⵉⵏ ⵓⵙⵙⵓⵎⵎ ⵏ ⵉⵎⵎⵓⵔⵉ ⵓⵏⵙⵏⴰ ⵏ ⵎⴰⵔⵓⴽⵓ ⵓⵙⵙⵓⵎⵎ.';
+
+  @override
+  String get thanksForYourPurchase => 'ⵙⴰⵎⵎⵓⵙ ⵏ ⵜⵓⵏⴰⵡⵍⴰⵢⵏⴰⵏ';
+
+  @override
+  String get transactionComplete => 'ⵜⴰⴳⵍⵍⴰⵍⵜ ⴷ ⵜⵓⵏⴰⵡⵍⴰⵢ';
+
+  @override
+  String get keepShining => 'ⵙⴻⴹⵉ ⴰⵢⵏⴰ ⴳⵯⵓⵔ';
+
+  @override
+  String get keepCollecting => 'ⵙⴻⴹⵉ ⴰⵢⵏⴰ ⵜⴰⵙⵎⵎⴰⵔⵜ';
+
+  @override
+  String get badgeUnlocked => 'ⵜⴰⴼⵓⵙⵜ ⵏⵉ ⵜⵎⵙⵏⵏⴰ';
+
+  @override
+  String get level => 'ⵜⵓⴳⵍⴰⵍⵜ';
+
+  @override
+  String get quick => 'ⴰⵙⴻⵏⴻⴹ';
+
+  @override
+  String get rare => 'ⵏⴰⴷⴰⵔ';
+
+  @override
+  String get rewardScreen => 'ⵜⴰⵙⴻⵎⵎⵉⵏⵜ ⵏ ⵓⴳⵓⴷ';
+
+  @override
+  String get tapAnywhereToContinue => 'ⴽⵡ ⵓⵏⴰ ⵏ ⵉⴷⴷⴰ ⵏⴰⵏ ⵉⵏⴰ ⵜⴰⵙⴻⴹⵉ';
+
+  @override
+  String get collected => 'ⵜⴰⵙⵎⵎⴰⵔⵜ';
+
+  @override
+  String get earnMoreToUnlockThisAvatar => 'ⵙⴻⴹ ⵎⴰⵣⵣⴰⵔ ⵏ ⵜⴰⴼⵓⵙⵜ ⵏ ⵜⵉⵏⵏⴰⵡ';
+
+  @override
+  String get selected => 'ⵜⴰⵙⵙⵓⵎⵜ';
+
+  @override
+  String get unlocked => 'ⵜⴰⴼⵓⵙⵜ';
+
+  @override
+  String get unlockBanner => 'ⵜⴰⴼⵓⵙⵜ ⴰⵏ ⴱⴰⵏⵏⴰⵔ';
+
+  @override
+  String get banner => 'ⴱⴰⵏⵏⴰⵔ';
+
+  @override
+  String get unlockThis => 'ⵜⴰⴼⵓⵙⵜ ⵏ ⵓⵙⵙ';
+
+  @override
+  String get confirmPurchase => 'ⵜⴰⵙⵙⴰⵍⵍⵓ ⵏ ⵜⵓⵏⴰⵡⵍⴰⵢ';
+
+  @override
+  String get avatarUnlocked => 'ⵜⴰⴼⵓⵙⵜ ⵏ ⵜⵉⵏⵏⴰⵡ';
+
+  @override
+  String get enjoy => 'ⵉⵎⵎⴰⵙ';
+
+  @override
+  String get doYouWantToUnlockThis => 'ⴰⵢⵏⴰ ⵏⵓⵙⵙⴰ ⵜⴰⴼⵓⵙⵜ ⵏ ⵓⵙⵙ?';
+
+  @override
+  String get go => 'ⴰⵣⵓ';
+
+  @override
+  String get profileSaved => 'ⵖⵓⴷ ⴰⵏ ⵖⵓⴷⴷ';
+
+  @override
+  String get nameRule => 'ⴰⵙⴻⵏ ⵏⴰⵡ ⵏ ⴰⵣⴳⵓⵍ ⴷ 3 ⵎⵙⵙⵓⵔ';
+
+  @override
+  String get invalidEmail => 'ⵉⵎⵎⴰⵙ ⴷ ⵉⵎⵎⵓⵏⵏⴰ ⵢⴰⵏⵏⵉ';
+
+  @override
+  String get readyToSave => 'ⴰⵣⵓ ⵏ ⵜⴰⵙⵙⴰⵍⵍⴰ';
+
+  @override
+  String get royalty => 'ⴰⵎⵙⵙⵓⴽ';
+
+  @override
+  String get babies => 'ⴰⵣⵉⴷⵉⵏ';
+
+  @override
+  String get myMasterpiece => 'ⴰⵎⵙⵙⴰⵏ ⵏⵉ';
+
+  @override
+  String get youCanSpendONETolimToSaveOrWatchTwoAdsToSaveForFree => 'ⵣⴰⵡ ⵎⴰⵙⵙⵉⵏ 5 Tolim ⵏ ⵜⴰⵣⵓⵍ ⵏⴰ ⵉⴷⴷⴰ ⵏⵉ 2 ⵏⵓⴳⴳⵓⵔ ⵏ ⵜⴰⵣⵓⵍ ⵏ ⵎⵓⴷⴷⵉⵏ';
+
+  @override
+  String get spendONETolim => 'ⵎⴰⵙⵙⵉⵏ 5 Tolim';
+
+  @override
+  String get confirmSpending => 'ⵜⴰⵙⵙⴰⵍⵍⵓ ⵏ ⵎⴰⵙⵙⵉⵏ';
+
+  @override
+  String get thisWillDeductONEtolimProceed => 'ⵓⵙⵙⵓⴹ 5 Tolim. ⴰⵙⴳⵯⴰⵔ?';
+
+  @override
+  String get failedToSaveDrawing => 'ⴰⵎⵣⵓⵍ ⵏ ⵜⴰⵣⵓⵍ ⴷ ⵓⵙⵙⴰⵏ ⴷⵉⵖ';
+
+  @override
+  String get chooseColor => 'ⵣⴰⵡ ⵏ ⵓⵍⵓⵏ';
+
+  @override
+  String get brush => 'ⴰⴳⵯⵔⴰⵙ';
+
+  @override
+  String get brushSize => 'ⵙⵉⵏⴰ ⴷ ⴰⴳⵯⵔⴰⵙ';
+
+  @override
+  String get eraser => 'ⴰⵎⵎⴰⵙ';
+
+  @override
+  String get eraserOff => 'ⴰⵎⵎⴰⵙ ⵎⵓⵙⴽⵉ';
+
+  @override
+  String get eraserOn => 'ⴰⵎⵎⴰⵙ ⵎⴰⴹⴰⵔ';
+
+  @override
+  String get clearCanvas => 'ⵙⵎⵎⴰⵙ ⵜⴰⵣⵓⵍⵍⴰ';
+
+  @override
+  String get animalSound => 'ⵉⵎⴰⵣⴰⵢ ⵏ ⵓⵙⴻⵏⴰⵡ';
+
+  @override
+  String get listenMode => 'ⴰⵎⴰⵢⴰⵏ ⵏ ⵉⴼⵔⴰⵢ';
+
+  @override
+  String get tapAnimalsToHearTheirSounds => 'ⴰⵙⴽⵓⵔ ⴰⵙⴻⵏⴰⵡ ⴷ ⵉⴼⵔⴰⵢ ⵉⵎⴰⵣⴰⵢⵏ';
+
+  @override
+  String get matchAndDrop => 'ⴰⵙⵍⵉⵙ ⴷ ⴰⴱⴰⵔⴷ';
+
+  @override
+  String get dragAnimalsToMatchTheirSounds => 'ⴰⴱⴰⵙⴽⴽⵓⵔ ⴰⵙⴻⵏⴰⵡ ⴷ ⵉⵙⵍⵉⵙⵏ ⵉⵎⴰⵣⴰⵢⵏ';
+
+  @override
+  String get tapTheAnimalToHearItsSound => 'ⴰⵙⴽⵓⵔ ⴰⵙⴻⵏⴰⵡ ⴷ ⵉⴼⵔⴰⵢ ⵉⵎⴰⵣⴰⵢⵏ';
+
+  @override
+  String get matchTheSound => 'ⵉⵙⵍⵉⵙ ⵉⵎⴰⵣⴰⵢ';
+
+  @override
+  String get listenThenDragTheCorrectAnimalIntoTheGlowingRing => 'ⵉⴼⵔⴰⵢ ⴷ ⴰⴱⴰⵙⴽⴽⵓⵔ ⴰⵙⴻⵏⴰⵡ ⴰⴽⴰⴼ ⴰⴷ ⵉⴹⵓⵍⵉ ⵏ ⴰⵎⴰⵔⵉⴳⴰⵏ';
+
+  @override
+  String get rewarded => 'ⵉⵙⴻⵎⵎⴰⴹ';
+
+  @override
+  String get youFinishedWith => 'ⵉⴼⴻⵙ ⴷ';
+
+  @override
+  String get dontWorry => 'ⴰⵎⴰ ⵜⵉⵍⴰ';
+
+  @override
+  String get youCanTryAgain => 'ⵜⴰⴷ ⵜⵎⴰⵢⴰⵙⴷ ⵖⴻⵔⵖ';
+
+  @override
+  String get adventureMode => 'ⴰⵎⴰⵙⴻⵏ ⵏ ⵉⴳⵯⵔⴰⵙ';
+
+  @override
+  String get memoryFlip => 'ⵡⴰⵙⵏ ⵏ ⴰⴷⵔⴰⵔ';
+
+  @override
+  String get playThroughLevelsAndEarn => 'ⴰⵣⴰⵡ ⵏ ⴰⴱⵔⴰⵣ ⴷ ⵉⵙⵙⴻⴷ ⵏ ⵉⵎⵣⵣⵓⵔⴰⵜ';
+
+  @override
+  String get survivalMode => 'ⴰⵎⴰⵙⴻⵏ ⵏ ⵜⵉⴹⵓⵍⵜ';
+
+  @override
+  String get seeHowLongYouCanSurviveWithLimitedMoves => 'ⵉⵡⴰ ⴷ ⵉⵎⵣⵣⵓⵔⴰⵜ ⵏ ⵓⴷⴰ ⵜⵉⵎⵎⴰⴷⴻⵏ';
+
+  @override
+  String get selectLevel => 'ⴰⵎⵙⵍⵉ ⵏ ⴰⴱⵔⴰⵣ';
+
+  @override
+  String get chooseCategory => 'ⴰⵎⵙⵍⵉ ⵏ ⴰⴷⵔⴰⵔ';
+
+  @override
+  String get moves => 'ⵉⵎⵣⵣⵓⵔⴰⵜ';
+
+  @override
+  String get matches => 'ⵉⵙⵍⵉⵙⵏ';
+
+  @override
+  String get noMovesLeft => 'ⵢⴰⵏⵢ ⵉⵎⵣⵣⵓⵔⴰⵜ ⵓⵎⵓⵙⵙⵓⵏ';
+
+  @override
+  String get restartingLevel => 'ⴰⴱⴰⵔⴷ ⵏ ⴰⴱⵔⴰⵣ';
+
+  @override
+  String get restart => 'ⴰⴱⴰⵔⴷ';
+
+  @override
+  String get youRanOutOfMoves => 'ⵢⴰⵏⵢ ⵉⵎⵣⵣⵓⵔⴰⵜ ⵓⵎⵓⵙⵙⵓⵏ';
+
+  @override
+  String get highlights => 'ⵉⵙⵍⵉⵙⵏ ⵏ ⵉⴼⵔⴰⵢ';
+
+  @override
+  String get youSurvivedFor => 'ⵉⴼⴻⵙ ⴷ';
+
+  @override
+  String get best => 'ⴰⴼⵓⵙⵜ';
+
+  @override
+  String get andMade => 'ⴷ ⵉⵙⴻⵎⵎⴰⴹ';
+
+  @override
+  String get seconds => 'ⵉⵙⴻⵏⴰⵡⴰⵜ';
+
+  @override
+  String get matchesIn => 'ⵉⵙⵍⵉⵙⵏ ⵏ';
+
+  @override
+  String get survivalHighlights => 'ⵉⵙⵍⵉⵙⵏ ⵏ ⵜⵉⴹⵓⵍⵜ';
+
+  @override
+  String get bestSurvivalScore => 'ⴰⴼⵓⵙⵜ ⵏ ⵜⵉⴹⵓⵍⵜ';
 }

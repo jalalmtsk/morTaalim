@@ -183,7 +183,7 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
 
-            'Shop': (context) => CardGameLauncher(),
+            'Shop': (context) => MainShopPageIndex(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

@@ -12,7 +12,7 @@ class InfoDialog extends StatelessWidget {
     required this.title,
     required this.message,
     required this.lottieAssetPath,
-    this.buttonText = 'OK',
+    required this.buttonText,
   }) : super(key: key);
 
   @override

@@ -76,8 +76,8 @@ class _EmojiUnlockedDialogState extends State<EmojiUnlockedDialog> with TickerPr
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      "🎉 Emoji Unlocked!",
+                     Text(
+                      "🎉 ${tr(context).moji} ${tr(context).unlocked}!",
                       style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.amber),
                     ),
                     const SizedBox(height: 16),
@@ -117,6 +117,7 @@ class _EmojiUnlockedDialogState extends State<EmojiUnlockedDialog> with TickerPr
                     ElevatedButton(
                       onPressed: () {
                         final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+                        final audioManager = Provider.of<AudioManager>(context, listen: false);
                         xpManager.addXP(widget.xpReward, context: context);
                         audioManager.playEventSound("cancelButton");
                         Navigator.of(context).pop();

@@ -789,6 +789,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get thankYouForYourPatience => 'شكرًا على صبرك';
 
   @override
+  String get traceEachLetterToEarnOneXp => 'تتبع كل حرف لتحصل على 1 نقطة خبرة';
+
+  @override
+  String get collectTenXpToEarnOneTolimToken => 'اجمع 10 نقاط خبرة لتحصل على 1 رمز توليم';
+
+  @override
   String get manageBackup => 'إدارة النسخ الاحتياطي';
 
   @override
@@ -1033,4 +1039,226 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get aboutFuturePlans => 'نعمل باستمرار على إضافة دورات جديدة، وألعاب متعددة اللاعبين مثيرة، وميزات متقدمة مثل مسارات تعلم شخصية ومنتديات مجتمعية لربط المتعلمين والمعلمين.';
+
+  @override
+  String get thanksForYourPurchase => 'شكراً على شرائك';
+
+  @override
+  String get transactionComplete => 'اكتملت المعاملة';
+
+  @override
+  String get keepShining => 'استمر في التألق';
+
+  @override
+  String get keepCollecting => 'استمر في الجمع';
+
+  @override
+  String get badgeUnlocked => 'تم فتح الشارة';
+
+  @override
+  String get level => 'المستوى';
+
+  @override
+  String get quick => 'سريع';
+
+  @override
+  String get rare => 'نادر';
+
+  @override
+  String get rewardScreen => 'شاشة المكافأة';
+
+  @override
+  String get tapAnywhereToContinue => 'اضغط في أي مكان للمتابعة';
+
+  @override
+  String get collected => 'تم الجمع';
+
+  @override
+  String get earnMoreToUnlockThisAvatar => 'اجمع المزيد لفتح هذا الشكل الرمزي';
+
+  @override
+  String get selected => 'مختار';
+
+  @override
+  String get unlocked => 'مفتوح';
+
+  @override
+  String get unlockBanner => 'فتح البانر';
+
+  @override
+  String get banner => 'بانر';
+
+  @override
+  String get unlockThis => 'افتح هذا';
+
+  @override
+  String get confirmPurchase => 'تأكيد الشراء';
+
+  @override
+  String get avatarUnlocked => 'تم فتح الشكل الرمزي';
+
+  @override
+  String get enjoy => 'استمتع';
+
+  @override
+  String get doYouWantToUnlockThis => 'هل تريد فتح هذا؟';
+
+  @override
+  String get go => 'اذهب';
+
+  @override
+  String get profileSaved => 'تم حفظ الملف الشخصي';
+
+  @override
+  String get nameRule => 'يجب أن يكون الاسم 3 أحرف على الأقل';
+
+  @override
+  String get invalidEmail => 'عنوان البريد الإلكتروني غير صالح';
+
+  @override
+  String get readyToSave => 'جاهز للحفظ';
+
+  @override
+  String get royalty => 'الملكية';
+
+  @override
+  String get babies => 'الأطفال';
+
+  @override
+  String get myMasterpiece => 'تحفتي';
+
+  @override
+  String get youCanSpendONETolimToSaveOrWatchTwoAdsToSaveForFree => 'يمكنك إنفاق 5 توليم للحفظ أو مشاهدة إعلانين للحفظ مجاناً';
+
+  @override
+  String get spendONETolim => 'إنفاق 5 توليم';
+
+  @override
+  String get confirmSpending => 'تأكيد الإنفاق';
+
+  @override
+  String get thisWillDeductONEtolimProceed => 'سيتم خصم 5 توليم. المتابعة؟';
+
+  @override
+  String get failedToSaveDrawing => 'فشل في حفظ الرسم';
+
+  @override
+  String get chooseColor => 'اختر اللون';
+
+  @override
+  String get brush => 'فرشاة';
+
+  @override
+  String get brushSize => 'حجم الفرشاة';
+
+  @override
+  String get eraser => 'ممحاة';
+
+  @override
+  String get eraserOff => 'الممحاة مطفأة';
+
+  @override
+  String get eraserOn => 'الممحاة مفعّلة';
+
+  @override
+  String get clearCanvas => 'مسح اللوحة';
+
+  @override
+  String get animalSound => 'صوت الحيوان';
+
+  @override
+  String get listenMode => 'وضع الاستماع';
+
+  @override
+  String get tapAnimalsToHearTheirSounds => 'اضغط على الحيوانات لسماع أصواتها';
+
+  @override
+  String get matchAndDrop => 'طابق وأسقط';
+
+  @override
+  String get dragAnimalsToMatchTheirSounds => 'اسحب الحيوانات لمطابقة أصواتها';
+
+  @override
+  String get tapTheAnimalToHearItsSound => 'اضغط على الحيوان لسماع صوته';
+
+  @override
+  String get matchTheSound => 'طابق الصوت';
+
+  @override
+  String get listenThenDragTheCorrectAnimalIntoTheGlowingRing => 'استمع ثم اسحب الحيوان الصحيح إلى الحلقة المضيئة';
+
+  @override
+  String get rewarded => 'تمت مكافأتك';
+
+  @override
+  String get youFinishedWith => 'لقد أنهيت بـ';
+
+  @override
+  String get dontWorry => 'لا تقلق';
+
+  @override
+  String get youCanTryAgain => 'يمكنك المحاولة مرة أخرى';
+
+  @override
+  String get adventureMode => 'وضع المغامرة';
+
+  @override
+  String get memoryFlip => 'قلب الذاكرة';
+
+  @override
+  String get playThroughLevelsAndEarn => 'العب المستويات واكسب المكافآت';
+
+  @override
+  String get survivalMode => 'وضع البقاء';
+
+  @override
+  String get seeHowLongYouCanSurviveWithLimitedMoves => 'انظر كم يمكنك البقاء مع تحركات محدودة';
+
+  @override
+  String get selectLevel => 'اختر المستوى';
+
+  @override
+  String get chooseCategory => 'اختر الفئة';
+
+  @override
+  String get moves => 'الحركات';
+
+  @override
+  String get matches => 'التطابقات';
+
+  @override
+  String get noMovesLeft => 'لا توجد حركات متبقية';
+
+  @override
+  String get restartingLevel => 'إعادة تشغيل المستوى';
+
+  @override
+  String get restart => 'إعادة التشغيل';
+
+  @override
+  String get youRanOutOfMoves => 'لقد نفدت الحركات';
+
+  @override
+  String get highlights => 'أهم الإنجازات';
+
+  @override
+  String get youSurvivedFor => 'لقد نجوت لمدة';
+
+  @override
+  String get best => 'الأفضل';
+
+  @override
+  String get andMade => 'وحققت';
+
+  @override
+  String get seconds => 'ثوانٍ';
+
+  @override
+  String get matchesIn => 'مطابقات في';
+
+  @override
+  String get survivalHighlights => 'أهم إنجازات البقاء';
+
+  @override
+  String get bestSurvivalScore => 'أفضل نتيجة بقاء';
 }

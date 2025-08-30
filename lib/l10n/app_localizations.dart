@@ -1661,6 +1661,18 @@ abstract class AppLocalizations {
   /// **'Thank You For Your Patience'**
   String get thankYouForYourPatience;
 
+  /// No description provided for @traceEachLetterToEarnOneXp.
+  ///
+  /// In en, this message translates to:
+  /// **'Trace each letter to earn 1 XP'**
+  String get traceEachLetterToEarnOneXp;
+
+  /// No description provided for @collectTenXpToEarnOneTolimToken.
+  ///
+  /// In en, this message translates to:
+  /// **'Collect 10 XP to earn 1 Tolim token'**
+  String get collectTenXpToEarnOneTolimToken;
+
   /// No description provided for @manageBackup.
   ///
   /// In en, this message translates to:
@@ -2152,6 +2164,450 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'We\'re continuously working to add new courses, exciting multiplayer games, and advanced features like personalized learning paths and community forums to connect learners and educators.'**
   String get aboutFuturePlans;
+
+  /// No description provided for @thanksForYourPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Thanks for your purchase'**
+  String get thanksForYourPurchase;
+
+  /// No description provided for @transactionComplete.
+  ///
+  /// In en, this message translates to:
+  /// **'Transaction complete'**
+  String get transactionComplete;
+
+  /// No description provided for @keepShining.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep shining'**
+  String get keepShining;
+
+  /// No description provided for @keepCollecting.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep collecting'**
+  String get keepCollecting;
+
+  /// No description provided for @badgeUnlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Badge unlocked'**
+  String get badgeUnlocked;
+
+  /// No description provided for @level.
+  ///
+  /// In en, this message translates to:
+  /// **'LEVEL'**
+  String get level;
+
+  /// No description provided for @quick.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick'**
+  String get quick;
+
+  /// No description provided for @rare.
+  ///
+  /// In en, this message translates to:
+  /// **'Rare'**
+  String get rare;
+
+  /// No description provided for @rewardScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward screen'**
+  String get rewardScreen;
+
+  /// No description provided for @tapAnywhereToContinue.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap anywhere to continue'**
+  String get tapAnywhereToContinue;
+
+  /// No description provided for @collected.
+  ///
+  /// In en, this message translates to:
+  /// **'Collected'**
+  String get collected;
+
+  /// No description provided for @earnMoreToUnlockThisAvatar.
+  ///
+  /// In en, this message translates to:
+  /// **'Earn more to unlock this avatar'**
+  String get earnMoreToUnlockThisAvatar;
+
+  /// No description provided for @selected.
+  ///
+  /// In en, this message translates to:
+  /// **'SELECTED'**
+  String get selected;
+
+  /// No description provided for @unlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'UNLOCKED'**
+  String get unlocked;
+
+  /// No description provided for @unlockBanner.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock banner'**
+  String get unlockBanner;
+
+  /// No description provided for @banner.
+  ///
+  /// In en, this message translates to:
+  /// **'Banner'**
+  String get banner;
+
+  /// No description provided for @unlockThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlock this'**
+  String get unlockThis;
+
+  /// No description provided for @confirmPurchase.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm purchase'**
+  String get confirmPurchase;
+
+  /// No description provided for @avatarUnlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Avatar unlocked'**
+  String get avatarUnlocked;
+
+  /// No description provided for @enjoy.
+  ///
+  /// In en, this message translates to:
+  /// **'Enjoy'**
+  String get enjoy;
+
+  /// No description provided for @doYouWantToUnlockThis.
+  ///
+  /// In en, this message translates to:
+  /// **'Do you want to unlock this?'**
+  String get doYouWantToUnlockThis;
+
+  /// No description provided for @go.
+  ///
+  /// In en, this message translates to:
+  /// **'Go'**
+  String get go;
+
+  /// No description provided for @profileSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile saved'**
+  String get profileSaved;
+
+  /// No description provided for @nameRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Name must be at least 3 characters'**
+  String get nameRule;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email address'**
+  String get invalidEmail;
+
+  /// No description provided for @readyToSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Ready to save'**
+  String get readyToSave;
+
+  /// No description provided for @royalty.
+  ///
+  /// In en, this message translates to:
+  /// **'Royalty'**
+  String get royalty;
+
+  /// No description provided for @babies.
+  ///
+  /// In en, this message translates to:
+  /// **'Babies'**
+  String get babies;
+
+  /// No description provided for @myMasterpiece.
+  ///
+  /// In en, this message translates to:
+  /// **'My Masterpiece'**
+  String get myMasterpiece;
+
+  /// No description provided for @youCanSpendONETolimToSaveOrWatchTwoAdsToSaveForFree.
+  ///
+  /// In en, this message translates to:
+  /// **'You can spend 5 Tolim to save or watch 2 ads to save for free'**
+  String get youCanSpendONETolimToSaveOrWatchTwoAdsToSaveForFree;
+
+  /// No description provided for @spendONETolim.
+  ///
+  /// In en, this message translates to:
+  /// **'Spend 5 Tolim'**
+  String get spendONETolim;
+
+  /// No description provided for @confirmSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Spending'**
+  String get confirmSpending;
+
+  /// No description provided for @thisWillDeductONEtolimProceed.
+  ///
+  /// In en, this message translates to:
+  /// **'This will deduct 5 Tolim. Proceed?'**
+  String get thisWillDeductONEtolimProceed;
+
+  /// No description provided for @failedToSaveDrawing.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save drawing'**
+  String get failedToSaveDrawing;
+
+  /// No description provided for @chooseColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Color'**
+  String get chooseColor;
+
+  /// No description provided for @brush.
+  ///
+  /// In en, this message translates to:
+  /// **'Brush'**
+  String get brush;
+
+  /// No description provided for @brushSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Brush Size'**
+  String get brushSize;
+
+  /// No description provided for @eraser.
+  ///
+  /// In en, this message translates to:
+  /// **'Eraser'**
+  String get eraser;
+
+  /// No description provided for @eraserOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Eraser Off'**
+  String get eraserOff;
+
+  /// No description provided for @eraserOn.
+  ///
+  /// In en, this message translates to:
+  /// **'Eraser On'**
+  String get eraserOn;
+
+  /// No description provided for @clearCanvas.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear Canvas'**
+  String get clearCanvas;
+
+  /// No description provided for @animalSound.
+  ///
+  /// In en, this message translates to:
+  /// **'Animal Sound'**
+  String get animalSound;
+
+  /// No description provided for @listenMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen Mode'**
+  String get listenMode;
+
+  /// No description provided for @tapAnimalsToHearTheirSounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap animals to hear their sounds'**
+  String get tapAnimalsToHearTheirSounds;
+
+  /// No description provided for @matchAndDrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Match and Drop'**
+  String get matchAndDrop;
+
+  /// No description provided for @dragAnimalsToMatchTheirSounds.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag animals to match their sounds'**
+  String get dragAnimalsToMatchTheirSounds;
+
+  /// No description provided for @tapTheAnimalToHearItsSound.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap the animal to hear its sound'**
+  String get tapTheAnimalToHearItsSound;
+
+  /// No description provided for @matchTheSound.
+  ///
+  /// In en, this message translates to:
+  /// **'Match the sound'**
+  String get matchTheSound;
+
+  /// No description provided for @listenThenDragTheCorrectAnimalIntoTheGlowingRing.
+  ///
+  /// In en, this message translates to:
+  /// **'Listen, then drag the correct animal into the glowing ring'**
+  String get listenThenDragTheCorrectAnimalIntoTheGlowingRing;
+
+  /// No description provided for @rewarded.
+  ///
+  /// In en, this message translates to:
+  /// **'Rewarded'**
+  String get rewarded;
+
+  /// No description provided for @youFinishedWith.
+  ///
+  /// In en, this message translates to:
+  /// **'You finished with'**
+  String get youFinishedWith;
+
+  /// No description provided for @dontWorry.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t worry'**
+  String get dontWorry;
+
+  /// No description provided for @youCanTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'You can try again'**
+  String get youCanTryAgain;
+
+  /// No description provided for @adventureMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Adventure Mode'**
+  String get adventureMode;
+
+  /// No description provided for @memoryFlip.
+  ///
+  /// In en, this message translates to:
+  /// **'Memory Flip'**
+  String get memoryFlip;
+
+  /// No description provided for @playThroughLevelsAndEarn.
+  ///
+  /// In en, this message translates to:
+  /// **'Play through levels and earn rewards'**
+  String get playThroughLevelsAndEarn;
+
+  /// No description provided for @survivalMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Survival Mode'**
+  String get survivalMode;
+
+  /// No description provided for @seeHowLongYouCanSurviveWithLimitedMoves.
+  ///
+  /// In en, this message translates to:
+  /// **'See how long you can survive with limited moves'**
+  String get seeHowLongYouCanSurviveWithLimitedMoves;
+
+  /// No description provided for @selectLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Level'**
+  String get selectLevel;
+
+  /// No description provided for @chooseCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Category'**
+  String get chooseCategory;
+
+  /// No description provided for @moves.
+  ///
+  /// In en, this message translates to:
+  /// **'Moves'**
+  String get moves;
+
+  /// No description provided for @matches.
+  ///
+  /// In en, this message translates to:
+  /// **'Matches'**
+  String get matches;
+
+  /// No description provided for @noMovesLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'No moves left'**
+  String get noMovesLeft;
+
+  /// No description provided for @restartingLevel.
+  ///
+  /// In en, this message translates to:
+  /// **'Restarting level'**
+  String get restartingLevel;
+
+  /// No description provided for @restart.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart'**
+  String get restart;
+
+  /// No description provided for @youRanOutOfMoves.
+  ///
+  /// In en, this message translates to:
+  /// **'You ran out of moves'**
+  String get youRanOutOfMoves;
+
+  /// No description provided for @highlights.
+  ///
+  /// In en, this message translates to:
+  /// **'Highlights'**
+  String get highlights;
+
+  /// No description provided for @youSurvivedFor.
+  ///
+  /// In en, this message translates to:
+  /// **'You survived for'**
+  String get youSurvivedFor;
+
+  /// No description provided for @best.
+  ///
+  /// In en, this message translates to:
+  /// **'Best'**
+  String get best;
+
+  /// No description provided for @andMade.
+  ///
+  /// In en, this message translates to:
+  /// **'and made'**
+  String get andMade;
+
+  /// No description provided for @seconds.
+  ///
+  /// In en, this message translates to:
+  /// **'seconds'**
+  String get seconds;
+
+  /// No description provided for @matchesIn.
+  ///
+  /// In en, this message translates to:
+  /// **'matches in'**
+  String get matchesIn;
+
+  /// No description provided for @survivalHighlights.
+  ///
+  /// In en, this message translates to:
+  /// **'Survival Highlights'**
+  String get survivalHighlights;
+
+  /// No description provided for @bestSurvivalScore.
+  ///
+  /// In en, this message translates to:
+  /// **'Best Survival Score'**
+  String get bestSurvivalScore;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

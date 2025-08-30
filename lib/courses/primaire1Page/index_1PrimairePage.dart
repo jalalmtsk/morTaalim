@@ -192,10 +192,10 @@ class _Index1PrimaireState extends State<Index1Primaire>
                                           indicatorWeight: 3,
                                           labelStyle: tabLabelStyle,
                                           tabs: [
-                                            Tab(icon: const Icon(Icons.menu_book), text: tr(context).courses),
                                              Tab(
                                                 icon: Icon(Icons.track_changes_rounded),
                                                 text: tr(context).exercices),
+                                            Tab(icon: const Icon(Icons.menu_book), text: tr(context).courses),
                                           ],
                                         ),
                                       ),
@@ -213,8 +213,8 @@ class _Index1PrimaireState extends State<Index1Primaire>
                   Expanded(
                     child: TabBarView(
                       children: [
-                        Primaire1(key: _keyTab1, experienceManager: xpManager),
                         Primaire1Pratique(key: _keyTab2),
+                        Primaire1(key: _keyTab1, experienceManager: xpManager),
                       ],
                     ),
                   ),

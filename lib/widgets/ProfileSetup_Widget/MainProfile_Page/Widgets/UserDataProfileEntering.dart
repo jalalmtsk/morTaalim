@@ -47,9 +47,25 @@ class _UserAndSchoolInfoPageState extends State<UserAndSchoolInfoPage>
   final List<String> schoolTypes = ['Privé', 'Publique', 'Autre'];
   final List<String> schoolLevels = ['Primaire', 'Collège', 'Lycée'];
   final Map<String, List<String>> gradesByLevel = {
-    'Primaire': ['1ère année primaire (CP)', '2ème année primaire (CE1)', '3ème année primaire (CE2)', '4ème année primaire (CM1)', '5ème année primaire (CM2)', '6ème année primaire (CM3)'],
-    'Collège': ['7ème année (1ère année collège)', '8ème année (2ème année collège)', '9ème année (3ème année collège)'],
-    'Lycée': ['Tronc Commun (TC)', '1ère année bac', 'Baccalauréat'],
+    'Primaire': [
+      '1ère année primaire (CP)',
+      '2ème année primaire (CE1)',
+      '3ème année primaire (CE2)',
+      '4ème année primaire (CM1)',
+      '5ème année primaire (CM2)',
+      '6ème année primaire (CM3)'
+    ],
+    'Collège': [
+      '7ème année (1ère année collège)',
+      '8ème année (2ème année collège)',
+      '9ème année (3ème année collège)'
+    ],
+    'Lycée': [
+      'Tronc Commun (TC)',
+      '1ère année bac',
+      'Baccalauréat',
+      'Baccalauréat (National)', // Added to prevent crash
+    ],
   };
   final List<String> lyceeTracks = ['Science', 'Lettre'];
 
@@ -90,8 +106,21 @@ class _UserAndSchoolInfoPageState extends State<UserAndSchoolInfoPage>
       _schoolNameController.text = user.schoolName;
       _selectedSchoolType = user.schoolType.isNotEmpty ? user.schoolType : null;
       _selectedSchoolLevel = user.schoolLevel.isNotEmpty ? user.schoolLevel : null;
-      _selectedGrade = user.schoolGrade.isNotEmpty ? user.schoolGrade : null;
-      _selectedLyceeTrack = user.lyceeTrack.isNotEmpty ? user.lyceeTrack : null;
+
+      // Safely assign _selectedGrade to avoid Dropdown crash
+      if (_selectedSchoolLevel != null &&
+          gradesByLevel[_selectedSchoolLevel!]!.contains(user.schoolGrade)) {
+        _selectedGrade = user.schoolGrade;
+      } else {
+        _selectedGrade = null;
+      }
+
+      // Safely assign _selectedLyceeTrack
+      if (_selectedSchoolLevel == 'Lycée' && lyceeTracks.contains(user.lyceeTrack)) {
+        _selectedLyceeTrack = user.lyceeTrack;
+      } else {
+        _selectedLyceeTrack = null;
+      }
     });
 
     _validateForm();

@@ -74,8 +74,8 @@ class _AvatarUnlockedDialogState extends State<AvatarUnlockedDialog> with Ticker
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      "🎉 Avatar Unlocked!",
+                     Text(
+                      "🎉 ${tr(context).avatarUnlocked}!",
                       style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.amber),
                     ),
                     const SizedBox(height: 16),

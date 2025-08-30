@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:ui';
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:mortaalim/games/MemoryFlipGame/AdventureMode/Tools/LevelUpDialogFlipMemory.dart';
+import 'package:mortaalim/main.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -184,9 +186,9 @@ class _MFAdventureModeState extends State<MFAdventureMode>
       builder: (context) => AlertDialog(
         backgroundColor: Colors.white.withOpacity(0.9),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('No moves left',
+        title:  Text(tr(context).noMovesLeft,
             style: TextStyle(color: Colors.deepPurple)),
-        content: const Text('You ran out of moves. Restarting level.',
+        content:  Text("${tr(context).youRanOutOfMoves}. ${tr(context).restartingLevel}",
             style: TextStyle(color: Colors.black87)),
         actions: [
           TextButton(
@@ -194,7 +196,7 @@ class _MFAdventureModeState extends State<MFAdventureMode>
               Navigator.of(context).pop();
               _startLevel();
             },
-            child: Text('Restart',
+            child: Text(tr(context).restart,
                 style: TextStyle(color: Colors.deepPurple.shade700)),
           ),
         ],
@@ -203,22 +205,39 @@ class _MFAdventureModeState extends State<MFAdventureMode>
   }
 
   void _finishLevel() async {
-    final xpManager =
-    Provider.of<ExperienceManager>(context, listen: false);
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+
+    // Give XP for completing the level
     xpManager.addXP(2, context: context);
+
+    // Small delay for animations
+    await Future.delayed(const Duration(seconds: 1));
+
+    // Mark level as completed and give token
     if (!_completedLevels.contains(currentLevel)) {
       _completedLevels.add(currentLevel);
       xpManager.addTokenBanner(context, 1); // Give 1 Tolim
       await _saveCompletedLevels();
     }
 
-    int nextLevel = currentLevel + 1;
-    if (nextLevel >= 50) {
-      Navigator.of(context).pop(currentLevel);
-    } else {
-      Navigator.of(context).pop(nextLevel);
-    }
+    // Calculate next level, cap at 50
+    final int nextLevel = (currentLevel + 1).clamp(0, 50);
+
+    // Show the LevelUpDialog
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => LevelUpDialogFlipMemory(
+        nextLevel: nextLevel,
+        onContinue: () {
+          Navigator.of(context).pop(); // Close dialog
+          Navigator.of(context).pop(nextLevel); // Return next level
+        },
+      ),
+    );
   }
+
+
 
   Widget _glassmorphicCard(
       {required Widget child, required VoidCallback? onTap}) {
@@ -279,7 +298,7 @@ class _MFAdventureModeState extends State<MFAdventureMode>
         elevation: 0,
         centerTitle: true,
         title: Text(
-          '${widget.category} - Level ${currentLevel + 1}',
+          '${widget.category} - ${tr(context).level} ${currentLevel + 1}',
           style: TextStyle(
             color: Colors.deepPurple.shade700,
             fontWeight: FontWeight.w900,
@@ -298,7 +317,7 @@ class _MFAdventureModeState extends State<MFAdventureMode>
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _StatusTile(icon: Icons.timer, label: '$minutes:$seconds'),
-                _StatusTile(icon: Icons.swap_calls, label: 'Moves: $_movesLeft'),
+                _StatusTile(icon: Icons.swap_calls, label: '${tr(context).moves}: $_movesLeft'),
               ],
             ),
             const SizedBox(height: 20),
@@ -318,7 +337,10 @@ class _MFAdventureModeState extends State<MFAdventureMode>
                       _waiting || card.isMatched || _selectedIndices.contains(index);
 
                   return _glassmorphicCard(
-                    onTap: () => _onCardTap(index),
+                    onTap: () {
+                      audioManager.playEventSound('PopButton');
+                      _onCardTap(index);
+                    },
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 300),
                       child: showFace

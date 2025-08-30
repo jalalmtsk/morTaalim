@@ -68,8 +68,8 @@ class _LottieAvatarUnlockedDialogState extends State<LottieAvatarUnlockedDialog>
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text(
-                      "🎉 Lottie Avatar Unlocked!",
+                     Text(
+                      "🎉 ${tr(context).avatarUnlocked}!",
                       style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.amber),
                     ),
                     const SizedBox(height: 16),
@@ -94,6 +94,8 @@ class _LottieAvatarUnlockedDialogState extends State<LottieAvatarUnlockedDialog>
                     ElevatedButton(
                       onPressed: () {
                         final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+                        final audiManager = Provider.of<AudioManager>(context, listen: false);
+                        audiManager.playEventSound("cancelButton");
                         xpManager.addXP(widget.xpReward, context: context);
                         Navigator.of(context).pop();
                       },

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:mortaalim/TestingBeforeProdcution/Hezz2FinalGame/Screen/GameScreen.dart';
 import 'package:mortaalim/TestingBeforeProdcution/Hezz2FinalGame/Models/GameCardEnums.dart';
 
+
 class CardGameLauncher extends StatefulWidget {
   const CardGameLauncher({super.key});
-
   @override
   State<CardGameLauncher> createState() => _GameLauncherState();
 }
@@ -14,6 +14,8 @@ class _GameLauncherState extends State<CardGameLauncher> {
   GameModeType gameMode = GameModeType.playToWin;
   int handSize = 7;
   int botCount = 2;
+
+
 
   @override
   Widget build(BuildContext context) {

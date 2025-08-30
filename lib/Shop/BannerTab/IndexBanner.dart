@@ -35,7 +35,7 @@ class IndexBanner extends StatelessWidget {
                         indicatorColor: Colors.white,
                         tabs: [
                           Tab(text: tr(context).cute),
-                          Tab(text: 'Royalty'),
+                          Tab(text: tr(context).royalty),
                           Tab(text: tr(context).sciFi),
                           Tab(text: tr(context).fantasy),
                           Tab(text: tr(context).islamic),

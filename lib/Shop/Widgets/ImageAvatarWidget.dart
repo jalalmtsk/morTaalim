@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/main.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ImageAvatarItemWidget extends StatelessWidget {
@@ -23,21 +26,25 @@ class ImageAvatarItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     final canBuy = !unlocked && (userStars >= cost);
 
     return GestureDetector(
       onTap: () {
         if (unlocked) {
+          audioManager.playEventSound("clickButton2");
           onSelect();
         } else if (canBuy) {
+          audioManager.playEventSound("PopButton");
           onBuy();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Not enough stars! Keep playing to earn more.'),
+             SnackBar(
+              content: Text(tr(context).notEnoughStars),
               behavior: SnackBarBehavior.floating,
             ),
           );
+          audioManager.playEventSound("invalid");
         }
       },
       child: AnimatedContainer(
@@ -68,8 +75,8 @@ class ImageAvatarItemWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 child: Image.asset(
                   imagePath,
-                  width: 70,
-                  height: 70,
+                  width: 80,
+                  height: 80,
                   fit: BoxFit.cover,
                 ),
               ),
@@ -78,17 +85,17 @@ class ImageAvatarItemWidget extends StatelessWidget {
               Positioned(
                 top: 8,
                 right: 8,
-                child: _badge('SELECTED', Colors.green),
+                child: _badge(tr(context).selected, Colors.green),
               )
             else if (unlocked)
               Positioned(
                 top: 8,
                 right: 8,
-                child: _badge('UNLOCKED', Colors.orange),
+                child: _badge(tr(context).unlocked, Colors.orange),
               ),
             if (!unlocked)
               Positioned(
-                bottom: 8,
+                bottom: 0,
                 left: 0,
                 right: 0,
                 child: Center(

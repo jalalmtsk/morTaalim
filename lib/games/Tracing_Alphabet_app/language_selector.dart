@@ -139,9 +139,7 @@ class LanguageSelectorPage extends StatelessWidget {
                         // xpManager.addXP(200, context: context);
                          // await Future.delayed(const Duration(milliseconds: 1000));
 
-
                           //xpManager.addTokenBanner(context, 20);
-
                           xpManager.addStarBanner(
                             context,
                             300,
@@ -149,6 +147,7 @@ class LanguageSelectorPage extends StatelessWidget {
                             animationFrom: const Offset(0, 1000),
                             animationTo: const Offset(500, 150),
                           );
+                          xpManager.addTokenBanner(context, 200);
                         },
                         icon: const Icon(Icons.add, color: Colors.white),
                         label: const Text(
@@ -200,34 +199,7 @@ class LanguageSelectorPage extends StatelessWidget {
                     ),
                   ),
                 ),
-                DisconnectButton(
-                  onSignedOut: () {
-                    print("User signed out!");
-                    // Do any other cleanup if needed
-                  },
-                ),
 
-                if (user != null && user.isAnonymous)
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      icon: const Icon(Icons.login),
-                      label: const Text(
-                        "Lier compte Google",
-                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(builder: (_) => const LinkGoogleAccountPage()),
-                        );
-                      },
-                    ),
-                  ),
               ],
             ),
           ],

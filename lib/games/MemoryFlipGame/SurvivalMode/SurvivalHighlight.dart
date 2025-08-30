@@ -1,6 +1,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../../../main.dart';
+
 class SurvivalHighlightsPage extends StatelessWidget {
   final int bestMatches;
   final int bestTimeSeconds;
@@ -14,7 +16,7 @@ class SurvivalHighlightsPage extends StatelessWidget {
     int seconds = bestTimeSeconds % 60;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Survival Highlights'),
+        title:  Text(tr(context).survivalHighlights),
         backgroundColor: Colors.deepPurple.shade700,
       ),
       body: Center(
@@ -27,15 +29,15 @@ class SurvivalHighlightsPage extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Best Survival Score',
+                Text(tr(context).bestSurvivalScore,
                     style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
                         color: Colors.deepPurple.shade700)),
                 const SizedBox(height: 16),
-                Text('Matches: $bestMatches',
+                Text('${tr(context).matches}: $bestMatches',
                     style: TextStyle(fontSize: 20, color: Colors.black87)),
-                Text('Time: ${minutes}m ${seconds}s',
+                Text('${tr(context).time}: ${minutes}m ${seconds}s',
                     style: TextStyle(fontSize: 20, color: Colors.black87)),
               ],
             ),

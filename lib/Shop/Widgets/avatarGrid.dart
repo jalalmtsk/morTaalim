@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/main.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
 import '../Tools/UnlockedAnimations/EmojiesUnlockedAnimations.dart';
@@ -12,20 +14,24 @@ class AvatarGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final xpManager = Provider.of<ExperienceManager>(context);
-
+    final audioManager = Provider.of<AudioManager>(context,listen: false);
     void showPurchaseDialog(BuildContext parentContext, String emoji, int cost) {
       showDialog(
         context: parentContext,
         builder: (context) => AlertDialog(
-          title: const Text("Confirm Purchase"),
-          content: Text("Do you want to unlock $emoji for $cost ⭐?"),
+          title:  Text(tr(context).confirmPurchase),
+          content: Text("${tr(context).doYouWantToUnlockThis} $emoji for $cost ⭐?"),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
+              onPressed: () {
+                audioManager.playEventSound("cancelButton");
+                Navigator.pop(context);
+              },
+              child:  Text(tr(context).cancel),
             ),
             TextButton(
               onPressed: () async {
+                audioManager.playEventSound("clickButton");
                 Navigator.pop(context); // Close the purchase dialog
                 await Future.delayed(const Duration(milliseconds: 300));
 
@@ -45,7 +51,7 @@ class AvatarGrid extends StatelessWidget {
                 xpManager.unlockAvatar(emoji);
                 xpManager.selectAvatar(emoji);
               },
-              child: const Text("Buy", style: TextStyle(color: Colors.deepOrange)),
+              child:  Text(tr(context).pay, style: TextStyle(color: Colors.deepOrange)),
             ),
           ],
         ),

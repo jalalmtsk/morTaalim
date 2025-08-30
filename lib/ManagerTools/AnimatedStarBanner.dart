@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:provider/provider.dart';
 
@@ -115,8 +116,8 @@ class _AnimatedStarBannerState extends State<AnimatedStarBanner>
                                 ],
                               ),
                             ),
-                            const Text(
-                              'Keep Shining!',
+                             Text(
+                              '${tr(context).keepShining}!',
                               style: TextStyle(
                                 color: Colors.white70,
                                 fontSize: 14,

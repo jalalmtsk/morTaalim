@@ -110,8 +110,8 @@ class _AnimatedTokenSpentBannerState extends State<AnimatedTokenSpentBanner>
                               ],
                             ),
                           ),
-                          const Text(
-                            'Transaction complete!',
+                           Text(
+                            '${tr(context).transactionComplete}!',
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 14,

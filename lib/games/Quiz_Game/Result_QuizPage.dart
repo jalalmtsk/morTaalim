@@ -2,11 +2,11 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import '../../main.dart';
 import 'ModeSelectorPage.dart';
 import 'quiz_Page.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 
 class ResultPage extends StatefulWidget {
   final int player1Score;
@@ -14,7 +14,7 @@ class ResultPage extends StatefulWidget {
   final GameMode mode;
   final QuizLanguage language;
   final String? player1Name;
-  final String? player2Name; // Optional for single player
+  final String? player2Name;
 
   const ResultPage({
     super.key,
@@ -25,7 +25,6 @@ class ResultPage extends StatefulWidget {
     this.player1Name,
     this.player2Name,
   });
-
 
   @override
   _ResultPageState createState() => _ResultPageState();
@@ -52,17 +51,8 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 2),
-    );
-
-    _fadeInAnimation = CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeIn,
-    );
-
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 2));
+    _fadeInAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeIn);
     _controller.forward();
     _playVictorySound();
   }
@@ -85,61 +75,68 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
   }
 
   Widget _buildScoreCard(String player, int score) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
-        child: Container(
-          width: 150,
-          padding: const EdgeInsets.symmetric(vertical: 24),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.15),
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: Colors.white.withOpacity(0.25)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.deepOrange.withOpacity(0.2),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
+    return Transform.scale(
+      scale: 1.05,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+          child: Container(
+            width: 160,
+            padding: const EdgeInsets.symmetric(vertical: 26),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.orange.shade200.withOpacity(0.5), Colors.deepOrange.shade400.withOpacity(0.5)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            ],
-          ),
-          alignment: Alignment.center,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                player,
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.deepOrange,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 5,
-                      color: Colors.deepOrangeAccent,
-                      offset: Offset(0, 1),
-                    ),
-                  ],
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: Colors.white.withOpacity(0.25)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.deepOrange.withOpacity(0.3),
+                  blurRadius: 16,
+                  offset: const Offset(0, 8),
                 ),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                '$score ${tr(context).points}',
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  shadows: [
-                    Shadow(
-                      blurRadius: 8,
-                      color: Colors.black26,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
+              ],
+            ),
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  player,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 10,
+                        color: Colors.orangeAccent,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(height: 12),
+                Text(
+                  '$score ${tr(context).points}',
+                  style: const TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.yellowAccent,
+                    shadows: [
+                      Shadow(
+                        blurRadius: 12,
+                        color: Colors.black26,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -147,73 +144,71 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
   }
 
   Widget _buildGradientButton({required VoidCallback onTap, required Widget child}) {
-    return Material(
-      borderRadius: BorderRadius.circular(30),
-      elevation: 6,
-      shadowColor: Colors.deepOrange.withOpacity(0.5),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(30),
-        onTap: onTap,
-        splashColor: Colors.deepOrange.shade100,
-        highlightColor: Colors.deepOrange.shade50,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFFFF7E5F), Color(0xFFFFB88C)], // smooth orange gradient
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            borderRadius: BorderRadius.circular(30),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(36),
+      splashColor: Colors.orange.shade200,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 18),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFFFFA726), Color(0xFFFF5722)],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-          child: DefaultTextStyle.merge(
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-              color: Colors.white,
-              letterSpacing: 1.1,
-              shadows: [
-                Shadow(
-                  color: Colors.black26,
-                  offset: Offset(0, 2),
-                  blurRadius: 3,
-                ),
-              ],
+          borderRadius: BorderRadius.circular(36),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.orangeAccent.withOpacity(0.4),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
             ),
-            child: child,
+          ],
+        ),
+        child: DefaultTextStyle.merge(
+          style: const TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: Colors.white,
+            letterSpacing: 1.2,
+            shadows: [
+              Shadow(
+                color: Colors.black38,
+                offset: Offset(0, 2),
+                blurRadius: 3,
+              ),
+            ],
           ),
+          child: child,
         ),
       ),
     );
   }
 
   Widget _buildBackButton({required VoidCallback onTap}) {
-    return Material(
-      borderRadius: BorderRadius.circular(30),
-      color: Colors.white.withOpacity(0.2),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(30),
-        onTap: onTap,
-        splashColor: Colors.deepOrange.shade100,
-        highlightColor: Colors.deepOrange.shade50,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.arrow_back_ios_new, color: Colors.white70, size: 20),
-              const SizedBox(width: 6),
-              Text(
-                tr(context).back,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white70,
-                  letterSpacing: 1.05,
-                ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(36),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 16),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(36),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.arrow_back_ios_new, color: Colors.white70, size: 22),
+            const SizedBox(width: 6),
+            Text(
+              tr(context).back,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.white70,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -222,14 +217,10 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Subtle pastel gradient background
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.orange.shade50,
-              Colors.deepOrange.shade300,
-            ],
+            colors: [Colors.orange.shade50, Colors.deepOrange.shade400],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -239,46 +230,47 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
           child: SafeArea(
             child: Center(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Center(
-                      child: SizedBox(
-                        width: 320,
-                        child: AnimatedTextKit(
-                          animatedTexts: [
-                            ColorizeAnimatedText(
-                              winner,textAlign: TextAlign.center,
-                              textStyle: const TextStyle(
-                                fontSize: 38,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 1.4,
-                              ),
-                              colors: [
-                                Colors.deepOrange.shade700,
-                                Colors.deepOrange.shade400,
-                                Colors.orange.shade600,
-                                Colors.deepOrange.shade900,
-                              ],
+                    // Winner Text with Neon Glow
+                    SizedBox(
+                      width: 300,
+                      child: AnimatedTextKit(
+                        animatedTexts: [
+                          ColorizeAnimatedText(
+                            winner,
+                            textAlign: TextAlign.center,
+                            textStyle: const TextStyle(
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 1,
                             ),
-                          ],
-                          isRepeatingAnimation: true,
-                        ),
+                            colors: [
+                              Colors.orange.shade700,
+                              Colors.yellow.shade400,
+                              Colors.deepOrange.shade900,
+                            ],
+                          ),
+                        ],
+                        isRepeatingAnimation: true,
                       ),
                     ),
 
                     const SizedBox(height: 30),
 
+                    // Victory Animation
                     Lottie.asset(
                       'assets/animations/QuizzGame_Animation/Champion.json',
-                      width: 280,
-                      height: 280,
+                      width: 320,
+                      height: 320,
                       fit: BoxFit.contain,
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 24),
 
+                    // Score Cards
                     Wrap(
                       alignment: WrapAlignment.center,
                       spacing: 24,
@@ -290,16 +282,14 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                       ],
                     ),
 
-
                     const SizedBox(height: 40),
 
+                    // Buttons
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         _buildBackButton(onTap: () => Navigator.pop(context)),
-
-                        const SizedBox(width: 12),
-
+                        const SizedBox(width: 16),
                         _buildGradientButton(
                           onTap: () => Navigator.pushReplacement(
                             context,
@@ -311,7 +301,8 @@ class _ResultPageState extends State<ResultPage> with SingleTickerProviderStateM
                                 player2Name: widget.player2Name,
                               ),
                             ),
-                          ),child: Text('🔁 ${tr(context).playAgain}'),
+                          ),
+                          child: Text('🔁 ${tr(context).playAgain}'),
                         ),
                       ],
                     ),

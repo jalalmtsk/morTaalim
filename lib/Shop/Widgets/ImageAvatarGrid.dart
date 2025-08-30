@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
+import '../../main.dart';
 import '../../tools/audio_tool/Audio_Manager.dart';
 import '../Tools/UnlockedAnimations/AvatarImageUnlockedAnimationBanner.dart';
 import 'ImageAvatarWidget.dart';
@@ -19,15 +20,19 @@ class ImageAvatarGrid extends StatelessWidget {
       showDialog(
         context: parentContext,
         builder: (context) => AlertDialog(
-          title: const Text("Confirm Purchase"),
-          content: Text("Do you want to unlock this avatar for $cost ⭐?"),
+          title:  Text(tr(context).confirmPurchase),
+          content: Text("${tr(context).doYouWantToUnlockThis} ${tr(context).avatar} ${tr(context).forb} $cost ⭐?"),
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text("Cancel"),
+              onPressed: () {
+                audioManager.playEventSound("cancelButton");
+                Navigator.pop(context);
+              },
+              child:  Text(tr(context).cancel),
             ),
             TextButton(
               onPressed: () async {
+                audioManager.playEventSound("clickButton");
                 Navigator.pop(context); // close dialog first
 
                 // Spend stars
@@ -53,7 +58,7 @@ class ImageAvatarGrid extends StatelessWidget {
                 xpManager.selectAvatar(imagePath);
 
               },
-              child: const Text("Buy", style: TextStyle(color: Colors.deepOrange)),
+              child:  Text(tr(context).pay, style: TextStyle(color: Colors.deepOrange)),
             ),
           ],
         ),
@@ -61,7 +66,7 @@ class ImageAvatarGrid extends StatelessWidget {
     }
 
     return GridView.builder(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(12),
       itemCount: imageAvatars.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,

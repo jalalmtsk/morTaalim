@@ -39,7 +39,10 @@ class BackupCard extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => BackupPage(experienceManager: xpManager),
+                    builder: (context) {
+                      audioManager.playEventSound("clickButton");
+                      return BackupPage(experienceManager: xpManager);
+                    },
                   ),
                 );
               },

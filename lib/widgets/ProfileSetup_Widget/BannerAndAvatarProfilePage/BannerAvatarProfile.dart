@@ -136,8 +136,7 @@ class _BannerAvatarProfileState extends State<BannerAvatarProfile>
               child: const Icon(Icons.check_circle, color: Colors.white),
             ),
             const SizedBox(width: 12),
-            Text(
-              "tr(context).profileSaved",
+            Text(tr(context).profileSaved,
               style: const TextStyle(fontWeight: FontWeight.w700, color: Colors.white),
             ),
           ],
@@ -239,7 +238,7 @@ class _BannerAvatarProfileState extends State<BannerAvatarProfile>
                                 validator: (v) {
                                   final s = (v ?? '').trim();
                                   if (s.isEmpty || s.length > 12) {
-                                    return "tr(context).nameRule"; // "Name must be between 1 and 12 characters"
+                                    return tr(context).nameRule; // "Name must be between 1 and 12 characters"
                                   }
                                   return null;
                                 },
@@ -267,7 +266,7 @@ class _BannerAvatarProfileState extends State<BannerAvatarProfile>
                                   final s = (v ?? '').trim();
                                   if (s.isEmpty) return null; // optional
                                   final ok = RegExp(r'^.+@.+\..+\$').hasMatch(s);
-                                  if (!ok) return "tr(context).invalidEmail";
+                                  if (!ok) return tr(context).invalidEmail;
                                   return null;
                                 },
                               ),
@@ -300,7 +299,7 @@ class _BannerAvatarProfileState extends State<BannerAvatarProfile>
                     const SizedBox(width: 12),
                     Expanded(
                       child: Text(
-                        "tr(context).readyToSave",
+                        tr(context).readyToSave,
                         maxLines: 2,
                         style: const TextStyle(
                           color: Colors.white,
