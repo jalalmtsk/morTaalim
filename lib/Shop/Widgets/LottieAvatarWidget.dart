@@ -70,8 +70,8 @@ class LottieAvatarItemWidget extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
                 child: Lottie.asset(
                   lottiePath,
-                  width: 80,
-                  height: 80,
+                  width: 90,
+                  height: 90,
                   fit: BoxFit.cover,
                   repeat: true,
                 ),

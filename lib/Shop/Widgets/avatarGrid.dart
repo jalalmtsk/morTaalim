@@ -3,6 +3,7 @@ import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
+import '../../main.dart';
 import '../Tools/UnlockedAnimations/EmojiesUnlockedAnimations.dart';
 import 'avatarItems.dart';
 
@@ -23,10 +24,14 @@ class AvatarGrid extends StatelessWidget {
           content: Text("${tr(context).doYouWantToUnlockThis} $emoji for $cost ⭐?"),
           actions: [
             TextButton(
+<<<<<<< HEAD
               onPressed: () {
                 audioManager.playEventSound("cancelButton");
                 Navigator.pop(context);
               },
+=======
+              onPressed: () => Navigator.pop(context),
+>>>>>>> f1c2e44d7be697309e2b1bea04cfd2a40159b5ec
               child:  Text(tr(context).cancel),
             ),
             TextButton(
@@ -63,8 +68,8 @@ class AvatarGrid extends StatelessWidget {
       itemCount: avatarItems.length,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
-        mainAxisSpacing: 20,
-        crossAxisSpacing: 20,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 16,
         childAspectRatio: 0.85,
       ),
       itemBuilder: (_, index) {
