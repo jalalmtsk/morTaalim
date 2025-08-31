@@ -9,6 +9,7 @@ import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 
+import '../../../tools/Ads_Manager.dart';
 import '../Animal_Data.dart';
 import 'MatchTheSound_ResultPage.dart';
 import 'Tools/AnimalTiles.dart';
@@ -47,6 +48,7 @@ class _AS_MatchDropState extends State<AS_MatchDrop>
 
   // ✅ Banner Ad
   BannerAd? _bannerAd;
+  bool _isBannerAdLoaded = false;
 
   @override
   void initState() {
@@ -66,26 +68,26 @@ class _AS_MatchDropState extends State<AS_MatchDrop>
     _startGame();
 
     // ✅ Initialize Banner Ad
-    _bannerAd = BannerAd(
-      adUnitId: 'ca-app-pub-9936922975297046/2736323402', // ✅ real ID
-      size: AdSize.banner,
-      request: const AdRequest(),
-      listener: BannerAdListener(
-        onAdLoaded: (ad) => setState(() {}),
-        onAdFailedToLoad: (ad, error) {
-          ad.dispose();
-          debugPrint("❌ Failed to load banner ad: $error");
-        },
-      ),
-    )..load();
+
+  }
+  void _loadBannerAd() {
+    _bannerAd?.dispose();
+    _isBannerAdLoaded = false;
+
+    _bannerAd = AdHelper.getBannerAd(() {
+      setState(() {
+        _isBannerAdLoaded = true;
+      });
+    });
   }
 
   @override
   void dispose() {
     _pulseController.dispose();
-    _bannerAd?.dispose(); // ✅ Dispose Ad
+    _bannerAd?.dispose();
     super.dispose();
   }
+
 
   void _startGame() {
     _score = 0;
@@ -167,136 +169,147 @@ class _AS_MatchDropState extends State<AS_MatchDrop>
         title:  Text('🐾 ${tr(context).matchTheSound}'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: Column(
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  Column(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+      return SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minHeight: constraints.maxHeight, // Ensure full height for big screens
+          ),
+          child: IntrinsicHeight(
+            child: Column(
+              children: [
+                Expanded(
+                  child: Stack(
                     children: [
-                      Userstatutbar(),
-                      const SizedBox(height: 8),
-                      HudBar(
-                        score: _score,
-                        lives: _lives,
-                        maxScore: maxScore,
-                        progress: progress,
-                      ),
-                      const SizedBox(height: 8),
-                      PromptCard(
-                        pulseController: _pulseController,
-                        onPlay: () => audioManager.playAlert(_target['sound']),
-                        text:
-                        '🎧 ${tr(context).listenThenDragTheCorrectAnimalIntoTheGlowingRing}!',
-                      ),
-                      const SizedBox(height: 10),
-                      DropTarget(
-                        highlight: false,
-                        onWillAccept: (data) => !_showOverlay,
-                        onAccept: (data) async {
-                          if (_showOverlay) return;
-                          await _onDrop(data);
-
-                          // wait for Lottie
-                          final composition =
-                          _lastCorrect ? await _doneComp : await _wrongComp;
-                          final controller = AnimationController(
-                            vsync: this,
-                            duration: composition.duration,
-                          );
-
-                          controller.addStatusListener((status) {
-                            if (status == AnimationStatus.completed) {
-                              controller.dispose();
-                              setState(() => _showOverlay = false);
-                              if (_lastCorrect) {
-                                if (_score >= maxScore) {
-                                  _endGame(failed: false);
-                                } else {
-                                  _hideOverlayAndAdvance();
+                      Column(
+                        children: [
+                          Userstatutbar(),
+                          const SizedBox(height: 8),
+                          HudBar(
+                            score: _score,
+                            lives: _lives,
+                            maxScore: maxScore,
+                            progress: progress,
+                          ),
+                          const SizedBox(height: 8),
+                          PromptCard(
+                            pulseController: _pulseController,
+                            onPlay: () => audioManager.playAlert(_target['sound']),
+                            text:
+                            '🎧 ${tr(context).listenThenDragTheCorrectAnimalIntoTheGlowingRing}!',
+                          ),
+                          const SizedBox(height: 10),
+                          DropTarget(
+                            highlight: false,
+                            onWillAccept: (data) => !_showOverlay,
+                            onAccept: (data) async {
+                              if (_showOverlay) return;
+                              await _onDrop(data);
+                              final composition = _lastCorrect
+                                  ? await _doneComp
+                                  : await _wrongComp;
+                              final controller = AnimationController(
+                                vsync: this,
+                                duration: composition.duration,
+                              );
+                              controller.addStatusListener((status) {
+                                if (status == AnimationStatus.completed) {
+                                  controller.dispose();
+                                  setState(() => _showOverlay = false);
+                                  if (_lastCorrect) {
+                                    if (_score >= maxScore) {
+                                      _endGame(failed: false);
+                                    } else {
+                                      _hideOverlayAndAdvance();
+                                    }
+                                  } else {
+                                    if (_lives <= 0) {
+                                      _endGame(failed: true);
+                                    } else {
+                                      _hideOverlayAndAdvance(sameRound: true);
+                                    }
+                                  }
                                 }
-                              } else {
-                                if (_lives <= 0) {
-                                  _endGame(failed: true);
-                                } else {
-                                  _hideOverlayAndAdvance(sameRound: true);
-                                }
-                              }
-                            }
-                          });
-
-                          setState(() => _showOverlay = true);
-                          controller.forward();
-                        },
-                      ),
-                      const SizedBox(height: 18),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 14.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: _choices
-                              .map(
-                                (a) => Draggable<Map<String, dynamic>>(
-                              data: a,
-                              feedback: AnimalTile(
-                                  image: a['image'], dragging: true),
-                              childWhenDragging:
-                              AnimalTile(image: a['image'], faded: true),
-                              child: AnimalTile(image: a['image']),
+                              });
+                              setState(() => _showOverlay = true);
+                              controller.forward();
+                            },
+                          ),
+                          const SizedBox(height: 18),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 14.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: _choices
+                                  .map(
+                                    (a) => Draggable<Map<String, dynamic>>(
+                                  data: a,
+                                  feedback: AnimalTile(
+                                      image: a['image'], dragging: true),
+                                  childWhenDragging: AnimalTile(
+                                      image: a['image'], faded: true),
+                                  child: AnimalTile(image: a['image']),
+                                ),
+                              )
+                                  .toList(),
                             ),
-                          )
-                              .toList(),
-                        ),
+                          ),
+                          const Spacer(),
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 18.0),
+                            child: ElevatedButton.icon(
+                              onPressed: () =>
+                                  audioManager.playAlert(_target['sound']),
+                              icon: const Icon(Icons.volume_up),
+                              label: Text(tr(context).playAgain),
+                              style: ElevatedButton.styleFrom(
+                                shape: const StadiumBorder(),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 22, vertical: 12),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      const Spacer(),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 18.0),
-                        child: ElevatedButton.icon(
-                          onPressed: () =>
-                              audioManager.playAlert(_target['sound']),
-                          icon: const Icon(Icons.volume_up),
-                          label:  Text(tr(context).playAgain),
-                          style: ElevatedButton.styleFrom(
-                            shape: const StadiumBorder(),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 22, vertical: 12),
+                      if (_showOverlay)
+                        Positioned.fill(
+                          child: AbsorbPointer(
+                            absorbing: true,
+                            child: Center(
+                              child: Lottie.asset(
+                                _lastCorrect
+                                    ? 'assets/animations/QuizzGame_Animation/DoneAnimation.json'
+                                    : 'assets/animations/QuizzGame_Animation/wrong.json',
+                                repeat: false,
+                                width: 280,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
                     ],
                   ),
-                  if (_showOverlay)
-                    Positioned.fill(
-                      child: AbsorbPointer(
-                        absorbing: true,
-                        child: Center(
-                          child: Lottie.asset(
-                            _lastCorrect
-                                ? 'assets/animations/QuizzGame_Animation/DoneAnimation.json'
-                                : 'assets/animations/QuizzGame_Animation/wrong.json',
-                            repeat: false,
-                            width: 280,
-                          ),
-                        ),
+                ),
+                if (context.watch<ExperienceManager>().adsEnabled &&
+                    _bannerAd != null &&
+                    _isBannerAdLoaded)
+                  SafeArea(
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: SizedBox(
+                        width: _bannerAd!.size.width.toDouble(),
+                        height: _bannerAd!.size.height.toDouble(),
+                        child: AdWidget(ad: _bannerAd!),
                       ),
                     ),
-                ],
-              ),
+                  ),
+              ],
             ),
-
-            // ✅ Banner Ad at bottom
-            if (_bannerAd != null)
-              Container(
-                alignment: Alignment.center,
-                width: _bannerAd!.size.width.toDouble(),
-                height: _bannerAd!.size.height.toDouble(),
-                child: AdWidget(ad: _bannerAd!),
-              ),
-          ],
+          ),
         ),
-      ),
+      );
+    },
+    ),
     );
   }
 }

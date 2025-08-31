@@ -2,11 +2,13 @@ import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:mortaalim/games/MemoryFlipGame/MemoryFlip_index.dart';
 import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mortaalim/XpSystem.dart';
 
+import '../AdventureMode/CategoryOfImages_Data.dart';
 import 'SurvivalHighlight.dart'; // Your XP/Tolim manager
 
 class SurvivalMemoryGame extends StatefulWidget {
@@ -20,10 +22,7 @@ class SurvivalMemoryGame extends StatefulWidget {
 
 class _SurvivalMemoryGameState extends State<SurvivalMemoryGame>
     with SingleTickerProviderStateMixin {
-  final List<String> allImages = List.generate(
-    36,
-        (index) => 'assets/images/UI/utilities/MemoryFlip_images/${index + 1}.png',
-  );
+  final List<String> allImages = categoryImages.values.expand((list) => list).toList();
 
   late List<CardData> _cards;
   bool _waiting = true;
@@ -277,75 +276,102 @@ class _SurvivalMemoryGameState extends State<SurvivalMemoryGame>
     final minutes = elapsed.inMinutes.toString().padLeft(2, '0');
     final seconds = (elapsed.inSeconds % 60).toString().padLeft(2, '0');
 
-    return Scaffold(
-      backgroundColor: const Color(0xFFE0F7FA),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        actions: [
-          IconButton(onPressed: (){
-            Navigator.push(context, MaterialPageRoute(builder: (_) => SurvivalHighlightsPage(bestMatches: bestMatches, bestTimeSeconds: bestTimeSeconds)));
-          }, icon: Icon(Icons.score))
-        ],
-        centerTitle: true,
-        title: Text(
-          tr(context).survivalMode,
-          style: TextStyle(
-            color: Colors.deepPurple.shade700,
-            fontWeight: FontWeight.w900,
-            fontSize: 28,
-            letterSpacing: 1.1,
-          ),
-        ),
-        iconTheme: IconThemeData(color: Colors.deepPurple.shade700),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                StatusTile(icon: Icons.timer, label: '$minutes:$seconds'),
-                StatusTile(icon: Icons.swap_calls, label: '${tr(context).moves}: $_movesLeft'),
-                StatusTile(icon: Icons.star, label: '${tr(context).matches}: $_matchesMade'),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: GridView.builder(
-                physics: const BouncingScrollPhysics(),
-                itemCount: _cards.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: columns,
-                  mainAxisSpacing: 16,
-                  crossAxisSpacing: 16,
-                  childAspectRatio: 1,
-                ),
-                itemBuilder: (context, index) {
-                  final card = _cards[index];
-                  final showFace = _waiting || card.isMatched || _selectedIndices.contains(index);
-
-                  return _glassmorphicCard(
-                    onTap: () => _onCardTap(index),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 300),
-                      child: showFace
-                          ? Image.asset(
-                        card.imagePath,
-                        key: ValueKey(card.imagePath),
-                        fit: BoxFit.contain,
-                      )
-                          : Container(
-                        key: const ValueKey('back'),
-                        color: Colors.deepPurple.withOpacity(0.1),
-                      ),
-                    ),
-                  );
-                },
+    return WillPopScope(
+      onWillPop: () async {
+        // Show quit confirmation dialog
+        return await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => AlertDialog(
+            title: Text("Quit Game?"),
+            content: Text("If you quit now, you will lose your reward."),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false), // Stay in game
+                child: Text("Cancel"),
               ),
-            ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(true), // Quit game
+                child: Text("Quit"),
+              ),
+            ],
+          ),
+        ) ?? false; // Prevent pop if dialog returns null
+      },child: Scaffold(
+        backgroundColor: const Color(0xFFE0F7FA),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(onPressed: () {
+            audioManager.playEventSound("clickButton");
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => MFIndexPage()));}, icon: Icon(Icons.arrow_circle_left,
+            size: 60,
+            color: Colors.deepOrange,)),
+          actions: [
+            IconButton(onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (_) => SurvivalHighlightsPage(bestMatches: bestMatches, bestTimeSeconds: bestTimeSeconds)));
+            }, icon: Icon(Icons.score))
           ],
+          centerTitle: true,
+          title: Text(
+            tr(context).survivalMode,
+            style: TextStyle(
+              color: Colors.deepPurple.shade700,
+              fontWeight: FontWeight.w900,
+              fontSize: 28,
+              letterSpacing: 1.1,
+            ),
+          ),
+          iconTheme: IconThemeData(color: Colors.deepPurple.shade700),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  StatusTile(icon: Icons.timer, label: '$minutes:$seconds'),
+                  StatusTile(icon: Icons.swap_calls, label: '${tr(context).moves}: $_movesLeft'),
+                  StatusTile(icon: Icons.star, label: '${tr(context).matches}: $_matchesMade'),
+                ],
+              ),
+              const SizedBox(height: 20),
+              Expanded(
+                child: GridView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  itemCount: _cards.length,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: columns,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 1,
+                  ),
+                  itemBuilder: (context, index) {
+                    final card = _cards[index];
+                    final showFace = _waiting || card.isMatched || _selectedIndices.contains(index);
+
+                    return _glassmorphicCard(
+                      onTap: () => _onCardTap(index),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 300),
+                        child: showFace
+                            ? Image.asset(
+                          card.imagePath,
+                          key: ValueKey(card.imagePath),
+                          fit: BoxFit.contain,
+                        )
+                            : Container(
+                          key: const ValueKey('back'),
+                          color: Colors.deepPurple.withOpacity(0.1),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

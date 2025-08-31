@@ -437,7 +437,6 @@ class _UserStatutBar extends State<Userstatutbar>
                       backgroundColor: Colors.white10,
                       child: _buildAvatar(xpManager.selectedAvatar, showSparkle),
                     ),
-                    const SizedBox(width: 14),
                     AnimatedBuilder(
                       animation: Listenable.merge([_xpScaleController, _xpColorController]),
                       builder: (_, __) {

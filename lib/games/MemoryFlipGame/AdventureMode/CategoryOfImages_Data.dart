@@ -2,7 +2,7 @@
 final Map<String, List<String>> categoryImages = {
   "Sushi": List.generate(
     20,
-        (index) => 'assets/images/memory/sushi/${index + 1}.png',
+        (index) => 'assets/images/UI/utilities/MemoryFlip_images/Sushi/${index + 1}.png',
   ),
   "FastFood": List.generate(
     20,
@@ -22,6 +22,8 @@ final Map<String, List<String>> categoryImages = {
     20,
         (index) => 'assets/images/UI/utilities/MemoryFlip_images/Candy/${index + 1}.png',
   ),
+
+
 
 
 };

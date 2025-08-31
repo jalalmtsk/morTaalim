@@ -163,7 +163,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
   Future<void> saveDrawing() async {
     if (points.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Draw something before saving!")),
+        SnackBar(content: Text(tr(context).drawSomethingBeforeSaving)),
       );
       return;
     }
@@ -219,7 +219,11 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
           title: Text(tr(context).confirmSpending),
           content: Row(
             children: [
-              Text(' ${tr(context).thisWillDeductONEtolimProceed}?'),
+              Flexible(
+                  child: Text(
+                    overflow: TextOverflow.visible,
+                      softWrap: true,
+                      ' ${tr(context).thisWillDeductONEtolimProceed}?')),
               SizedBox(width: 8),
               Icon(Icons.generating_tokens_rounded, color: Colors.green),
             ],

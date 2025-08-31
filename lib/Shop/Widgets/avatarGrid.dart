@@ -24,14 +24,10 @@ class AvatarGrid extends StatelessWidget {
           content: Text("${tr(context).doYouWantToUnlockThis} $emoji for $cost ⭐?"),
           actions: [
             TextButton(
-<<<<<<< HEAD
               onPressed: () {
                 audioManager.playEventSound("cancelButton");
                 Navigator.pop(context);
               },
-=======
-              onPressed: () => Navigator.pop(context),
->>>>>>> f1c2e44d7be697309e2b1bea04cfd2a40159b5ec
               child:  Text(tr(context).cancel),
             ),
             TextButton(

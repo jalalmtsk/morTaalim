@@ -1,14 +1,62 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/games/MemoryFlipGame/SurvivalMode/MainSurvivalModePage.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 
+import '../../tools/Ads_Manager.dart';
 import 'AdventureMode/MFCategorySelector.dart';
 // Your Survival mode page
 
-class MFIndexPage extends StatelessWidget {
+class MFIndexPage extends StatefulWidget {
   const MFIndexPage({super.key});
+
+  @override
+  State<MFIndexPage> createState() => _MFIndexPageState();
+}
+
+class _MFIndexPageState extends State<MFIndexPage> {
+  BannerAd? _bannerAd;
+  bool _isBannerLoaded = false;
+
+  @override
+  void initState() {
+    super.initState();
+    AdHelper.initializeAds();
+    _bannerAd = AdHelper.getBannerAd(() {
+      setState(() => _isBannerLoaded = true);
+    });
+  }
+
+
+
+  @override
+  void dispose() {
+    _bannerAd?.dispose();
+    super.dispose();
+
+
+  }
+  Future<void> _handleGameTap(Widget page) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const Center(
+        child: CircularProgressIndicator(color: Colors.deepOrange),
+      ),
+    );
+
+    await AdHelper.showInterstitialAd(
+      context: context,
+      onDismissed: () {
+        Navigator.of(context).pop();
+        Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+      },
+    );
+
+    if (Navigator.canPop(context)) Navigator.of(context).pop();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,11 +129,7 @@ class MFIndexPage extends StatelessWidget {
                         colors: [Colors.orange.shade400, Colors.deepOrange.shade300],
                         onTap: () {
                           audioManager.playEventSound("clickButton");
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const CategorySelection(),
-                            ),
-                          );
+                          _handleGameTap(const CategorySelection());
                         },
                       ),
                       const SizedBox(height: 24),
@@ -97,12 +141,9 @@ class MFIndexPage extends StatelessWidget {
                         colors: [Colors.purple.shade400, Colors.deepPurple.shade300],
                         onTap: () {
                           audioManager.playEventSound("clickButton");
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const SurvivalMemoryGame(),
-                            ),
-                          );
+                          _handleGameTap(const SurvivalMemoryGame());
                         },
+
                       ),
                     ],
                   ),

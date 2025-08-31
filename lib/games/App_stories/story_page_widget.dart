@@ -34,10 +34,14 @@ class StoryPageWidget extends StatefulWidget {
 
 class _StoryPageWidgetState extends State<StoryPageWidget> {
   final FlutterTts flutterTts = FlutterTts();
+  final List<TapGestureRecognizer> _tapRecognizers = [];
 
   @override
   void dispose() {
     flutterTts.stop();
+    for (final recognizer in _tapRecognizers) {
+      recognizer.dispose();
+    }
     super.dispose();
   }
   // --- Show Definition Dialog ---
@@ -124,7 +128,6 @@ class _StoryPageWidgetState extends State<StoryPageWidget> {
   // --- Build tappable words ---
   List<InlineSpan> _buildTappableText(BuildContext context, bool isRtl) {
     final words = widget.pageData.getWords(widget.language);
-    // Remove manual reversal
     final spans = <InlineSpan>[];
 
     for (int i = 0; i < words.length; i++) {
@@ -133,40 +136,73 @@ class _StoryPageWidgetState extends State<StoryPageWidget> {
       final definition = dic.getDefinitionFor(word, widget.language);
       final hasDefinition = definition != 'No definition found.';
 
-      final wordKey = GlobalKey();
-
-      spans.add(WidgetSpan(
-        child: GestureDetector(
-          key: wordKey,
-          onTap: hasDefinition
-              ? () async {
-            final pronunciation = dict.getPronunciationFor(word, widget.language);
-            _showPronunciationOverlay(context, wordKey, pronunciation);
-
-            await flutterTts.setLanguage(_getTtsLanguage(widget.language));
-            await flutterTts.speak(word);
-          }
-              : null,
-          onLongPress: hasDefinition ? () => _showDefinitionDialog(context, word) : null,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 2.0),
-            child: Text(
-              words[i], // keep original order
-              style: TextStyle(
-                fontSize: widget.textSize,
-                color: isHighlighted
-                    ? Colors.deepOrange
-                    : Colors.deepOrangeAccent.withOpacity(0.6),
-                fontWeight: hasDefinition || isHighlighted ? FontWeight.bold : FontWeight.normal,
+      if (isRtl) {
+        // Arabic / Amazigh → use TextSpan
+        spans.add(
+          TextSpan(
+            text: word + ' ',
+            style: TextStyle(
+              fontSize: widget.textSize,
+              color: isHighlighted
+                  ? Colors.deepOrange
+                  : Colors.deepOrangeAccent.withOpacity(0.6),
+              fontWeight: hasDefinition || isHighlighted
+                  ? FontWeight.bold
+                  : FontWeight.normal,
+            ),
+            recognizer: TapGestureRecognizer()
+              ..onTap = hasDefinition
+                  ? () async {
+                final pronunciation = dict.getPronunciationFor(word, widget.language);
+                _showPronunciationOverlay(context, GlobalKey(), pronunciation);
+                await flutterTts.setLanguage(_getTtsLanguage(widget.language));
+                await flutterTts.speak(word);
+              }
+                  : null,
+          ),
+        );
+      } else {
+        // Other languages → use WidgetSpan for tap & long press
+        final wordKey = GlobalKey();
+        spans.add(
+          WidgetSpan(
+            alignment: PlaceholderAlignment.baseline,
+            baseline: TextBaseline.alphabetic,
+            child: GestureDetector(
+              key: wordKey,
+              onTap: hasDefinition
+                  ? () async {
+                final pronunciation = dict.getPronunciationFor(word, widget.language);
+                _showPronunciationOverlay(context, wordKey, pronunciation);
+                await flutterTts.setLanguage(_getTtsLanguage(widget.language));
+                await flutterTts.speak(word);
+              }
+                  : null,
+              onLongPress: hasDefinition ? () => _showDefinitionDialog(context, word) : null,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                child: Text(
+                  word,
+                  style: TextStyle(
+                    fontSize: widget.textSize,
+                    color: isHighlighted
+                        ? Colors.deepOrange
+                        : Colors.deepOrangeAccent.withOpacity(0.6),
+                    fontWeight: hasDefinition || isHighlighted
+                        ? FontWeight.bold
+                        : FontWeight.normal,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ));
+        );
+      }
     }
 
     return spans;
   }
+
 
 
 

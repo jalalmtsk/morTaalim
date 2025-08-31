@@ -160,8 +160,21 @@ class AllAssets {
     "assets/images/AvatarImage/FantasyAvatars/Fantasy27.png",
     "assets/images/AvatarImage/FantasyAvatars/Fantasy28.png",
 
+
+    "assets/animations/AnimatedAvatars/CatCrying.json",
+    "assets/animations/AnimatedAvatars/CatLove.json",
+    "assets/animations/AnimatedAvatars/CuteBearDancing.json",
+    "assets/animations/AnimatedAvatars/CuteDogEat.json",
+    "assets/animations/AnimatedAvatars/RabbitWithBall.json",
+    "assets/animations/AnimatedAvatars/Smoothymon_typing.json",
+
+    '🐱','🐻','🐶','🐥','🐵','🐸','👽','🦊','🤖','🐨','🐷','🐼','🐓','🐝','🐰','🐧','🐢','🦉','🦖','🐬','🦦','🐙','🦥','🦩','🦜','🐿️','🧙‍♂️','🦚','🦇','👻','🤡','🦄','🧛‍♂️','🧜‍♀️','🐯'
+
     // add all avatar paths here
   ];
+
+
+
 
   static const List<String> allBanners = [
         'assets/images/Banners/CuteBr/Banner1.png',

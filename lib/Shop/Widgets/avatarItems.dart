@@ -201,11 +201,7 @@ class _AvatarItemWidgetState extends State<AvatarItemWidget>
                   // Cost for locked avatars
                   if (!widget.unlocked)
                     Positioned(
-<<<<<<< HEAD
                       bottom: 2,
-=======
-                      bottom: 4,
->>>>>>> f1c2e44d7be697309e2b1bea04cfd2a40159b5ec
                       left: 0,
                       right: 0,
                       child: Center(
