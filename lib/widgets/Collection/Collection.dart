@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/main.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 
 // Your own imports
@@ -57,7 +59,7 @@ class _CollectionPagePremiumState extends State<CollectionPagePremium>
                       controller: _tabs,
                       children: [
                         CollectionTab(
-                          title: 'Avatars',
+                          title: tr(context).avatar,
                           allItems: AllAssets.allAvatars
                               .where((p) =>
                               p.toLowerCase().contains(searchQuery.toLowerCase()))
@@ -68,7 +70,7 @@ class _CollectionPagePremiumState extends State<CollectionPagePremium>
                           categoryOf: (p) => _extractAfterDir(p, 'AvatarImage'),
                         ),
                         CollectionTab(
-                          title: 'Banners',
+                          title: tr(context).banners,
                           allItems: AllAssets.allBanners
                               .where((p) =>
                               p.toLowerCase().contains(searchQuery.toLowerCase()))
@@ -91,6 +93,7 @@ class _CollectionPagePremiumState extends State<CollectionPagePremium>
   }
 
   Widget _buildAppBar() {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       decoration: const BoxDecoration(
@@ -104,11 +107,13 @@ class _CollectionPagePremiumState extends State<CollectionPagePremium>
         children: [
           const SizedBox(height: 12),
           Row(
-            children: const [
-              Icon(Icons.collections, color: Colors.white, size: 28),
-              SizedBox(width: 12),
-              Text(
-                'My Collection',
+            children: [
+              IconButton(onPressed:(){
+                audioManager.playEventSound("cancelButton");
+                Navigator.of(context).pop();}, icon: const Icon(Icons.arrow_circle_left, size: 45, color: Colors.deepPurple,)),
+              const Icon(Icons.collections, color: Colors.white, size: 28),
+              const SizedBox(width: 12),
+               Text(tr(context).myCollection,
                 style: TextStyle(
                     color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
               ),
@@ -117,15 +122,16 @@ class _CollectionPagePremiumState extends State<CollectionPagePremium>
           const SizedBox(height: 12),
           TabBar(
             controller: _tabs,
+            indicatorSize: TabBarIndicatorSize.tab,
             indicator: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
-              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white.withValues(alpha: 0.5),
             ),
             labelColor: Colors.deepPurple,
             unselectedLabelColor: Colors.white,
-            tabs: const [
-              Tab(text: 'Avatars'),
-              Tab(text: 'Banners'),
+            tabs:  [
+              Tab(text: tr(context).avatar, icon: Icon(Icons.propane),),
+              Tab(text: tr(context).banners, icon: Icon(Icons.photo),),
             ],
           ),
         ],
@@ -138,7 +144,7 @@ class _CollectionPagePremiumState extends State<CollectionPagePremium>
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: TextField(
         decoration: InputDecoration(
-          hintText: 'Search...',
+          hintText: '${tr(context).search}...',
           prefixIcon: const Icon(Icons.search),
           filled: true,
           fillColor: Colors.white.withOpacity(0.9),

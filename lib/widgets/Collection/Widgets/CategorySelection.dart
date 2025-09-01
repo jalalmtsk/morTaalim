@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/Shop/MainShopPageIndex.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:provider/provider.dart';
 
 import '../../../main.dart';
 import 'ItemTiles.dart';
@@ -62,7 +64,9 @@ class _CategorySectionState extends State<CategorySection> {
                     const SizedBox(width: 8),
                     IconButton(
                       visualDensity: VisualDensity.compact,
-                      onPressed: () => setState(() => _expanded = !_expanded),
+                      onPressed: () {
+                        audioManager.playEventSound("toggleButton");
+                        setState(() => _expanded = !_expanded);},
                       icon: AnimatedRotation(
                         duration: const Duration(milliseconds: 200),
                         turns: _expanded ? 0.5 : 0.0,
@@ -89,57 +93,12 @@ class _CategorySectionState extends State<CategorySection> {
                       final asset = widget.items[i];
                       final isUnlocked = widget.unlockedItems.contains(asset);
                       final isSelected = widget.selectedItem == asset;
+                      final audioManager = Provider.of<AudioManager>(context, listen: false);
                       return  ItemTile(
                         asset: asset,
                         isUnlocked: isUnlocked,
                         isSelected: isSelected,
-                        onTap: () {
-                          if (isUnlocked) {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                opaque: false,
-                                pageBuilder: (_, __, ___) => Scaffold(
-                                  backgroundColor: Colors.black.withOpacity(0.6),
-                                  body: Center(
-                                    child: Stack(
-                                      alignment: Alignment.topRight,
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(20),
-                                          child: Image.asset(
-                                            asset,
-                                            fit: BoxFit.cover,
-                                            width: 300,
-                                            height: 400,
-                                          ),
-                                        ),
-                                        IconButton(
-                                          icon: const Icon(Icons.close, color: Colors.white),
-                                          onPressed: () => Navigator.pop(context),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          }
-                          else {
-                            // Show snackbar prompting purchase
-                            ScaffoldMessenger.of(context).showSnackBar(
-                               SnackBar(
-                                content: Wrap(
-                                  children: [
-                                    Text(tr(context).this_avatar_is_locked_unlock_it_in_the),
-                                    TextButton(onPressed: (){Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> MainShopPageIndex()));}, child: Text(tr(context).shop, style: TextStyle(color: Colors.deepOrange),))
-                                  ],
-                                ),
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          }
-                        },
+                        onTap: () {},
                       );
 
                     },
@@ -148,16 +107,20 @@ class _CategorySectionState extends State<CategorySection> {
                 if (previewCount < widget.items.length) ...[
                   const SizedBox(height: 8),
                   TextButton.icon(
-                    onPressed: () => setState(() => _expanded = true),
+                    onPressed: () {
+                      audioManager.playEventSound("toggleButton");
+                      setState(() => _expanded = true);},
                     icon: const Icon(Icons.unfold_more_rounded),
-                    label: Text('Show all ${widget.items.length}'),
+                    label: Text('${tr(context).showAll} ${widget.items.length}'),
                   ),
                 ] else if (widget.items.length > (columns * 2)) ...[
                   const SizedBox(height: 8),
                   TextButton.icon(
-                    onPressed: () => setState(() => _expanded = false),
+                    onPressed: () {
+                      audioManager.playEventSound("toggleButton");
+                      setState(() => _expanded = false);},
                     icon: const Icon(Icons.unfold_less_rounded),
-                    label: const Text('Show less'),
+                    label:  Text(tr(context).showLess),
                   ),
                 ],
               ],

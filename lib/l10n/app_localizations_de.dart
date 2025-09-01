@@ -1261,4 +1261,16 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get bestSurvivalScore => 'Beste Überlebenspunktzahl';
+
+  @override
+  String get myCollection => 'meine Sammlung';
+
+  @override
+  String get search => 'suchen';
+
+  @override
+  String get showAll => 'Alle anzeigen';
+
+  @override
+  String get showLess => 'Weniger anzeigen';
 }

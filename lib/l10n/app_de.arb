@@ -470,7 +470,11 @@
   "seconds": "Sekunden",
   "matchesIn": "Paarungen in",
   "survivalHighlights": "Überlebens-Highlights",
-  "bestSurvivalScore": "Beste Überlebenspunktzahl"
+  "bestSurvivalScore": "Beste Überlebenspunktzahl",
+  "myCollection": "meine Sammlung",
+  "search": "suchen",
+  "showAll": "Alle anzeigen",
+  "showLess": "Weniger anzeigen"
 
 
 

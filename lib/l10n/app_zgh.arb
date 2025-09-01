@@ -479,6 +479,10 @@
   "seconds": "ⵉⵙⴻⵏⴰⵡⴰⵜ",
   "matchesIn": "ⵉⵙⵍⵉⵙⵏ ⵏ",
   "survivalHighlights": "ⵉⵙⵍⵉⵙⵏ ⵏ ⵜⵉⴹⵓⵍⵜ",
-  "bestSurvivalScore": "ⴰⴼⵓⵙⵜ ⵏ ⵜⵉⴹⵓⵍⵜ"
+  "bestSurvivalScore": "ⴰⴼⵓⵙⵜ ⵏ ⵜⵉⴹⵓⵍⵜ",
+  "myCollection": "ⴰⵙⴼⴽ ⵏ ⵉⵡ",
+  "search": "ⴰⴼⴻⴹⵓ",
+  "showAll": "ⵙⴼⴽ ⴰⵖⵢⵓⵍ",
+  "showLess": "ⵙⴼⴽ ⴰⵇⴻⵔⵔⵓ"
 
 }

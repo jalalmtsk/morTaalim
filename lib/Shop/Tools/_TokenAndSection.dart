@@ -15,7 +15,6 @@ class TokenAndAdSection extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           children: [
-            BuyTokenButton(xpManager: xpManager),
             const SizedBox(height: 20),
             WatchAdButton(),
           ],

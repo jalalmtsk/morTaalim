@@ -480,6 +480,10 @@
   "seconds": "ثوانٍ",
   "matchesIn": "مطابقات في",
   "survivalHighlights": "أهم إنجازات البقاء",
-  "bestSurvivalScore": "أفضل نتيجة بقاء"
+  "bestSurvivalScore": "أفضل نتيجة بقاء",
+  "myCollection": "مجموعتي",
+  "search": "بحث",
+  "showAll": "عرض الكل",
+  "showLess": "عرض أقل"
 
 }

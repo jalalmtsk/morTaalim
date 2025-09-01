@@ -345,16 +345,18 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     notifyListeners();
   }
 
-  bool buySaveTokens() {
-    if (Tolims >= 3) {
-      Tolims -= 3;
-      _stars += 1;
-       _saveData();
+  bool buySaveTokens({int amount = 3}) {
+    if (Tolims >= amount && amount > 0) {
+      int starsToAdd = amount ~/ 3; // 3 Tolims per star
+      Tolims -= starsToAdd * 3;
+      _stars += starsToAdd;
+      _saveData();
       notifyListeners();
       return true;
     }
     return false;
   }
+
 
 
   //----------------------------Learning Preferences--------------------------------

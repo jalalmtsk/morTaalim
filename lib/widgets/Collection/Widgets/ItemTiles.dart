@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import '../../../Shop/MainShopPageIndex.dart';
+import '../../../main.dart';
 import 'LockOverlay.dart';
 
 class ItemTile extends StatefulWidget {
@@ -47,18 +49,20 @@ class _ItemTileState extends State<ItemTile> with SingleTickerProviderStateMixin
     if (widget.isUnlocked) {
       _controller.forward(from: 0).then((_) => _controller.reverse());
       widget.onTap?.call();
-    } else {
+      audioManager.playEventSound("clickButton2");
+    }     else {
+      audioManager.playEventSound("invalid");
+      // Show snackbar prompting purchase
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Row(
-            children: const [
-              Icon(Icons.lock, color: Colors.white),
-              SizedBox(width: 8),
-              Text("This item is locked! Unlock it in the shop."),
+          backgroundColor: Colors.purple.withValues(alpha: 1),
+          content: Wrap(
+            children: [
+              Text(tr(context).this_avatar_is_locked_unlock_it_in_the),
+              GestureDetector(onTap: (){Navigator.pushReplacement(context, MaterialPageRoute(builder: (_)=> MainShopPageIndex()));}, child: Text(" ${tr(context).shop}", style: TextStyle(color: Colors.redAccent),))
             ],
           ),
-          backgroundColor: Colors.redAccent,
-          duration: const Duration(seconds: 2),
+          duration: Duration(seconds: 2),
         ),
       );
     }

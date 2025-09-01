@@ -483,7 +483,11 @@
   "seconds": "secondes",
   "matchesIn": "paires en",
   "survivalHighlights": "Points forts de survie",
-  "bestSurvivalScore": "Meilleur score de survie"
+  "bestSurvivalScore": "Meilleur score de survie",
+  "myCollection": "Ma collection",
+  "search": "Recherche",
+  "showAll": "Afficher tout",
+  "showLess": "Afficher moins"
 
 
 

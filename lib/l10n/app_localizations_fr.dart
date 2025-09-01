@@ -1261,4 +1261,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get bestSurvivalScore => 'Meilleur score de survie';
+
+  @override
+  String get myCollection => 'Ma collection';
+
+  @override
+  String get search => 'Recherche';
+
+  @override
+  String get showAll => 'Afficher tout';
+
+  @override
+  String get showLess => 'Afficher moins';
 }

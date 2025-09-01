@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/Shop/BannerTab/IndexBanner.dart';
+import 'package:mortaalim/Shop/GiftsTabs/IndexGiftTabs.dart';
 import 'package:mortaalim/Shop/StarsTab/IndexStars.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/SpinWheel/SpinTheWheel.dart';
@@ -145,7 +146,7 @@ class _MainShopPageIndexState extends State<MainShopPageIndex>
                       controller: _tabController,
                       physics: const BouncingScrollPhysics(),
                       children: [
-                        _animatedTab(SingleChildScrollView(child: SpinWheelPopup())),
+                        _animatedTab(IndexGiftsPage()),
                         _animatedTab(IndexFunMojiPage()),
                         _animatedTab(IndexBanner()),
                         _animatedTab(IndexStars()),

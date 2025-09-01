@@ -6,6 +6,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:marquee/marquee.dart';
 import 'package:mortaalim/Settings/setting_Page.dart';
+import 'package:mortaalim/Shop/Tools/watchAdButton.dart';
 import 'package:mortaalim/Themes/AppTheme.dart';
 import 'package:mortaalim/Themes/ThemeManager.dart';
 import 'package:mortaalim/Themes/ThemeSelectorPage.dart';
@@ -193,6 +194,8 @@ class _IndexState extends State<Index>
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
+      floatingActionButton: const WatchAdButton(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // right bottom
       body: Stack(
         children: [
           // Background
@@ -290,6 +293,7 @@ class _IndexState extends State<Index>
                             fit: BoxFit.cover,
                           ),
                         ),
+
                         Container(
                           height: 90,
                           decoration: BoxDecoration(
@@ -417,6 +421,7 @@ class _IndexState extends State<Index>
                             ),
                           ),
                         ),
+
                       ],
                     ),
                   ),
@@ -510,6 +515,7 @@ class _IndexState extends State<Index>
             ),
           ),
         ],
+
       ),
     );
   }

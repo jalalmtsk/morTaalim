@@ -2608,6 +2608,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Best Survival Score'**
   String get bestSurvivalScore;
+
+  /// No description provided for @myCollection.
+  ///
+  /// In en, this message translates to:
+  /// **'My Collection'**
+  String get myCollection;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
+
+  /// No description provided for @showAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Show all'**
+  String get showAll;
+
+  /// No description provided for @showLess.
+  ///
+  /// In en, this message translates to:
+  /// **'Show less'**
+  String get showLess;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

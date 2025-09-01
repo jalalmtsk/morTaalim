@@ -1261,4 +1261,16 @@ class AppLocalizationsZgh extends AppLocalizations {
 
   @override
   String get bestSurvivalScore => 'ⴰⴼⵓⵙⵜ ⵏ ⵜⵉⴹⵓⵍⵜ';
+
+  @override
+  String get myCollection => 'ⴰⵙⴼⴽ ⵏ ⵉⵡ';
+
+  @override
+  String get search => 'ⴰⴼⴻⴹⵓ';
+
+  @override
+  String get showAll => 'ⵙⴼⴽ ⴰⵖⵢⵓⵍ';
+
+  @override
+  String get showLess => 'ⵙⴼⴽ ⴰⵇⴻⵔⵔⵓ';
 }

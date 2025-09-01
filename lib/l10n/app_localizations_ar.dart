@@ -1261,4 +1261,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get bestSurvivalScore => 'أفضل نتيجة بقاء';
+
+  @override
+  String get myCollection => 'مجموعتي';
+
+  @override
+  String get search => 'بحث';
+
+  @override
+  String get showAll => 'عرض الكل';
+
+  @override
+  String get showLess => 'عرض أقل';
 }

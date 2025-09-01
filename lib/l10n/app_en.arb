@@ -486,7 +486,12 @@
   "seconds": "seconds",
   "matchesIn": "matches in",
   "survivalHighlights": "Survival Highlights",
-  "bestSurvivalScore": "Best Survival Score"
+  "bestSurvivalScore": "Best Survival Score",
+  "myCollection": "My Collection",
+  "search": "Search",
+  "showAll": "Show all",
+  "showLess": "Show less"
+
 
 
 

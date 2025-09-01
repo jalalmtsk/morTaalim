@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/main.dart';
 
 class ProgressHeader extends StatelessWidget {
   final String title;
@@ -35,7 +36,7 @@ class ProgressHeader extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '$title  •  $unlockedCount / $totalCount unlocked',
+                    '$title  •  $unlockedCount / $totalCount ${tr(context).unlocked}',
                     style: const TextStyle(
                       fontWeight: FontWeight.w700,
                       fontSize: 16,

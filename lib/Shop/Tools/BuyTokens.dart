@@ -1,61 +1,225 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../XpSystem.dart';
 
-class BuyTokenButton extends StatelessWidget {
+class BuyTokenWidget extends StatefulWidget {
   final ExperienceManager xpManager;
-  const BuyTokenButton({required this.xpManager});
+  const BuyTokenWidget({required this.xpManager, Key? key}) : super(key: key);
+
+  @override
+  State<BuyTokenWidget> createState() => _BuyTokenWidgetState();
+}
+
+class _BuyTokenWidgetState extends State<BuyTokenWidget>
+    with TickerProviderStateMixin {
+  int selectedTolims = 3; // default
+  static const int tolimsPerStar = 3;
+
+  late AnimationController _buttonController;
+  late Animation<double> _buttonScale;
+
+  late AnimationController _numberController;
+  late Animation<double> _numberScale;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Buy button scale animation
+    _buttonController =
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    _buttonScale = Tween<double>(begin: 1.0, end: 1.05).animate(
+      CurvedAnimation(parent: _buttonController, curve: Curves.easeOut),
+    );
+
+    // Tolims number pop animation
+    _numberController =
+        AnimationController(vsync: this, duration: const Duration(milliseconds: 150));
+    _numberScale = Tween<double>(begin: 1.0, end: 1.3).animate(
+      CurvedAnimation(parent: _numberController, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _buttonController.dispose();
+    _numberController.dispose();
+    super.dispose();
+  }
+
+  void _increment() {
+    if (selectedTolims + tolimsPerStar <= widget.xpManager.Tolims) {
+      setState(() {
+        selectedTolims += tolimsPerStar;
+      });
+      _numberController.forward(from: 0); // trigger pop animation
+    }
+  }
+
+  void _decrement() {
+    if (selectedTolims > tolimsPerStar) {
+      setState(() {
+        selectedTolims -= tolimsPerStar;
+      });
+      _numberController.forward(from: 0); // trigger pop animation
+    }
+  }
+
+  void _buyStars() async {
+    final canBuy = widget.xpManager.Tolims >= selectedTolims;
+    final starsToGet = selectedTolims ~/ tolimsPerStar;
+
+    if (canBuy && starsToGet > 0) {
+      _buttonController.forward();
+      await Future.delayed(const Duration(milliseconds: 150));
+      _buttonController.reverse();
+
+      widget.xpManager.buySaveTokens(amount: selectedTolims);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('🎉 You got $starsToGet ⭐!'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      setState(() {}); // refresh UI
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('❌ Not enough Tolims.'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        final success = xpManager.buySaveTokens();
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(success
-                ? '🎉 You got 1 ⭐!'
-                : '❌ Not enough Tolims to buy ⭐.'),
-            behavior: SnackBarBehavior.floating,
-            duration: const Duration(seconds: 2),
+    final stars = widget.xpManager.stars;
+    final tolims = widget.xpManager.Tolims;
+
+    return Container(
+      margin: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          colors: [Color(0xFFFFC371), Color(0xFFFF5F6D)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.orangeAccent.withOpacity(0.4),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
           ),
-        );
-      },
-      borderRadius: BorderRadius.circular(16),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Tolims and Stars Display
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _buildInfoCard('Tolims', tolims.toString(), Colors.white),
+              _buildInfoCard('Stars', stars.toString(), Colors.yellowAccent),
+            ],
+          ),
+          const SizedBox(height: 24),
+          // Increment/Decrement Row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildIconButton(Icons.remove, _decrement),
+              ScaleTransition(
+                scale: _numberScale,
+                child: Container(
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: Colors.white24,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '$selectedTolims',
+                    style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+              _buildIconButton(Icons.add, _increment),
+            ],
+          ),
+          const SizedBox(height: 24),
+          // Buy Stars Button
+          ScaleTransition(
+            scale: _buttonScale,
+            child: ElevatedButton.icon(
+              onPressed: _buyStars,
+              style: ElevatedButton.styleFrom(
+                padding:
+                const EdgeInsets.symmetric(horizontal: 36, vertical: 16),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16)),
+                backgroundColor: Colors.greenAccent[700],
+              ),
+              icon: const Icon(Icons.star, color: Colors.white),
+              label: Text(
+                'Get ${selectedTolims ~/ tolimsPerStar} ⭐',
+                style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIconButton(IconData icon, VoidCallback onPressed) {
+    return GestureDetector(
+      onTap: onPressed,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 24),
+        margin: const EdgeInsets.symmetric(horizontal: 12),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFFFFC371), Color(0xFFFF5F6D)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          color: Colors.white24,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Icon(icon, color: Colors.white, size: 28),
+      ),
+    );
+  }
+
+  Widget _buildInfoCard(String title, String value, Color color) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+      decoration: BoxDecoration(
+        color: Colors.white24,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white38),
+      ),
+      child: Column(
+        children: [
+          Text(title,
+              style: const TextStyle(color: Colors.white70, fontSize: 16)),
+          const SizedBox(height: 6),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            transitionBuilder: (child, animation) =>
+                ScaleTransition(scale: animation, child: child),
+            child: Text(
+              value,
+              key: ValueKey<String>(value),
+              style:
+              TextStyle(color: color, fontSize: 22, fontWeight: FontWeight.bold),
+            ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.orangeAccent.withValues(alpha: 0.4),
-              blurRadius: 12,
-              offset: const Offset(0, 6),
-            ),
-          ],
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.swap_horiz, color: Colors.white),
-            SizedBox(width: 12),
-            Text(
-              'Exchange 3 ',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-            Icon(Icons.generating_tokens_rounded, color: Colors.green),
-            Text(
-              ' for 1⭐',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }
