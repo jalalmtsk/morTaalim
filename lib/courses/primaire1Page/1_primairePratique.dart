@@ -145,7 +145,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
               ),
               const SizedBox(height: 12),
               SizedBox(
-                height: 160,
+                height: 140,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -166,7 +166,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                   },
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 4),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Text(
@@ -272,8 +272,7 @@ class _InfoCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 40, color: Colors.white),
-            const SizedBox(height: 4),
+            Icon(icon, size: 26, color: Colors.white),
             Text(title,
                 style: const TextStyle(
                     color: Colors.white70,
@@ -283,14 +282,14 @@ class _InfoCard extends StatelessWidget {
             Text(content,
                 style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold)),
             if (subtitle != null) ...[
               const SizedBox(height: 4),
               Text(subtitle!,
                   style: TextStyle(
                       color: Colors.white.withOpacity(0.85),
-                      fontSize: 14,
+                      fontSize: 12,
                       fontWeight: FontWeight.w500)),
             ]
           ],
@@ -343,7 +342,7 @@ class _CourseCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               CircleAvatar(
-                radius: 38,
+                radius: 42,
                 backgroundColor: Colors.white,
                 child: Icon(icon, size: 40, color: overlayColor),
               ),

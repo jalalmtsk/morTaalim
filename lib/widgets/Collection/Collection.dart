@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
@@ -7,10 +6,8 @@ import 'package:provider/provider.dart';
 // Your own imports
 import '../../XpSystem.dart'; // contains ExperienceManager
 import 'AllAssets.dart';
-import 'Widgets/CategorySelection.dart';
 import 'Widgets/CollectionTab.dart';
-import 'Widgets/ItemTiles.dart';
-import 'Widgets/SmallStatPill.dart';
+
 
 class CollectionPagePremium extends StatefulWidget {
   const CollectionPagePremium({Key? key}) : super(key: key);
@@ -110,7 +107,7 @@ class _CollectionPagePremiumState extends State<CollectionPagePremium>
             children: [
               IconButton(onPressed:(){
                 audioManager.playEventSound("cancelButton");
-                Navigator.of(context).pop();}, icon: const Icon(Icons.arrow_circle_left, size: 45, color: Colors.deepPurple,)),
+                Navigator.of(context).pop();}, icon: const Icon(Icons.arrow_circle_left, size: 45, color: Colors.purpleAccent,)),
               const Icon(Icons.collections, color: Colors.white, size: 28),
               const SizedBox(width: 12),
                Text(tr(context).myCollection,

@@ -9,7 +9,6 @@ import 'avatarItems.dart';
 
 class AvatarGrid extends StatelessWidget {
   final List<Map<String, dynamic>> avatarItems;
-
   const AvatarGrid({required this.avatarItems, Key? key}) : super(key: key);
 
   @override

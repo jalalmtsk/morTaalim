@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Pet/pet_home_page.dart';
 import 'package:mortaalim/TestingBeforeProdcution/Hezz2FinalGame/Screen/CardGameLauncher.dart';
+import 'package:mortaalim/User_Input_Info_DataForm/LearningPreferencesForm/LearningPreferencesEnteringForm.dart';
 import 'package:mortaalim/widgets/Collection/Collection.dart';
 import 'package:mortaalim/TestingBeforeProdcution/ArabicExercice.dart';
 import 'package:mortaalim/TestingBeforeProdcution/CardConcept.dart';
@@ -185,7 +186,7 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
 
-            'Shop': (context) => MainShopPageIndex(),
+            'Shop': (context) => LearningPreferencesPage(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),
