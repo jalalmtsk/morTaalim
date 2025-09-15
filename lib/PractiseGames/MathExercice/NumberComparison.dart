@@ -1,18 +1,19 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mortaalim/tools/audio_tool.dart';
-import 'package:mortaalim/widgets/userStatutBar.dart';
+import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:mortaalim/widgets/userStatutBar.dart';
 import '../../XpSystem.dart';
 import '../../tools/Ads_Manager.dart';
+import 'Tools/AnimatedHeart.dart';
 
 class NumberComparisonGame extends StatelessWidget {
   @override
-  Widget build(BuildContext context) {
-    return NumberComparisonExercise();
-  }
+  Widget build(BuildContext context) => NumberComparisonExercise();
 }
 
 class NumberComparisonExercise extends StatefulWidget {
@@ -20,30 +21,33 @@ class NumberComparisonExercise extends StatefulWidget {
   _NumberComparisonExerciseState createState() => _NumberComparisonExerciseState();
 }
 
-class _NumberComparisonExerciseState extends State<NumberComparisonExercise> {
-  final MusicPlayer player = MusicPlayer();
+class _NumberComparisonExerciseState extends State<NumberComparisonExercise> with SingleTickerProviderStateMixin {
+  final Random _rng = Random();
 
   late int numberA;
   late int numberB;
 
-  int score = 0;
-  int wrong = 0;
-  bool showGameOver = false;
+  static const int _targetScore = 10;
+  static const int _maxLives = 3;
 
+  int _score = 0;
+  int _wrong = 0;
+  int _lives = _maxLives;
+
+  bool _showGameOver = false;
   bool? _isAnswerCorrect;
   bool _showFinalCelebration = false;
-
   bool _isProcessingAnswer = false;
 
   BannerAd? _bannerAd;
   bool _isBannerAdLoaded = false;
 
-  final int maxNumber = 20;
+  final int _maxNumber = 20;
 
   @override
   void initState() {
     super.initState();
-    generateNewQuestion();
+    _generateNewQuestion();
     _loadBannerAd();
   }
 
@@ -51,250 +55,356 @@ class _NumberComparisonExerciseState extends State<NumberComparisonExercise> {
     _bannerAd?.dispose();
     _isBannerAdLoaded = false;
     _bannerAd = AdHelper.getBannerAd(() {
-      setState(() {
-        _isBannerAdLoaded = true;
-      });
+      if (mounted) setState(() => _isBannerAdLoaded = true);
     });
   }
 
   @override
   void dispose() {
-    player.dispose();
     _bannerAd?.dispose();
     super.dispose();
   }
 
-  void generateNewQuestion() {
-    final rand = Random();
+  void _generateNewQuestion() {
     setState(() {
-      numberA = rand.nextInt(maxNumber) + 1;
+      numberA = _rng.nextInt(_maxNumber) + 1;
       do {
-        numberB = rand.nextInt(maxNumber) + 1;
+        numberB = _rng.nextInt(_maxNumber) + 1;
       } while (numberB == numberA);
       _isAnswerCorrect = null;
     });
   }
 
-  void checkAnswer(int selectedNumber) async {
-    if (_isProcessingAnswer) return;
+  Future<void> _checkAnswer(int selectedNumber) async {
+    if (_isProcessingAnswer || _showGameOver) return;
     _isProcessingAnswer = true;
 
     final correctNumber = numberA > numberB ? numberA : numberB;
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+
+    // Haptic feedback
+    HapticFeedback.selectionClick();
 
     if (selectedNumber == correctNumber) {
-      await player.play('assets/audios/QuizGame_Sounds/correct.mp3');
+      xpManager.addXP(1, context: context);
+      audioManager.playSfx('assets/audios/QuizGame_Sounds/correct.mp3');
+
       setState(() {
-        score++;
+        _score++;
         _isAnswerCorrect = true;
       });
 
-      Future.delayed(Duration(milliseconds: 1500), () {
-        if (score >= 10) {
-          final manager = Provider.of<ExperienceManager>(context, listen: false);
-          if (wrong == 0) {
-            manager.addTokenBanner(context, 1);
+      Future.delayed(const Duration(milliseconds: 900), () {
+        if (!mounted) return;
+        if (_score >= _targetScore) {
+          if (_lives > 0) {
+            xpManager.addTokenBanner(context, 1);
+            audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/VictoryOrchestral_SFX.mp3');
+            audioManager.playSfx('assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3');
           }
           setState(() {
-            showGameOver = true;
+            _showGameOver = true;
             _isAnswerCorrect = null;
             _showFinalCelebration = true;
             _isProcessingAnswer = false;
           });
         } else {
-          setState(() {
-            _isProcessingAnswer = false;
-          });
-          generateNewQuestion();
+          _isProcessingAnswer = false;
+          _generateNewQuestion();
         }
       });
     } else {
-      await player.play('assets/audios/QuizGame_Sounds/incorrect.mp3');
+      audioManager.playSfx('assets/audios/QuizGame_Sounds/incorrect.mp3');
       setState(() {
-        wrong++;
+        _wrong++;
+        _lives = (_lives > 0) ? _lives - 1 : 0;
         _isAnswerCorrect = false;
       });
 
-      Future.delayed(Duration(milliseconds: 1500), () {
-        setState(() {
-          _isAnswerCorrect = null;
-          _isProcessingAnswer = false;
-        });
+      Future.delayed(const Duration(milliseconds: 900), () {
+        if (!mounted) return;
+        if (_lives == 0) {
+          audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/FailMeme_SFX.mp3");
+          setState(() {
+            _showGameOver = true;
+            _isAnswerCorrect = null;
+            _isProcessingAnswer = false;
+          });
+        } else {
+          setState(() {
+            _isAnswerCorrect = null;
+            _isProcessingAnswer = false;
+          });
+        }
       });
     }
   }
 
-  void resetGame() {
+  void _resetGame() {
     setState(() {
-      score = 0;
-      wrong = 0;
-      showGameOver = false;
+      _score = 0;
+      _wrong = 0;
+      _lives = _maxLives;
+      _showGameOver = false;
       _showFinalCelebration = false;
-      generateNewQuestion();
       _isProcessingAnswer = false;
     });
+    _generateNewQuestion();
   }
 
   void _onReplayPressed() {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playEventSound('cancelButton');
     AdHelper.showInterstitialAd(
+      onDismissed: _resetGame,
+      context: context,
+    );
+  }
+
+  Future<bool> _confirmQuit() async {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    final shouldQuit = await showDialog<bool>(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => AlertDialog(
+        title: Text(tr(context).areYouSureQuitGame),
+        content: Text(tr(context).youWillLoseYourProgress),
+        actions: [
+          TextButton(
+            onPressed: () {
+              audioManager.playEventSound('cancelButton');
+              Navigator.pop(ctx, false);
+            },
+            child: Text(tr(context).cancel),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              audioManager.playEventSound('clickButton');
+              Navigator.pop(ctx, true);
+            },
+            child: Text(tr(context).ok),
+          ),
+        ],
+      ),
+    );
+    if (shouldQuit ?? false) {
+      await AdHelper.showInterstitialAd(
         context: context,
-        onDismissed: () {
-      resetGame();
-    });
+        onDismissed: () => Navigator.pop(context, true),
+      );
+      return true;
+    }
+    return false;
   }
 
   @override
   Widget build(BuildContext context) {
     final themeColor = Colors.blue.shade700;
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
-    return Scaffold(
-      backgroundColor: Colors.blue.shade50,
-      appBar: AppBar(
-        backgroundColor: themeColor,
-        title: Center(
-          child: Text('Jeu de Comparaison', style: TextStyle(fontWeight: FontWeight.bold)),
-        ),
-      ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-            child: showGameOver
-                ? SingleChildScrollView(
-              child: Column(
-                children: [
-                  Userstatutbar(),
-                  const SizedBox(height: 100,),
-                  Center(
-                    child: Column(
-                      children: [
-                        Text(
-                          "🎉 Bravo !",
-                          style: TextStyle(
-                              fontSize: 40,
-                              fontWeight: FontWeight.bold,
-                              color: themeColor),
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          "Tu dois marquer 10 points pour obtenir 1 Tolim.",
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                              color: themeColor),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 16),
-                        Text("Score : $score / 10", style: TextStyle(fontSize: 24)),
-                        Text("Fautes : $wrong", style: TextStyle(fontSize: 20, color: Colors.redAccent)),
-                        SizedBox(height: 24),
+    return WillPopScope(
+      onWillPop: _confirmQuit,
+      child: Scaffold(
+        backgroundColor: Colors.blue.shade50,
+        body: Stack(
+          children: [
+            SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final maxW = constraints.maxWidth;
+                  final horizontalPadding = 16.0;
+                  final contentWidth = maxW.clamp(0, 720);
+                  final isWide = contentWidth >= 520;
 
-                        if (_showFinalCelebration)
-                          SizedBox(
-                            width: 150,
-                            height: 150,
-                            child: Lottie.asset(
-                              'assets/animations/QuizzGame_Animation/Champion.json',
-                              repeat: false,
-                            ),
+                  final numberButtonSize = isWide ? 80.0 : 60.0;
+
+                  return Align(
+                    alignment: Alignment.topCenter,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: contentWidth.toDouble()),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 12),
+                        child: _showGameOver
+                            ? _buildGameOver(themeColor)
+                            : SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () async {
+                                      if (await _confirmQuit()) {
+                                        audioManager.playEventSound("cancelButton");
+                                        if (mounted) Navigator.pop(context);
+                                      }
+                                    },
+                                    icon: const Icon(Icons.arrow_back),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Expanded(child: Userstatutbar()),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  _StatCard(label: tr(context).score, value: '$_score / $_targetScore', color: themeColor),
+                                  Row(
+                                    children: List.generate(_maxLives, (index) {
+                                      final lost = index >= _lives;
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                                        child: AnimatedHeart(lost: lost),
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 16),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: LinearProgressIndicator(
+                                  value: _score / _targetScore,
+                                  backgroundColor: Colors.white,
+                                  color: themeColor,
+                                  minHeight: 12,
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              Text(
+                                tr(context).whichIsTheLargestNumber,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: themeColor),
+                              ),
+                              const SizedBox(height: 30),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  _numberButton(numberA, themeColor, numberButtonSize),
+                                  Text(tr(context).or,
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w600,
+                                          color: themeColor)),
+                                  _numberButton(numberB, themeColor, numberButtonSize),
+                                ],
+                              ),
+                            ],
                           ),
-
-                        ElevatedButton(
-                          onPressed: _onReplayPressed,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: themeColor,
-                            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                          ),
-                          child: Text("Rejouer", style: TextStyle(fontSize: 22, color: Colors.white)),
                         ),
-                      ],
+                      ),
                     ),
+                  );
+                },
+              ),
+            ),
+            if (_isAnswerCorrect != null)
+              Container(
+                color: Colors.black.withOpacity(0.4),
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: 220,
+                  height: 220,
+                  child: Lottie.asset(
+                    _isAnswerCorrect!
+                        ? 'assets/animations/QuizzGame_Animation/DoneAnimation.json'
+                        : 'assets/animations/QuizzGame_Animation/wrong.json',
+                    repeat: false,
                   ),
-                ],
-              ),
-            )
-                : Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Userstatutbar(),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _buildStatCard('Score', '$score / 10', themeColor),
-                    _buildStatCard('Fautes', '$wrong', Colors.redAccent),
-                  ],
-                ),
-                SizedBox(height: 40),
-                Text(
-                  "Quel est le plus grand nombre ?",
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: themeColor),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 30),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _numberButton(numberA, themeColor),
-                    Text("ou", style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: themeColor)),
-                    _numberButton(numberB, themeColor),
-                  ],
-                ),
-                Spacer(),
-              ],
-            ),
-          ),
-
-          if (_isAnswerCorrect != null)
-            Container(
-              color: Colors.black.withOpacity(0.4),
-              alignment: Alignment.center,
-              child: SizedBox(
-                width: 200,
-                height: 200,
-                child: Lottie.asset(
-                  _isAnswerCorrect!
-                      ? 'assets/animations/QuizzGame_Animation/DoneAnimation.json'
-                      : 'assets/animations/QuizzGame_Animation/wrong.json',
-                  repeat: false,
                 ),
               ),
-            ),
-        ],
-      ),
-      bottomNavigationBar: Provider.of<ExperienceManager>(context).adsEnabled &&
-          _bannerAd != null &&
-          _isBannerAdLoaded
-          ? SafeArea(
-        child: Container(
-          height: _bannerAd!.size.height.toDouble(),
-          width: _bannerAd!.size.width.toDouble(),
-          child: AdWidget(ad: _bannerAd!),
+          ],
         ),
-      )
-          : null,
+        bottomNavigationBar: Provider.of<ExperienceManager>(context).adsEnabled &&
+            _bannerAd != null &&
+            _isBannerAdLoaded
+            ? SafeArea(
+          child: SizedBox(
+            height: _bannerAd!.size.height.toDouble(),
+            width: _bannerAd!.size.width.toDouble(),
+            child: AdWidget(ad: _bannerAd!),
+          ),
+        )
+            : null,
+      ),
     );
   }
 
-  Widget _numberButton(int number, Color themeColor) {
+  Widget _numberButton(int number, Color themeColor, double size) {
     return ElevatedButton(
-      onPressed: () => checkAnswer(number),
+      onPressed: () => _checkAnswer(number),
       style: ElevatedButton.styleFrom(
         backgroundColor: themeColor,
-        shape: CircleBorder(),
-        padding: EdgeInsets.all(30),
+        shape: const CircleBorder(),
+        padding: EdgeInsets.all(size * 0.4),
         elevation: 6,
         shadowColor: themeColor.withOpacity(0.5),
       ),
       child: Text(
         '$number',
-        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: Colors.white),
+        style: TextStyle(fontSize: size * 0.35, fontWeight: FontWeight.bold, color: Colors.white),
       ),
     );
   }
 
-  Widget _buildStatCard(String label, String value, Color color) {
+  Widget _buildGameOver(Color themeColor) {
+    final win = _score >= _targetScore && _lives > 0;
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Lottie.asset(
+            win
+                ? 'assets/animations/QuizzGame_Animation/Champion.json'
+                : 'assets/animations/QuizzGame_Animation/CuteTigerCrying.json',
+            width: 300,
+            repeat: true,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            win ? "🎉 ${tr(context).awesome} !" : "💔 ${tr(context).gameOver}",
+            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: themeColor),
+          ),
+          const SizedBox(height: 10),
+          Text("${tr(context).score} : $_score / $_targetScore", style: const TextStyle(fontSize: 24)),
+          Text(
+            "${tr(context).remainingLives} : $_lives",
+            style: TextStyle(
+              fontSize: 20,
+              color: _lives > 0 ? Colors.green : Colors.redAccent,
+            ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _onReplayPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: themeColor,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+            ),
+            child: Text(tr(context).playAgain, style: const TextStyle(fontSize: 22, color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  final String label;
+  final String value;
+  final Color color;
+
+  const _StatCard({required this.label, required this.value, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
       decoration: BoxDecoration(
         color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(16),
@@ -303,7 +413,7 @@ class _NumberComparisonExerciseState extends State<NumberComparisonExercise> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(label, style: TextStyle(fontSize: 16, color: color, fontWeight: FontWeight.w700)),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color)),
         ],
       ),

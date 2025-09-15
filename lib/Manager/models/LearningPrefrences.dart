@@ -1,11 +1,13 @@
+import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LearningPreferences {
+class LearningPreferences extends ChangeNotifier {
   List<String> _betterSubjects;
-  String _preferredLearningStyle; // e.g. "Visual", "Auditory"
-  String _studyTimePreference;    // e.g. "Morning", "Afternoon"
-  String _difficultyPreference;   // e.g. "Standard", "Advanced", "Adaptive"
-  String _goalType;               // e.g. "Pass Exam"
+  String _preferredLearningStyle;
+  String _studyTimePreference;
+  String _difficultyPreference;
+  String _goalType;
   String _weeklyGoal;
   String _longTermGoal;
 
@@ -34,32 +36,58 @@ class LearningPreferences {
   String get weeklyGoal => _weeklyGoal;
   String get longTermGoal => _longTermGoal;
 
-  // Setters
-  set betterSubjects(List<String> value) => _betterSubjects = value;
-  set preferredLearningStyle(String value) => _preferredLearningStyle = value;
-  set studyTimePreference(String value) => _studyTimePreference = value;
-  set difficultyPreference(String value) => _difficultyPreference = value;
-  set goalType(String value) => _goalType = value;
-  set weeklyGoal(String value) => _weeklyGoal = value;
-  set longTermGoal(String value) => _longTermGoal = value;
-
-  // Convert to Map for storage/serialization
-  Map<String, dynamic> toMap() {
-    return {
-      "betterSubjects": _betterSubjects,
-      "preferredLearningStyle": _preferredLearningStyle,
-      "studyTimePreference": _studyTimePreference,
-      "difficultyPreference": _difficultyPreference,
-      "goalType": _goalType,
-      "weeklyGoal": _weeklyGoal,
-      "longTermGoal": _longTermGoal,
-    };
+  // Setters with notifyListeners
+  set betterSubjects(List<String> value) {
+    _betterSubjects = value;
+    notifyListeners();
   }
 
-  // Create from Map
+  set preferredLearningStyle(String value) {
+    _preferredLearningStyle = value;
+    notifyListeners();
+  }
+
+  set studyTimePreference(String value) {
+    _studyTimePreference = value;
+    notifyListeners();
+  }
+
+  set difficultyPreference(String value) {
+    _difficultyPreference = value;
+    notifyListeners();
+  }
+
+  set goalType(String value) {
+    _goalType = value;
+    notifyListeners();
+  }
+
+  set weeklyGoal(String value) {
+    _weeklyGoal = value;
+    notifyListeners();
+  }
+
+  set longTermGoal(String value) {
+    _longTermGoal = value;
+    notifyListeners();
+  }
+
+  // Convert to Map
+  Map<String, dynamic> toMap() => {
+    "betterSubjects": _betterSubjects,
+    "preferredLearningStyle": _preferredLearningStyle,
+    "studyTimePreference": _studyTimePreference,
+    "difficultyPreference": _difficultyPreference,
+    "goalType": _goalType,
+    "weeklyGoal": _weeklyGoal,
+    "longTermGoal": _longTermGoal,
+  };
+
   factory LearningPreferences.fromMap(Map<String, dynamic> map) {
     return LearningPreferences(
-      betterSubjects: map["betterSubjects"] != null ? List<String>.from(map["betterSubjects"]) : [],
+      betterSubjects: map["betterSubjects"] != null
+          ? List<String>.from(map["betterSubjects"])
+          : [],
       preferredLearningStyle: map["preferredLearningStyle"] ?? "Visual",
       studyTimePreference: map["studyTimePreference"] ?? "Morning",
       difficultyPreference: map["difficultyPreference"] ?? "Standard",
@@ -69,31 +97,25 @@ class LearningPreferences {
     );
   }
 
-  // Load from SharedPreferences
+  // SharedPreferences methods using JSON
   static Future<LearningPreferences> fromPrefs(SharedPreferences prefs) async {
-    final betterSubjectsStr = prefs.getString('betterSubjects') ?? "";
-    final betterSubjects = betterSubjectsStr.isNotEmpty ? betterSubjectsStr.split(',') : <String>[];
-    final preferredLearningStyle = prefs.getString('preferredLearningStyle') ?? "Visual";
-    final studyTimePreference = prefs.getString('studyTimePreference') ?? "Morning";
-    final difficultyPreference = prefs.getString('difficultyPreference') ?? "Standard";
-    final goalType = prefs.getString('goalType') ?? "Pass Exam";
-    final weeklyGoal = prefs.getString('weeklyGoal') ?? "";
-    final longTermGoal = prefs.getString('longTermGoal') ?? "";
-
+    final betterSubjects = prefs.getString('betterSubjects') != null
+        ? List<String>.from(jsonDecode(prefs.getString('betterSubjects')!))
+        : <String>[];
     return LearningPreferences(
       betterSubjects: betterSubjects,
-      preferredLearningStyle: preferredLearningStyle,
-      studyTimePreference: studyTimePreference,
-      difficultyPreference: difficultyPreference,
-      goalType: goalType,
-      weeklyGoal: weeklyGoal,
-      longTermGoal: longTermGoal,
+      preferredLearningStyle:
+      prefs.getString('preferredLearningStyle') ?? "Visual",
+      studyTimePreference: prefs.getString('studyTimePreference') ?? "Morning",
+      difficultyPreference: prefs.getString('difficultyPreference') ?? "Standard",
+      goalType: prefs.getString('goalType') ?? "Pass Exam",
+      weeklyGoal: prefs.getString('weeklyGoal') ?? "",
+      longTermGoal: prefs.getString('longTermGoal') ?? "",
     );
   }
 
-  // Save to SharedPreferences
   Future<void> saveToPrefs(SharedPreferences prefs) async {
-    await prefs.setString('betterSubjects', _betterSubjects.join(','));
+    await prefs.setString('betterSubjects', jsonEncode(_betterSubjects));
     await prefs.setString('preferredLearningStyle', _preferredLearningStyle);
     await prefs.setString('studyTimePreference', _studyTimePreference);
     await prefs.setString('difficultyPreference', _difficultyPreference);
@@ -102,7 +124,6 @@ class LearningPreferences {
     await prefs.setString('longTermGoal', _longTermGoal);
   }
 
-  // Clear all preferences
   Future<void> clearPrefs(SharedPreferences prefs) async {
     await prefs.remove('betterSubjects');
     await prefs.remove('preferredLearningStyle');
@@ -112,5 +133,4 @@ class LearningPreferences {
     await prefs.remove('weeklyGoal');
     await prefs.remove('longTermGoal');
   }
-
 }

@@ -474,7 +474,72 @@
   "myCollection": "meine Sammlung",
   "search": "suchen",
   "showAll": "Alle anzeigen",
-  "showLess": "Weniger anzeigen"
+  "showLess": "Weniger anzeigen",
+
+ "learningPreferences": "Lernpräferenzen",
+  "subjects": "Fächer",
+  "enterSubjects": "Fächer eingeben",
+  "learningStyle": "Lernstil",
+  "studyTime": "Lernzeit",
+  "difficulty": "Schwierigkeitsgrad",
+  "goals": "Ziele",
+  "weeklyGoal": "Wöchentliches Ziel",
+  "longTermGoal": "Langfristiges Ziel",
+  "save": "Speichern",
+  "next": "Weiter",
+  "back": "Zurück",
+
+  "visual": "Visuell",
+  "auditory": "Auditiv",
+  "kinesthetic": "Kinästhetisch",
+
+  "morning": "Morgen",
+  "afternoon": "Nachmittag",
+  "evening": "Abend",
+
+  "standard": "Standard",
+  "advanced": "Fortgeschritten",
+  "adaptive": "Adaptiv",
+
+  "passExam": "Prüfung bestehen",
+  "improveSkills": "Fähigkeiten verbessern",
+  "getCertified": "Zertifikat erhalten",
+
+    "tolims": "Tolims",
+    "stars": "Sterne",
+    "notEnoughTolims": "Nicht genug Tolims!",
+    "youGotStars": "Du hast {count} Sterne erhalten!",
+    "getStars": "{count} Sterne erhalten",
+
+    "missingNumber": "Fehlende Zahl",
+    "findLargest": "Finde die größte Zahl",
+    "addition": "Addition",
+    "subtraction": "Subtraktion",
+    "countObjects": "Objekte zählen",
+    "compareNumbers": "Zahlen vergleichen",
+    "oddNumbers": "Ungerade Zahlen",
+    "targetNumber": "Zielzahl",
+    "letsPractiseMath": "📚 Lass uns Mathe üben!",
+    "funGamesToBeStar": "Spaßige Spiele, um ein Mathe-Star zu werden 🌟",
+    "areYouSureQuitGame": "Bist du sicher, dass du das Spiel beenden willst?",
+    "youWillLoseYourProgress": "Du wirst deinen Fortschritt verlieren.",
+
+    "howManyObjects": "Wie viele {object} siehst du?",
+    "findMissingNumber": "Finde die fehlende Zahl",
+    "remainingLives": "Verbleibende Leben",
+    "findLargestNumber": "Welche Zahl ist die größte?",
+    "streak": "Serie",
+    "howMuchIs": "Wie viel ist das?",
+    "or": "oder",
+    "whichIsTheLargestNumber": "Welche Zahl ist die größte?",
+    "isNumberEvenOrOdd": "Ist die Zahl {number} gerade oder ungerade?",
+    "even": "Gerade",
+    "odd": "Ungerade",
+    "reachTheNumber": "Erreiche die Zahl:",
+    "noNumberChosen": "Keine Zahl gewählt",
+    "currentSum": "Aktuelle Summe",
+    "answer": "Antwort"
+
 
 
 

@@ -11,7 +11,7 @@ class AdHelper {
   /// Banner Ad
   static BannerAd getBannerAd(Function onAdLoaded) {
     final BannerAd banner = BannerAd(
-      adUnitId: 'ca-app-pub-9936922975297046/2736323402', // ✅ Replace with your real ID
+      adUnitId: 'ca-app-pub-9936922975297046/2736323402', // ✅ real ID
       request: const AdRequest(),
       size: AdSize.banner,
       listener: BannerAdListener(
@@ -26,7 +26,6 @@ class AdHelper {
     return banner;
   }
 
-  /// Interstitial Ad
   /// Interstitial Ad with loading UI
   static Future<void> showInterstitialAd({
     required BuildContext context,
@@ -42,7 +41,7 @@ class AdHelper {
     );
 
     await InterstitialAd.load(
-      adUnitId: 'ca-app-pub-9936922975297046/8354774722', // ✅ Replace with your real ID
+      adUnitId: 'ca-app-pub-9936922975297046/8354774722', // ✅  real ID
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {
@@ -137,7 +136,7 @@ class AdHelper {
     );
 
     RewardedAd.load(
-      adUnitId: 'ca-app-pub-9936922975297046/5494650006',
+      adUnitId: 'ca-app-pub-9936922975297046/5494650006', // REAL ID
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (RewardedAd ad) {

@@ -135,7 +135,7 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
             ),
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                padding: const EdgeInsets.symmetric(horizontal: 18.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -205,14 +205,14 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
                         widget.onGetStarted();
                       },
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
                         backgroundColor: const Color(0xFF43E97B),
                       ),
                       child: SizedBox(
-                        width: 100,
+                        width: 150,
                         child: Center(
                           child: Text(
                             buttonTexts[currentTextIndex],

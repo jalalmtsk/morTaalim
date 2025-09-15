@@ -1,275 +1,448 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../Manager/models/LearningPrefrences.dart';
+import '../../l10n/app_localizations.dart';
+import '../../tools/audio_tool/Audio_Manager.dart';
 
-class LearningPreferencesPage extends StatefulWidget {
+class LearningPreferencesPages extends StatefulWidget {
+  final LearningPreferences? initialPreferences;
+
+  const LearningPreferencesPages({Key? key, this.initialPreferences})
+      : super(key: key);
+
   @override
-  _LearningPreferencesPageState createState() => _LearningPreferencesPageState();
+  _LearningPreferencesPagesState createState() =>
+      _LearningPreferencesPagesState();
 }
 
-class _LearningPreferencesPageState extends State<LearningPreferencesPage>
-    with SingleTickerProviderStateMixin {
-  late LearningPreferences _preferences;
-  bool _isLoading = true;
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
+class _LearningPreferencesPagesState extends State<LearningPreferencesPages> {
+  int _currentStep = 0;
+  late LearningPreferences preferences;
 
-  // Controllers
   final TextEditingController weeklyGoalController = TextEditingController();
   final TextEditingController longTermGoalController = TextEditingController();
-  final TextEditingController subjectsController = TextEditingController();
 
-  final List<String> learningStyles = ["Visual", "Auditory", "Kinesthetic"];
-  final List<String> studyTimes = ["Morning", "Afternoon", "Evening"];
-  final List<String> difficultyLevels = ["Standard", "Advanced", "Adaptive"];
-  final List<String> goalTypes = ["Pass Exam", "Improve Skills", "Get Certified"];
-
-  String selectedLearningStyle = "Visual";
-  String selectedStudyTime = "Morning";
-  String selectedDifficulty = "Standard";
-  String selectedGoalType = "Pass Exam";
+  final List<String> availableSubjects = [
+    "Math",
+    "Arabic",
+    "English",
+    "French",
+    "Science",
+    "Islamic Education",
+    "Art",
+  ];
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: Duration(seconds: 1));
-    _fadeAnimation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
-    _loadPreferences();
+    preferences = widget.initialPreferences ?? LearningPreferences();
+    weeklyGoalController.text = preferences.weeklyGoal;
+    longTermGoalController.text = preferences.longTermGoal;
   }
 
-  Future<void> _loadPreferences() async {
+  @override
+  void dispose() {
+    weeklyGoalController.dispose();
+    longTermGoalController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _savePrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    final loadedPrefs = await LearningPreferences.fromPrefs(prefs);
+    await preferences.saveToPrefs(prefs);
+  }
+
+  bool _isStepComplete(int step) {
+    switch (step) {
+      case 0:
+        return preferences.betterSubjects.isNotEmpty;
+      case 1:
+        return preferences.preferredLearningStyle.isNotEmpty;
+      case 2:
+        return preferences.studyTimePreference.isNotEmpty;
+      case 3:
+        return preferences.difficultyPreference.isNotEmpty;
+      case 4:
+        return preferences.goalType.isNotEmpty &&
+            weeklyGoalController.text.trim().isNotEmpty &&
+            longTermGoalController.text.trim().isNotEmpty;
+      default:
+        return false;
+    }
+  }
+
+  InputDecoration _lightGreenInputDecoration(String label) {
+    return InputDecoration(
+      labelText: label,
+      labelStyle: TextStyle(color: Colors.green.shade700, fontSize: 14),
+      filled: true,
+      fillColor: Colors.green.shade50,
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: Colors.green.shade400, width: 2),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide(color: Colors.green.shade200, width: 1.5),
+      ),
+    );
+  }
+
+  Widget _buildStepContent({
+    required String lottieAsset,
+    required Widget child,
+  }) {
+    return Column(
+      children: [
+        Lottie.asset(lottieAsset, height: 160, repeat: true),
+        const SizedBox(height: 20),
+        child,
+      ],
+    );
+  }
+
+  void _updateWeeklyGoal(String value) {
     setState(() {
-      _preferences = loadedPrefs;
-      selectedLearningStyle = loadedPrefs.preferredLearningStyle;
-      selectedStudyTime = loadedPrefs.studyTimePreference;
-      selectedDifficulty = loadedPrefs.difficultyPreference;
-      selectedGoalType = loadedPrefs.goalType;
-      weeklyGoalController.text = loadedPrefs.weeklyGoal;
-      longTermGoalController.text = loadedPrefs.longTermGoal;
-      subjectsController.text = loadedPrefs.betterSubjects.join(", ");
-      _isLoading = false;
-      _controller.forward();
+      preferences.weeklyGoal = value;
+      _savePrefs();
     });
   }
 
-  Future<void> _savePreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    _preferences
-      ..betterSubjects = subjectsController.text.split(",").map((s) => s.trim()).toList()
-      ..preferredLearningStyle = selectedLearningStyle
-      ..studyTimePreference = selectedStudyTime
-      ..difficultyPreference = selectedDifficulty
-      ..goalType = selectedGoalType
-      ..weeklyGoal = weeklyGoalController.text
-      ..longTermGoal = longTermGoalController.text;
-
-    await _preferences.saveToPrefs(prefs);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("Preferences Saved! 🎉"),
-        backgroundColor: Colors.greenAccent,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
+  void _updateLongTermGoal(String value) {
+    setState(() {
+      preferences.longTermGoal = value;
+      _savePrefs();
+    });
   }
 
-  Widget _glassCard({required String title, required IconData icon, required Widget child}) {
-    return FadeTransition(
-      opacity: _fadeAnimation,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-          child: Container(
-            margin: EdgeInsets.only(bottom: 20),
-            padding: EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(icon, color: Colors.white),
-                    SizedBox(width: 10),
-                    Text(
-                      title,
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 12),
-                child,
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+  void _updatePreference(String key, String value) {
+    setState(() {
+      switch (key) {
+        case "learningStyle":
+          preferences.preferredLearningStyle = value;
+          break;
+        case "studyTime":
+          preferences.studyTimePreference = value;
+          break;
+        case "difficulty":
+          preferences.difficultyPreference = value;
+          break;
+        case "goalType":
+          preferences.goalType = value;
+          break;
+      }
+      _savePrefs();
+    });
   }
 
-  InputDecoration _inputDecoration(String label) => InputDecoration(
-    labelText: label,
-    labelStyle: TextStyle(color: Colors.white),
-    filled: true,
-    fillColor: Colors.white.withOpacity(0.1),
-    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-    enabledBorder: OutlineInputBorder(
-      borderSide: BorderSide(color: Colors.white.withOpacity(0.5)),
-      borderRadius: BorderRadius.circular(12),
-    ),
-  );
+  void _updateSubjects(String subject) {
+    setState(() {
+      preferences.betterSubjects = [subject];
+      _savePrefs();
+    });
+  }
+
+  void _saveAndClose() {
+    preferences.weeklyGoal = weeklyGoalController.text;
+    preferences.longTermGoal = longTermGoalController.text;
+    _savePrefs();
+    Navigator.pop(context, preferences);
+  }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading)
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
+    final tr = AppLocalizations.of(context)!;
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.deepPurple, Colors.blueAccent, Colors.teal],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: Colors.green.shade50,
+        appBar: AppBar(
+          title: Text(tr.learningPreferences),
+          backgroundColor: Colors.green.shade400,
+          automaticallyImplyLeading: false,
+          elevation: 0,
         ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(16),
-            child: Column(
-              children: [
-                SizedBox(height: 20),
-                Text(
-                  "Your Learning Preferences",
-                  style: TextStyle(
-                      fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
+        body: SafeArea(
+          child: Stepper(
+            type: StepperType.vertical,
+            currentStep: _currentStep,
+            onStepContinue: () {
+              if (_currentStep < 4) {
+                if (_isStepComplete(_currentStep)) {
+                  audioManager.playEventSound('clickButton');
+                  setState(() => _currentStep += 1);
+                }
+              } else if (_isStepComplete(_currentStep)) {
+                audioManager.playEventSound('clickButton');
+                _saveAndClose();
+              }
+            },
+            onStepCancel: () {
+              if (_currentStep > 0) {
+                audioManager.playEventSound('clickButton');
+                setState(() => _currentStep -= 1);
+              }
+            },
+            controlsBuilder: (context, details) {
+              final isLastStep = _currentStep == 4;
+              final canContinue = _isStepComplete(_currentStep);
+
+              return Padding(
+                padding: const EdgeInsets.only(top: 16),
+                child: Row(
+                  children: [
+                    ElevatedButton(
+                      onPressed: canContinue
+                          ? () {
+                        audioManager.playEventSound('clickButton');
+                        details.onStepContinue!();
+                      }
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: canContinue
+                            ? Colors.green.shade500
+                            : Colors.green.shade200,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        elevation: canContinue ? 2 : 0,
+                      ),
+                      child: Text(isLastStep ? tr.save : tr.next),
+                    ),
+                    const SizedBox(width: 12),
+                    if (_currentStep > 0)
+                      OutlinedButton(
+                        onPressed: () {
+                          audioManager.playEventSound('clickButton');
+                          details.onStepCancel!();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: Colors.green.shade800,
+                          side: BorderSide(color: Colors.green.shade300),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                        ),
+                        child: Text(tr.back),
+                      ),
+                  ],
                 ),
-                SizedBox(height: 30),
-                _glassCard(
-                  title: "Subjects",
-                  icon: Icons.book,
-                  child: TextField(
-                    controller: subjectsController,
-                    style: TextStyle(color: Colors.white),
-                    decoration: _inputDecoration("Better Subjects (comma separated)"),
+              );
+            },
+            steps: [
+              // Subjects
+              Step(
+                title: Text(tr.subjects),
+                content: _buildStepContent(
+                  lottieAsset:
+                  "assets/animations/FirstTouchAnimations/BulbBook.json",
+                  child: Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
+                    children: availableSubjects.map((subject) {
+                      final isSelected = preferences.betterSubjects.contains(subject);
+                      return GestureDetector(
+                        onTap: () {
+                          audioManager.playEventSound('clickButton');
+                          _updateSubjects(subject);
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 18),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? Colors.green.shade400
+                                : Colors.green.shade100,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              if (isSelected)
+                                BoxShadow(
+                                  color: Colors.green.shade300,
+                                  blurRadius: 6,
+                                  offset: Offset(0, 3),
+                                ),
+                            ],
+                          ),
+                          child: Text(
+                            subject,
+                            style: TextStyle(
+                              color: isSelected
+                                  ? Colors.white
+                                  : Colors.green.shade900,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
                   ),
                 ),
-                _glassCard(
-                  title: "Learning Style",
-                  icon: Icons.style,
-                  child: DropdownButtonFormField<String>(
-                    value: selectedLearningStyle,
-                    dropdownColor: Colors.black54,
-                    style: TextStyle(color: Colors.white),
-                    decoration: _inputDecoration("Select Style"),
-                    items: learningStyles
-                        .map((style) => DropdownMenuItem(
-                        value: style, child: Text(style, style: TextStyle(color: Colors.white))))
-                        .toList(),
-                    onChanged: (val) => setState(() => selectedLearningStyle = val!),
-                  ),
-                ),
-                _glassCard(
-                  title: "Study Time",
-                  icon: Icons.access_time,
-                  child: DropdownButtonFormField<String>(
-                    value: selectedStudyTime,
-                    dropdownColor: Colors.black54,
-                    style: TextStyle(color: Colors.white),
-                    decoration: _inputDecoration("Select Time"),
-                    items: studyTimes
-                        .map((time) => DropdownMenuItem(
-                        value: time, child: Text(time, style: TextStyle(color: Colors.white))))
-                        .toList(),
-                    onChanged: (val) => setState(() => selectedStudyTime = val!),
-                  ),
-                ),
-                _glassCard(
-                  title: "Difficulty",
-                  icon: Icons.bolt,
-                  child: DropdownButtonFormField<String>(
-                    value: selectedDifficulty,
-                    dropdownColor: Colors.black54,
-                    style: TextStyle(color: Colors.white),
-                    decoration: _inputDecoration("Select Difficulty"),
-                    items: difficultyLevels
-                        .map((level) => DropdownMenuItem(
-                        value: level, child: Text(level, style: TextStyle(color: Colors.white))))
-                        .toList(),
-                    onChanged: (val) => setState(() => selectedDifficulty = val!),
-                  ),
-                ),
-                _glassCard(
-                  title: "Goals",
-                  icon: Icons.flag,
+                isActive: _currentStep == 0,
+              ),
+              // Learning Style
+              Step(
+                title: Text(tr.learningStyle),
+                content: _buildStepContent(
+                  lottieAsset:
+                  "assets/animations/FirstTouchAnimations/Educatin.json",
                   child: Column(
                     children: [
-                      DropdownButtonFormField<String>(
-                        value: selectedGoalType,
-                        dropdownColor: Colors.black54,
-                        style: TextStyle(color: Colors.white),
-                        decoration: _inputDecoration("Goal Type"),
-                        items: goalTypes
-                            .map((goal) => DropdownMenuItem(
-                            value: goal,
-                            child: Text(goal, style: TextStyle(color: Colors.white))))
-                            .toList(),
-                        onChanged: (val) => setState(() => selectedGoalType = val!),
+                      RadioListTile<String>(
+                        value: tr.visual,
+                        groupValue: preferences.preferredLearningStyle,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("learningStyle", val!),
+                        title: Text(tr.visual,
+                            style: TextStyle(color: Colors.green.shade700)),
                       ),
-                      SizedBox(height: 12),
-                      TextField(
-                        controller: weeklyGoalController,
-                        style: TextStyle(color: Colors.white),
-                        decoration: _inputDecoration("Weekly Goal"),
+                      RadioListTile<String>(
+                        value: tr.auditory,
+                        groupValue: preferences.preferredLearningStyle,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("learningStyle", val!),
+                        title: Text(tr.auditory,
+                            style: TextStyle(color: Colors.green.shade700)),
                       ),
-                      SizedBox(height: 12),
-                      TextField(
-                        controller: longTermGoalController,
-                        style: TextStyle(color: Colors.white),
-                        decoration: _inputDecoration("Long Term Goal"),
+                      RadioListTile<String>(
+                        value: tr.kinesthetic,
+                        groupValue: preferences.preferredLearningStyle,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("learningStyle", val!),
+                        title: Text(tr.kinesthetic,
+                            style: TextStyle(color: Colors.green.shade700)),
                       ),
                     ],
                   ),
                 ),
-                SizedBox(height: 30),
-                GestureDetector(
-                  onTap: _savePreferences,
-                  child: Container(
-                    width: double.infinity,
-                    height: 55,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(colors: [Colors.tealAccent, Colors.blueAccent]),
-                      borderRadius: BorderRadius.circular(15),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 8,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Center(
-                      child: Text(
-                        "SAVE PREFERENCES",
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold, fontSize: 18),
+                isActive: _currentStep == 1,
+              ),
+              // Study Time
+              Step(
+                title: Text(tr.studyTime),
+                content: _buildStepContent(
+                  lottieAsset: "assets/animations/girl_studying.json",
+                  child: Column(
+                    children: [
+                      RadioListTile<String>(
+                        value: tr.morning,
+                        groupValue: preferences.studyTimePreference,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("studyTime", val!),
+                        title: Text(tr.morning,
+                            style: TextStyle(color: Colors.green.shade700)),
                       ),
-                    ),
+                      RadioListTile<String>(
+                        value: tr.afternoon,
+                        groupValue: preferences.studyTimePreference,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("studyTime", val!),
+                        title: Text(tr.afternoon,
+                            style: TextStyle(color: Colors.green.shade700)),
+                      ),
+                      RadioListTile<String>(
+                        value: tr.evening,
+                        groupValue: preferences.studyTimePreference,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("studyTime", val!),
+                        title: Text(tr.evening,
+                            style: TextStyle(color: Colors.green.shade700)),
+                      ),
+                    ],
                   ),
                 ),
-                SizedBox(height: 30),
-              ],
-            ),
+                isActive: _currentStep == 2,
+              ),
+              // Difficulty
+              Step(
+                title: Text(tr.difficulty),
+                content: _buildStepContent(
+                  lottieAsset:
+                  "assets/animations/FirstTouchAnimations/BulbBook.json",
+                  child: Column(
+                    children: [
+                      RadioListTile<String>(
+                        value: tr.standard,
+                        groupValue: preferences.difficultyPreference,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("difficulty", val!),
+                        title: Text(tr.standard,
+                            style: TextStyle(color: Colors.green.shade700)),
+                      ),
+                      RadioListTile<String>(
+                        value: tr.advanced,
+                        groupValue: preferences.difficultyPreference,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("difficulty", val!),
+                        title: Text(tr.advanced,
+                            style: TextStyle(color: Colors.green.shade700)),
+                      ),
+                      RadioListTile<String>(
+                        value: tr.adaptive,
+                        groupValue: preferences.difficultyPreference,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("difficulty", val!),
+                        title: Text(tr.adaptive,
+                            style: TextStyle(color: Colors.green.shade700)),
+                      ),
+                    ],
+                  ),
+                ),
+                isActive: _currentStep == 3,
+              ),
+              // Goals
+              Step(
+                title: Text(tr.goals),
+                content: _buildStepContent(
+                  lottieAsset: "assets/animations/superhero.json",
+                  child: Column(
+                    children: [
+                      RadioListTile<String>(
+                        value: tr.passExam,
+                        groupValue: preferences.goalType,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("goalType", val!),
+                        title: Text(tr.passExam,
+                            style: TextStyle(color: Colors.green.shade700)),
+                      ),
+                      RadioListTile<String>(
+                        value: tr.improveSkills,
+                        groupValue: preferences.goalType,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("goalType", val!),
+                        title: Text(tr.improveSkills,
+                            style: TextStyle(color: Colors.green.shade700)),
+                      ),
+                      RadioListTile<String>(
+                        value: tr.getCertified,
+                        groupValue: preferences.goalType,
+                        activeColor: Colors.green.shade400,
+                        onChanged: (val) => _updatePreference("goalType", val!),
+                        title: Text(tr.getCertified,
+                            style: TextStyle(color: Colors.green.shade700)),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: weeklyGoalController,
+                        onChanged: _updateWeeklyGoal,
+                        decoration: _lightGreenInputDecoration(tr.weeklyGoal),
+                      ),
+                      const SizedBox(height: 12),
+                      TextField(
+                        controller: longTermGoalController,
+                        onChanged: _updateLongTermGoal,
+                        decoration: _lightGreenInputDecoration(tr.longTermGoal),
+                      ),
+                    ],
+                  ),
+                ),
+                isActive: _currentStep == 4,
+              ),
+            ],
           ),
         ),
       ),

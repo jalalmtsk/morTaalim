@@ -1273,4 +1273,165 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get showLess => 'Afficher moins';
+
+  @override
+  String get learningPreferences => 'Préférences d\'apprentissage';
+
+  @override
+  String get subjects => 'Matières';
+
+  @override
+  String get enterSubjects => 'Saisir les matières';
+
+  @override
+  String get learningStyle => 'Style d\'apprentissage';
+
+  @override
+  String get studyTime => 'Temps d\'étude';
+
+  @override
+  String get difficulty => 'Niveau de difficulté';
+
+  @override
+  String get goals => 'Objectifs';
+
+  @override
+  String get weeklyGoal => 'Objectif hebdomadaire';
+
+  @override
+  String get longTermGoal => 'Objectif à long terme';
+
+  @override
+  String get visual => 'Visuel';
+
+  @override
+  String get auditory => 'Auditif';
+
+  @override
+  String get kinesthetic => 'Kinesthésique';
+
+  @override
+  String get morning => 'Matin';
+
+  @override
+  String get afternoon => 'Après-midi';
+
+  @override
+  String get evening => 'Soir';
+
+  @override
+  String get standard => 'Standard';
+
+  @override
+  String get advanced => 'Avancé';
+
+  @override
+  String get adaptive => 'Adaptatif';
+
+  @override
+  String get passExam => 'Réussir l\'examen';
+
+  @override
+  String get improveSkills => 'Améliorer les compétences';
+
+  @override
+  String get getCertified => 'Obtenir une certification';
+
+  @override
+  String get notEnoughTolims => 'Pas assez de Tolims !';
+
+  @override
+  String youGotStars(Object count) {
+    return 'Vous avez reçu $count étoiles !';
+  }
+
+  @override
+  String getStars(Object count) {
+    return 'Obtenir $count étoiles';
+  }
+
+  @override
+  String get missingNumber => 'Nombre manquant';
+
+  @override
+  String get findLargest => 'Trouver le plus grand';
+
+  @override
+  String get addition => 'Addition';
+
+  @override
+  String get subtraction => 'Soustraction';
+
+  @override
+  String get countObjects => 'Compter les objets';
+
+  @override
+  String get compareNumbers => 'Comparer les nombres';
+
+  @override
+  String get oddNumbers => 'Nombres impairs';
+
+  @override
+  String get targetNumber => 'Nombre cible';
+
+  @override
+  String get letsPractiseMath => '📚 Pratiquons les mathématiques !';
+
+  @override
+  String get funGamesToBeStar => 'Des jeux amusants pour devenir une star des maths 🌟';
+
+  @override
+  String get areYouSureQuitGame => 'Êtes-vous sûr de vouloir quitter le jeu ?';
+
+  @override
+  String get youWillLoseYourProgress => 'Vous perdrez votre progression.';
+
+  @override
+  String howManyObjects(Object object) {
+    return 'Combien de $object voyez-vous ?';
+  }
+
+  @override
+  String get findMissingNumber => 'Trouvez le nombre manquant';
+
+  @override
+  String get remainingLives => 'Vies restantes';
+
+  @override
+  String get findLargestNumber => 'Quel est le plus grand nombre ?';
+
+  @override
+  String get streak => 'Série';
+
+  @override
+  String get howMuchIs => 'Combien ça fait ?';
+
+  @override
+  String get or => 'ou';
+
+  @override
+  String get whichIsTheLargestNumber => 'Quel est le plus grand nombre ?';
+
+  @override
+  String isNumberEvenOrOdd(Object number) {
+    return 'Le nombre $number est-il pair ou impair ?';
+  }
+
+  @override
+  String get even => 'Pair';
+
+  @override
+  String get odd => 'Impair';
+
+  @override
+  String get reachTheNumber => 'Atteignez le nombre :';
+
+  @override
+  String get noNumberChosen => 'Aucun nombre choisi';
+
+  @override
+  String get currentSum => 'Somme actuelle';
+
+  @override
+  String get answer => 'Réponse';
 }

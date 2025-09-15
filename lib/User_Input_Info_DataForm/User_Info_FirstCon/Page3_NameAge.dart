@@ -237,7 +237,7 @@ class _NameAgePageState extends State<NameAgePage>
 
                           _buildInputField(
                             controller: _nameController,
-                            label: tr(context).name,
+                            label: tr(context).firstName,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
                                 return tr(context).pleaseEnterYourFirstName;

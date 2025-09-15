@@ -123,7 +123,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get myProfile => 'ⵉⵙⵎⵉⵔⴰⵏ ⵉⵎⵎⴰⴷⴰⵏ';
 
   @override
-  String get stars => 'ⵉⵎⴰⵙⵉⵏ';
+  String get stars => 'ⵉⵎⵓⴹⵉⵏ';
 
   @override
   String get lives => 'ⵉⵎⴰⵍⴰⵙⵏ';
@@ -210,7 +210,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get enterNewName => 'ⵙⵏⴼⴰⵔ ⵉⵙⵎ ⵉⵎⵢⴰⵔ';
 
   @override
-  String get save => 'ⵙⵎⵔⵙ';
+  String get save => 'ⵎⴰⵣⵉⵖ';
 
   @override
   String get aboutApp => 'ⴳ ⵜⵙⵉⵡⵉⵏ';
@@ -387,7 +387,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get flickTheDancingFox => 'ⴼⵍⵉⴽ ⴰⵣⴳⴳⵯⴰⵏ';
 
   @override
-  String get next => 'ⴰⴷⴷⴰⵢ';
+  String get next => 'ⴰⵎⵢⴰⵍ';
 
   @override
   String get previous => 'ⴰⵎⴰⵣⵉⴹ';
@@ -516,7 +516,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get store => 'ⵜⵓⵙⴽⵔⴼⵜ';
 
   @override
-  String get tolims => 'ⵜⵓⵍⵉⵎⵙ';
+  String get tolims => 'ⵜⵓⵍⵉⵎⵣ';
 
   @override
   String get spinningWheel => 'ⴰⵎⵔⴰⴳ ⵏ ⵜⴰⵙⵉⵔⵜ';
@@ -627,7 +627,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get haveFunAndLearnSomethingNew => 'ⵡⴰⵍⵍⵉ ⵏ ⵜⵉⵙⴰⵏ ⴷ ⵜⵎⵉⵔⵙⵜ ⴰⵎⵓⴹⴹⴰⵏ ⵎⴰⵢⵢⴰⵏ!';
 
   @override
-  String get back => 'ⴰⴷⴷⵓⴷ';
+  String get back => 'ⴰⵙⴳⴰⵏ';
 
   @override
   String get adFailedToLoadOrWasNotCompletedPleaseTryAgainLater => 'ⵜⵉⵏⵙⵉⵡⵉⵏ ⵓⵔ ⵜⵎⵓⵔⵜ ⴷ ⵓⵔ ⵜⴽⴼⵔⵉⵡⵉⵏ. ⴼⴼⵓⵙ ⴷⵉⵔⴰ.';
@@ -1273,4 +1273,165 @@ class AppLocalizationsZgh extends AppLocalizations {
 
   @override
   String get showLess => 'ⵙⴼⴽ ⴰⵇⴻⵔⵔⵓ';
+
+  @override
+  String get learningPreferences => 'ⵜⴰⵙⴳⴰⵙⵉⵏ ⵏ ⵜⵎⵎⴰⵣⵉⵖⵜ';
+
+  @override
+  String get subjects => 'ⵜⴰⵙⵏⵓⵙⵉⵏ';
+
+  @override
+  String get enterSubjects => 'ⵙⵙⵉ ⵜⴰⵙⵏⵓⵙⵉⵏ';
+
+  @override
+  String get learningStyle => 'ⵜⴰⵎⵓⵔⵜ ⵏ ⵜⵎⵎⴰⵣⵉⵖⵜ';
+
+  @override
+  String get studyTime => 'ⵜⴰⵙⵔⴰ ⵏ ⵜⵎⵎⴰⵣⵉⵖⵜ';
+
+  @override
+  String get difficulty => 'ⵜⴰⵙⵉⵡⴰⵏⵜ';
+
+  @override
+  String get goals => 'ⵜⵉⴼⵉⵔⵉⵡⵉⵏ';
+
+  @override
+  String get weeklyGoal => 'ⴰⵎⴰⵢ ⴰⵎⵙⵙⵉⴹ';
+
+  @override
+  String get longTermGoal => 'ⴰⵎⴰⵢ ⴰⵎⴰⵣⵉⴷ';
+
+  @override
+  String get visual => 'ⴰⴳⵔⴰⵡ';
+
+  @override
+  String get auditory => 'ⴰⵙⵎⵓⴹ';
+
+  @override
+  String get kinesthetic => 'ⴰⵎⴰⴷⵓⵙ';
+
+  @override
+  String get morning => 'ⵜⵉⴼⵓⴽⵍⵉ';
+
+  @override
+  String get afternoon => 'ⵜⴰⵙⴳⴰⵎⴰⵜ';
+
+  @override
+  String get evening => 'ⵜⴰⴷⵔⴰⵢⵜ';
+
+  @override
+  String get standard => 'ⴰⵏⵓⵔⵓⵙ';
+
+  @override
+  String get advanced => 'ⴰⴳⵔⵓⵎ';
+
+  @override
+  String get adaptive => 'ⴰⵙⴳⴰⵍ';
+
+  @override
+  String get passExam => 'ⵉⵙⵉ ⵜⵉⵙⴳⴰⵎⵉⵏ';
+
+  @override
+  String get improveSkills => 'ⵙⵙⵉⵡⴰ ⵜⵉⴼⵉⵔⵉⵡⵉⵏ';
+
+  @override
+  String get getCertified => 'ⵙⵙⵉ ⵜⵉⵙⵓⵍⵉ';
+
+  @override
+  String get notEnoughTolims => 'ⵓⵔ ⵉⵎⵔⵉ ⵜⵓⵍⵉⵎⵣ!';
+
+  @override
+  String youGotStars(Object count) {
+    return 'ⴰⵣⵓⵍ ⵏⵏⵙⵎⴽ $count ⵉⵎⵓⴹⵉⵏ!';
+  }
+
+  @override
+  String getStars(Object count) {
+    return 'ⵎⵙⵎⴽ $count ⵉⵎⵓⴹⵉⵏ';
+  }
+
+  @override
+  String get missingNumber => 'ⴰⵎⴰⵢ ⴰⵎⴹⴰⵢ';
+
+  @override
+  String get findLargest => 'ⴰⵔⴰ ⴰⴼⴽⵓⵍ';
+
+  @override
+  String get addition => 'ⵉⵙⵔⵉ';
+
+  @override
+  String get subtraction => 'ⵉⴼⴹⴹⵉ';
+
+  @override
+  String get countObjects => 'ⵉⵎⵎⴰⴷ ⵏ ⵜⴰⵙⵉⵏⵜ';
+
+  @override
+  String get compareNumbers => 'ⵜⴰⵙⴷⴰⵢⵜ ⵏ ⵉⵎⴰⵢⵏ';
+
+  @override
+  String get oddNumbers => 'ⵉⵎⴰⵢⵏ ⵉⵎⴷⴷⴰⵢⵏ';
+
+  @override
+  String get targetNumber => 'ⴰⵎⴰⵢ ⴰⴼⴽⵓⵍ';
+
+  @override
+  String get letsPractiseMath => '📚 ⴰⴼⴽⵔⴹ ⴰⵎⴰⵜⵉⵔⵉⵜ!';
+
+  @override
+  String get funGamesToBeStar => 'ⵉⵎⵉⴽⴽⵉⵏ ⵎⴰⵙⴰⵏⵉⵢⵏ ⴷ ⵜⵓⵜⵍⴰⴳⵜ ⵏ ⵎⴰⵜⵉⵔⵉⵜ 🌟';
+
+  @override
+  String get areYouSureQuitGame => 'ⴰⵢⴻⵏⵓ ⵏⴽ ⵜⴰⵎⵓⴷⵓⴷ ⴷ ⵉⵙⴳⵔⵉ ⵏ ⴰⵍⴰⵡⵢⵓⵏ?';
+
+  @override
+  String get youWillLoseYourProgress => 'ⵜⵉⵎⵉ ⵏⵉⵣⵡⴰⵙ ⵏⵓⵙⴻⵏ.';
+
+  @override
+  String howManyObjects(Object object) {
+    return 'ⵎⴰⵏⵉ $object ⵜⵣⵎⵔⴻⴹ?';
+  }
+
+  @override
+  String get findMissingNumber => 'ⵣⴻⵔ ⴰⴷⵔⴰⵔ ⵉⵎⵓⵇⵔⴰⵏ';
+
+  @override
+  String get remainingLives => 'ⵜⵖⵉⵜ ⵏ ⵡⴰⵢⴻⵏ ⵉ ⵜⵣⴻⴷ';
+
+  @override
+  String get findLargestNumber => 'ⴰⵏⵡⴰ ⴷ ⴰⵎⵓⵇⵔⴰⵏ ⴰⵎⴹⴰⵏ?';
+
+  @override
+  String get streak => 'ⵜⴰⵣⵎⴻⵔⵜ';
+
+  @override
+  String get howMuchIs => 'ⴰⵎⴻⴽ ⵉ ⴷ-ⴹⵉ?';
+
+  @override
+  String get or => 'ⵏⴻⵖ';
+
+  @override
+  String get whichIsTheLargestNumber => 'ⴰⵏⵡⴰ ⴷ ⴰⵎⵓⵇⵔⴰⵏ ⴰⵎⴹⴰⵏ?';
+
+  @override
+  String isNumberEvenOrOdd(Object number) {
+    return 'ⵎⴰ $number ⴷ ⵉⴹⴻⵙ ⵏⴻⵖ ⴰⵎⴻⵇⵔⴰⵏ?';
+  }
+
+  @override
+  String get even => 'ⵉⴹⴻⵙ';
+
+  @override
+  String get odd => 'ⴰⵎⴻⵇⵔⴰⵏ';
+
+  @override
+  String get reachTheNumber => 'ⵙⵙⴻⵍ ⴰⴷⵔⴰⵔ:';
+
+  @override
+  String get noNumberChosen => 'ⵓⵔ ⵢⴻⵜⵜⵡⴰⵙⵏ ⴰⵔⴰ ⴰⴷⵔⴰⵔ';
+
+  @override
+  String get currentSum => 'ⴰⵃⵔⵉⵙ ⵏ ⵢⵍⴰⵏ';
+
+  @override
+  String get answer => 'ⵜⴰⵍⵎⴰⵢⵜ';
 }

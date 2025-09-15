@@ -1,20 +1,18 @@
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
-import 'package:mortaalim/tools/audio_tool.dart';
+import 'package:mortaalim/main.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
+
 import '../../XpSystem.dart';
-import '../../main.dart';
 import '../../tools/Ads_Manager.dart';
-import '../../tools/audio_tool/Audio_Manager.dart';
 import 'Tools/AnimatedHeart.dart';
 
-/// MissingNumberExercise - Rewritten with hearts, ads on quit/replay, banner + adaptive UI
 class MissingNumberGame extends StatelessWidget {
   const MissingNumberGame({super.key});
   @override
@@ -29,24 +27,18 @@ class MissingNumberExercise extends StatefulWidget {
 
 class _MissingNumberExerciseState extends State<MissingNumberExercise>
     with SingleTickerProviderStateMixin {
-  // ----------------- Tunables -----------------
+  // ---- Tunables ----
   static const int _targetScore = 10;
+  static const int _maxLives = 3;
   static const int _maxAnswers = 20;
   static const int _sequenceLength = 4;
   static const int _maxStart = 15;
-  static const int _maxLives = 3;
-  static const double _bannerHeightFallback = 50.0;
 
-  // --------------- State & Helpers -------------
   final Random _rng = Random();
-  final MusicPlayer _sfxPlayer = MusicPlayer();
-  final MusicPlayer _victorySfx = MusicPlayer();
-  final MusicPlayer _bgmPlayer = MusicPlayer();
-  final MusicPlayer _bgmVictory = MusicPlayer();
 
   late List<int> _sequence;
   late int _correctAnswer;
-  int _missingIndex = 1; // can randomize if desired
+  int _missingIndex = 1;
 
   int _score = 0;
   int _wrong = 0;
@@ -54,157 +46,98 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise>
 
   bool _showGameOver = false;
   bool? _isAnswerCorrect;
+  bool _showFinalCelebration = false;
   bool _isProcessingAnswer = false;
 
   BannerAd? _bannerAd;
   bool _isBannerAdLoaded = false;
-  bool _isAdLoading = false;
-  bool _isBgmPlaying = true;
 
-  // ----------------- Lifecycle -----------------
   @override
   void initState() {
     super.initState();
     _generateNewQuestion();
     _loadBannerAd();
-    _startBackgroundMusic();
   }
 
   void _loadBannerAd() {
     _bannerAd?.dispose();
     _isBannerAdLoaded = false;
     _bannerAd = AdHelper.getBannerAd(() {
-      if (!mounted) return;
-      setState(() => _isBannerAdLoaded = true);
+      if (mounted) {
+        setState(() => _isBannerAdLoaded = true);
+      }
     });
-  }
-
-  Future<void> _startBackgroundMusic() async {
-    try {
-      _bgmPlayer.setVolume(0.28);
-      await _bgmPlayer.play('assets/audios/sound_track/FoamRubber_BcG.mp3', loop: true);
-      if (mounted) setState(() => _isBgmPlaying = true);
-    } catch (_) {
-      // ignore bgm failures silently
-    }
-  }
-
-  Future<void> _stopBackgroundMusic() async {
-    try {
-      await _bgmPlayer.stop();
-    } catch (_) {}
-  }
-
-  Future<void> _playVictoryMusicSequence() async {
-    try {
-      _victorySfx.play("assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3");
-      _bgmVictory.setVolume(0.4);
-      _bgmVictory.play("assets/audios/sound_track/SakuraGirlYay_BcG.mp3", loop: true);
-      await _sfxPlayer.play('assets/audios/sound_effects/victory1_SFX.mp3');
-    } catch (_) {}
   }
 
   @override
   void dispose() {
-    _sfxPlayer.dispose();
-    _victorySfx.dispose();
-    _bgmPlayer.dispose();
-    _bgmVictory.dispose();
     _bannerAd?.dispose();
     super.dispose();
   }
 
-  // --------------- Game Logic -----------------
   void _generateNewQuestion() {
-    final rand = _rng;
-    final start = rand.nextInt(_maxStart) + 1;
-    final step = rand.nextBool() ? 1 : 2;
+    final start = _rng.nextInt(_maxStart) + 1;
+    final step = _rng.nextBool() ? 1 : 2;
     _sequence = List.generate(_sequenceLength, (i) => start + i * step);
     _correctAnswer = _sequence[_missingIndex];
     _sequence[_missingIndex] = -1;
     _isAnswerCorrect = null;
-    if (mounted) setState(() {});
-  }
-
-  Future<void> _handleGameOver({required bool byLives}) async {
-    final audioManager = Provider.of<AudioManager>(context, listen: false);
-    // stop bgm and play fail victor or crowd depending
-    await _stopBackgroundMusic();
-    if (byLives) {
-      audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/FailMeme_SFX.mp3");
-    }
-    setState(() {
-      _showGameOver = true;
-      _isProcessingAnswer = false;
-      _isAnswerCorrect = null;
-    });
+    setState(() {});
   }
 
   Future<void> _checkAnswer(int selected) async {
     if (_isProcessingAnswer || _showGameOver) return;
     _isProcessingAnswer = true;
+
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+
     HapticFeedback.selectionClick();
 
-    final audioManager = Provider.of<AudioManager>(context, listen: false);
-    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-
-    // ensure quick UI feedback
     if (selected == _correctAnswer) {
-      // Correct
       xpManager.addXP(1, context: context);
-      await _sfxPlayer.play('assets/audios/QuizGame_Sounds/correct.mp3');
-      if (!mounted) return;
+      await audioManager.playSfx('assets/audios/QuizGame_Sounds/correct.mp3');
       setState(() {
         _score++;
         _isAnswerCorrect = true;
       });
 
-      Future.delayed(const Duration(milliseconds: 900), () async {
+      Future.delayed(const Duration(milliseconds: 900), () {
         if (!mounted) return;
         if (_score >= _targetScore) {
-          // reward if flawless or with lives remaining
-          if (_wrong == 0) xpManager.addTokenBanner(context, 1);
+          if (_lives >= 1) {
+            xpManager.addTokenBanner(context, 1);
+            audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/VictoryOrchestral_SFX.mp3');
+            audioManager.playSfx('assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3');
+          }
+          setState(() {
+            _showGameOver = true;
+            _isAnswerCorrect = null;
+            _showFinalCelebration = true;
+            _isProcessingAnswer = false;
+          });
+        } else {
+          setState(() => _isProcessingAnswer = false);
+          _generateNewQuestion();
+        }
+      });
+    } else {
+      await audioManager.playSfx('assets/audios/QuizGame_Sounds/incorrect.mp3');
+      setState(() {
+        _wrong++;
+        _lives = (_lives > 0) ? _lives - 1 : 0;
+        _isAnswerCorrect = false;
+      });
 
-          // play victory sequence
-          audioManager.playSfx('assets/audios/UI_Audio/SFX_Audio/VictoryOrchestral_SFX.mp3');
-          audioManager.playSfx('assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3');
-          await _playVictoryMusicSequence();
-
-          if (!mounted) return;
+      Future.delayed(const Duration(milliseconds: 900), () {
+        if (!mounted) return;
+        if (_lives == 0) {
+          audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/FailMeme_SFX.mp3");
           setState(() {
             _showGameOver = true;
             _isAnswerCorrect = null;
             _isProcessingAnswer = false;
           });
-        } else {
-          // continue
-          setState(() {
-            _isProcessingAnswer = false;
-            _isAnswerCorrect = null;
-          });
-          _generateNewQuestion();
-        }
-      });
-    } else {
-      // Incorrect
-      await _sfxPlayer.play('assets/audios/QuizGame_Sounds/incorrect.mp3');
-      if (!mounted) {
-        _isProcessingAnswer = false;
-        return;
-      }
-
-      _wrong++;
-      _lives = (_lives > 0) ? _lives - 1 : 0;
-
-      setState(() {
-        _isAnswerCorrect = false;
-      });
-
-      // if lives exhausted -> game over
-      Future.delayed(const Duration(milliseconds: 900), () {
-        if (!mounted) return;
-        if (_lives == 0) {
-          _handleGameOver(byLives: true);
         } else {
           setState(() {
             _isAnswerCorrect = null;
@@ -221,35 +154,30 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise>
       _wrong = 0;
       _lives = _maxLives;
       _showGameOver = false;
+      _showFinalCelebration = false;
       _isProcessingAnswer = false;
-      _isAnswerCorrect = null;
     });
-    // stop any victory bgm and restart regular bgm
-    _bgmVictory.stop();
-    _startBackgroundMusic();
     _generateNewQuestion();
   }
 
   void _onReplayPressed() {
-    setState(() => _isAdLoading = true);
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    audioManager.playEventSound('cancelButton');
     AdHelper.showInterstitialAd(
+      onDismissed: _resetGame,
       context: context,
-      onDismissed: () {
-        if (!mounted) return;
-        setState(() => _isAdLoading = false);
-        _resetGame();
-      },
     );
   }
 
   Future<bool> _confirmQuit() async {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
+
     final shouldQuit = await showDialog<bool>(
       context: context,
       barrierDismissible: true,
       builder: (ctx) => AlertDialog(
-        title: Text('tr(context).areYouSureQuitGame'),
-        content: Text('tr(context).youWillLoseYourProgress'),
+        title: Text(tr(context).areYouSureQuitGame),
+        content: Text(tr(context).youWillLoseYourProgress),
         actions: [
           TextButton(
             onPressed: () {
@@ -260,7 +188,7 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise>
           ),
           ElevatedButton(
             onPressed: () {
-              audioManager.playEventSound('confirmButton');
+              audioManager.playEventSound('clickButton');
               Navigator.pop(ctx, true);
             },
             child: Text(tr(context).ok),
@@ -269,120 +197,231 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise>
       ),
     );
 
-    final res = shouldQuit ?? false;
-    if (res) {
-      setState(() => _isAdLoading = true);
+    if (shouldQuit ?? false) {
       await AdHelper.showInterstitialAd(
+        onDismissed: () => Navigator.pop(context, true),
         context: context,
-        onDismissed: () {
-          if (mounted) {
-            setState(() => _isAdLoading = false);
-            Navigator.pop(context); // Quit after ad is dismissed
-          }
-        },
       );
+      return true;
     }
 
-    return false; // prevent default pop, handled manually
+    return false;
   }
 
-  void _toggleBackgroundMusic() {
-    if (_isBgmPlaying) {
-      _stopBackgroundMusic();
-    } else {
-      _startBackgroundMusic();
-    }
-    if (mounted) setState(() => _isBgmPlaying = !_isBgmPlaying);
-  }
-
-  // ----------------- UI -----------------------
   @override
   Widget build(BuildContext context) {
     final themeColor = Colors.teal.shade700;
-    final media = MediaQuery.of(context);
-    final maxWidth = media.size.width.clamp(0, 720);
-    final isWide = maxWidth >= 520;
-    final numberGridCross = isWide ? 5 : 4;
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
 
     return WillPopScope(
       onWillPop: () async {
-        if (_showGameOver) {
-          // allow back if on game over
-          return true;
+        final quit = await _confirmQuit();
+        if (quit && mounted) {
+          audioManager.playEventSound("cancelButton");
         }
-        final shouldQuit = await _confirmQuit();
-        if (shouldQuit) {
-          Provider.of<AudioManager>(context, listen: false).playEventSound("cancelButton");
-        }
-        return shouldQuit;
+        return quit;
       },
       child: Scaffold(
         backgroundColor: Colors.teal.shade50,
-        appBar: AppBar(
-          backgroundColor: themeColor,
-          automaticallyImplyLeading: !_showGameOver,
-          title: Center(child: Text('Nombre Manquant', style: const TextStyle(fontWeight: FontWeight.bold))),
-          actions: [
-            IconButton(
-              onPressed: _toggleBackgroundMusic,
-              icon: Icon(_isBgmPlaying ? Icons.volume_up : Icons.volume_off, color: Colors.white),
-              tooltip: _isBgmPlaying ? 'Mute Background Music' : 'Play Background Music',
-            ),
-          ],
-        ),
         body: Stack(
           children: [
-            // Background gradient
+            // gradient bg
             Container(
               decoration: BoxDecoration(
-                gradient: LinearGradient(colors: [Colors.teal.shade100, Colors.white], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                gradient: LinearGradient(
+                  colors: [Colors.teal.shade100, Colors.white],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
             ),
 
             SafeArea(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: maxWidth.toDouble()),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                    child: _showGameOver ? _buildGameOver(themeColor) : _buildPlayArea(themeColor, numberGridCross),
-                  ),
-                ),
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  final maxW = constraints.maxWidth;
+                  final horizontalPadding = 16.0;
+                  final contentWidth = maxW.clamp(0, 720);
+                  final isWide = contentWidth >= 520;
+
+                  final numberPadCrossAxisCount = isWide ? 5 : 4;
+
+                  return Align(
+                    alignment: Alignment.topCenter,
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: contentWidth.toDouble()),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: horizontalPadding, vertical: 12),
+                        child: _showGameOver
+                            ? _buildGameOver(themeColor)
+                            : SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Row(
+                                children: [
+                                  IconButton(
+                                    onPressed: () async {
+                                      if (await _confirmQuit()) {
+                                        audioManager.playEventSound("cancelButton");
+                                        if (mounted) Navigator.pop(context);
+                                      }
+                                    },
+                                    icon: const Icon(Icons.arrow_back),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Expanded(child: Userstatutbar()),
+                                ],
+                              ),
+
+                              const SizedBox(height: 12),
+
+                              // Score + lives
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  _StatCard(label: '${tr(context).score}', value: '$_score / $_targetScore', color: themeColor),
+                                  Row(
+                                    children: List.generate(_maxLives, (index) {
+                                      final lost = index >= _lives;
+                                      return Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                                        child: AnimatedHeart(lost: lost),
+                                      );
+                                    }),
+                                  ),
+                                ],
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              // Progress
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(12),
+                                child: LinearProgressIndicator(
+                                  value: _score / _targetScore,
+                                  backgroundColor: Colors.white,
+                                  color: themeColor,
+                                  minHeight: 12,
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              // Question
+                              Text(
+                                "${tr(context).findMissingNumber}:",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: isWide ? 30 : 26,
+                                  fontWeight: FontWeight.bold,
+                                  color: themeColor,
+                                ),
+                              ),
+
+                              const SizedBox(height: 16),
+
+                              // Sequence display
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: _sequence.map((num) {
+                                  return Container(
+                                    margin: const EdgeInsets.symmetric(horizontal: 6),
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.black26,
+                                          blurRadius: 4,
+                                          offset: Offset(2, 2),
+                                        )
+                                      ],
+                                    ),
+                                    child: Text(
+                                      num == -1 ? "?" : "$num",
+                                      style: TextStyle(
+                                        fontSize: isWide ? 28 : 22,
+                                        fontWeight: FontWeight.bold,
+                                        color: themeColor,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+
+                              const SizedBox(height: 24),
+
+                              // Number pad
+                              GridView.count(
+                                crossAxisCount: numberPadCrossAxisCount,
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 10,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                children: List.generate(_maxAnswers, (i) {
+                                  final n = i + 1;
+                                  return Semantics(
+                                    button: true,
+                                    label: '${tr(context).answer} $n',
+                                    child: ElevatedButton(
+                                      onPressed: () => _checkAnswer(n),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: themeColor,
+                                        shape: const CircleBorder(),
+                                        padding: const EdgeInsets.all(18),
+                                        elevation: 8,
+                                        shadowColor: Colors.tealAccent,
+                                      ),
+                                      child: Text(
+                                        '$n',
+                                        style: const TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }),
+                              ),
+
+                              const SizedBox(height: 16),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
 
-            // correct/wrong overlay
             if (_isAnswerCorrect != null)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.black.withOpacity(0.4),
-                  alignment: Alignment.center,
-                  child: SizedBox(
-                    width: 220,
-                    height: 220,
-                    child: Lottie.asset(
-                      _isAnswerCorrect! ? 'assets/animations/QuizzGame_Animation/DoneAnimation.json' : 'assets/animations/QuizzGame_Animation/wrong.json',
-                      repeat: false,
-                    ),
+              Container(
+                color: Colors.black.withOpacity(0.4),
+                alignment: Alignment.center,
+                child: SizedBox(
+                  width: 220,
+                  height: 220,
+                  child: Lottie.asset(
+                    _isAnswerCorrect!
+                        ? 'assets/animations/QuizzGame_Animation/DoneAnimation.json'
+                        : 'assets/animations/QuizzGame_Animation/wrong.json',
+                    repeat: false,
                   ),
-                ),
-              ),
-
-            // ad-loading overlay
-            if (_isAdLoading)
-              Positioned.fill(
-                child: Container(
-                  color: Colors.black.withOpacity(0.45),
-                  alignment: Alignment.center,
-                  child: const CircularProgressIndicator(color: Colors.white),
                 ),
               ),
           ],
         ),
-        bottomNavigationBar: Provider.of<ExperienceManager>(context).adsEnabled && _bannerAd != null && _isBannerAdLoaded
+        bottomNavigationBar: Provider.of<ExperienceManager>(context).adsEnabled &&
+            _bannerAd != null &&
+            _isBannerAdLoaded
             ? SafeArea(
           child: SizedBox(
-            height: _bannerAd!.size.height.toDouble() > 0 ? _bannerAd!.size.height.toDouble() : _bannerHeightFallback,
+            height: _bannerAd!.size.height.toDouble(),
             width: _bannerAd!.size.width.toDouble(),
             child: AdWidget(ad: _bannerAd!),
           ),
@@ -392,133 +431,52 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise>
     );
   }
 
-  Widget _buildPlayArea(Color themeColor, int gridCross) {
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      child: Column(
-        children: [
-          const SizedBox(height: 6),
-          const Userstatutbar(),
-          const SizedBox(height: 8),
-
-          // Stats row: score, wrongs, hearts
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              _StatCard(label: 'Score', value: '$_score / $_targetScore', color: themeColor),
-              _StatCard(label: 'Fautes', value: '$_wrong', color: Colors.redAccent),
-              Row(
-                children: List.generate(_maxLives, (index) {
-                  final lost = index >= _lives;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: AnimatedHeart(lost: lost),
-                  );
-                }),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 12),
-
-          // Question
-          Text(
-            "Quel est le nombre manquant ?",
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: themeColor),
-            textAlign: TextAlign.center,
-          ),
-          const SizedBox(height: 12),
-
-          // Sequence display with animated switcher
-          AnimatedSwitcher(
-            duration: const Duration(milliseconds: 350),
-            child: Text(
-              _sequence.map((e) => e == -1 ? '?' : e.toString()).join('  '),
-              key: ValueKey<String>(_sequence.join(',')),
-              style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold, color: themeColor),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // Number buttons grid
-          LayoutBuilder(builder: (context, constraints) {
-            final maxWidth = constraints.maxWidth;
-            final buttonSize = (maxWidth / (gridCross + 0.5)).clamp(56.0, 90.0);
-            return GridView.count(
-              crossAxisCount: gridCross,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 12,
-              crossAxisSpacing: 12,
-              childAspectRatio: 1,
-              children: List.generate(_maxAnswers, (index) {
-                final n = index + 1;
-                return Semantics(
-                  button: true,
-                  label: 'answer $n',
-                  child: ElevatedButton(
-                    onPressed: () => _checkAnswer(n),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal.shade700,
-                      shape: const CircleBorder(),
-                      padding: EdgeInsets.all(buttonSize * 0.17),
-                      elevation: 6,
-                      shadowColor: Colors.teal.shade300,
-                    ),
-                    child: Text('$n', style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
-                  ),
-                );
-              }),
-            );
-          }),
-
-          const SizedBox(height: 24),
-        ],
-      ),
-    );
-  }
-
   Widget _buildGameOver(Color themeColor) {
     final win = _score >= _targetScore && _lives > 0;
+
     return Center(
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Lottie.asset(win ? 'assets/animations/QuizzGame_Animation/Champion.json' : 'assets/animations/QuizzGame_Animation/CuteTigerCrying.json', width: 220, repeat: true),
-            const SizedBox(height: 12),
-            Text(win ? "🎉 ${tr(context).awesome} !" : "💔 ${tr(context).gameOver}", style: TextStyle(fontSize: 34, fontWeight: FontWeight.bold, color: themeColor)),
-            const SizedBox(height: 10),
-            Text("Score : $_score / $_targetScore", style: const TextStyle(fontSize: 20, color: Colors.black87)),
-            Text("Fautes : $_wrong", style: TextStyle(fontSize: 18, color: _wrong > 0 ? Colors.redAccent : Colors.green)),
-            const SizedBox(height: 16),
-            ElevatedButton.icon(
-              onPressed: _isAdLoading ? null : _onReplayPressed,
-              icon: _isAdLoading
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5))
-                  : const Icon(Icons.replay),
-              label: Text(tr(context).playAgain),
-              style: ElevatedButton.styleFrom(backgroundColor: themeColor, padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 14), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Lottie.asset(
+            win
+                ? 'assets/animations/QuizzGame_Animation/Champion.json'
+                : 'assets/animations/QuizzGame_Animation/CuteTigerCrying.json',
+            width: 300,
+            repeat: true,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            win ? "🎉 ${tr(context).awesome} !" : "💔 ${tr(context).gameOver}",
+            style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: themeColor),
+          ),
+          const SizedBox(height: 10),
+          Text("${tr(context).score} : $_score / $_targetScore",
+              style: const TextStyle(fontSize: 24, color: Colors.black87)),
+          Text(
+            "${tr(context).remainingLives} : $_lives",
+            style: TextStyle(
+              fontSize: 20,
+              color: _lives > 0 ? Colors.green : Colors.redAccent,
             ),
-            const SizedBox(height: 12),
-            TextButton(
-              onPressed: () {
-                // go back to previous screen
-                if (mounted) Navigator.pop(context);
-              },
-              child: Text("tr(context).backToMenu"),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: _onReplayPressed,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: themeColor,
+              padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
             ),
-          ],
-        ),
+            child: Text(tr(context).playAgain,
+                style: const TextStyle(fontSize: 22, color: Colors.white)),
+          ),
+        ],
       ),
     );
   }
 }
 
-/// Small reusable stat card
 class _StatCard extends StatelessWidget {
   final String label;
   final String value;
@@ -528,13 +486,19 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(color: color.withOpacity(0.12), borderRadius: BorderRadius.circular(12)),
-      child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Text(label, style: TextStyle(fontSize: 14, color: color, fontWeight: FontWeight.w700)),
-        const SizedBox(height: 6),
-        Text(value, style: TextStyle(fontSize: 18, color: color, fontWeight: FontWeight.bold)),
-      ]),
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.15),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(label, style: TextStyle(fontSize: 16, color: color, fontWeight: FontWeight.w700)),
+          const SizedBox(height: 6),
+          Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color)),
+        ],
+      ),
     );
   }
 }

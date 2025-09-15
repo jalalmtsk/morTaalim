@@ -490,8 +490,72 @@
   "myCollection": "My Collection",
   "search": "Search",
   "showAll": "Show all",
-  "showLess": "Show less"
+  "showLess": "Show less",
 
+ "learningPreferences": "Learning Preferences",
+   "subjects": "Subjects",
+   "enterSubjects": "Enter subjects",
+   "learningStyle": "Learning Style",
+   "studyTime": "Study Time",
+   "difficulty": "Difficulty",
+   "goals": "Goals",
+   "weeklyGoal": "Weekly Goal",
+   "longTermGoal": "Long Term Goal",
+   "save": "Save",
+   "next": "Next",
+   "back": "Back",
+
+   "visual": "Visual",
+   "auditory": "Auditory",
+   "kinesthetic": "Kinesthetic",
+
+   "morning": "Morning",
+   "afternoon": "Afternoon",
+   "evening": "Evening",
+
+   "standard": "Standard",
+   "advanced": "Advanced",
+   "adaptive": "Adaptive",
+
+   "passExam": "Pass Exam",
+   "improveSkills": "Improve Skills",
+   "getCertified": "Get Certified",
+
+   "tolims": "Tolims",
+   "stars": "Étoiles",
+   "notEnoughTolims": "Pas assez de Tolims !",
+   "youGotStars": "Vous avez reçu {count} étoiles !",
+   "getStars": "Obtenir {count} étoiles",
+
+  "missingNumber": "Missing Number",
+   "findLargest": "Find Largest",
+   "addition": "Addition",
+   "subtraction": "Subtraction",
+   "countObjects": "Count Objects",
+   "compareNumbers": "Compare Numbers",
+   "oddNumbers": "Odd Numbers",
+   "targetNumber": "Target Number",
+   "letsPractiseMath": "Let’s Practise Math!",
+   "funGamesToBeStar": "Fun games to make you a math star 🌟",
+   "areYouSureQuitGame": "Are you sure you want to quit the game?",
+    "youWillLoseYourProgress": "You will lose your progress.",
+
+
+    "howManyObjects": "How many {object} do you see?",
+    "findMissingNumber": "Find the missing number",
+    "remainingLives": "Remaining lives",
+    "findLargestNumber": "Which is the largest number?",
+    "streak": "Streak",
+    "howMuchIs": "How much is?",
+    "or": "or",
+    "whichIsTheLargestNumber": "Which is the largest number?",
+    "isNumberEvenOrOdd": "Is the number {number} even or odd?",
+    "even": "Even",
+    "odd": "Odd",
+    "reachTheNumber": "Reach the number:",
+    "noNumberChosen": "No number chosen",
+    "currentSum": "Current sum",
+    "answer": "Answer"
 
 
 

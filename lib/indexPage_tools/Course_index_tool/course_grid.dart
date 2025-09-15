@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../User_Input_Info_DataForm/LearningPreferencesForm/LearningPreferencesEnteringForm.dart';
 import '../../l10n/app_localizations.dart';
 
 class CourseGrid extends StatelessWidget {
@@ -85,8 +87,8 @@ class _TiltCardState extends State<_TiltCard> {
     final dy = (event.localPosition.dy - size.height / 2) / (size.height / 2);
 
     setState(() {
-      _tiltX = dy * 0.08; // tilt vertically
-      _tiltY = -dx * 0.08; // tilt horizontally
+      _tiltX = dy * 0.08;
+      _tiltY = -dx * 0.08;
     });
   }
 
@@ -98,9 +100,34 @@ class _TiltCardState extends State<_TiltCard> {
     });
   }
 
+  Future<void> _handleTap() async {
+    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    final prefs = await SharedPreferences.getInstance();
+    final isFirstTime = !(prefs.getBool('hasSetPreferences') ?? false);
+
+    if (isFirstTime) {
+      // Show learning preferences first
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(builder: (_) => LearningPreferencesPages()),
+      );
+
+      if (result != null) {
+        await prefs.setBool('hasSetPreferences', true);
+        await prefs.setString('userPreferences', result.toString());
+      }
+    }
+
+    // Play audio and navigate to course
+    audioManager.playEventSound('PopButton');
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => widget.course['widget']),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Listener(
       onPointerMove: (event) {
         final size = context.size ?? const Size(150, 150);
@@ -112,13 +139,7 @@ class _TiltCardState extends State<_TiltCard> {
         onTapDown: (_) => setState(() => _isPressed = true),
         onTapUp: (_) => _resetTilt(),
         onTapCancel: _resetTilt,
-        onTap: () {
-          audioManager.playEventSound('PopButton');
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (_) => widget.course['widget']),
-          );
-        },
+        onTap: _handleTap,
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           transform: Matrix4.identity()
@@ -127,11 +148,11 @@ class _TiltCardState extends State<_TiltCard> {
             ..scale(_isPressed ? 0.97 : 1.0),
           child: Container(
             decoration: BoxDecoration(
-              color: widget.course['color'].withValues(alpha: 0.9),
+              color: widget.course['color'].withOpacity(0.9),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: widget.course['color'].withValues(alpha: 0.35),
+                  color: widget.course['color'].withOpacity(0.35),
                   blurRadius: 14,
                   offset: const Offset(2, 6),
                 ),

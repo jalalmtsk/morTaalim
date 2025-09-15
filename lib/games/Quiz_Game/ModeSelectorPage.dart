@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import '../../main.dart';
 import 'VsScreen.dart';
 import 'quiz_Page.dart';
-import '../../l10n/app_localizations.dart';
 import 'package:mortaalim/games/Quiz_Game/game_mode.dart' hide GameMode;
 
 enum QuizLanguage { english, french, arabic, deutch, spanish, amazigh }

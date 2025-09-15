@@ -4,6 +4,7 @@ import 'package:mortaalim/XpSystem.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePage.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePratique.dart' hide Primaire1;
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -171,6 +172,7 @@ class _Index1PrimaireState extends State<Index1Primaire>
                                           ),
                                         ),
                                         const SizedBox(width: 48),
+
                                       ],
                                     ),
                                     const SizedBox(height: 8),
@@ -215,7 +217,8 @@ class _Index1PrimaireState extends State<Index1Primaire>
                       child: TabBarView(
                         children: [
                           Primaire1Pratique(key: _keyTab2),
-                          Primaire1(key: _keyTab1, experienceManager: xpManager),
+                          ComingSoonNotPage()
+                          //Primaire1(key: _keyTab1, experienceManager: xpManager),
                         ],
                       ),
                     ),

@@ -627,7 +627,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get haveFunAndLearnSomethingNew => 'استمتع وتعلم شيئًا جديدًا!';
 
   @override
-  String get back => 'عودة';
+  String get back => 'رجوع';
 
   @override
   String get adFailedToLoadOrWasNotCompletedPleaseTryAgainLater => 'فشل تحميل الإعلان أو لم يُكمل. يرجى المحاولة لاحقًا.';
@@ -1273,4 +1273,165 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get showLess => 'عرض أقل';
+
+  @override
+  String get learningPreferences => 'تفضيلات التعلم';
+
+  @override
+  String get subjects => 'المواد';
+
+  @override
+  String get enterSubjects => 'أدخل المواد';
+
+  @override
+  String get learningStyle => 'أسلوب التعلم';
+
+  @override
+  String get studyTime => 'وقت الدراسة';
+
+  @override
+  String get difficulty => 'درجة الصعوبة';
+
+  @override
+  String get goals => 'الأهداف';
+
+  @override
+  String get weeklyGoal => 'الهدف الأسبوعي';
+
+  @override
+  String get longTermGoal => 'الهدف طويل المدى';
+
+  @override
+  String get visual => 'بصري';
+
+  @override
+  String get auditory => 'سمعي';
+
+  @override
+  String get kinesthetic => 'حسي حركي';
+
+  @override
+  String get morning => 'الصباح';
+
+  @override
+  String get afternoon => 'بعد الظهر';
+
+  @override
+  String get evening => 'المساء';
+
+  @override
+  String get standard => 'عادي';
+
+  @override
+  String get advanced => 'متقدم';
+
+  @override
+  String get adaptive => 'تكيفي';
+
+  @override
+  String get passExam => 'النجاح في الامتحان';
+
+  @override
+  String get improveSkills => 'تطوير المهارات';
+
+  @override
+  String get getCertified => 'الحصول على شهادة';
+
+  @override
+  String get notEnoughTolims => 'ليس لديك ما يكفي من التوليمز!';
+
+  @override
+  String youGotStars(Object count) {
+    return 'لقد حصلت على $count نجوم!';
+  }
+
+  @override
+  String getStars(Object count) {
+    return 'احصل على $count نجوم';
+  }
+
+  @override
+  String get missingNumber => 'العدد المفقود';
+
+  @override
+  String get findLargest => 'ابحث عن الأكبر';
+
+  @override
+  String get addition => 'الجمع';
+
+  @override
+  String get subtraction => 'الطرح';
+
+  @override
+  String get countObjects => 'عدّ الأشياء';
+
+  @override
+  String get compareNumbers => 'قارن الأعداد';
+
+  @override
+  String get oddNumbers => 'الأعداد الفردية';
+
+  @override
+  String get targetNumber => 'العدد المستهدف';
+
+  @override
+  String get letsPractiseMath => '📚 هيا نتدرّب على الرياضيات!';
+
+  @override
+  String get funGamesToBeStar => 'ألعاب ممتعة لتصبح نجم الرياضيات 🌟';
+
+  @override
+  String get areYouSureQuitGame => 'هل أنت متأكد أنك تريد إنهاء اللعبة؟';
+
+  @override
+  String get youWillLoseYourProgress => 'ستفقد تقدمك.';
+
+  @override
+  String howManyObjects(Object object) {
+    return 'كم عدد $object التي تراها؟';
+  }
+
+  @override
+  String get findMissingNumber => 'ابحث عن الرقم المفقود';
+
+  @override
+  String get remainingLives => 'الحياة المتبقية';
+
+  @override
+  String get findLargestNumber => 'ما هو أكبر رقم؟';
+
+  @override
+  String get streak => 'سلسلة صحيحة';
+
+  @override
+  String get howMuchIs => 'كم يساوي؟';
+
+  @override
+  String get or => 'أو';
+
+  @override
+  String get whichIsTheLargestNumber => 'ما هو أكبر رقم؟';
+
+  @override
+  String isNumberEvenOrOdd(Object number) {
+    return 'هل الرقم $number زوجي أم فردي؟';
+  }
+
+  @override
+  String get even => 'زوجي';
+
+  @override
+  String get odd => 'فردي';
+
+  @override
+  String get reachTheNumber => 'وصل إلى الرقم:';
+
+  @override
+  String get noNumberChosen => 'لم يتم اختيار أي رقم';
+
+  @override
+  String get currentSum => 'المجموع الحالي';
+
+  @override
+  String get answer => 'إجابة';
 }

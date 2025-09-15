@@ -6,11 +6,11 @@ import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import 'package:mortaalim/main.dart';
-import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 
 import '../../XpSystem.dart';
+import '../../l10n/app_localizations.dart';
 import '../../tools/Ads_Manager.dart';
 import 'Tools/AnimatedHeart.dart';
 
@@ -34,7 +34,6 @@ class _CountExerciseState extends State<CountExercise>
   static const int _maxAnswer = 10;
 
   final Random _rng = Random();
-  final MusicPlayer _player = MusicPlayer();
 
   final List<String> _objectEmojis = const [
     "🍎","🏀","✏️","🧸","🐠",
@@ -78,7 +77,6 @@ class _CountExerciseState extends State<CountExercise>
 
   @override
   void dispose() {
-    _player.dispose();
     _bannerAd?.dispose();
     super.dispose();
   }
@@ -102,7 +100,7 @@ class _CountExerciseState extends State<CountExercise>
 
     if (selected == _correctCount) {
       xpManager.addXP(1, context: context);
-      await _player.play('assets/audios/QuizGame_Sounds/correct.mp3');
+       audioManager.playSfx('assets/audios/QuizGame_Sounds/correct.mp3');
       setState(() {
         _score++;
         _isAnswerCorrect = true;
@@ -128,7 +126,7 @@ class _CountExerciseState extends State<CountExercise>
         }
       });
     } else {
-      await _player.play('assets/audios/QuizGame_Sounds/incorrect.mp3');
+       audioManager.playSfx('assets/audios/QuizGame_Sounds/incorrect.mp3');
       setState(() {
         _wrong++;
         _lives = (_lives > 0) ? _lives - 1 : 0;
@@ -185,8 +183,8 @@ class _CountExerciseState extends State<CountExercise>
       context: context,
       barrierDismissible: true,
       builder: (ctx) => AlertDialog(
-        title: Text('tr(context).areYouSureQuitGame'),
-        content: Text('tr(context).youWillLoseYourProgress'),
+        title: Text(tr(context).areYouSureQuitGame),
+        content: Text(tr(context).youWillLoseYourProgress),
         actions: [
           TextButton(
             onPressed: () {
@@ -197,7 +195,7 @@ class _CountExerciseState extends State<CountExercise>
           ),
           ElevatedButton(
             onPressed: () {
-              audioManager.playEventSound('confirmButton');
+              audioManager.playEventSound('clickButton');
               Navigator.pop(ctx, true);
             },
             child: Text(tr(context).ok),
@@ -293,7 +291,7 @@ class _CountExerciseState extends State<CountExercise>
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  _StatCard(label: 'Score', value: '$_score / $_targetScore', color: themeColor),
+                                  _StatCard(label: '${tr(context).score}', value: '$_score / $_targetScore', color: themeColor),
                                   Row(
                                     children: List.generate(_maxLives, (index) {
                                       final lost = index >= _lives;
@@ -323,7 +321,7 @@ class _CountExerciseState extends State<CountExercise>
 
                               // Question
                               Text(
-                                "Combien de $_currentObject vois-tu ?",
+                                AppLocalizations.of(context)!.howManyObjects(_currentObject),
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: isWide ? 30 : 26,
@@ -331,7 +329,6 @@ class _CountExerciseState extends State<CountExercise>
                                   color: themeColor,
                                 ),
                               ),
-
                               const SizedBox(height: 16),
 
                               // Objects grid (wrap)
@@ -364,7 +361,7 @@ class _CountExerciseState extends State<CountExercise>
                                           _currentObject,
                                           textAlign: TextAlign.center,
                                           style: TextStyle(fontSize: emojiSize),
-                                          semanticsLabel: 'emoji item',
+                                          semanticsLabel: tr(context).moji,
                                         ),
                                       ),
                                     ),
@@ -385,7 +382,7 @@ class _CountExerciseState extends State<CountExercise>
                                   final n = i + 1;
                                   return Semantics(
                                     button: true,
-                                    label: 'answer $n',
+                                    label: '${tr(context).answer} $n',
                                     child: ElevatedButton(
                                       onPressed: () => _checkAnswer(n),
                                       style: ElevatedButton.styleFrom(
@@ -472,10 +469,10 @@ class _CountExerciseState extends State<CountExercise>
             style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold, color: themeColor),
           ),
           const SizedBox(height: 10),
-          Text("Score : $_score / $_targetScore",
+          Text("${tr(context).score} : $_score / $_targetScore",
               style: const TextStyle(fontSize: 24, color: Colors.black87)),
           Text(
-            "Vies restantes : $_lives",
+            "${tr(context).remainingLives} : $_lives",
             style: TextStyle(
               fontSize: 20,
               color: _lives > 0 ? Colors.green : Colors.redAccent,

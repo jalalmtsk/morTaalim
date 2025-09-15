@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mortaalim/courses/primaire1Page/PractiseCoursesSubjects/Arabic1/1_primaire_Arabic_Practise.dart';
+import 'package:mortaalim/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mortaalim/l10n/app_localizations.dart';
-import '../../main.dart';
+
+import '../../Manager/models/LearningPrefrences.dart';
+import '../../User_Input_Info_DataForm/LearningPreferencesForm/LearningPreferencesEnteringForm.dart';
+import 'PractiseCoursesSubjects/Arabic1/1_primaire_Arabic_Practise.dart';
 import 'PractiseCoursesSubjects/French1/1_primaire_French_Practise.dart';
 import 'PractiseCoursesSubjects/Math1/1_primaire_Math_Practise.dart';
 import 'PractiseCoursesSubjects/Science1/1_primaire_Science_Practise.dart';
@@ -48,6 +52,66 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
     },
   ];
 
+  LearningPreferences? preferences;
+  final List<InfoCardData> infoCards = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPreferences();
+  }
+
+  Future<void> _loadPreferences() async {
+    final prefs = await SharedPreferences.getInstance();
+    final loadedPrefs = await LearningPreferences.fromPrefs(prefs);
+
+    setState(() {
+      preferences = loadedPrefs;
+      _updateInfoCards();
+    });
+  }
+
+  void _updateInfoCards() {
+    if (preferences == null) return;
+
+    infoCards.clear();
+    infoCards.addAll([
+      InfoCardData(
+        title: tr(context).preferredSubject,
+        content: preferences!.betterSubjects.isNotEmpty
+            ? preferences!.betterSubjects.first
+            : "Not set",
+        icon: Icons.book,
+        color: Colors.orangeAccent,
+        subtitle: tr(context).keepUpTheGoodWork,
+      ),
+      InfoCardData(
+        title: tr(context).learningStyle,
+        content: preferences!.preferredLearningStyle,
+        icon: Icons.psychology_outlined,
+        color: Colors.blueAccent,
+      ),
+      InfoCardData(
+        title: tr(context).studyTime,
+        content: preferences!.studyTimePreference,
+        icon: Icons.access_time,
+        color: Colors.green,
+      ),
+      InfoCardData(
+        title: tr(context).difficulty,
+        content: preferences!.difficultyPreference,
+        icon: Icons.speed,
+        color: Colors.redAccent,
+      ),
+      InfoCardData(
+        title: tr(context).goals,
+        content: preferences!.goalType,
+        icon: Icons.flag_outlined,
+        color: Colors.deepPurple,
+      ),
+    ]);
+  }
+
   IconData getIcon(String key) {
     switch (key) {
       case 'math':
@@ -93,36 +157,38 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
       case 'islamicEducation':
         return tr.islamicEducation;
       case 'science':
-        return tr.artEducation;
+        return tr.science;
       default:
         return tr.class1;
     }
   }
 
-  final List<InfoCardData> infoCards = [];
+  Future<void> _editPreferences() async {
+    if (preferences == null) return;
 
-  @override
-  void initState() {
-    super.initState();
-    infoCards.addAll([
-      InfoCardData(
-        title: "Pereferred Subject",
-        content: 'Math',
-        icon: Icons.calculate_rounded,
-        color: Colors.orangeAccent,
-        subtitle: "Keep Up the Good Work",
+    final result = await Navigator.push<LearningPreferences>(
+      context,
+      MaterialPageRoute(
+        builder: (_) => LearningPreferencesPages(
+          initialPreferences: preferences,
+        ),
       ),
-      InfoCardData(
-        title: "Class Level",
-        content: "Grade 1",
-        icon: Icons.school_outlined,
-        color: Colors.deepOrangeAccent,
-      ),
-    ]);
+    );
+
+    if (result != null) {
+      final prefs = await SharedPreferences.getInstance();
+      await result.saveToPrefs(prefs);
+
+      setState(() {
+        preferences = result;
+        _updateInfoCards();
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final trLoc = AppLocalizations.of(context)!;
 
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -132,20 +198,8 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  tr(context).dashboard,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.deepOrange.shade700,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
               SizedBox(
-                height: 140,
+                height: 130,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -154,7 +208,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                   itemBuilder: (context, index) {
                     final card = infoCards[index];
                     return SizedBox(
-                      width: 200,
+                      width: 250,
                       child: _InfoCard(
                         title: card.title,
                         content: card.content,
@@ -166,21 +220,29 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                   },
                 ),
               ),
-              const SizedBox(height: 4),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  tr(context).practiseCourses,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepOrange.shade700,
+              const SizedBox(height: 12),
+              Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    trLoc.practiseCourses,
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.deepOrange.shade700,
+                    ),
                   ),
-                ),
+
+                  IconButton(onPressed: ()
+                  {
+                    audioManager.playEventSound("clickButton");
+                    _editPreferences();
+                  },
+                      icon: Icon(Icons.edit, size: 30, color: Colors.white,))
+                ],
               ),
               const SizedBox(height: 10),
               SizedBox(
-                height: 200,
+                height: 220,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -191,7 +253,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
                     final title = course['title'] as String;
                     final route = course['route'] as String;
                     final icon = getIcon(title);
-                    final label = getLabel(title, tr(context));
+                    final label = getLabel(title, trLoc);
                     final image = course['image'] as String;
                     final color = course['color'] as Color;
 
@@ -272,23 +334,21 @@ class _InfoCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 26, color: Colors.white),
+            Icon(icon, size: 22, color: Colors.white),
             Text(title,
                 style: const TextStyle(
                     color: Colors.white70,
                     fontSize: 16,
                     fontWeight: FontWeight.w600)),
-            const SizedBox(height: 4),
             Text(content,
                 style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 22,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold)),
             if (subtitle != null) ...[
-              const SizedBox(height: 4),
               Text(subtitle!,
                   style: TextStyle(
-                      color: Colors.white.withOpacity(0.85),
+                      color: Colors.white.withOpacity(0.9),
                       fontSize: 12,
                       fontWeight: FontWeight.w500)),
             ]

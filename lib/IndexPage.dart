@@ -194,7 +194,16 @@ class _IndexState extends State<Index>
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-      floatingActionButton: const WatchAdButton(),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.orange,
+        onPressed: (){
+          audioManager.playEventSound('clickButton');
+          AdHelper.showRewardedAdWithLoading(context, () {
+            Provider.of<ExperienceManager>(context,
+                listen: false)
+                .addTokenBanner(context, 2);
+          });
+        }, child: Icon(Icons.ads_click_outlined, color: Colors.white,),),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // right bottom
       body: Stack(
         children: [

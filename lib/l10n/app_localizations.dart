@@ -332,7 +332,7 @@ abstract class AppLocalizations {
   /// No description provided for @stars.
   ///
   /// In en, this message translates to:
-  /// **'Stars'**
+  /// **'Étoiles'**
   String get stars;
 
   /// No description provided for @lives.
@@ -2632,6 +2632,312 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show less'**
   String get showLess;
+
+  /// No description provided for @learningPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Preferences'**
+  String get learningPreferences;
+
+  /// No description provided for @subjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Subjects'**
+  String get subjects;
+
+  /// No description provided for @enterSubjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter subjects'**
+  String get enterSubjects;
+
+  /// No description provided for @learningStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Learning Style'**
+  String get learningStyle;
+
+  /// No description provided for @studyTime.
+  ///
+  /// In en, this message translates to:
+  /// **'Study Time'**
+  String get studyTime;
+
+  /// No description provided for @difficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Difficulty'**
+  String get difficulty;
+
+  /// No description provided for @goals.
+  ///
+  /// In en, this message translates to:
+  /// **'Goals'**
+  String get goals;
+
+  /// No description provided for @weeklyGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Weekly Goal'**
+  String get weeklyGoal;
+
+  /// No description provided for @longTermGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Long Term Goal'**
+  String get longTermGoal;
+
+  /// No description provided for @visual.
+  ///
+  /// In en, this message translates to:
+  /// **'Visual'**
+  String get visual;
+
+  /// No description provided for @auditory.
+  ///
+  /// In en, this message translates to:
+  /// **'Auditory'**
+  String get auditory;
+
+  /// No description provided for @kinesthetic.
+  ///
+  /// In en, this message translates to:
+  /// **'Kinesthetic'**
+  String get kinesthetic;
+
+  /// No description provided for @morning.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning'**
+  String get morning;
+
+  /// No description provided for @afternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Afternoon'**
+  String get afternoon;
+
+  /// No description provided for @evening.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening'**
+  String get evening;
+
+  /// No description provided for @standard.
+  ///
+  /// In en, this message translates to:
+  /// **'Standard'**
+  String get standard;
+
+  /// No description provided for @advanced.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced'**
+  String get advanced;
+
+  /// No description provided for @adaptive.
+  ///
+  /// In en, this message translates to:
+  /// **'Adaptive'**
+  String get adaptive;
+
+  /// No description provided for @passExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass Exam'**
+  String get passExam;
+
+  /// No description provided for @improveSkills.
+  ///
+  /// In en, this message translates to:
+  /// **'Improve Skills'**
+  String get improveSkills;
+
+  /// No description provided for @getCertified.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Certified'**
+  String get getCertified;
+
+  /// No description provided for @notEnoughTolims.
+  ///
+  /// In en, this message translates to:
+  /// **'Pas assez de Tolims !'**
+  String get notEnoughTolims;
+
+  /// No description provided for @youGotStars.
+  ///
+  /// In en, this message translates to:
+  /// **'Vous avez reçu {count} étoiles !'**
+  String youGotStars(Object count);
+
+  /// No description provided for @getStars.
+  ///
+  /// In en, this message translates to:
+  /// **'Obtenir {count} étoiles'**
+  String getStars(Object count);
+
+  /// No description provided for @missingNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing Number'**
+  String get missingNumber;
+
+  /// No description provided for @findLargest.
+  ///
+  /// In en, this message translates to:
+  /// **'Find Largest'**
+  String get findLargest;
+
+  /// No description provided for @addition.
+  ///
+  /// In en, this message translates to:
+  /// **'Addition'**
+  String get addition;
+
+  /// No description provided for @subtraction.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtraction'**
+  String get subtraction;
+
+  /// No description provided for @countObjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Count Objects'**
+  String get countObjects;
+
+  /// No description provided for @compareNumbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare Numbers'**
+  String get compareNumbers;
+
+  /// No description provided for @oddNumbers.
+  ///
+  /// In en, this message translates to:
+  /// **'Odd Numbers'**
+  String get oddNumbers;
+
+  /// No description provided for @targetNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Number'**
+  String get targetNumber;
+
+  /// No description provided for @letsPractiseMath.
+  ///
+  /// In en, this message translates to:
+  /// **'Let’s Practise Math!'**
+  String get letsPractiseMath;
+
+  /// No description provided for @funGamesToBeStar.
+  ///
+  /// In en, this message translates to:
+  /// **'Fun games to make you a math star 🌟'**
+  String get funGamesToBeStar;
+
+  /// No description provided for @areYouSureQuitGame.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to quit the game?'**
+  String get areYouSureQuitGame;
+
+  /// No description provided for @youWillLoseYourProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'You will lose your progress.'**
+  String get youWillLoseYourProgress;
+
+  /// No description provided for @howManyObjects.
+  ///
+  /// In en, this message translates to:
+  /// **'How many {object} do you see?'**
+  String howManyObjects(Object object);
+
+  /// No description provided for @findMissingNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Find the missing number'**
+  String get findMissingNumber;
+
+  /// No description provided for @remainingLives.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining lives'**
+  String get remainingLives;
+
+  /// No description provided for @findLargestNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Which is the largest number?'**
+  String get findLargestNumber;
+
+  /// No description provided for @streak.
+  ///
+  /// In en, this message translates to:
+  /// **'Streak'**
+  String get streak;
+
+  /// No description provided for @howMuchIs.
+  ///
+  /// In en, this message translates to:
+  /// **'How much is?'**
+  String get howMuchIs;
+
+  /// No description provided for @or.
+  ///
+  /// In en, this message translates to:
+  /// **'or'**
+  String get or;
+
+  /// No description provided for @whichIsTheLargestNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Which is the largest number?'**
+  String get whichIsTheLargestNumber;
+
+  /// No description provided for @isNumberEvenOrOdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Is the number {number} even or odd?'**
+  String isNumberEvenOrOdd(Object number);
+
+  /// No description provided for @even.
+  ///
+  /// In en, this message translates to:
+  /// **'Even'**
+  String get even;
+
+  /// No description provided for @odd.
+  ///
+  /// In en, this message translates to:
+  /// **'Odd'**
+  String get odd;
+
+  /// No description provided for @reachTheNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Reach the number:'**
+  String get reachTheNumber;
+
+  /// No description provided for @noNumberChosen.
+  ///
+  /// In en, this message translates to:
+  /// **'No number chosen'**
+  String get noNumberChosen;
+
+  /// No description provided for @currentSum.
+  ///
+  /// In en, this message translates to:
+  /// **'Current sum'**
+  String get currentSum;
+
+  /// No description provided for @answer.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer'**
+  String get answer;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

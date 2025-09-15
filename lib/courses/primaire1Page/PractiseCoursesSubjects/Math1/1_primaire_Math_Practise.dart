@@ -9,6 +9,7 @@ import 'package:mortaalim/PractiseGames/MathExercice/OddNumbers.dart';
 import 'package:mortaalim/PractiseGames/MathExercice/TargetNumber.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 
+import '../../../../main.dart';
 import '../../../../widgets/GetReady__Widget.dart';
 
 class IndexMath1Practise extends StatelessWidget {
@@ -22,48 +23,76 @@ class IndexMath1Practise extends StatelessWidget {
   Widget build(BuildContext context) {
     final exercises = [
       {
-        'title': 'Missing Number',
+        'title': tr(context).missingNumber,
         'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/MissingNumber_bg.png',
-        'page': MissingNumberExercise()
+        'page':  GetReadyPage(
+            onReadyComplete: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => MissingNumberExercise()));
+            })
       },
       {
-        'title': 'Find Largest',
+        'title': tr(context).findLargest,
         'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/Largest_bg.png',
-        'page': FindLargestNumberExercise()
+        'page': GetReadyPage(
+            onReadyComplete: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => FindLargestNumberExercise()));
+            })
       },
       {
-        'title': 'Addition',
+        'title': tr(context).addition,
         'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/Addition_bg.png',
-        'page': MathAdditionExercise()
+        'page': GetReadyPage(
+            onReadyComplete: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => MathAdditionExercise()));
+            })
       },
       {
-        'title': 'Subtraction',
+        'title': tr(context).subtraction,
         'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/SubStraction_bg.png',
-        'page': MathSubtractionExercise()
+        'page': GetReadyPage(
+            onReadyComplete: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => MathSubtractionExercise()));
+            })
       },
       {
-        'title': 'Count Objects',
+        'title': tr(context).countObjects,
         'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/CountObject_bg.png',
         'page': GetReadyPage(
-          onReadyComplete: () {
-          Navigator.pushReplacement(
-        context,
-          MaterialPageRoute(builder: (_) => CountExercise()),);}
-        )},
+            onReadyComplete: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => CountExercise()));
+            })
+      },
       {
-        'title': 'Compare Numbers',
+        'title': tr(context).compareNumbers,
         'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/GreaterSmallerThan_bg.png',
-        'page': NumberComparisonGame()
+        'page': GetReadyPage(
+            onReadyComplete: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => NumberComparisonGame()));
+            })
       },
       {
-        'title': 'Odd Numbers',
+        'title': tr(context).oddNumbers,
         'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/OddNumber_bg.png',
-        'page': EvenOddExercise()
+        'page': GetReadyPage(
+            onReadyComplete: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => EvenOddExercise()));
+            })
       },
       {
-        'title': 'Target Number',
+        'title': tr(context).targetNumber,
         'image': 'assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/TargetNumber_bg.png',
-        'page': TargetNumberExercise()
+        'page': GetReadyPage(
+            onReadyComplete: () {
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => TargetNumberExercise()));
+            })
       },
     ];
 
@@ -87,10 +116,10 @@ class IndexMath1Practise extends StatelessWidget {
                 BorderRadius.vertical(bottom: Radius.circular(30)),
               ),
               child: Column(
-                children: const [
+                children: [
                   Text(
-                    '📚 Let’s Practise Math!',
-                    style: TextStyle(
+                    '📚 ${tr(context).letsPractiseMath}',
+                    style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w900,
                       color: Colors.white,
@@ -102,10 +131,10 @@ class IndexMath1Practise extends StatelessWidget {
                       ],
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
-                    'Fun games to make you a math star 🌟',
-                    style: TextStyle(
+                    tr(context).funGamesToBeStar,
+                    style: const TextStyle(
                       fontSize: 16,
                       color: Colors.white70,
                     ),
@@ -124,7 +153,8 @@ class IndexMath1Practise extends StatelessWidget {
                 padding:
                 const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 itemCount: exercises.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate:
+                const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
                   mainAxisSpacing: 16,
                   crossAxisSpacing: 16,

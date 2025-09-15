@@ -5,21 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:mortaalim/Authentification/Auth.dart';
-import 'package:mortaalim/Pet/pet_home_page.dart';
-import 'package:mortaalim/TestingBeforeProdcution/Hezz2FinalGame/Screen/CardGameLauncher.dart';
+import 'package:mortaalim/Manager/models/LearningPrefrences.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/LearningPreferencesForm/LearningPreferencesEnteringForm.dart';
-import 'package:mortaalim/widgets/Collection/Collection.dart';
-import 'package:mortaalim/TestingBeforeProdcution/ArabicExercice.dart';
-import 'package:mortaalim/TestingBeforeProdcution/CardConcept.dart';
-import 'package:mortaalim/TestingBeforeProdcution/ColorLineMatchingGame.dart';
-import 'package:mortaalim/TestingBeforeProdcution/DragonGameFruit.dart';
-import 'package:mortaalim/TestingBeforeProdcution/DrawSketch.dart';
-import 'package:mortaalim/TestingBeforeProdcution/Hezz2Game.dart';
-import 'package:mortaalim/TestingBeforeProdcution/MazeGame.dart';
-import 'package:mortaalim/TestingBeforeProdcution/SnakeLadder.dart';
-import 'package:mortaalim/TestingBeforeProdcution/UNOLIKE%20GAME.dart';
-import 'package:mortaalim/Themes/ThemeSelectorPage.dart';
-import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/LoadingFromUserToIndex.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/MemoryFlip_index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/SurvivalMode/MainSurvivalModePage.dart';
@@ -69,6 +56,7 @@ import 'Themes/AppTheme.dart';
 import 'Themes/ThemeManager.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
+import 'indexPage_tools/Dashboard_Index_tool/Home_Page.dart';
 import 'l10n/amazigh_localizations.dart';
 
 
@@ -112,6 +100,7 @@ void main() async {
         ChangeNotifierProvider.value(value: audioManager),
         ChangeNotifierProvider(create: (_) => ConnectivityService()),
         ChangeNotifierProvider(create: (_) => CardVisibilityManager()),
+        ChangeNotifierProvider(create: (_) => LearningPreferences()),
         ChangeNotifierProvider(create: (_) => ThemeManager(themes: appThemes)),
       ],
         child: AppLifecycleManager( child: MyApp(),
@@ -159,7 +148,7 @@ class _MyAppState extends State<MyApp> {
               style: ElevatedButton.styleFrom(backgroundColor: Colors.orangeAccent),
             ),
           ),
-          debugShowCheckedModeBanner: true,
+          debugShowCheckedModeBanner: false,
           navigatorObservers: [routeObserver],
           routes: {
             'Index': (context) => Index(),
@@ -186,7 +175,7 @@ class _MyAppState extends State<MyApp> {
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
 
-            'Shop': (context) => LearningPreferencesPage(),
+            'Shop': (context) => MainShopPageIndex(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-
 import '../../main.dart';
 
 class GlobalStatsCard extends StatelessWidget {

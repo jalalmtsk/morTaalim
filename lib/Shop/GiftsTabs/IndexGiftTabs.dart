@@ -33,7 +33,7 @@ class _IndexGiftsPageState extends State<IndexGiftsPage> {
             children: [
               Expanded(
                 child: DefaultTabController(
-                  length: 3, // Number of gift categories
+                  length: 2, // Number of gift categories
                   child: Column(
                     children: [
                       TabBar(
@@ -44,7 +44,6 @@ class _IndexGiftsPageState extends State<IndexGiftsPage> {
                         tabs: [
                           Tab(text: tr(context).spinningWheel),
                           Tab(text: tr(context).spin),
-                          Tab(text: tr(context).spin),
 
                         ],
                       ),
@@ -53,7 +52,6 @@ class _IndexGiftsPageState extends State<IndexGiftsPage> {
                           children: [
                             const SingleChildScrollView(child: SpinWheelPopup()),
                             SingleChildScrollView(child: BuyTokenWidget(xpManager: xpManager)),
-                            SingleChildScrollView(child: WatchAdButton())
                           ],
                         ),
                       ),
