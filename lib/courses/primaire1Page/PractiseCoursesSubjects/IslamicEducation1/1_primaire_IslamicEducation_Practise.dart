@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/PractiseGames/MatchTheImage/MatchTheImage.dart';
-
 import '../../../../PractiseGames/DragAndDrop/DragAndDrop.dart';
 import '../../../../PractiseGames/IslamExercice/PillarOfIslam.dart';
 import '../../../../PractiseGames/IslamExercice/WuduGame.dart';
 import '../../../../PractiseGames/PlayTheWord/PlayTheWord.dart';
 import '../../../../PractiseGames/practiseWords.dart';
+import '../../../../main.dart';
 
 class IndexIslamicEducation1Practise extends StatelessWidget {
   final List<PractiseWords> wuduStepsList = [
@@ -79,9 +79,9 @@ class IndexIslamicEducation1Practise extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.indigo,
-        title: const Text(
-          "📚 Education Islamic Practise",
-          style: TextStyle(
+        title: Text(
+          tr(context).islamicPractise,
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
           ),
@@ -108,37 +108,28 @@ class IndexIslamicEducation1Practise extends StatelessWidget {
             children: [
               _buildExerciseCard(
                 context,
-                title: "Wudue",
-                icon: Icons.clean_hands_outlined,
-                color: Colors.blueAccent,
+                title: tr(context).wudu,
+                imagePath: "assets/images/UI/BackGrounds/GamePractise_BG/IslamicEducation_bg/wudueExercice.jpg",
                 onTap: () => navigateTo(context, WuduGame()),
               ),
-
               _buildExerciseCard(
                 context,
-                title: "Play the Word",
-                icon: Icons.volume_up_rounded,
-                color: Colors.orangeAccent,
+                title: tr(context).playTheWord,
+                imagePath: "assets/images/UI/BackGrounds/GamePractise_BG/IslamicEducation_bg/ChooseTheImageIslamic.jpg",
                 onTap: () => navigateTo(context, PlayTheWord(words: wuduStepsList)),
               ),
               _buildExerciseCard(
                 context,
-                title: "Choose the Image",
-                icon: Icons.image_rounded,
-                color: Colors.green,
+                title: tr(context).chooseTheImage,
+                imagePath: "assets/images/UI/BackGrounds/GamePractise_BG/IslamicEducation_bg/ChooseTheImageIslamic.jpg",
                 onTap: () => navigateTo(context, MatchWordToImage(words: wuduStepsList)),
               ),
-
               _buildExerciseCard(
                 context,
-                title: "Pillar Of Islam",
-                icon: Icons.gradient,
-                color: Colors.pink,
+                title: tr(context).pillarOfIslam,
+                imagePath: "assets/images/UI/BackGrounds/GamePractise_BG/IslamicEducation_bg/PillarOfIslam.jpg",
                 onTap: () => navigateTo(context, PillarsGame()),
               ),
-
-
-              // Add more games here later if needed
             ],
           ),
         ),
@@ -149,8 +140,7 @@ class IndexIslamicEducation1Practise extends StatelessWidget {
   Widget _buildExerciseCard(
       BuildContext context, {
         required String title,
-        required IconData icon,
-        required Color color,
+        required String imagePath,
         required VoidCallback onTap,
       }) {
     return InkWell(
@@ -159,16 +149,12 @@ class IndexIslamicEducation1Practise extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [color.withOpacity(0.85), color],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.4),
-              blurRadius: 10,
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
               offset: const Offset(0, 6),
             ),
           ],
@@ -179,14 +165,19 @@ class IndexIslamicEducation1Practise extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 52, color: Colors.white),
-                const SizedBox(height: 12),
+                Expanded(
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Text(
                   title,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Colors.black87,
                   ),
                   textAlign: TextAlign.center,
                 ),

@@ -1434,4 +1434,61 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get answer => 'إجابة';
+
+  @override
+  String get sciencePractise => 'تمارين العلوم';
+
+  @override
+  String get heavyLight => 'ثقيل أم خفيف';
+
+  @override
+  String get findColor => 'ابحث عن اللون';
+
+  @override
+  String get scienceQuizz => 'اختبار العلوم';
+
+  @override
+  String get colorMixing => 'مزج الألوان';
+
+  @override
+  String get islamicPractise => 'تمارين إسلامية';
+
+  @override
+  String get wudu => 'الوضوء';
+
+  @override
+  String get playTheWord => 'العب الكلمة';
+
+  @override
+  String get chooseTheImage => 'اختر الصورة';
+
+  @override
+  String get pillarOfIslam => 'أركان الإسلام';
+
+  @override
+  String get frenchPractise => 'تمارين فرنسية';
+
+  @override
+  String get matchTheWord => 'وصل الكلمة';
+
+  @override
+  String get backupWhatIs => 'ما هو النسخ الاحتياطي؟';
+
+  @override
+  String get backupWhatIsDesc => 'يقوم رمز النسخ الاحتياطي بحفظ تقدمك بأمان بحيث يمكنك استعادته لاحقًا أو على جهاز آخر.';
+
+  @override
+  String get backupHowSave => 'كيفية الحفظ';
+
+  @override
+  String get backupHowSaveDesc => 'اضغط على \'حفظ النسخ الاحتياطي\' وانسخ الرمز الفريد الخاص بك. احفظه في مكان آمن – إنه مفتاحك للاستعادة.';
+
+  @override
+  String get backupHowRestore => 'كيفية الاستعادة';
+
+  @override
+  String get backupHowRestoreDesc => 'استخدم \'تحميل النسخ الاحتياطي\' وأدخل الرمز المحفوظ. سيتم استعادة تقدمك على الفور.';
+
+  @override
+  String get done => 'تم';
 }

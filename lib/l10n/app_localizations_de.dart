@@ -1434,4 +1434,61 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get answer => 'Antwort';
+
+  @override
+  String get sciencePractise => 'Naturwissenschaft Übung';
+
+  @override
+  String get heavyLight => 'Schwer oder Leicht';
+
+  @override
+  String get findColor => 'Finde die Farbe';
+
+  @override
+  String get scienceQuizz => 'Naturwissenschaft Quiz';
+
+  @override
+  String get colorMixing => 'Farben Mischen';
+
+  @override
+  String get islamicPractise => 'Islamische Übungen';
+
+  @override
+  String get wudu => 'Wudu (Waschung)';
+
+  @override
+  String get playTheWord => 'Spiele das Wort';
+
+  @override
+  String get chooseTheImage => 'Wähle das Bild';
+
+  @override
+  String get pillarOfIslam => 'Säulen des Islam';
+
+  @override
+  String get frenchPractise => 'Französisch Übung';
+
+  @override
+  String get matchTheWord => 'Ordne das Wort zu';
+
+  @override
+  String get backupWhatIs => 'Was ist Backup?';
+
+  @override
+  String get backupWhatIsDesc => 'Ein Backup-Code speichert deinen Fortschritt sicher, damit du ihn später oder auf einem anderen Gerät wiederherstellen kannst.';
+
+  @override
+  String get backupHowSave => 'Wie speichern';
+
+  @override
+  String get backupHowSaveDesc => 'Tippe auf \'Backup speichern\' und kopiere deinen einzigartigen Code. Bewahre ihn sicher auf – er ist dein Schlüssel zur Wiederherstellung.';
+
+  @override
+  String get backupHowRestore => 'Wie wiederherstellen';
+
+  @override
+  String get backupHowRestoreDesc => 'Verwende \'Backup laden\' und füge deinen gespeicherten Code ein. Dein Fortschritt wird sofort wiederhergestellt.';
+
+  @override
+  String get done => 'Fertig';
 }

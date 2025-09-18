@@ -1434,4 +1434,61 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get answer => 'Réponse';
+
+  @override
+  String get sciencePractise => 'Exercices de Science';
+
+  @override
+  String get heavyLight => 'Lourd ou Léger';
+
+  @override
+  String get findColor => 'Trouve la Couleur';
+
+  @override
+  String get scienceQuizz => 'Quiz de Science';
+
+  @override
+  String get colorMixing => 'Mélange des Couleurs';
+
+  @override
+  String get islamicPractise => 'Exercices Islamiques';
+
+  @override
+  String get wudu => 'Ablution (Wudu)';
+
+  @override
+  String get playTheWord => 'Joue avec le Mot';
+
+  @override
+  String get chooseTheImage => 'Choisis l’Image';
+
+  @override
+  String get pillarOfIslam => 'Piliers de l\'Islam';
+
+  @override
+  String get frenchPractise => 'Exercices Français';
+
+  @override
+  String get matchTheWord => 'Associe le Mot';
+
+  @override
+  String get backupWhatIs => 'Qu\'est-ce qu\'une sauvegarde ?';
+
+  @override
+  String get backupWhatIsDesc => 'Un code de sauvegarde enregistre vos progrès en toute sécurité afin que vous puissiez les restaurer plus tard ou sur un autre appareil.';
+
+  @override
+  String get backupHowSave => 'Comment sauvegarder';
+
+  @override
+  String get backupHowSaveDesc => 'Appuyez sur \'Sauvegarder\' et copiez votre code unique. Conservez-le dans un endroit sûr – c\'est votre clé de récupération.';
+
+  @override
+  String get backupHowRestore => 'Comment restaurer';
+
+  @override
+  String get backupHowRestoreDesc => 'Utilisez \'Charger la sauvegarde\' et collez votre code enregistré. Vos progrès seront restaurés instantanément.';
+
+  @override
+  String get done => 'Terminé';
 }

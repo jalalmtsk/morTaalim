@@ -4,6 +4,7 @@ import 'package:mortaalim/PractiseGames/MatchTheImage/MatchTheImage.dart';
 import '../../../../PractiseGames/DragAndDrop/DragAndDrop.dart';
 import '../../../../PractiseGames/PlayTheWord/PlayTheWord.dart';
 import '../../../../PractiseGames/practiseWords.dart';
+import '../../../../main.dart';
 
 class IndexFrench1Practise extends StatelessWidget {
   final List<PractiseWords> wordList = [
@@ -43,7 +44,6 @@ class IndexFrench1Practise extends StatelessWidget {
       imagePath: 'assets/images/PractiseImage/voiture.jpg',
       audioPath: 'assets/audios/tts_female/voiture_female.mp3',
     ),
-    // Add more words as needed
   ];
 
   void navigateTo(BuildContext context, Widget page) {
@@ -60,11 +60,12 @@ class IndexFrench1Practise extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.indigo,
-        title: const Text(
-          "📚 French Practise",
-          style: TextStyle(
+        title: Text(
+          tr(context).frenchPractise,
+          style: const TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
         shape: const RoundedRectangleBorder(
@@ -89,29 +90,25 @@ class IndexFrench1Practise extends StatelessWidget {
             children: [
               _buildExerciseCard(
                 context,
-                title: "Play the Word",
+                title: tr(context).playTheWord,
+                imagePath: 'assets/images/UI/BackGrounds/GamePractise_BG/Frennch_bg/playTheWordFrench.jpg',
                 icon: Icons.volume_up_rounded,
-                imagePath: 'assets/images/PractiseImage/bonjour.jpg',
-                color: Colors.blueAccent,
                 onTap: () => navigateTo(context, PlayTheWord(words: wordList)),
               ),
               _buildExerciseCard(
                 context,
-                title: "Choose the Image",
+                title: tr(context).chooseTheImage,
+                imagePath: 'assets/images/UI/BackGrounds/GamePractise_BG/Frennch_bg/chooseTheImageFrench.jpg',
                 icon: Icons.image_rounded,
-                imagePath: 'assets/images/PractiseImage/cat.jpg',
-                color: Colors.green,
                 onTap: () => navigateTo(context, MatchWordToImage(words: wordList)),
               ),
               _buildExerciseCard(
                 context,
-                title: "Match the Word",
+                title: tr(context).matchTheWord,
+                imagePath: 'assets/images/UI/BackGrounds/GamePractise_BG/Frennch_bg/matchTheWordFrench.jpg',
                 icon: Icons.sync_alt_rounded,
-                imagePath: 'assets/images/PractiseImage/dog.jpg',
-                color: Colors.orange,
                 onTap: () => navigateTo(context, DragDropGame(items: wordList)),
               ),
-              // Add more cards here if needed
             ],
           ),
         ),
@@ -122,10 +119,9 @@ class IndexFrench1Practise extends StatelessWidget {
   Widget _buildExerciseCard(
       BuildContext context, {
         required String title,
+        required String imagePath,
         required IconData icon,
-        required Color color,
         required VoidCallback onTap,
-        String? imagePath,
       }) {
     return InkWell(
       onTap: onTap,
@@ -136,28 +132,19 @@ class IndexFrench1Practise extends StatelessWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: color.withOpacity(0.4),
-              blurRadius: 10,
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
               offset: const Offset(0, 6),
             ),
           ],
-          image: imagePath != null
-              ? DecorationImage(
+          image: DecorationImage(
             image: AssetImage(imagePath),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
               Colors.black.withOpacity(0.35),
               BlendMode.darken,
             ),
-          )
-              : null,
-          gradient: imagePath == null
-              ? LinearGradient(
-            colors: [color.withOpacity(0.85), color],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          )
-              : null,
+          ),
         ),
         child: Center(
           child: Padding(

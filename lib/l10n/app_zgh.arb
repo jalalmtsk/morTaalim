@@ -546,8 +546,33 @@
    "reachTheNumber": "ⵙⵙⴻⵍ ⴰⴷⵔⴰⵔ:",
    "noNumberChosen": "ⵓⵔ ⵢⴻⵜⵜⵡⴰⵙⵏ ⴰⵔⴰ ⴰⴷⵔⴰⵔ",
    "currentSum": "ⴰⵃⵔⵉⵙ ⵏ ⵢⵍⴰⵏ",
-   "answer": "ⵜⴰⵍⵎⴰⵢⵜ"
+   "answer": "ⵜⴰⵍⵎⴰⵢⵜ",
 
+   "sciencePractise": "ⵜⴰⵙⵙⵉⵏⴰ ⵏ ⵉⵙⵏⴰⵎ",
+   "heavyLight": "ⵙⵉⵍⵉ ⵏ ⴰⴷⵔⵉⴷ",
+   "findColor": "ⴰⵎⵙⵉⵍ ⵏ ⵉⵙⵏⴰⵎ",
+   "scienceQuizz": "ⴰⴳⵍⴰⵍ ⵏ ⵉⵙⵏⴰⵎ",
+   "colorMixing": "ⴰⵎⴰⵣⴳ ⵏ ⵉⵙⵏⴰⵎ",
+  "islamicPractise": "ⵜⴰⵙⵙⵉⵏⴰ ⵏ ⵉⵙⵍⴰⵎ",
+   "wudu": "ⵡⵓⴷⵓ",
+   "playTheWord": "ⴰⵎⵣⵉ ⵏ ⴰⴳⴰⵎ",
+   "chooseTheImage": "ⴰⵙⵏⴰⵡ ⴰⵎⵙⵉⵍ",
+   "pillarOfIslam": "ⴰⵎⴰⴷⵔ ⵏ ⵉⵙⵍⴰⵎ",
+   "frenchPractise": "ⵜⴰⵙⵙⵉⵏⴰ ⵏ ⴼⵔⴰⵏⵙⵉⵙ",
+   "playTheWord": "ⴰⵎⵣⵉ ⵏ ⴰⴳⴰⵎ",
+   "chooseTheImage": "ⴰⵙⵏⴰⵡ ⴰⵎⵙⵉⵍ",
+   "matchTheWord": "ⴰⵎⴰⵣⵉ ⵏ ⴰⴳⴰⵎ",
+
+
+ "backupWhatIs": "ⴰⵎⵓⵔ ⵏ ⵉⵙⵉⵏⵏⵉⴽ?",
+ "backupWhatIsDesc": "ⴰⵎⵓⵔ ⵏ ⵉⵙⵉⵏⵏⵉⴽ ⵢⴰⵎⵙⴰ ⵏ ⵡⴰⵢ ⴷ ⵉⵎⵓⵔ ⵏ ⵙⵓⵔ ⵓⴳⵔ ⵏ ⵡⴰⵙ ⵓⵔ ⵏ ⵓⵎⵓⵔ ⵏ ⴰⵏⵏⵉ.",
+ "backupHowSave": "ⴰⵎⵓⵔ ⵏ ⵙⴰⴳⴰⵡⴰⵙ",
+ "backupHowSaveDesc": "ⴰⵡⴰⵢ 'ⵙⴰⴳⴰⵡⴰⵙ ⵏ ⴰⵎⵓⵔ' ⵓⴷ ⵙⵉⵏ ⴰⴷⵏ ⵓⵎⵓⵔ ⵏⴰⴳ ⵢⴰⵙ ⴰⵢⵢⴰⵏ. ⵉⴷⵔⴰⴷⵏ ⴰⵏⵎⵓⵔ ⵉⴷ ⴰⴱⴰⵏⴰ.",
+ "backupHowRestore": "ⴰⵎⵓⵔ ⵏ ⵙⵡⴰⵍ",
+ "backupHowRestoreDesc": "ⵢⴰⵡ 'ⵙⵡⴰⵍ ⵏ ⴰⵎⵓⵔ' ⵓⴷ ⵢⴰⵙ ⵓⵎⵓⵔ ⵏⴰⴳ. ⵓⵙⵙⵓⵍ ⵏ ⵡⴰⵙ ⵓⵔ ⵏ ⵢⴰⵏⵙⵓⵔ.",
+ "back": "ⵙⵡⴰⵍ",
+ "next": "ⵢⴰⵏⵙ",
+ "done": "ⴰⵢⵙⵎ"
 
 
 

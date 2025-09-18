@@ -538,7 +538,33 @@
     "reachTheNumber": "Erreiche die Zahl:",
     "noNumberChosen": "Keine Zahl gewählt",
     "currentSum": "Aktuelle Summe",
-    "answer": "Antwort"
+    "answer": "Antwort",
+
+   "sciencePractise": "Naturwissenschaft Übung",
+    "heavyLight": "Schwer oder Leicht",
+    "findColor": "Finde die Farbe",
+    "scienceQuizz": "Naturwissenschaft Quiz",
+    "colorMixing": "Farben Mischen",
+   "islamicPractise": "Islamische Übungen",
+    "wudu": "Wudu (Waschung)",
+    "playTheWord": "Spiele das Wort",
+    "chooseTheImage": "Wähle das Bild",
+    "pillarOfIslam": "Säulen des Islam",
+    "frenchPractise": "Französisch Übung",
+    "playTheWord": "Spiele das Wort",
+    "chooseTheImage": "Wähle das Bild",
+    "matchTheWord": "Ordne das Wort zu",
+
+
+    "backupWhatIs": "Was ist Backup?",
+    "backupWhatIsDesc": "Ein Backup-Code speichert deinen Fortschritt sicher, damit du ihn später oder auf einem anderen Gerät wiederherstellen kannst.",
+    "backupHowSave": "Wie speichern",
+    "backupHowSaveDesc": "Tippe auf 'Backup speichern' und kopiere deinen einzigartigen Code. Bewahre ihn sicher auf – er ist dein Schlüssel zur Wiederherstellung.",
+    "backupHowRestore": "Wie wiederherstellen",
+    "backupHowRestoreDesc": "Verwende 'Backup laden' und füge deinen gespeicherten Code ein. Dein Fortschritt wird sofort wiederhergestellt.",
+    "back": "Zurück",
+    "next": "Weiter",
+    "done": "Fertig"
 
 
 

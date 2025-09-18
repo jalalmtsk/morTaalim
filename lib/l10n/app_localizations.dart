@@ -2938,6 +2938,120 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Answer'**
   String get answer;
+
+  /// No description provided for @sciencePractise.
+  ///
+  /// In en, this message translates to:
+  /// **'Science Practise'**
+  String get sciencePractise;
+
+  /// No description provided for @heavyLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Heavy or Light'**
+  String get heavyLight;
+
+  /// No description provided for @findColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Find the Color'**
+  String get findColor;
+
+  /// No description provided for @scienceQuizz.
+  ///
+  /// In en, this message translates to:
+  /// **'Science Quiz'**
+  String get scienceQuizz;
+
+  /// No description provided for @colorMixing.
+  ///
+  /// In en, this message translates to:
+  /// **'Color Mixing'**
+  String get colorMixing;
+
+  /// No description provided for @islamicPractise.
+  ///
+  /// In en, this message translates to:
+  /// **'Education Islamic Practise'**
+  String get islamicPractise;
+
+  /// No description provided for @wudu.
+  ///
+  /// In en, this message translates to:
+  /// **'Wudu'**
+  String get wudu;
+
+  /// No description provided for @playTheWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Play the Word'**
+  String get playTheWord;
+
+  /// No description provided for @chooseTheImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the Image'**
+  String get chooseTheImage;
+
+  /// No description provided for @pillarOfIslam.
+  ///
+  /// In en, this message translates to:
+  /// **'Pillar of Islam'**
+  String get pillarOfIslam;
+
+  /// No description provided for @frenchPractise.
+  ///
+  /// In en, this message translates to:
+  /// **'French Practise'**
+  String get frenchPractise;
+
+  /// No description provided for @matchTheWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Match the Word'**
+  String get matchTheWord;
+
+  /// No description provided for @backupWhatIs.
+  ///
+  /// In en, this message translates to:
+  /// **'What is Backup?'**
+  String get backupWhatIs;
+
+  /// No description provided for @backupWhatIsDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'A backup code saves your progress securely so you can restore it later or on another device.'**
+  String get backupWhatIsDesc;
+
+  /// No description provided for @backupHowSave.
+  ///
+  /// In en, this message translates to:
+  /// **'How to Save'**
+  String get backupHowSave;
+
+  /// No description provided for @backupHowSaveDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap \'Save Backup\' and copy your unique code. Store it somewhere safe – it’s your key to recovery.'**
+  String get backupHowSaveDesc;
+
+  /// No description provided for @backupHowRestore.
+  ///
+  /// In en, this message translates to:
+  /// **'How to Restore'**
+  String get backupHowRestore;
+
+  /// No description provided for @backupHowRestoreDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Use \'Load Backup\' and paste your saved code. Your progress will be restored instantly.'**
+  String get backupHowRestoreDesc;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

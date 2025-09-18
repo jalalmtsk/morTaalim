@@ -387,7 +387,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get flickTheDancingFox => 'ⴼⵍⵉⴽ ⴰⵣⴳⴳⵯⴰⵏ';
 
   @override
-  String get next => 'ⴰⵎⵢⴰⵍ';
+  String get next => 'ⵢⴰⵏⵙ';
 
   @override
   String get previous => 'ⴰⵎⴰⵣⵉⴹ';
@@ -627,7 +627,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get haveFunAndLearnSomethingNew => 'ⵡⴰⵍⵍⵉ ⵏ ⵜⵉⵙⴰⵏ ⴷ ⵜⵎⵉⵔⵙⵜ ⴰⵎⵓⴹⴹⴰⵏ ⵎⴰⵢⵢⴰⵏ!';
 
   @override
-  String get back => 'ⴰⵙⴳⴰⵏ';
+  String get back => 'ⵙⵡⴰⵍ';
 
   @override
   String get adFailedToLoadOrWasNotCompletedPleaseTryAgainLater => 'ⵜⵉⵏⵙⵉⵡⵉⵏ ⵓⵔ ⵜⵎⵓⵔⵜ ⴷ ⵓⵔ ⵜⴽⴼⵔⵉⵡⵉⵏ. ⴼⴼⵓⵙ ⴷⵉⵔⴰ.';
@@ -1434,4 +1434,61 @@ class AppLocalizationsZgh extends AppLocalizations {
 
   @override
   String get answer => 'ⵜⴰⵍⵎⴰⵢⵜ';
+
+  @override
+  String get sciencePractise => 'ⵜⴰⵙⵙⵉⵏⴰ ⵏ ⵉⵙⵏⴰⵎ';
+
+  @override
+  String get heavyLight => 'ⵙⵉⵍⵉ ⵏ ⴰⴷⵔⵉⴷ';
+
+  @override
+  String get findColor => 'ⴰⵎⵙⵉⵍ ⵏ ⵉⵙⵏⴰⵎ';
+
+  @override
+  String get scienceQuizz => 'ⴰⴳⵍⴰⵍ ⵏ ⵉⵙⵏⴰⵎ';
+
+  @override
+  String get colorMixing => 'ⴰⵎⴰⵣⴳ ⵏ ⵉⵙⵏⴰⵎ';
+
+  @override
+  String get islamicPractise => 'ⵜⴰⵙⵙⵉⵏⴰ ⵏ ⵉⵙⵍⴰⵎ';
+
+  @override
+  String get wudu => 'ⵡⵓⴷⵓ';
+
+  @override
+  String get playTheWord => 'ⴰⵎⵣⵉ ⵏ ⴰⴳⴰⵎ';
+
+  @override
+  String get chooseTheImage => 'ⴰⵙⵏⴰⵡ ⴰⵎⵙⵉⵍ';
+
+  @override
+  String get pillarOfIslam => 'ⴰⵎⴰⴷⵔ ⵏ ⵉⵙⵍⴰⵎ';
+
+  @override
+  String get frenchPractise => 'ⵜⴰⵙⵙⵉⵏⴰ ⵏ ⴼⵔⴰⵏⵙⵉⵙ';
+
+  @override
+  String get matchTheWord => 'ⴰⵎⴰⵣⵉ ⵏ ⴰⴳⴰⵎ';
+
+  @override
+  String get backupWhatIs => 'ⴰⵎⵓⵔ ⵏ ⵉⵙⵉⵏⵏⵉⴽ?';
+
+  @override
+  String get backupWhatIsDesc => 'ⴰⵎⵓⵔ ⵏ ⵉⵙⵉⵏⵏⵉⴽ ⵢⴰⵎⵙⴰ ⵏ ⵡⴰⵢ ⴷ ⵉⵎⵓⵔ ⵏ ⵙⵓⵔ ⵓⴳⵔ ⵏ ⵡⴰⵙ ⵓⵔ ⵏ ⵓⵎⵓⵔ ⵏ ⴰⵏⵏⵉ.';
+
+  @override
+  String get backupHowSave => 'ⴰⵎⵓⵔ ⵏ ⵙⴰⴳⴰⵡⴰⵙ';
+
+  @override
+  String get backupHowSaveDesc => 'ⴰⵡⴰⵢ \'ⵙⴰⴳⴰⵡⴰⵙ ⵏ ⴰⵎⵓⵔ\' ⵓⴷ ⵙⵉⵏ ⴰⴷⵏ ⵓⵎⵓⵔ ⵏⴰⴳ ⵢⴰⵙ ⴰⵢⵢⴰⵏ. ⵉⴷⵔⴰⴷⵏ ⴰⵏⵎⵓⵔ ⵉⴷ ⴰⴱⴰⵏⴰ.';
+
+  @override
+  String get backupHowRestore => 'ⴰⵎⵓⵔ ⵏ ⵙⵡⴰⵍ';
+
+  @override
+  String get backupHowRestoreDesc => 'ⵢⴰⵡ \'ⵙⵡⴰⵍ ⵏ ⴰⵎⵓⵔ\' ⵓⴷ ⵢⴰⵙ ⵓⵎⵓⵔ ⵏⴰⴳ. ⵓⵙⵙⵓⵍ ⵏ ⵡⴰⵙ ⵓⵔ ⵏ ⵢⴰⵏⵙⵓⵔ.';
+
+  @override
+  String get done => 'ⴰⵢⵙⵎ';
 }

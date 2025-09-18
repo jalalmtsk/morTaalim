@@ -561,7 +561,32 @@
      "reachTheNumber": "Atteignez le nombre :",
      "noNumberChosen": "Aucun nombre choisi",
      "currentSum": "Somme actuelle",
-     "answer": "Réponse"
+     "answer": "Réponse",
+
+     "sciencePractise": "Exercices de Science",
+     "heavyLight": "Lourd ou Léger",
+     "findColor": "Trouve la Couleur",
+     "scienceQuizz": "Quiz de Science",
+     "colorMixing": "Mélange des Couleurs",
+    "islamicPractise": "Exercices Islamiques",
+     "wudu": "Ablution (Wudu)",
+     "playTheWord": "Joue avec le Mot",
+     "chooseTheImage": "Choisis l’Image",
+     "pillarOfIslam": "Piliers de l'Islam",
+     "frenchPractise": "Exercices Français",
+     "playTheWord": "Joue avec le Mot",
+     "chooseTheImage": "Choisis l’Image",
+     "matchTheWord": "Associe le Mot",
+
+     "backupWhatIs": "Qu'est-ce qu'une sauvegarde ?",
+     "backupWhatIsDesc": "Un code de sauvegarde enregistre vos progrès en toute sécurité afin que vous puissiez les restaurer plus tard ou sur un autre appareil.",
+     "backupHowSave": "Comment sauvegarder",
+     "backupHowSaveDesc": "Appuyez sur 'Sauvegarder' et copiez votre code unique. Conservez-le dans un endroit sûr – c'est votre clé de récupération.",
+     "backupHowRestore": "Comment restaurer",
+     "backupHowRestoreDesc": "Utilisez 'Charger la sauvegarde' et collez votre code enregistré. Vos progrès seront restaurés instantanément.",
+     "back": "Retour",
+     "next": "Suivant",
+     "done": "Terminé"
 
 
 }

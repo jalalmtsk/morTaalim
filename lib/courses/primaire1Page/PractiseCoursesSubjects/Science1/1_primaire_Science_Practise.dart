@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mortaalim/PractiseGames/ArabicExercice/ArabicLetters.dart';
 import 'package:mortaalim/PractiseGames/ChooseTheColor/ChooseTheColor.dart';
 import 'package:mortaalim/PractiseGames/HeavyLight/HeavyLight.dart';
-import 'package:mortaalim/PractiseGames/ScienceExercice/AnimalSounds.dart';
 import 'package:mortaalim/PractiseGames/ScienceExercice/ColorMixing.dart';
 import 'package:mortaalim/PractiseGames/ScienceExercice/ScienceQuizz.dart';
 
-class IndexScience1Practise extends StatelessWidget {
+import '../../../../main.dart'; // assuming you have this
 
+class IndexScience1Practise extends StatelessWidget {
   void navigateTo(BuildContext context, Widget page) {
     Navigator.push(
       context,
@@ -21,22 +21,23 @@ class IndexScience1Practise extends StatelessWidget {
       extendBodyBehindAppBar: false,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.indigo,
-        title: const Text(
-          "📚 Science Practise",
-          style: TextStyle(
-            fontSize: 24,
+        backgroundColor: Colors.deepPurple,
+        title: Text(
+          tr(context).sciencePractise,
+          style: const TextStyle(
+            fontSize: 26,
             fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
         shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
         ),
       ),
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFF3F4F6), Color(0xFFE3F2FD)],
+            colors: [Color(0xFFFDF6F0), Color(0xFFE1F5FE)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -45,51 +46,34 @@ class IndexScience1Practise extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: GridView.count(
             crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
             childAspectRatio: 1,
             children: [
-
               _buildExerciseCard(
                 context,
-                title: "Heavy Or Light",
-                icon: Icons.color_lens,
-                color: Colors.teal,
+                title: tr(context).heavyLight,
+                imagePath: "assets/images/UI/BackGrounds/GamePractise_BG/Science_bg/heavyandLight.jpg",
                 onTap: () => navigateTo(context, HeavyLightGame()),
               ),
-
               _buildExerciseCard(
                 context,
-                title: "Find The Color",
-                icon: Icons.color_lens,
-                color: Colors.redAccent,
+                title: tr(context).findColor,
+                imagePath: "assets/images/UI/BackGrounds/GamePractise_BG/Science_bg/findTheColor.jpg",
                 onTap: () => navigateTo(context, ColorMatchingGame()),
               ),
               _buildExerciseCard(
                 context,
-                title: "Science Quizz",
-                icon: Icons.science,
-                color: Colors.orangeAccent,
+                title: tr(context).scienceQuizz,
+                imagePath: "assets/images/UI/BackGrounds/GamePractise_BG/Science_bg/SciecneQuizz.jpg",
                 onTap: () => navigateTo(context, ScienceQuizExercise()),
               ),
-
               _buildExerciseCard(
                 context,
-                title: "Color Mixing",
-                icon: Icons.science,
-                color: Colors.green,
+                title: tr(context).colorMixing,
+                imagePath: "assets/images/UI/BackGrounds/GamePractise_BG/Science_bg/colorMixing.jpg",
                 onTap: () => navigateTo(context, ColorMixingExercise()),
               ),
-
-              _buildExerciseCard(
-                context,
-                title: "Animal Sounds",
-                icon: Icons.surround_sound,
-                color: Colors.green,
-                onTap: () => navigateTo(context, ArabicLettersExercise()),
-              ),
-
-              // Add more games here later if needed
             ],
           ),
         ),
@@ -100,8 +84,7 @@ class IndexScience1Practise extends StatelessWidget {
   Widget _buildExerciseCard(
       BuildContext context, {
         required String title,
-        required IconData icon,
-        required Color color,
+        required String imagePath,
         required VoidCallback onTap,
       }) {
     return InkWell(
@@ -110,16 +93,12 @@ class IndexScience1Practise extends StatelessWidget {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [color.withOpacity(0.85), color],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Colors.white,
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: color.withValues(alpha: 0.4),
-              blurRadius: 10,
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 8,
               offset: const Offset(0, 6),
             ),
           ],
@@ -130,14 +109,19 @@ class IndexScience1Practise extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 52, color: Colors.white),
-                const SizedBox(height: 12),
+                Expanded(
+                  child: Image.asset(
+                    imagePath,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(height: 10),
                 Text(
                   title,
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: Colors.black87,
                   ),
                   textAlign: TextAlign.center,
                 ),

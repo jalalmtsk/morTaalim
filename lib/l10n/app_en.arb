@@ -555,7 +555,32 @@
     "reachTheNumber": "Reach the number:",
     "noNumberChosen": "No number chosen",
     "currentSum": "Current sum",
-    "answer": "Answer"
+    "answer": "Answer",
+
+    "sciencePractise": "Science Practise",
+    "heavyLight": "Heavy or Light",
+    "findColor": "Find the Color",
+    "scienceQuizz": "Science Quiz",
+    "colorMixing": "Color Mixing",
+   "islamicPractise": "Education Islamic Practise",
+    "wudu": "Wudu",
+    "playTheWord": "Play the Word",
+    "chooseTheImage": "Choose the Image",
+    "pillarOfIslam": "Pillar of Islam",
+    "frenchPractise": "French Practise",
+     "playTheWord": "Play the Word",
+     "chooseTheImage": "Choose the Image",
+     "matchTheWord": "Match the Word",
+
+    "backupWhatIs": "What is Backup?",
+       "backupWhatIsDesc": "A backup code saves your progress securely so you can restore it later or on another device.",
+       "backupHowSave": "How to Save",
+       "backupHowSaveDesc": "Tap 'Save Backup' and copy your unique code. Store it somewhere safe – it’s your key to recovery.",
+       "backupHowRestore": "How to Restore",
+       "backupHowRestoreDesc": "Use 'Load Backup' and paste your saved code. Your progress will be restored instantly.",
+       "back": "Back",
+       "next": "Next",
+       "done": "Done"
 
 
 

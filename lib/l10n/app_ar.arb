@@ -548,7 +548,33 @@
   "reachTheNumber": "وصل إلى الرقم:",
   "noNumberChosen": "لم يتم اختيار أي رقم",
   "currentSum": "المجموع الحالي",
-  "answer": "إجابة"
+  "answer": "إجابة",
+
+  "sciencePractise": "تمارين العلوم",
+  "heavyLight": "ثقيل أم خفيف",
+  "findColor": "ابحث عن اللون",
+  "scienceQuizz": "اختبار العلوم",
+  "colorMixing": "مزج الألوان",
+  "islamicPractise": "تمارين إسلامية",
+  "wudu": "الوضوء",
+  "playTheWord": "العب الكلمة",
+  "chooseTheImage": "اختر الصورة",
+  "pillarOfIslam": "أركان الإسلام",
+  "frenchPractise": "تمارين فرنسية",
+  "playTheWord": "العب الكلمة",
+  "chooseTheImage": "اختر الصورة",
+  "matchTheWord": "وصل الكلمة",
+
+
+ "backupWhatIs": "ما هو النسخ الاحتياطي؟",
+ "backupWhatIsDesc": "يقوم رمز النسخ الاحتياطي بحفظ تقدمك بأمان بحيث يمكنك استعادته لاحقًا أو على جهاز آخر.",
+ "backupHowSave": "كيفية الحفظ",
+ "backupHowSaveDesc": "اضغط على 'حفظ النسخ الاحتياطي' وانسخ الرمز الفريد الخاص بك. احفظه في مكان آمن – إنه مفتاحك للاستعادة.",
+ "backupHowRestore": "كيفية الاستعادة",
+ "backupHowRestoreDesc": "استخدم 'تحميل النسخ الاحتياطي' وأدخل الرمز المحفوظ. سيتم استعادة تقدمك على الفور.",
+ "back": "رجوع",
+ "next": "التالي",
+ "done": "تم"
 
 
 

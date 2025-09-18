@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../main.dart';
+
 class BackupTutorialPage extends StatelessWidget {
   const BackupTutorialPage({Key? key}) : super(key: key);
 
@@ -10,19 +12,22 @@ class BackupTutorialPage extends StatelessWidget {
 
     final List<_TutorialStep> steps = [
       _TutorialStep(
-        animation: 'assets/animations/FirstTouchAnimations/progerss.json',
-        title: "What is Backup?",
-        description: "A backup code saves your progress securely so you can restore it later or on another device.",
+        assetPath: 'assets/animations/UI_Animations/TechnologyNetwork.json',
+        isAnimation: true,
+        titleKey: 'backupWhatIs',
+        descriptionKey: 'backupWhatIsDesc',
       ),
       _TutorialStep(
-        animation: 'assets/animations/FirstTouchAnimations/UploadingCloud.json',
-        title: "How to Save",
-        description: "Tap 'Save Backup' and copy your unique code. Store it somewhere safe – it’s your key to recovery.",
+        assetPath: 'assets/images/UI/utilities/SaveButton.jpg',
+        isAnimation: false,
+        titleKey: 'backupHowSave',
+        descriptionKey: 'backupHowSaveDesc',
       ),
       _TutorialStep(
-        animation: 'assets/lottie/restore_data.json',
-        title: "How to Restore",
-        description: "Use 'Load Backup' and paste your saved code. Your progress will be restored instantly.",
+        assetPath: 'assets/animations/UI_Animations/TechnologyNetwork.json',
+        isAnimation: true,
+        titleKey: 'backupHowRestore',
+        descriptionKey: 'backupHowRestoreDesc',
       ),
     ];
 
@@ -37,17 +42,24 @@ class BackupTutorialPage extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Lottie.asset(step.animation, width: 220, height: 220, repeat: true),
+                if (step.isAnimation)
+                  Lottie.asset(step.assetPath, width: 220, height: 220, repeat: true)
+                else
+                  Image.asset(step.assetPath, width: 220, height: 220, fit: BoxFit.contain),
                 const SizedBox(height: 32),
                 Text(
-                  step.title,
-                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                  tr(context).backupWhatIs, // <-- use the key directly
+                  style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  step.description,
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
+                  tr(context).backupWhatIsDesc, // <-- use the key directly
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: Colors.grey[700],
+                  ),
                   textAlign: TextAlign.center,
                 ),
                 const Spacer(),
@@ -60,7 +72,7 @@ class BackupTutorialPage extends StatelessWidget {
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeOut,
                         ),
-                        child: const Text("Back"),
+                        child: Text(tr(context).back),
                       )
                     else
                       const SizedBox(width: 64), // spacer
@@ -71,12 +83,12 @@ class BackupTutorialPage extends StatelessWidget {
                           duration: const Duration(milliseconds: 300),
                           curve: Curves.easeOut,
                         ),
-                        child: const Text("Next"),
+                        child: Text(tr(context).next),
                       )
                     else
                       ElevatedButton(
                         onPressed: () => Navigator.pop(context),
-                        child: const Text("Done"),
+                        child: Text(tr(context).done),
                       ),
                   ],
                 ),
@@ -90,13 +102,15 @@ class BackupTutorialPage extends StatelessWidget {
 }
 
 class _TutorialStep {
-  final String animation;
-  final String title;
-  final String description;
+  final String assetPath;
+  final bool isAnimation;
+  final String titleKey;
+  final String descriptionKey;
 
   _TutorialStep({
-    required this.animation,
-    required this.title,
-    required this.description,
+    required this.assetPath,
+    required this.isAnimation,
+    required this.titleKey,
+    required this.descriptionKey,
   });
 }

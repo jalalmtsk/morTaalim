@@ -141,6 +141,12 @@ flutter:
   - assets/images/UI/Buttons/
   - assets/images/UI/BackGrounds/
   - assets/images/UI/BackGrounds/Course_BG/
+  - assets/images/UI/BackGrounds/GamePractise_BG/Art_bg/
+  - assets/images/UI/BackGrounds/GamePractise_BG/Arabic_bg/
+  - assets/images/UI/BackGrounds/GamePractise_BG/Frennch_bg/
+  - assets/images/UI/BackGrounds/GamePractise_BG/IslamicEducation_bg/
+  - assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/
+  - assets/images/UI/BackGrounds/GamePractise_BG/Science_bg/
   - assets/images/UI/utilities/
   - assets/images/Puzz/PuzzMainImages/
   - assets/images/Puzz/Puzz1/Puzz1_3x3/

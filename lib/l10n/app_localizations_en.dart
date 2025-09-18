@@ -1434,4 +1434,61 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get answer => 'Answer';
+
+  @override
+  String get sciencePractise => 'Science Practise';
+
+  @override
+  String get heavyLight => 'Heavy or Light';
+
+  @override
+  String get findColor => 'Find the Color';
+
+  @override
+  String get scienceQuizz => 'Science Quiz';
+
+  @override
+  String get colorMixing => 'Color Mixing';
+
+  @override
+  String get islamicPractise => 'Education Islamic Practise';
+
+  @override
+  String get wudu => 'Wudu';
+
+  @override
+  String get playTheWord => 'Play the Word';
+
+  @override
+  String get chooseTheImage => 'Choose the Image';
+
+  @override
+  String get pillarOfIslam => 'Pillar of Islam';
+
+  @override
+  String get frenchPractise => 'French Practise';
+
+  @override
+  String get matchTheWord => 'Match the Word';
+
+  @override
+  String get backupWhatIs => 'What is Backup?';
+
+  @override
+  String get backupWhatIsDesc => 'A backup code saves your progress securely so you can restore it later or on another device.';
+
+  @override
+  String get backupHowSave => 'How to Save';
+
+  @override
+  String get backupHowSaveDesc => 'Tap \'Save Backup\' and copy your unique code. Store it somewhere safe – it’s your key to recovery.';
+
+  @override
+  String get backupHowRestore => 'How to Restore';
+
+  @override
+  String get backupHowRestoreDesc => 'Use \'Load Backup\' and paste your saved code. Your progress will be restored instantly.';
+
+  @override
+  String get done => 'Done';
 }
