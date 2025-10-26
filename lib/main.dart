@@ -118,21 +118,33 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
 
   @override
-
-
-  @override
   void initState() {
     super.initState();
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null) {
-      BannedChecker().checkIfBanned(uid, context);
-    }
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      UpdateChecker().checkForUpdate(navigatorKey.currentContext!);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final uid = FirebaseAuth.instance.currentUser?.uid;
+
+      if (uid != null) {
+        // Returns true if the user is banned
+        final bool isBanned = await BannerChecker().checkAndShowBanner(
+          navigatorKey.currentContext!,
+          uid,
+        );
+
+        // Only show update dialog if not banned
+        if (!isBanned) {
+          await UpdateChecker().checkForUpdate(navigatorKey.currentContext!);
+        }
+      } else {
+        // If no user, still check for updates
+        await UpdateChecker().checkForUpdate(navigatorKey.currentContext!);
+      }
     });
-
   }
+
+
+
+
 
   @override
   Widget build(BuildContext context) {

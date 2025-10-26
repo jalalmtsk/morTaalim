@@ -145,12 +145,11 @@ class UpdateChecker {
   Widget build(BuildContext context) {
     final platformUrl =
     Theme.of(context).platform == TargetPlatform.android ? androidUrl : iosUrl;
-
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset('assets/images/UI/BackGrounds/bg10.jpg', fit: BoxFit.cover),
+          Image.asset('assets/images/UI/BackGrounds/ForcedUpdate2Bg.png', fit: BoxFit.cover),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -176,10 +175,10 @@ class UpdateChecker {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Lottie.asset('assets/animations/rabbit_boat.json', width: 220, repeat: true),
+                      Lottie.asset('assets/animations/UI_Animations/NewUpdateRibbon.json', width: 400, repeat: true),
                       const SizedBox(height: 14),
                       Text(
-                        "🚀 Update Available!",
+                        "✨ Update Available! ✨",
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           color: Colors.white,

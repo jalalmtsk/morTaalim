@@ -419,7 +419,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   Future<void> markVideoCompleted({required String videoId}) async {
     if (!youtubeProgressManager.completedVideoIds.contains(videoId)) {
       youtubeProgressManager.completedVideoIds.add(videoId);
-       _saveData();
+      _saveData();
       notifyListeners();
     }
   }
@@ -427,13 +427,13 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   // Methods to add or remove completed videos
   void addCompletedVideo(String videoId) {
     youtubeProgressManager.completedVideoIds.add(videoId);
-     _saveData();
+    _saveData();
     notifyListeners();
   }
 
   void removeCompletedVideo(String videoId) {
     youtubeProgressManager.completedVideoIds.remove(videoId);
-     _saveData();
+    _saveData();
     notifyListeners();
   }
 
@@ -811,38 +811,49 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     final userDoc = _firestore.collection('users').doc(_userId);
 
     try {
-      // ✅ Do NOT read from Firebase for stars/tolims — local is always source of truth
-
-      // Save locally before pushing
+      // Save locally before syncing
       await _saveData();
 
-      // Always push local data to Firebase
+      // 🔽 Step 1: Get remote values for admin-controlled fields
+      final snapshot = await userDoc.get();
+      bool remoteIsLocked = false;
+      bool remoteAdsEnabled = true;
+
+      if (snapshot.exists) {
+        final data = snapshot.data();
+        if (data != null) {
+          remoteIsLocked = data['isLocked'] ?? false;
+          remoteAdsEnabled = data['adsEnabled'] ?? true;
+        }
+      }
+
+      // 🔽 Step 2: Apply remote control fields locally
+      _banned = remoteIsLocked;
+      _adsEnabled = remoteAdsEnabled;
+
+      // 🔼 Step 3: Push all other local data to Firebase (except admin-controlled ones)
       await userDoc.set({
         "xp": _xp,
         "stars": _stars,
         "tolims": Tolims,
-        "isLocked": _banned,
-        "uid": _userId, // <--
-
+        "uid": _userId,
         "unlockedLanguages": _unlockedLanguages,
         "unlockedCourses": _unlockedCourses,
-
-        "adsEnabled": _adsEnabled,
-
+        // Skip isLocked and adsEnabled here (admin controls them)
         ...userProfile.toMap(),
-        ...customization.toMap(), // <-- include AVATAR/ BANNER
+        ...customization.toMap(),
         ...learningPreferences.toMap(),
         ...courseProgressionManager.toMap(),
         ...inventoryManager.toMap(),
         ...youtubeProgressManager.toMap(),
-
       }, SetOptions(merge: true));
 
-      print("✅ Local data pushed to Firebase");
+      print("✅ Firebase sync complete: Local data pushed; admin fields pulled.");
     } catch (e) {
       if (kDebugMode) print("❌ Firebase sync failed: $e");
     }
   }
+
 
 
   String generateBackupCode({int length = 6}) {
