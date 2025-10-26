@@ -14,12 +14,15 @@ import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/Settings/SettingPanelInGame.dart';
 import 'package:mortaalim/tools/AnimatedGrid.dart';
 import 'package:mortaalim/tools/Reysable_Tools/SmartDuaaMorningNight_Dialog.dart';
+import 'package:mortaalim/tools/appConfig/AppNotificationDialog/appNotificationDialog.dart';
+import 'package:mortaalim/tools/appConfig/AppNotificationDialog/notificationManager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/Collection/Collection.dart';
 import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/MainProfile_Page/MainProfile_page.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Manager/Services/CardVisibiltyManager.dart';
 import 'XpSystem.dart';
@@ -90,6 +93,12 @@ class _IndexState extends State<Index>
       });
 
       _showDuaaDialog();
+
+      await Future.delayed(const Duration(seconds: 1));
+
+      final locale = Localizations.localeOf(context).languageCode; // e.g. 'en', 'fr', 'ar'
+      final notificationManager = NotificationManager();
+      await notificationManager.showNotificationIfAllowed(context, locale);
     });
 
     _tabController.addListener(() {
@@ -109,6 +118,41 @@ class _IndexState extends State<Index>
       });
     });
   }
+
+  Future<void> _showNotificationDialogIfAllowed() async {
+    final prefs = await SharedPreferences.getInstance();
+    final showNotification = prefs.getBool('showNotificationDialog') ?? true;
+
+    // You can also fetch data from Firestore here
+    // Example fields: title, message, lottieAsset
+    final notificationTitle = "🎉 New Feature!";
+    final notificationMessage =
+        "We’ve added new challenges and improved performance!";
+    final lottieAsset = "assets/lotties/new_update.json";
+
+    if (!showNotification) return;
+
+    if (mounted) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => NotificationDialog(
+          title: notificationTitle,
+          message: notificationMessage,
+          lottieAsset: lottieAsset,
+          onClose: () {
+            Navigator.pop(context);
+          },
+          onDontShowAgain: () async {
+            await prefs.setBool('showNotificationDialog', false);
+            Navigator.pop(context);
+          },
+        ),
+      );
+    }
+  }
+
+
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {

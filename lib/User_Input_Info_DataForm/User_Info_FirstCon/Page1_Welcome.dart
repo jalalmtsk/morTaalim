@@ -112,125 +112,127 @@ class _WelcomePageState extends State<WelcomePage> with TickerProviderStateMixin
     final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
     final audioManager = Provider.of<AudioManager>(context, listen: false);
 
-    return Scaffold(
-      body: AnimatedBuilder(
-        animation: _gradientController,
-        builder: (context, _) {
-          final colors = List<Color>.generate(
-            2,
-                (i) => Color.lerp(
-              gradientSets[currentGradientIndex][i],
-              gradientSets[nextIndex][i],
-              _gradientController.value,
-            )!,
-          );
+    return SafeArea(
+      child: Scaffold(
+        body: AnimatedBuilder(
+          animation: _gradientController,
+          builder: (context, _) {
+            final colors = List<Color>.generate(
+              2,
+                  (i) => Color.lerp(
+                gradientSets[currentGradientIndex][i],
+                gradientSets[nextIndex][i],
+                _gradientController.value,
+              )!,
+            );
 
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: colors,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+            return Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: colors,
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
               ),
-            ),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 20,
-                            offset: const Offset(0, 8),
-                          ),
-                        ],
-                      ),
-                      child: Lottie.asset(
-                        'assets/animations/FirstTouchAnimations/Welcome.json',
-                        width: 260,
-                        height: 260,
-                        repeat: true,
-                      ),
-                    ),
-                    // Fade + Slide Animated Texts with fixed height
-                    FadeTransition(
-                      opacity: _fadeController,
-                      child: SlideTransition(
-                        position: _slideAnimation,
-                        child: SizedBox(
-                          height: 230, // FIXED HEIGHT prevents jumping
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                titles[currentTextIndex],
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontSize: 28,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                  shadows: [
-                                    Shadow(
-                                      blurRadius: 8,
-                                      color: Colors.black26,
-                                      offset: Offset(0, 3),
-                                    )
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                subtitles[currentTextIndex],
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white.withOpacity(0.95),
-                                  height: 1.5,
-                                ),
-                              ),
-                            ],
-                          ),
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.08),
+                              blurRadius: 20,
+                              offset: const Offset(0, 8),
+                            ),
+                          ],
+                        ),
+                        child: Lottie.asset(
+                          'assets/animations/FirstTouchAnimations/Welcome.json',
+                          width: 260,
+                          height: 260,
+                          repeat: true,
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        audioManager.playEventSound("clickButton");
-                        widget.onGetStarted();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        backgroundColor: const Color(0xFF43E97B),
-                      ),
-                      child: SizedBox(
-                        width: 150,
-                        child: Center(
-                          child: Text(
-                            buttonTexts[currentTextIndex],
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                      // Fade + Slide Animated Texts with fixed height
+                      FadeTransition(
+                        opacity: _fadeController,
+                        child: SlideTransition(
+                          position: _slideAnimation,
+                          child: SizedBox(
+                            height: 230, // FIXED HEIGHT prevents jumping
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  titles[currentTextIndex],
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    shadows: [
+                                      Shadow(
+                                        blurRadius: 8,
+                                        color: Colors.black26,
+                                        offset: Offset(0, 3),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  subtitles[currentTextIndex],
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.white.withOpacity(0.95),
+                                    height: 1.5,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          audioManager.playEventSound("clickButton");
+                          widget.onGetStarted();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          backgroundColor: const Color(0xFF43E97B),
+                        ),
+                        child: SizedBox(
+                          width: 150,
+                          child: Center(
+                            child: Text(
+                              buttonTexts[currentTextIndex],
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

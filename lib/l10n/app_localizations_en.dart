@@ -1491,4 +1491,22 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get done => 'Done';
+
+  @override
+  String get loginWithoutGoogle => 'Login without Google';
+
+  @override
+  String get loginWithoutGoogleDescription => 'You are going to log in without Google. After this first login, you will be able to use the app offline.';
+
+  @override
+  String get loginWithGoogle => 'Login with Google';
+
+  @override
+  String get loginWithGoogleDescription => 'You are going to log in with Google. After this first login, you will be able to use the app offline.';
+
+  @override
+  String get manualBackupNotice => 'Data is not synced automatically.\nPlease save manually in the Backup section.';
+
+  @override
+  String get noInternetConnection => 'No internet connection detected';
 }

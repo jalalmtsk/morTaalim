@@ -3052,6 +3052,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Done'**
   String get done;
+
+  /// No description provided for @loginWithoutGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login without Google'**
+  String get loginWithoutGoogle;
+
+  /// No description provided for @loginWithoutGoogleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You are going to log in without Google. After this first login, you will be able to use the app offline.'**
+  String get loginWithoutGoogleDescription;
+
+  /// No description provided for @loginWithGoogle.
+  ///
+  /// In en, this message translates to:
+  /// **'Login with Google'**
+  String get loginWithGoogle;
+
+  /// No description provided for @loginWithGoogleDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'You are going to log in with Google. After this first login, you will be able to use the app offline.'**
+  String get loginWithGoogleDescription;
+
+  /// No description provided for @manualBackupNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'Data is not synced automatically.\nPlease save manually in the Backup section.'**
+  String get manualBackupNotice;
+
+  /// No description provided for @noInternetConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'No internet connection detected'**
+  String get noInternetConnection;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import '../../XpSystem.dart';
 
 class SchoolInfoPage extends StatefulWidget {
@@ -18,10 +18,12 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _schoolNameController = TextEditingController();
 
-  String? _selectedSchoolType; // privé, publique, autre
-  String? _selectedSchoolLevel; // Primaire, Collège, Lycée
+  String? _selectedSchoolType;
+  String? _selectedSchoolLevel;
   String? _selectedGrade;
   String? _selectedLyceeTrack;
+
+  bool? _isStudent; // true = Student, false = Not Student
 
   late AnimationController _gradientController;
   int currentGradientIndex = 0;
@@ -36,34 +38,16 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
     [Colors.teal.shade300, Colors.teal.shade700],
   ];
 
-  final List<String> schoolTypes = ['Privé', 'Publique', 'Autre'];
-  final List<String> schoolLevels = ['Primaire', 'Collège', 'Lycée'];
+  final List<String> schoolTypes = ['Private', 'Public', 'Other'];
+  final List<String> schoolLevels = ['Primary', 'Middle School', 'High School'];
 
   final Map<String, List<String>> gradesByLevel = {
-    'Primaire': [
-      '1ère année primaire (CP)',
-      '2ème année primaire (CE1)',
-      '3ème année primaire (CE2)',
-      '4ème année primaire (CM1)',
-      '5ème année primaire (CM2)',
-      '6ème année primaire (CM3)',
-    ],
-    'Collège': [
-      '7ème année (1ère année collège)',
-      '8ème année (2ème année collège)',
-      '9ème année (3ème année collège)',
-    ],
-    'Lycée': [
-      '(Tronc Commun / TC)',
-      '1ère année bac (Régional)',
-      'Baccalauréat (National)',
-    ],
+    'Primary': ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'],
+    'Middle School': ['Grade 7', 'Grade 8', 'Grade 9'],
+    'High School': ['Common Track', '1st Year Bac', 'Baccalaureate'],
   };
 
-  final List<String> lyceeTracks = [
-    'Science',
-    'Lettre',
-  ];
+  final List<String> lyceeTracks = ['Science', 'Arts'];
 
   @override
   void initState() {
@@ -92,8 +76,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
     final schoolTypeValid = _selectedSchoolType != null && _selectedSchoolType!.isNotEmpty;
     final schoolLevelValid = _selectedSchoolLevel != null && _selectedSchoolLevel!.isNotEmpty;
     final gradeValid = _selectedGrade != null && _selectedGrade!.isNotEmpty;
-
-    final lyceeTrackValid = _selectedSchoolLevel == 'Lycée'
+    final lyceeTrackValid = _selectedSchoolLevel == 'High School'
         ? _selectedLyceeTrack != null && _selectedLyceeTrack!.isNotEmpty
         : true;
 
@@ -122,52 +105,36 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
   }
 
   Future<bool> saveData() async {
-    setState(() {
-      _errorMessage = null;
-    });
+    setState(() { _errorMessage = null; });
 
-    if (!_formKey.currentState!.validate() ||
-        _selectedSchoolType == null ||
+    if (_selectedSchoolType == null ||
         _selectedSchoolLevel == null ||
         _selectedGrade == null ||
-        (_selectedSchoolLevel == 'Lycée' && _selectedLyceeTrack == null)) {
-      setState(() {
-        _errorMessage = "Veuillez remplir correctement tous les champs.";
-      });
+        (_selectedSchoolLevel == 'High School' && _selectedLyceeTrack == null) ||
+        _schoolNameController.text.trim().isEmpty) {
+      setState(() { _errorMessage = "Please complete all fields"; });
       return false;
     }
 
-    setState(() {
-      _isSaving = true;
-    });
-
+    setState(() { _isSaving = true; });
     try {
       final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
-
       experienceManager.setSchoolName(_schoolNameController.text.trim());
       experienceManager.setSchoolType(_selectedSchoolType!);
       experienceManager.setSchoolLevel(_selectedSchoolLevel!);
       experienceManager.setSchoolGrade(_selectedGrade!);
-      if (_selectedSchoolLevel == 'Lycée') {
-        experienceManager.setLyceeTrack(_selectedLyceeTrack!);
-      } else {
-        experienceManager.setLyceeTrack('');
-      }
-
+      experienceManager.setLyceeTrack(_selectedSchoolLevel == 'High School'
+          ? _selectedLyceeTrack!
+          : '');
       return true;
     } catch (e) {
-      setState(() {
-        _errorMessage = "Erreur lors de la sauvegarde des données : $e";
-      });
+      setState(() { _errorMessage = "Error saving data: $e"; });
       return false;
     } finally {
-      if (mounted) {
-        setState(() {
-          _isSaving = false;
-        });
-      }
+      if (mounted) setState(() { _isSaving = false; });
     }
   }
+
 
   @override
   void dispose() {
@@ -200,7 +167,9 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     return TextFormField(
       controller: controller,
-      onTap: (){audioManager.playEventSound('PopButton');},
+      onTap: () {
+        audioManager.playEventSound('PopButton');
+      },
       style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
       decoration: InputDecoration(
         labelText: label,
@@ -241,9 +210,11 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4.0),
       child: DropdownButtonFormField<String>(
-        value: items.contains(value) ? value : null, // <-- Prevent invalid value
-        dropdownColor: Colors.deepOrange.shade400.withValues(alpha: 0.5),
-        onTap: (){audioManager.playEventSound('toggleButton');},
+        value: items.contains(value) ? value : null,
+        dropdownColor: Colors.deepOrange.shade400.withOpacity(0.5),
+        onTap: () {
+          audioManager.playEventSound('toggleButton');
+        },
         decoration: InputDecoration(
           labelText: label,
           labelStyle: const TextStyle(color: Colors.white70, fontSize: 16),
@@ -283,217 +254,257 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
     final audioManager = Provider.of<AudioManager>(context, listen: false);
+
+    final colors = List<Color>.generate(
+      2,
+          (i) => Color.lerp(
+        gradientSets[currentGradientIndex][i],
+        gradientSets[nextIndex][i],
+        _gradientController.value,
+      )!,
+    );
+
     return Scaffold(
-      body: AnimatedBuilder(
-        animation: _gradientController,
-        builder: (context, _) {
-          final colors = List<Color>.generate(
-            2,
-                (i) => Color.lerp(
-              gradientSets[currentGradientIndex][i],
-              gradientSets[nextIndex][i],
-              _gradientController.value,
-            )!,
-          );
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: colors,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              if (_isStudent == null)
+                _buildStudentSelection(audioManager)
+              else
+                _buildFormContent(audioManager),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 
-          return Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: colors,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+  // Student / Not Student Selection
+  Widget _buildStudentSelection(AudioManager audioManager) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            height: 220,
+            child: Lottie.asset(
+              'assets/animations/FirstTouchAnimations/School.json',
+              fit: BoxFit.contain,
             ),
-            child: SafeArea(
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-                    child: Form(
-                      key: _formKey,
-                      child: ListView(
-                        physics: const BouncingScrollPhysics(),
-                        children: [
-                          SizedBox(
-                            height: 220,
-                            child: Center(
-                              child: Lottie.asset(
-                                'assets/animations/FirstTouchAnimations/School.json',
-                                fit: BoxFit.contain,
-                              ),
-                            ),
-                          ),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            "Are you a student?",
+            style: TextStyle(
+                fontSize: 26,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                shadows: [Shadow(blurRadius: 8, color: Colors.black54, offset: Offset(0, 3))]),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  audioManager.playEventSound('clickButton');
+                  setState(() {
+                    _isStudent = true;
+                  });
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple,
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20))),
+                child: const Text("Yes", style: TextStyle(fontSize: 18)),
+              ),
+              const SizedBox(width: 20),
+              ElevatedButton(
+                onPressed: () {
+                  audioManager.playEventSound('clickButton');
+                  setState(() {
+                    _isStudent = false;
+                  });
+                  widget.onNext?.call(); // Skip form
+                },
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orange,
+                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20))),
+                child: const Text("No", style: TextStyle(fontSize: 18)),
+              ),
+            ],
+          )
+        ],
+      ),
+    );
+  }
 
-                          const Text(
-                            "Informations scolaires",
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  blurRadius: 8,
-                                  color: Colors.black54,
-                                  offset: Offset(0, 3),
-                                )
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-
-                          const SizedBox(height: 2),
-
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Text(
-                              "Veuillez entrer le nom de l'école, le type, le niveau, et la classe.",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white70,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          _buildInputCard(
-                            child: _buildInputField(
-                              controller: _schoolNameController,
-                              label: "Nom de l'école",
-                              validatorMessage: "Veuillez saisir le nom de l'école.",
-                              icon: Icons.school_outlined,
-                            ),
-                          ),
-
-                          _buildInputCard(
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: _buildDropdownField(
-                                    label: "Type d'école",
-                                    value: _selectedSchoolType,
-                                    items: schoolTypes,
-                                    validatorMessage: "Sélectionnez le type d'école.",
-                                    onChanged: (val) => setState(() => _selectedSchoolType = val),
-                                    icon: Icons.apartment_outlined,
-                                  ),
-                                ),
-                                const SizedBox(width: 6),
-                                Expanded(
-                                  child: _buildDropdownField(
-                                    label: "Niveau scolaire",
-                                    value: _selectedSchoolLevel,
-                                    items: schoolLevels,
-                                    validatorMessage: "Sélectionnez le niveau scolaire.",
-                                    onChanged: (val) {
-                                      setState(() {
-                                        _selectedSchoolLevel = val;
-                                        _selectedGrade = null;
-                                        _selectedLyceeTrack = null;
-                                      });
-                                      _validateForm();
-                                    },
-                                    icon: Icons.account_tree_outlined,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          if (_selectedSchoolLevel != null)
-                            _buildInputCard(
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    flex: 5,
-                                    child: _buildDropdownField(
-                                      label: "Classe",
-                                      value: _selectedGrade,
-                                      items: gradesByLevel[_selectedSchoolLevel!] ?? [],
-                                      validatorMessage: "Sélectionnez la classe.",
-                                      onChanged: (val) {
-                                        setState(() {
-                                          _selectedGrade = val;
-                                        });
-                                        _validateForm();
-                                      },
-                                      icon: Icons.grade_outlined,
-                                    ),
-                                  ),
-
-                                  if (_selectedSchoolLevel == 'Lycée') ...[
-                                    const SizedBox(width: 6),
-                                    Expanded(
-                                      flex: 2,
-                                      child: _buildDropdownField(
-                                        label: "Filière Lycée",
-                                        value: _selectedLyceeTrack,
-                                        items: lyceeTracks,
-                                        validatorMessage: "Sélectionnez la filière du lycée.",
-                                        onChanged: (val) {
-                                          setState(() {
-                                            _selectedLyceeTrack = val;
-                                          });
-                                          _validateForm();
-                                        },
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              ),
-                            ),
-
-                          if (_errorMessage != null)
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 6),
-                              child: Text(
-                                _errorMessage!,
-                                style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w700),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
-                        ],
-                      ),
+  // Form Content for Students
+  Widget _buildFormContent(AudioManager audioManager) {
+    return Stack(
+      children: [
+        Stack(
+          fit: StackFit.expand,
+          children: [
+            ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+              physics: const BouncingScrollPhysics(),
+              children: [
+                SizedBox(
+                  height: 220,
+                  child: Center(
+                    child: Lottie.asset(
+                      'assets/animations/FirstTouchAnimations/School.json',
+                      fit: BoxFit.contain,
                     ),
                   ),
-
-                  if (_isFormValid)
-                    Positioned(
-                      bottom: 20,
-                      right: 20,
-                      child: FloatingActionButton(
-                        backgroundColor: Colors.white,
-                        foregroundColor: Colors.deepOrange,
-                        elevation: 12,
-                        onPressed: _isSaving
-                            ? null
-                            : () async {
-                          final success = await saveData();
-                          if (success) {
-                            audioManager.playEventSound('clickButton');
-                            widget.onNext?.call();
-                          }
-                        },
-                        child: _isSaving
-                            ? const CircularProgressIndicator(
-                          color: Colors.deepOrange,
-                        )
-                            : const Icon(Icons.arrow_forward, size: 32),
+                ),
+                const Text(
+                  "School Information",
+                  style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      shadows: [Shadow(blurRadius: 8, color: Colors.black54, offset: Offset(0, 3))]),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 10),
+                _buildInputCard(
+                  child: _buildInputField(
+                      controller: _schoolNameController,
+                      label: "School Name",
+                      validatorMessage: "Please enter the school name.",
+                      icon: Icons.school_outlined),
+                ),
+                _buildInputCard(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: _buildDropdownField(
+                          label: "School Type",
+                          value: _selectedSchoolType,
+                          items: schoolTypes,
+                          validatorMessage: "Select school type.",
+                          onChanged: (val) => setState(() => _selectedSchoolType = val),
+                          icon: Icons.apartment_outlined,
+                        ),
                       ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        flex: 4,
+                        child: _buildDropdownField(
+                          label: "School Level",
+                          value: _selectedSchoolLevel,
+                          items: schoolLevels,
+                          validatorMessage: "Select school level.",
+                          onChanged: (val) {
+                            setState(() {
+                              _selectedSchoolLevel = val;
+                              _selectedGrade = null;
+                              _selectedLyceeTrack = null;
+                            });
+                            _validateForm();
+                          },
+                          icon: Icons.account_tree_outlined,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                if (_selectedSchoolLevel != null)
+                  _buildInputCard(
+                    child: Row(
+                      children: [
+                        Expanded(
+                          flex: 5,
+                          child: _buildDropdownField(
+                            label: "Grade",
+                            value: _selectedGrade,
+                            items: gradesByLevel[_selectedSchoolLevel!] ?? [],
+                            validatorMessage: "Select grade.",
+                            onChanged: (val) {
+                              setState(() {
+                                _selectedGrade = val;
+                              });
+                              _validateForm();
+                            },
+                            icon: Icons.grade_outlined,
+                          ),
+                        ),
+                        if (_selectedSchoolLevel == 'High School') ...[
+                          const SizedBox(width: 6),
+                          Expanded(
+                            flex: 3,
+                            child: _buildDropdownField(
+                              label: "High School Track",
+                              value: _selectedLyceeTrack,
+                              items: lyceeTracks,
+                              validatorMessage: "Select high school track.",
+                              onChanged: (val) {
+                                setState(() {
+                                  _selectedLyceeTrack = val;
+                                });
+                                _validateForm();
+                              },
+                            ),
+                          ),
+                        ]
+                      ],
                     ),
-                ],
-              ),
+                  ),
+                if (_errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 6),
+                    child: Text(
+                      _errorMessage!,
+                      style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w700),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                const SizedBox(height: 80), // space for FAB
+              ],
             ),
-          );
-        },
-      ),
+          ],
+        ),
+        if (_isFormValid)
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: FloatingActionButton(
+              backgroundColor: Colors.white,
+              foregroundColor: Colors.deepOrange,
+              elevation: 12,
+              onPressed: _isSaving
+                  ? null
+                  : () async {
+                final success = await saveData();
+                if (success) {
+                  audioManager.playEventSound('clickButton');
+                  widget.onNext?.call();
+                }
+              },
+              child: _isSaving
+                  ? const CircularProgressIndicator(color: Colors.deepOrange)
+                  : const Icon(Icons.arrow_forward, size: 32),
+            ),
+          ),
+      ],
     );
   }
 }

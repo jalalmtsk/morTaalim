@@ -394,7 +394,7 @@
                    "profileInfo": "ⵉⵏⴼⵓⵔⵡⴰⵏ ⵏ ⵉⴼⵔⵓ ⵉⵎⴰⴷⴰⵏⴰⵙ",
                    "email": "ⴰⵎⴰⵣⵉⵍ ⴰⵎⵉⵍⵉⵏⵉ",
 
-                   "dontShowAgain": "ur ssin ara igenwan",
+                   "dontShowAgain": "ⴻⵔ ⵙⵙⵉⵏ ⴰⵔⴰ ⵉⴳⴻⵏⵡⴰⵏ",
                     "informationTechnology": "ⴰⵎⴰⵣⵉⵖ ⵜⴰⵙⵉⵏⴻⵏⵜ",
                     "islam": "ⵉⵙⵍⴰⵎ",
                     "credits": "ⴰⵎⴰⵙⵓⵏ",
@@ -572,7 +572,15 @@
  "backupHowRestoreDesc": "ⵢⴰⵡ 'ⵙⵡⴰⵍ ⵏ ⴰⵎⵓⵔ' ⵓⴷ ⵢⴰⵙ ⵓⵎⵓⵔ ⵏⴰⴳ. ⵓⵙⵙⵓⵍ ⵏ ⵡⴰⵙ ⵓⵔ ⵏ ⵢⴰⵏⵙⵓⵔ.",
  "back": "ⵙⵡⴰⵍ",
  "next": "ⵢⴰⵏⵙ",
- "done": "ⴰⵢⵙⵎ"
+ "done": "ⴰⵢⵙⵎ",
+
+  "loginWithoutGoogle": "ⵙⵉⵏⴽⵓⵍ ⵏⴰⵡⴰⴷ Google",
+   "loginWithoutGoogleDescription": "ⵜⴰⵙⵙⵓⵏⵉⵜ ⵏⴰⵡⴰⴷ Google. ⴰⴱⴱⴰⵔ ⵏ ⵉⴳⴻⵏ ⵜⴰⵡⴰⵙⵜ ⵓⵙⴻⵍⵍⴰⵏ ⵏ ⵜⴰⵡⴰⴽⵍⴰⵏ ⴰⵎⵓⵙⵙⴰ.",
+   "loginWithGoogle": "ⵙⵉⵏⴽⵓⵍ ⵏ Google",
+   "loginWithGoogleDescription": "ⵜⴰⵙⵙⵓⵏⵉⵜ ⵏ Google. ⴰⴱⴱⴰⵔ ⵏ ⵉⴳⴻⵏ ⵜⴰⵡⴰⵙⵜ ⵓⵙⴻⵍⵍⴰⵏ ⵏ ⵜⴰⵡⴰⴽⵍⴰⵏ ⴰⵎⵓⵙⵙⴰ.",
+
+   "manualBackupNotice": "ⴰⵎⴰⵣⵉⴳ ⵏⴰⵡ ⵓⴳⵔⴻⵏⴻⵏ ⴰⵙⵏⵉ ⵓⵙⵙⵉ ⵏⵉⵏⴻⴷⵉ.\nⴰⵢⴰⵡ ⵜⵉⵣⴰⵏⵜ ⴷ ⴰⵏⴽⵓ ⵜⴰⴳⵏⴻⴷⵉ.",
+   "noInternetConnection": "ⴰⵏⴰⵎⴰⵢ ⴰⵏⵙⵉ ⵏⴰⵡ ⵏ ⴰⵎⵔⴰⵙ ⵓⵙⵙⵉ"
 
 
 

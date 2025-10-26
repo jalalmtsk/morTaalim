@@ -341,7 +341,7 @@ class _SettingsPageState extends State<SettingsPage> {
           ListTile(
             title: Text(tr.rateApp),
             leading: const Icon(Icons.star_rate, color: Colors.amber),
-            onTap: () => _launchURL("https://play.google.com/store/apps/details?id=com.example.mortaalim"),
+            onTap: () => _launchURL("https://play.google.com/store/apps/details?id=com.jalnix.moortaalim"),
           ),
         ],
       ),

@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:1083672847922:android:eef60daf141168ce05be2b",
         "android_client_info": {
-          "package_name": "com.example.mortaalim"
+          "package_name": "com.jalnix.moortaalim"
         }
       },
       "oauth_client": [
@@ -17,7 +17,7 @@
           "client_id": "1083672847922-ui2m0tq5tpii46cvgvepugrra33hi1u9.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.mortaalim",
+            "package_name": "com.jalnix.moortaalim",
             "certificate_hash": "d1a719784962dab411a90b08f74815d588398fdd"
           }
         },
@@ -42,7 +42,7 @@
               "client_id": "1083672847922-r9a6ousgai4e34n5tefio7snavqlj5s4.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.example.mortaalim"
+                "bundle_id": "com.jalnix.moortaalim"
               }
             }
           ]

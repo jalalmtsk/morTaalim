@@ -10,6 +10,8 @@ import 'package:mortaalim/User_Input_Info_DataForm/LearningPreferencesForm/Learn
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/MemoryFlip_index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/SurvivalMode/MainSurvivalModePage.dart';
+import 'package:mortaalim/tools/appConfig/BanChecker/BannerChecker.dart';
+import 'package:mortaalim/tools/appConfig/UpdateChecker/update_Checker.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/BannerAndAvatarProfilePage/BannerAvatarProfile.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/MainProfile_Page/Widgets/UserDataProfileEntering.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
@@ -50,13 +52,10 @@ import '../../l10n/app_localizations.dart';
 
 import 'IndexPage.dart';
 import 'Manager/Services/CardVisibiltyManager.dart';
-import 'TestingBeforeProdcution/Hezz2/hezz_gamePage.dart';
-import 'TestingBeforeProdcution/WaterFilledANimatuionCotnrol.dart';
 import 'Themes/AppTheme.dart';
 import 'Themes/ThemeManager.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
-import 'indexPage_tools/Dashboard_Index_tool/Home_Page.dart';
 import 'l10n/amazigh_localizations.dart';
 
 
@@ -118,11 +117,21 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
 
+  @override
 
 
   @override
   void initState() {
     super.initState();
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      BannedChecker().checkIfBanned(uid, context);
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      UpdateChecker().checkForUpdate(navigatorKey.currentContext!);
+    });
+
   }
 
   @override
@@ -251,3 +260,12 @@ class LocalizationOverrideWidget extends StatelessWidget {
     );
   }
 }
+class MyAppStateHelper {
+  static void changeLanguage(BuildContext context, Locale locale) {
+    final state = context.findAncestorStateOfType<_MyAppState>();
+    if (state != null) {
+      state._changeLanguage(locale);
+    }
+  }
+}
+

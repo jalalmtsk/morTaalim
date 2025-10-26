@@ -564,7 +564,15 @@
     "backupHowRestoreDesc": "Verwende 'Backup laden' und füge deinen gespeicherten Code ein. Dein Fortschritt wird sofort wiederhergestellt.",
     "back": "Zurück",
     "next": "Weiter",
-    "done": "Fertig"
+    "done": "Fertig",
+
+     "loginWithoutGoogle": "Ohne Google anmelden",
+      "loginWithoutGoogleDescription": "Sie werden sich ohne Google anmelden. Nach dieser ersten Anmeldung können Sie die App offline nutzen.",
+      "loginWithGoogle": "Mit Google anmelden",
+      "loginWithGoogleDescription": "Sie werden sich mit Google anmelden. Nach dieser ersten Anmeldung können Sie die App offline nutzen.",
+
+      "manualBackupNotice": "Daten werden nicht automatisch synchronisiert.\nBitte speichern Sie manuell im Backup-Bereich.",
+      "noInternetConnection": "Keine Internetverbindung erkannt"
 
 
 

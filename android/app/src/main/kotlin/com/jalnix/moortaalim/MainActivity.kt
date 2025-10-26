@@ -1,4 +1,4 @@
-package com.example.mortaalim
+package com.jalnix.moortaalim
 
 import io.flutter.embedding.android.FlutterActivity
 

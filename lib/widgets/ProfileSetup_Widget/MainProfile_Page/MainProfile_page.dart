@@ -167,9 +167,6 @@ class _MainProfilePageState extends State<MainProfilePage> with SingleTickerProv
 
             const SizedBox(height: 30),
 
-
-
-
             // -------- User Info Row ----------
             Row(
               children: [
@@ -183,7 +180,7 @@ class _MainProfilePageState extends State<MainProfilePage> with SingleTickerProv
             Row(
               children: [
 
-                Expanded(flex: 3,
+                Expanded(
                   child: SwipableSchoolCard (
                     schoolName: user.schoolName.isNotEmpty ? user.schoolName : 'Unknown School',
                     schoolType: user.schoolType.isNotEmpty ? user.schoolType : 'Type Unknown',
@@ -192,14 +189,6 @@ class _MainProfilePageState extends State<MainProfilePage> with SingleTickerProv
                   ),
                 ),
 
-                Expanded(flex: 2,
-                  child: SwipableSchoolCard (
-                    schoolName: user.schoolName.isNotEmpty ? user.schoolName : 'Unknown School',
-                    schoolType: user.schoolType.isNotEmpty ? user.schoolType : 'Type Unknown',
-                    schoolGrade: user.schoolGrade.isNotEmpty ? user.schoolGrade : 'Grade Unknown',
-                    lyceeTrack: user.lyceeTrack.isNotEmpty ? user.lyceeTrack : '',
-                  ),
-                ),
               ],
             ),
 
@@ -207,8 +196,8 @@ class _MainProfilePageState extends State<MainProfilePage> with SingleTickerProv
             InfoProfileCard(icon: Icons.email, title: user.email.isNotEmpty ? user.email : 'No Email', iconColor: Colors.deepPurple),
             Row(
               children: [
-                Expanded(flex :5,child: InfoProfileCard(icon: Icons.person, title: user.gender.isNotEmpty ? user.gender : 'Unknown', iconColor: Colors.pinkAccent)),
-                const SizedBox(width: 12),
+                Expanded(flex :4,child: InfoProfileCard(icon: Icons.person, title: user.gender.isNotEmpty ? user.gender : 'Unknown', iconColor: Colors.pinkAccent)),
+                const SizedBox(width: 4),
                 Expanded(flex: 4,child: InfoProfileCard(icon: Icons.cake, title: "${user.age} years", iconColor: Colors.orangeAccent)),
               ],
             ),
@@ -225,8 +214,8 @@ class _MainProfilePageState extends State<MainProfilePage> with SingleTickerProv
             // XP Progress
             InfoProfileCard(
               icon: Icons.bar_chart,
-              title: "Level $level • $xp XP",
-              subtitle: "Progress ${(progress * 100).toStringAsFixed(1)}%",
+              title: "${tr.level} $level • $xp XP",
+              subtitle: "${tr.progress} ${(progress * 100).toStringAsFixed(1)}%",
               iconColor: favoriteColor,
               gradient: LinearGradient(colors: [favoriteColor.withOpacity(0.3), favoriteColor.withOpacity(0.7)]),
             ),

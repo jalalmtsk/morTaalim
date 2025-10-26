@@ -1491,4 +1491,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get done => 'تم';
+
+  @override
+  String get loginWithoutGoogle => 'تسجيل الدخول بدون جوجل';
+
+  @override
+  String get loginWithoutGoogleDescription => 'سوف تقوم بتسجيل الدخول بدون جوجل. بعد هذا الدخول الأول، ستتمكن من استخدام التطبيق دون اتصال بالإنترنت.';
+
+  @override
+  String get loginWithGoogle => 'تسجيل الدخول باستخدام جوجل';
+
+  @override
+  String get loginWithGoogleDescription => 'سوف تقوم بتسجيل الدخول باستخدام جوجل. بعد هذا الدخول الأول، ستتمكن من استخدام التطبيق دون اتصال بالإنترنت.';
+
+  @override
+  String get manualBackupNotice => 'البيانات لا تتم مزامنتها تلقائيًا.\nيرجى الحفظ يدويًا في قسم النسخ الاحتياطي.';
+
+  @override
+  String get noInternetConnection => 'لم يتم اكتشاف اتصال بالإنترنت';
 }

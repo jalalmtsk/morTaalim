@@ -1491,4 +1491,22 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get done => 'Terminé';
+
+  @override
+  String get loginWithoutGoogle => 'Connexion sans Google';
+
+  @override
+  String get loginWithoutGoogleDescription => 'Vous allez vous connecter sans Google. Après cette première connexion, vous pourrez utiliser l\'application hors ligne.';
+
+  @override
+  String get loginWithGoogle => 'Connexion avec Google';
+
+  @override
+  String get loginWithGoogleDescription => 'Vous allez vous connecter avec Google. Après cette première connexion, vous pourrez utiliser l\'application hors ligne.';
+
+  @override
+  String get manualBackupNotice => 'Les données ne sont pas synchronisées automatiquement.\nVeuillez sauvegarder manuellement dans la section Sauvegarde.';
+
+  @override
+  String get noInternetConnection => 'Aucune connexion internet détectée';
 }

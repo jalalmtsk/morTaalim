@@ -586,7 +586,15 @@
      "backupHowRestoreDesc": "Utilisez 'Charger la sauvegarde' et collez votre code enregistré. Vos progrès seront restaurés instantanément.",
      "back": "Retour",
      "next": "Suivant",
-     "done": "Terminé"
+     "done": "Terminé",
+
+      "loginWithoutGoogle": "Connexion sans Google",
+       "loginWithoutGoogleDescription": "Vous allez vous connecter sans Google. Après cette première connexion, vous pourrez utiliser l'application hors ligne.",
+       "loginWithGoogle": "Connexion avec Google",
+       "loginWithGoogleDescription": "Vous allez vous connecter avec Google. Après cette première connexion, vous pourrez utiliser l'application hors ligne.",
+
+       "manualBackupNotice": "Les données ne sont pas synchronisées automatiquement.\nVeuillez sauvegarder manuellement dans la section Sauvegarde.",
+       "noInternetConnection": "Aucune connexion internet détectée"
 
 
 }

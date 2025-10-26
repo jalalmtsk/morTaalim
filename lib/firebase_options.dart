@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1083672847922',
     projectId: 'moortaalim-58b73',
     storageBucket: 'moortaalim-58b73.firebasestorage.app',
-    iosBundleId: 'com.example.mortaalim',
+    iosBundleId: 'com.jalnix.moortaalim',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1083672847922',
     projectId: 'moortaalim-58b73',
     storageBucket: 'moortaalim-58b73.firebasestorage.app',
-    iosBundleId: 'com.example.mortaalim',
+    iosBundleId: 'com.jalnix.moortaalim',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(

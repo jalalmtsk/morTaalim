@@ -1020,7 +1020,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get email => 'ⴰⵎⴰⵣⵉⵍ ⴰⵎⵉⵍⵉⵏⵉ';
 
   @override
-  String get dontShowAgain => 'ur ssin ara igenwan';
+  String get dontShowAgain => 'ⴻⵔ ⵙⵙⵉⵏ ⴰⵔⴰ ⵉⴳⴻⵏⵡⴰⵏ';
 
   @override
   String get informationTechnology => 'ⴰⵎⴰⵣⵉⵖ ⵜⴰⵙⵉⵏⴻⵏⵜ';
@@ -1491,4 +1491,22 @@ class AppLocalizationsZgh extends AppLocalizations {
 
   @override
   String get done => 'ⴰⵢⵙⵎ';
+
+  @override
+  String get loginWithoutGoogle => 'ⵙⵉⵏⴽⵓⵍ ⵏⴰⵡⴰⴷ Google';
+
+  @override
+  String get loginWithoutGoogleDescription => 'ⵜⴰⵙⵙⵓⵏⵉⵜ ⵏⴰⵡⴰⴷ Google. ⴰⴱⴱⴰⵔ ⵏ ⵉⴳⴻⵏ ⵜⴰⵡⴰⵙⵜ ⵓⵙⴻⵍⵍⴰⵏ ⵏ ⵜⴰⵡⴰⴽⵍⴰⵏ ⴰⵎⵓⵙⵙⴰ.';
+
+  @override
+  String get loginWithGoogle => 'ⵙⵉⵏⴽⵓⵍ ⵏ Google';
+
+  @override
+  String get loginWithGoogleDescription => 'ⵜⴰⵙⵙⵓⵏⵉⵜ ⵏ Google. ⴰⴱⴱⴰⵔ ⵏ ⵉⴳⴻⵏ ⵜⴰⵡⴰⵙⵜ ⵓⵙⴻⵍⵍⴰⵏ ⵏ ⵜⴰⵡⴰⴽⵍⴰⵏ ⴰⵎⵓⵙⵙⴰ.';
+
+  @override
+  String get manualBackupNotice => 'ⴰⵎⴰⵣⵉⴳ ⵏⴰⵡ ⵓⴳⵔⴻⵏⴻⵏ ⴰⵙⵏⵉ ⵓⵙⵙⵉ ⵏⵉⵏⴻⴷⵉ.\nⴰⵢⴰⵡ ⵜⵉⵣⴰⵏⵜ ⴷ ⴰⵏⴽⵓ ⵜⴰⴳⵏⴻⴷⵉ.';
+
+  @override
+  String get noInternetConnection => 'ⴰⵏⴰⵎⴰⵢ ⴰⵏⵙⵉ ⵏⴰⵡ ⵏ ⴰⵎⵔⴰⵙ ⵓⵙⵙⵉ';
 }

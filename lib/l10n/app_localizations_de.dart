@@ -1491,4 +1491,22 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get done => 'Fertig';
+
+  @override
+  String get loginWithoutGoogle => 'Ohne Google anmelden';
+
+  @override
+  String get loginWithoutGoogleDescription => 'Sie werden sich ohne Google anmelden. Nach dieser ersten Anmeldung können Sie die App offline nutzen.';
+
+  @override
+  String get loginWithGoogle => 'Mit Google anmelden';
+
+  @override
+  String get loginWithGoogleDescription => 'Sie werden sich mit Google anmelden. Nach dieser ersten Anmeldung können Sie die App offline nutzen.';
+
+  @override
+  String get manualBackupNotice => 'Daten werden nicht automatisch synchronisiert.\nBitte speichern Sie manuell im Backup-Bereich.';
+
+  @override
+  String get noInternetConnection => 'Keine Internetverbindung erkannt';
 }

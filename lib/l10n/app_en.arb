@@ -580,7 +580,15 @@
        "backupHowRestoreDesc": "Use 'Load Backup' and paste your saved code. Your progress will be restored instantly.",
        "back": "Back",
        "next": "Next",
-       "done": "Done"
+       "done": "Done",
+
+        "loginWithoutGoogle": "Login without Google",
+         "loginWithoutGoogleDescription": "You are going to log in without Google. After this first login, you will be able to use the app offline.",
+         "loginWithGoogle": "Login with Google",
+         "loginWithGoogleDescription": "You are going to log in with Google. After this first login, you will be able to use the app offline.",
+
+         "manualBackupNotice": "Data is not synced automatically.\nPlease save manually in the Backup section.",
+         "noInternetConnection": "No internet connection detected"
 
 
 

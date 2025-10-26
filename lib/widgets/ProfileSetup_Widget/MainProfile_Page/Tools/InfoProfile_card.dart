@@ -92,7 +92,7 @@ class _InfoProfileCardState extends State<InfoProfileCard> with SingleTickerProv
                     ),
                   ],
                 ),
-                child: Icon(widget.icon, color: Colors.white, size: 28),
+                child: Icon(widget.icon, color: Colors.white, size: 24),
               ),
               const SizedBox(width: 16),
               Expanded(
@@ -101,12 +101,12 @@ class _InfoProfileCardState extends State<InfoProfileCard> with SingleTickerProv
                   children: [
                     Text(
                       widget.title,
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     if (widget.subtitle != null)
                       Text(
                         widget.subtitle!,
-                        style: const TextStyle(fontSize: 14, color: Colors.black54),
+                        style: const TextStyle(fontSize: 12, color: Colors.black54),
                       ),
                   ],
                 ),

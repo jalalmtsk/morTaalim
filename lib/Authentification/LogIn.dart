@@ -102,8 +102,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     if (!await _checkConnection()) return;
 
     final confirmed = await _showConfirmationDialog(
-      "Connexion Sans Google",
-      "Vous allez vous connecter Sans Google. Après cette première connexion, vous pourrez utiliser l'application hors ligne.",
+      tr(context).loginWithoutGoogle,
+        tr(context).loginWithoutGoogleDescription
     );
     if (!confirmed) return;
 
@@ -123,9 +123,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     if (!await _checkConnection()) return;
 
     final confirmed = await _showConfirmationDialog(
-      "Connexion avec Google",
-      "Vous allez vous connecter avec Google. Après cette première connexion, vous pourrez utiliser l'application hors ligne.",
-    );
+      tr(context).loginWithGoogle,
+        tr(context).loginWithGoogleDescription    );
     if (!confirmed) return;
 
     _setLoading(true);
@@ -174,7 +173,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     final connectivity = await Connectivity().checkConnectivity();
     if (connectivity == ConnectivityResult.none) {
-      _showError("Aucune connexion internet détectée.");
+      _showError(tr(context).noInternetConnection);
       audioManager.playEventSound("invalid");
 
 
@@ -193,7 +192,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
 
   void _showFriendlyError(Object e) {
     debugPrint("FULL GOOGLE LOGIN ERROR: $e");
-    setState(() => _errorMessage = e.toString()); // Show the real error for testing
+    setState(() => _errorMessage = tr(context).noInternetConnection); // Show the real error for testing
   }
 
   Future<bool> _showConfirmationDialog(String title, String message) async {
@@ -209,7 +208,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               audioManager.playEventSound("cancelButton");
               Navigator.of(context).pop(false);
     } ,
-            child: const Text("Annuler"),
+            child:  Text(tr(context).cancel),
           ),
           ElevatedButton(
             onPressed: () {
@@ -221,7 +220,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
               backgroundColor: const Color(0xFFFF8C42),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            child: const Text("Continuer"),
+            child:  Text(tr(context).confirm),
           ),
         ],
       ),
@@ -270,10 +269,54 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       body: SafeArea(
         child: Center(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                // Language selector dropdown
+                // Stylized language selector button
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.redAccent.withOpacity(0.6),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                          offset: const Offset(2, 2),
+                        ),
+                      ],
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<Locale>(
+                        value: Provider.of<ExperienceManager>(context).locale,
+                        icon: const Icon(Icons.language, color: Colors.black87),
+                        dropdownColor: Colors.white,
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        items: const [
+                          DropdownMenuItem(value: Locale('fr'), child: Text('🇫🇷 FR')),
+                          DropdownMenuItem(value: Locale('en'), child: Text('🇺🇸 EN')),
+                          DropdownMenuItem(value: Locale('ar'), child: Text('🇸🇦 AR')),
+                          DropdownMenuItem(value: Locale('de'), child: Text('🇩🇪 DE')),
+                          DropdownMenuItem(value: Locale('zgh'), child: Text('🇲🇦 ZGH')),
+                          // Ajoute d’autres langues si nécessaire
+                        ],
+                        onChanged: (Locale? newLocale) {
+                          if (newLocale != null) {
+                            MyAppStateHelper.changeLanguage(context, newLocale);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ),
+
                 // Animated Logo
                 ScaleTransition(
                   scale: _logoScale,
@@ -286,7 +329,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     ),
                   ),
                 ),
-                const SizedBox(height: 20),
 
                 // Typewriter Welcome Text
                 Text(
@@ -297,11 +339,11 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                     color: Colors.black87,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 4),
 
                 // Lottie animation
-                Lottie.asset(
-                  'assets/animations/FirstTouchAnimations/progerss.json',
+                Image.asset(
+                  'assets/icons/MoorTaalimLogoChildren_AuthScreen.png',
                   width: 240,
                   height: 240,
                 ),
@@ -333,7 +375,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                   ),
 
                 _buildLoginButton(
-                  text: "Se Connecter Avec Google",
+                  text: tr(context).loginWithGoogle,
                   onPressed: (){
                     audioManager.playEventSound("clickButton");
                     _signInWithGoogle();
@@ -343,7 +385,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 ),
                 const SizedBox(height: 12),
                 _buildLoginButton(
-                  text: "Se Connecter Sans Google",
+                  text:tr(context).loginWithoutGoogle ,
                   onPressed: (){
                     audioManager.playEventSound("clickButton");
                     _signInAnonymously();
@@ -353,9 +395,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                 ),
 
                 const SizedBox(height: 30),
-                const Text(
-                  "Les données ne sont pas synchronisées automatiquement.\n"
-                      "Sauvegardez manuellement dans la section Backup.",
+                 Text(
+                  tr(context).manualBackupNotice,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.black54,
@@ -374,3 +415,6 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     );
   }
 }
+
+
+

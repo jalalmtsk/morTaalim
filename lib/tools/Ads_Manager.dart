@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
@@ -8,10 +9,41 @@ class AdHelper {
     MobileAds.instance.initialize();
   }
 
+  /// Get correct Ad Unit IDs based on Platform
+  static String get bannerAdUnitId {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-9936922975297046/2736323402'; // Android Banner
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-9936922975297046/5532318884'; // iOS Banner
+    } else {
+      throw UnsupportedError('Unsupported platform');
+    }
+  }
+
+  static String get interstitialAdUnitId {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-9936922975297046/8354774722'; // Android Interstitial
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-9936922975297046/5809033948'; // iOS Interstitial
+    } else {
+      throw UnsupportedError('Unsupported platform');
+    }
+  }
+
+  static String get rewardedAdUnitId {
+    if (Platform.isAndroid) {
+      return 'ca-app-pub-9936922975297046/5494650006'; // Android Rewarded
+    } else if (Platform.isIOS) {
+      return 'ca-app-pub-9936922975297046/9162133201'; // iOS Rewarded
+    } else {
+      throw UnsupportedError('Unsupported platform');
+    }
+  }
+
   /// Banner Ad
   static BannerAd getBannerAd(Function onAdLoaded) {
     final BannerAd banner = BannerAd(
-      adUnitId: 'ca-app-pub-9936922975297046/2736323402', // ✅ real ID
+      adUnitId: bannerAdUnitId,
       request: const AdRequest(),
       size: AdSize.banner,
       listener: BannerAdListener(
@@ -31,21 +63,19 @@ class AdHelper {
     required BuildContext context,
     Function? onDismissed,
   }) async {
-    // Show loading dialog while fetching ad
+    // Show loading dialog
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const Center(
-        child: CircularProgressIndicator(color: Colors.deepOrange),
-      ),
+      builder: (_) =>
+      const Center(child: CircularProgressIndicator(color: Colors.deepOrange)),
     );
 
     await InterstitialAd.load(
-      adUnitId: 'ca-app-pub-9936922975297046/8354774722', // ✅  real ID
+      adUnitId: interstitialAdUnitId,
       request: const AdRequest(),
       adLoadCallback: InterstitialAdLoadCallback(
         onAdLoaded: (InterstitialAd ad) {
-          // Close loading safely
           if (Navigator.canPop(context)) Navigator.of(context).pop();
 
           ad.fullScreenContentCallback = FullScreenContentCallback(
@@ -63,7 +93,6 @@ class AdHelper {
           ad.show();
         },
         onAdFailedToLoad: (error) {
-          // Close loading safely
           if (Navigator.canPop(context)) Navigator.of(context).pop();
           debugPrint('❌ InterstitialAd failed to load: ${error.message}');
           onDismissed?.call();
@@ -72,44 +101,36 @@ class AdHelper {
     );
   }
 
-
   /// Rewarded Ad with Loading UI
   static Future<void> showRewardedAdWithLoading(
       BuildContext context,
       VoidCallback onRewardEarned,
       ) async {
-    // Show loading dialog
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const Center(
-        child: CircularProgressIndicator(color: Colors.deepOrange),
-      ),
+      builder: (_) =>
+      const Center(child: CircularProgressIndicator(color: Colors.deepOrange)),
     );
 
     await RewardedAd.load(
-      adUnitId: 'ca-app-pub-9936922975297046/5494650006', // ✅ Real ID
+      adUnitId: rewardedAdUnitId,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (RewardedAd ad) {
-          // Close loading safely
           if (Navigator.canPop(context)) Navigator.of(context).pop();
 
           ad.fullScreenContentCallback = FullScreenContentCallback(
-            onAdDismissedFullScreenContent: (ad) {
-              ad.dispose();
-            },
+            onAdDismissedFullScreenContent: (ad) => ad.dispose(),
             onAdFailedToShowFullScreenContent: (ad, error) {
               ad.dispose();
               debugPrint('❌ RewardedAd failed to show: ${error.message}');
             },
           );
 
-          ad.show(
-            onUserEarnedReward: (ad, reward) {
-              onRewardEarned();
-            },
-          );
+          ad.show(onUserEarnedReward: (ad, reward) {
+            onRewardEarned();
+          });
         },
         onAdFailedToLoad: (LoadAdError error) {
           if (Navigator.canPop(context)) Navigator.of(context).pop();
@@ -126,17 +147,15 @@ class AdHelper {
   static Future<bool> showRewardedAd(BuildContext context) {
     Completer<bool> completer = Completer<bool>();
 
-    // Show loading spinner dialog while loading ad
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const Center(
-        child: CircularProgressIndicator(color: Colors.deepOrange),
-      ),
+      builder: (_) =>
+      const Center(child: CircularProgressIndicator(color: Colors.deepOrange)),
     );
 
     RewardedAd.load(
-      adUnitId: 'ca-app-pub-9936922975297046/5494650006', // REAL ID
+      adUnitId: rewardedAdUnitId,
       request: const AdRequest(),
       rewardedAdLoadCallback: RewardedAdLoadCallback(
         onAdLoaded: (RewardedAd ad) {

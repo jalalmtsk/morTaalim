@@ -47,6 +47,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
 
   // User personal info
   String? _userId;
+  bool _banned = false; // <-- New banned flag
 
   UserProfile userProfile = UserProfile();
   YoutubeProgressManager youtubeProgressManager = YoutubeProgressManager();
@@ -113,6 +114,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   int get xp => _xp;
   int get stars => _stars;
   int get saveTokenCount => Tolims;
+  bool get banned => _banned;
 
   //------------------------------------------------------------------//
 
@@ -149,6 +151,14 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     if (userProfile.fullName != name) {
       userProfile.fullName = name;
       _saveData(); // ✅ Save change
+      notifyListeners();
+    }
+  }
+
+  void setBanned(bool value) {
+    if (_banned != value) {
+      _banned = value;
+      _saveData(); // persist to SharedPreferences
       notifyListeners();
     }
   }
@@ -754,6 +764,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _xp = prefs.getInt('xp') ?? 0;
     _stars = prefs.getInt('stars') ?? 5;
     Tolims = prefs.getInt('saveTokens') ?? 20;
+    _banned = prefs.getBool('banned') ?? false;
 
     _unlockedCourses = prefs.getStringList('unlockedCourses') ?? ['AlphaDraw', 'BrainQuest'];
     _unlockedLanguages = prefs.getStringList('unlockedLanguages') ?? ['arabic', 'french'];
@@ -774,6 +785,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     await prefs.setInt('xp', _xp);
     await prefs.setInt('stars', _stars);
     await prefs.setInt('saveTokens', Tolims);
+    await prefs.setBool('banned', _banned);
 
     await prefs.setStringList('unlockedCourses', _unlockedCourses);
     await prefs.setStringList('unlockedLanguages', _unlockedLanguages);
@@ -809,6 +821,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
         "xp": _xp,
         "stars": _stars,
         "tolims": Tolims,
+        "isLocked": _banned,
+        "uid": _userId, // <--
 
         "unlockedLanguages": _unlockedLanguages,
         "unlockedCourses": _unlockedCourses,
@@ -948,6 +962,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   void init(BuildContext context) {
+
   }
 
   // ADS MANAGER
