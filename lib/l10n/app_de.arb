@@ -572,7 +572,13 @@
       "loginWithGoogleDescription": "Sie werden sich mit Google anmelden. Nach dieser ersten Anmeldung können Sie die App offline nutzen.",
 
       "manualBackupNotice": "Daten werden nicht automatisch synchronisiert.\nBitte speichern Sie manuell im Backup-Bereich.",
-      "noInternetConnection": "Keine Internetverbindung erkannt"
+      "noInternetConnection": "Keine Internetverbindung erkannt",
+
+       "grade": "Klassenstufe",
+        "selectGrade": "Bitte wählen Sie eine Klassenstufe aus",
+        "no": "Nein",
+        "yes": "Ja",
+        "areYouAStudent": "Sind Sie ein Schüler?"
 
 
 

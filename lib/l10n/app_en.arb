@@ -588,7 +588,13 @@
          "loginWithGoogleDescription": "You are going to log in with Google. After this first login, you will be able to use the app offline.",
 
          "manualBackupNotice": "Data is not synced automatically.\nPlease save manually in the Backup section.",
-         "noInternetConnection": "No internet connection detected"
+         "noInternetConnection": "No internet connection detected",
+
+           "grade": "Grade",
+           "selectGrade": "Please select a grade",
+           "no": "No",
+           "yes": "Yes",
+           "areYouAStudent": "Are you a student?"
 
 
 

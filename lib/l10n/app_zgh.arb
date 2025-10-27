@@ -580,7 +580,13 @@
    "loginWithGoogleDescription": "ⵜⴰⵙⵙⵓⵏⵉⵜ ⵏ Google. ⴰⴱⴱⴰⵔ ⵏ ⵉⴳⴻⵏ ⵜⴰⵡⴰⵙⵜ ⵓⵙⴻⵍⵍⴰⵏ ⵏ ⵜⴰⵡⴰⴽⵍⴰⵏ ⴰⵎⵓⵙⵙⴰ.",
 
    "manualBackupNotice": "ⴰⵎⴰⵣⵉⴳ ⵏⴰⵡ ⵓⴳⵔⴻⵏⴻⵏ ⴰⵙⵏⵉ ⵓⵙⵙⵉ ⵏⵉⵏⴻⴷⵉ.\nⴰⵢⴰⵡ ⵜⵉⵣⴰⵏⵜ ⴷ ⴰⵏⴽⵓ ⵜⴰⴳⵏⴻⴷⵉ.",
-   "noInternetConnection": "ⴰⵏⴰⵎⴰⵢ ⴰⵏⵙⵉ ⵏⴰⵡ ⵏ ⴰⵎⵔⴰⵙ ⵓⵙⵙⵉ"
+   "noInternetConnection": "ⴰⵏⴰⵎⴰⵢ ⴰⵏⵙⵉ ⵏⴰⵡ ⵏ ⴰⵎⵔⴰⵙ ⵓⵙⵙⵉ",
+
+    "grade": "ⴰⵙⵎⴷ ⵏ ⵜⵎⵙⵙⵉⵔⵜ",
+     "selectGrade": "ⴰⵔ ⵉⵣⵔⵉ ⵜⴰⵙⵎⴷ ⵏ ⵜⵎⵙⵙⵉⵔⵜ",
+     "no": "ⵓⵔ",
+     "yes": "ⵢⴰⵏ",
+     "areYouAStudent": "ⴰⵎⴰⵏⵓ ⴰⴷ ⴰⵙⵙⵎⴻⵏ?"
 
 
 

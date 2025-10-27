@@ -3088,6 +3088,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No internet connection detected'**
   String get noInternetConnection;
+
+  /// No description provided for @grade.
+  ///
+  /// In en, this message translates to:
+  /// **'Grade'**
+  String get grade;
+
+  /// No description provided for @selectGrade.
+  ///
+  /// In en, this message translates to:
+  /// **'Please select a grade'**
+  String get selectGrade;
+
+  /// No description provided for @no.
+  ///
+  /// In en, this message translates to:
+  /// **'No'**
+  String get no;
+
+  /// No description provided for @yes.
+  ///
+  /// In en, this message translates to:
+  /// **'Yes'**
+  String get yes;
+
+  /// No description provided for @areYouAStudent.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you a student?'**
+  String get areYouAStudent;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

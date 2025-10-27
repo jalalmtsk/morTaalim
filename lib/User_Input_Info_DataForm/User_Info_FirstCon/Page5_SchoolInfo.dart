@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:mortaalim/tools/Reysable_Tools/MarqueeEffect_TextTool.dart';
 import 'package:provider/provider.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import '../../XpSystem.dart';
+import '../../main.dart';
 
 class SchoolInfoPage extends StatefulWidget {
   final VoidCallback? onNext;
@@ -70,6 +72,83 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
 
     _gradientController.forward();
   }
+
+
+  String localizeSchoolType(BuildContext context, String type) {
+    switch (type) {
+      case 'Private':
+        return tr(context).schoolTypePrivate;
+      case 'Public':
+        return tr(context).schoolTypePublic;
+      case 'Other':
+        return tr(context).schoolTypeOther;
+      default:
+        return type;
+    }
+  }
+
+  String localizeSchoolLevel(BuildContext context, String level) {
+    switch (level) {
+      case 'Primary':
+        return tr(context).schoolLevelPrimary;
+      case 'Middle School':
+        return tr(context).schoolLevelMiddle;
+      case 'High School':
+        return tr(context).schoolLevelHigh;
+      default:
+        return level;
+    }
+  }
+
+  String localizeGrade(BuildContext context, String level, String grade) {
+    switch (level) {
+      case 'Primary':
+        switch (grade) {
+          case 'Grade 1': return tr(context).gradesPrimary1;
+          case 'Grade 2': return tr(context).gradesPrimary2;
+          case 'Grade 3': return tr(context).gradesPrimary3;
+          case 'Grade 4': return tr(context).gradesPrimary4;
+          case 'Grade 5': return tr(context).gradesPrimary5;
+          case 'Grade 6': return tr(context).gradesPrimary6;
+        }
+        break;
+      case 'Middle School':
+        switch (grade) {
+          case 'Grade 7': return tr(context).gradesMiddle1;
+          case 'Grade 8': return tr(context).gradesMiddle2;
+          case 'Grade 9': return tr(context).gradesMiddle3;
+        }
+        break;
+      case 'High School':
+        switch (grade) {
+          case 'Common Track': return tr(context).gradesHigh1;
+          case '1st Year Bac': return tr(context).gradesHigh2;
+          case 'Baccalaureate': return tr(context).gradesHigh3;
+        }
+        break;
+    }
+    return grade;
+  }
+
+  String _getLocalizedValue(String id, String value) {
+    switch (id) {
+      case 'schoolType':
+        return localizeSchoolType(context, value);
+      case 'schoolLevel':
+        return localizeSchoolLevel(context, value);
+      case 'grade':
+        return localizeGrade(context, _selectedSchoolLevel ?? '', value);
+      case 'track':
+        switch (value) {
+          case 'Science': return tr(context).lyceeTrackScience;
+          case 'Arts': return tr(context).lyceeTrackLiterature;
+          default: return value;
+        }
+      default:
+        return value;
+    }
+  }
+
 
   void _validateForm() {
     final schoolNameValid = _schoolNameController.text.trim().isNotEmpty;
@@ -150,9 +229,9 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
       elevation: 8,
       shadowColor: Colors.black45,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 7),
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
         child: child,
       ),
     );
@@ -199,6 +278,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
   }
 
   Widget _buildDropdownField({
+    required String id, // 👈 add this
     required String label,
     String? value,
     required List<String> items,
@@ -208,7 +288,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
   }) {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+      padding: const EdgeInsets.symmetric(horizontal: 1.0),
       child: DropdownButtonFormField<String>(
         value: items.contains(value) ? value : null,
         dropdownColor: Colors.deepOrange.shade400.withOpacity(0.5),
@@ -217,8 +297,8 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
         },
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: const TextStyle(color: Colors.white70, fontSize: 16),
-          prefixIcon: icon != null ? Icon(icon, color: Colors.white70, size: 24) : null,
+          labelStyle: const TextStyle(color: Colors.white70, fontSize: 14),
+          prefixIcon: icon != null ? Icon(icon, color: Colors.white70, size: 20) : null,
           enabledBorder: OutlineInputBorder(
             gapPadding: 1,
             borderRadius: BorderRadius.circular(25),
@@ -237,7 +317,10 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
         items: items
             .map((e) => DropdownMenuItem<String>(
           value: e,
-          child: Text(e, style: const TextStyle(color: Colors.white)),
+          child: Text(
+             _getLocalizedValue(id, e),
+            style: const TextStyle(color: Colors.white),
+          ),
         ))
             .toList(),
         onChanged: (val) {
@@ -305,8 +388,8 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
             ),
           ),
           const SizedBox(height: 20),
-          const Text(
-            "Are you a student?",
+           Text(
+            tr(context).areYouAStudent,
             style: TextStyle(
                 fontSize: 26,
                 color: Colors.white,
@@ -325,11 +408,11 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
                   });
                 },
                 style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
+                    backgroundColor: Colors.green,
                     padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20))),
-                child: const Text("Yes", style: TextStyle(fontSize: 18)),
+                child:  Text(tr(context).yes, style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
               const SizedBox(width: 20),
               ElevatedButton(
@@ -345,7 +428,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
                     padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20))),
-                child: const Text("No", style: TextStyle(fontSize: 18)),
+                child:  Text(tr(context).no, style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ],
           )
@@ -374,8 +457,8 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
                     ),
                   ),
                 ),
-                const Text(
-                  "School Information",
+                 Text(
+                  tr(context).schoolInformation,
                   style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,
@@ -387,32 +470,34 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
                 _buildInputCard(
                   child: _buildInputField(
                       controller: _schoolNameController,
-                      label: "School Name",
-                      validatorMessage: "Please enter the school name.",
+                      label: tr(context).schoolName,
+                      validatorMessage: tr(context).pleaseEnterSchoolName,
                       icon: Icons.school_outlined),
                 ),
                 _buildInputCard(
                   child: Row(
                     children: [
                       Expanded(
-                        flex: 3,
-                        child: _buildDropdownField(
-                          label: "School Type",
+                        flex: 5,
+                        child:_buildDropdownField(
+                          id: 'schoolType',
+                          label: tr(context).schoolType,
                           value: _selectedSchoolType,
                           items: schoolTypes,
-                          validatorMessage: "Select school type.",
+                          validatorMessage: tr(context).selectSchoolType,
                           onChanged: (val) => setState(() => _selectedSchoolType = val),
                           icon: Icons.apartment_outlined,
-                        ),
+                        )
                       ),
                       const SizedBox(width: 6),
                       Expanded(
-                        flex: 4,
+                        flex: 6,
                         child: _buildDropdownField(
-                          label: "School Level",
+                          id: 'schoolLevel',
+                          label: tr(context).schoolLevel,
                           value: _selectedSchoolLevel,
                           items: schoolLevels,
-                          validatorMessage: "Select school level.",
+                          validatorMessage: tr(context).selectSchoolLevel,
                           onChanged: (val) {
                             setState(() {
                               _selectedSchoolLevel = val;
@@ -427,17 +512,20 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
                     ],
                   ),
                 ),
+
+
                 if (_selectedSchoolLevel != null)
                   _buildInputCard(
                     child: Row(
                       children: [
                         Expanded(
-                          flex: 5,
+                          flex: 7,
                           child: _buildDropdownField(
-                            label: "Grade",
+                            id: 'grade',
+                            label: tr(context).grade,
                             value: _selectedGrade,
                             items: gradesByLevel[_selectedSchoolLevel!] ?? [],
-                            validatorMessage: "Select grade.",
+                            validatorMessage:tr(context).selectGrade,
                             onChanged: (val) {
                               setState(() {
                                 _selectedGrade = val;
@@ -447,27 +535,31 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
                             icon: Icons.grade_outlined,
                           ),
                         ),
-                        if (_selectedSchoolLevel == 'High School') ...[
-                          const SizedBox(width: 6),
-                          Expanded(
-                            flex: 3,
-                            child: _buildDropdownField(
-                              label: "High School Track",
-                              value: _selectedLyceeTrack,
-                              items: lyceeTracks,
-                              validatorMessage: "Select high school track.",
-                              onChanged: (val) {
-                                setState(() {
-                                  _selectedLyceeTrack = val;
-                                });
-                                _validateForm();
-                              },
-                            ),
-                          ),
-                        ]
                       ],
                     ),
                   ),
+
+                _buildInputCard(child: Row(children: [
+                  if (_selectedSchoolLevel == 'High School') ...[
+                    const SizedBox(width: 2),
+                    Expanded(
+                      flex: 4,
+                      child: _buildDropdownField(
+                        id: 'track',
+                        label: tr(context).highSchoolTrack,
+                        value: _selectedLyceeTrack,
+                        items: lyceeTracks,
+                        validatorMessage: tr(context).selectHighSchoolTrack,
+                        onChanged: (val) {
+                          setState(() {
+                            _selectedLyceeTrack = val;
+                          });
+                          _validateForm();
+                        },
+                      ),
+                    ),
+                  ]],)),
+
                 if (_errorMessage != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 6),

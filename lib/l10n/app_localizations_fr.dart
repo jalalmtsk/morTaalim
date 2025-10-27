@@ -1509,4 +1509,19 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get noInternetConnection => 'Aucune connexion internet détectée';
+
+  @override
+  String get grade => 'Niveau';
+
+  @override
+  String get selectGrade => 'Veuillez sélectionner un niveau';
+
+  @override
+  String get no => 'Non';
+
+  @override
+  String get yes => 'Oui';
+
+  @override
+  String get areYouAStudent => 'Êtes-vous étudiant ?';
 }

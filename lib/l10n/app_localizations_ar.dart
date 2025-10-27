@@ -1509,4 +1509,19 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noInternetConnection => 'لم يتم اكتشاف اتصال بالإنترنت';
+
+  @override
+  String get grade => 'المستوى الدراسي';
+
+  @override
+  String get selectGrade => 'يرجى اختيار المستوى الدراسي';
+
+  @override
+  String get no => 'لا';
+
+  @override
+  String get yes => 'نعم';
+
+  @override
+  String get areYouAStudent => 'هل أنت طالب؟';
 }

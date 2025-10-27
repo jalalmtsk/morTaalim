@@ -1509,4 +1509,19 @@ class AppLocalizationsZgh extends AppLocalizations {
 
   @override
   String get noInternetConnection => 'ⴰⵏⴰⵎⴰⵢ ⴰⵏⵙⵉ ⵏⴰⵡ ⵏ ⴰⵎⵔⴰⵙ ⵓⵙⵙⵉ';
+
+  @override
+  String get grade => 'ⴰⵙⵎⴷ ⵏ ⵜⵎⵙⵙⵉⵔⵜ';
+
+  @override
+  String get selectGrade => 'ⴰⵔ ⵉⵣⵔⵉ ⵜⴰⵙⵎⴷ ⵏ ⵜⵎⵙⵙⵉⵔⵜ';
+
+  @override
+  String get no => 'ⵓⵔ';
+
+  @override
+  String get yes => 'ⵢⴰⵏ';
+
+  @override
+  String get areYouAStudent => 'ⴰⵎⴰⵏⵓ ⴰⴷ ⴰⵙⵙⵎⴻⵏ?';
 }

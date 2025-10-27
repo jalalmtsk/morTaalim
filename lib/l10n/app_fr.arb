@@ -594,7 +594,14 @@
        "loginWithGoogleDescription": "Vous allez vous connecter avec Google. Après cette première connexion, vous pourrez utiliser l'application hors ligne.",
 
        "manualBackupNotice": "Les données ne sont pas synchronisées automatiquement.\nVeuillez sauvegarder manuellement dans la section Sauvegarde.",
-       "noInternetConnection": "Aucune connexion internet détectée"
+       "noInternetConnection": "Aucune connexion internet détectée",
+
+        "grade": "Niveau",
+         "selectGrade": "Veuillez sélectionner un niveau",
+         "no": "Non",
+         "yes": "Oui",
+         "areYouAStudent": "Êtes-vous étudiant ?"
+
 
 
 }
