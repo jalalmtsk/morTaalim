@@ -6,6 +6,13 @@ import 'package:flutter/services.dart';
 
 import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Manager/models/LearningPrefrences.dart';
+import 'package:mortaalim/Pet/pet_home_page.dart';
+import 'package:mortaalim/TestingBeforeProdcution/DragonGameFruit.dart';
+import 'package:mortaalim/TestingBeforeProdcution/Hezz2FinalGame/Screen/CardGameLauncher.dart';
+import 'package:mortaalim/TestingBeforeProdcution/MazeGame.dart';
+import 'package:mortaalim/TestingBeforeProdcution/SnakeLadder.dart';
+import 'package:mortaalim/TestingBeforeProdcution/UNOLIKE%20GAME.dart';
+import 'package:mortaalim/TestingBeforeProdcution/tasbiheTest.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/LearningPreferencesForm/LearningPreferencesEnteringForm.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/MemoryFlip_index.dart';
@@ -195,7 +202,6 @@ class _MyAppState extends State<MyApp> {
 
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
-
             'Shop': (context) => MainShopPageIndex(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),

@@ -558,7 +558,9 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
                         },
                       ),
                     ),
-                  ]],)),
+                  ]
+                ],
+                )),
 
                 if (_errorMessage != null)
                   Padding(
