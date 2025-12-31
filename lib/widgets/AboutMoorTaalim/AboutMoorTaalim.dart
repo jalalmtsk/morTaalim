@@ -295,7 +295,7 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
                       Colors.black,
                           ()  {
                             audioManager.playEventSound("clickButton");
-                            _launchURL("https://tiktok.com/moortaalim");
+                            _launchURL("https://www.tiktok.com/@moortaalim");
                           }
                     ),
                   ],

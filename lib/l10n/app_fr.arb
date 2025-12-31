@@ -600,7 +600,24 @@
          "selectGrade": "Veuillez sélectionner un niveau",
          "no": "Non",
          "yes": "Oui",
-         "areYouAStudent": "Êtes-vous étudiant ?"
+         "areYouAStudent": "Êtes-vous étudiant ?",
+           "preferNotToSay": "Préfère ne pas répondre",
+         "elephant": "Éléphant",
+           "rock": "Roche",
+           "book": "Livre",
+           "feather": "Plume",
+           "balloon": "Ballon",
+           "leaf": "Feuille",
+
+           "heavy": "Lourd",
+           "light": "Léger",
+
+           "heavyLightGame": "Jeu Lourd ou Léger",
+           "dragItemsToCorrectSide": "Glissez les éléments du côté correct",
+             "wrongDrop": "Oups ! Mauvais emplacement, réessayez.",
+             "finishedAllLevels": "Vous avez terminé tous les niveaux ! Félicitations !",
+             "levelStart": "Le niveau {level} commence maintenant !",
+             "mistakes": "Erreurs",
 
 
 

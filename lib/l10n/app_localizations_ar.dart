@@ -1524,4 +1524,48 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get areYouAStudent => 'هل أنت طالب؟';
+
+  @override
+  String get preferNotToSay => 'أفضل عدم الإفصاح';
+
+  @override
+  String get elephant => 'فيل';
+
+  @override
+  String get rock => 'صخرة';
+
+  @override
+  String get book => 'كتاب';
+
+  @override
+  String get feather => 'ريشة';
+
+  @override
+  String get balloon => 'بالون';
+
+  @override
+  String get leaf => 'ورقة شجر';
+
+  @override
+  String get heavy => 'ثقيل';
+
+  @override
+  String get light => 'خفيف';
+
+  @override
+  String get heavyLightGame => 'لعبة الثقيل والخفيف';
+
+  @override
+  String get dragItemsToCorrectSide => 'اسحب العناصر إلى الجانب الصحيح';
+
+  @override
+  String get wrongDrop => 'خطأ! حاول مرة أخرى.';
+
+  @override
+  String get finishedAllLevels => 'لقد أكملت كل المستويات! تهانينا!';
+
+  @override
+  String levelStart(Object level) {
+    return 'المستوى $level يبدأ الآن!';
+  }
 }

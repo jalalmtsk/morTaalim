@@ -337,6 +337,8 @@ class _GameGridState extends State<GameGrid>
                 },
               ),
             ),
+            //TODO: DEV ONLY
+            /*
             ElevatedButton(
               style: ElevatedButton.styleFrom(backgroundColor: Colors.redAccent),
               onPressed: () {
@@ -368,6 +370,7 @@ class _GameGridState extends State<GameGrid>
               },
               child: const Text('Reset Purchases (Dev Only)'),
             ),
+             */
           ],
         ),
         Positioned.fill(

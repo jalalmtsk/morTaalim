@@ -124,12 +124,16 @@ class IndexIslamicEducation1Practise extends StatelessWidget {
                 imagePath: "assets/images/UI/BackGrounds/GamePractise_BG/IslamicEducation_bg/ChooseTheImageIslamic.jpg",
                 onTap: () => navigateTo(context, MatchWordToImage(words: wuduStepsList)),
               ),
-              _buildExerciseCard(
+
+             //TODO: NEEDS IMAGES
+             /* _buildExerciseCard(
                 context,
                 title: tr(context).pillarOfIslam,
                 imagePath: "assets/images/UI/BackGrounds/GamePractise_BG/IslamicEducation_bg/PillarOfIslam.jpg",
                 onTap: () => navigateTo(context, PillarsGame()),
               ),
+
+              */
             ],
           ),
         ),

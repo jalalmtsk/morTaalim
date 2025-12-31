@@ -1524,4 +1524,48 @@ class AppLocalizationsZgh extends AppLocalizations {
 
   @override
   String get areYouAStudent => 'ⴰⵎⴰⵏⵓ ⴰⴷ ⴰⵙⵙⵎⴻⵏ?';
+
+  @override
+  String get preferNotToSay => 'ⴰⵎⴰⵣⵉⵖ ⵏ ⵢⵓⵔⵉⴷ';
+
+  @override
+  String get elephant => 'ⴰⵍⵉⴼⴰⵏⵜ';
+
+  @override
+  String get rock => 'ⵓⵍⵎⵎⴰⵏ';
+
+  @override
+  String get book => 'ⴰⵙⵉⴹⵓⵙ';
+
+  @override
+  String get feather => 'ⴰⵖⴰⴷⴰⵍ';
+
+  @override
+  String get balloon => 'ⴰⴱⴰⵍⵓⵏ';
+
+  @override
+  String get leaf => 'ⵓⵙⵙⴰⵎ';
+
+  @override
+  String get heavy => 'ⵙⵉⵏⴰⵏ';
+
+  @override
+  String get light => 'ⵖⵔⴰⵏ';
+
+  @override
+  String get heavyLightGame => 'ⴰⵢⴷⴰⵍ ⵏ ⵙⵉⵏⴰⵏ ⴷ ⵖⵔⴰⵏ';
+
+  @override
+  String get dragItemsToCorrectSide => 'ⴰⴷⴷⵓ ⴰⵎⵙⵙⴰⵎ ⴰⵏⴰⵢ ⴰⵙⴽⵍⵍⵓⵙ';
+
+  @override
+  String get wrongDrop => 'ⴰⵣⵓⵍ! ⵓⵙⴽⵏ ⵉⵎⵎⴰⵔⵓ, ⵙⴰⵏⴰⵎ ⵡⴰⵙⵙⵓⵙ.';
+
+  @override
+  String get finishedAllLevels => 'ⴰⵎⴰⵣⵉⵖ! ⵜⵉⵏⵏⴰⵢⵉⵏ ⴰⵍⵍⵉ ⵓⵙⴽⵓⵏ! ⵢⵓⵙⵙⴰⵏ!';
+
+  @override
+  String levelStart(Object level) {
+    return 'ⵉⵎⵎⴰⵔ $level ⵙⵏⴰⵏ ⵢⵓⵙⵙⴰⵏ!';
+  }
 }

@@ -182,12 +182,22 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
       return;
     }
 
-    if (key == 'clickButton' || key == 'cancelButton' || key == 'toggleButton' || key == 'clickButton2' || key == 'PopButton' || key == 'PopClick' ) {
-      await playButtonSound(path);
-    } else {
-      await playSfx(path);
+    try {
+      if (key == 'clickButton' ||
+          key == 'cancelButton' ||
+          key == 'toggleButton' ||
+          key == 'clickButton2' ||
+          key == 'PopButton' ||
+          key == 'PopClick') {
+        await playButtonSound(path);
+      } else {
+        await playSfx(path);
+      }
+    } catch (e) {
+      if (kDebugMode) print('[AudioManager] Failed to play sound "$key": $e');
     }
   }
+
 
 
   // ------------ SFX -------------

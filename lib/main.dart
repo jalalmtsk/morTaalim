@@ -6,26 +6,17 @@ import 'package:flutter/services.dart';
 
 import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Manager/models/LearningPrefrences.dart';
-import 'package:mortaalim/Pet/pet_home_page.dart';
-import 'package:mortaalim/TestingBeforeProdcution/DragonGameFruit.dart';
-import 'package:mortaalim/TestingBeforeProdcution/Hezz2FinalGame/Screen/CardGameLauncher.dart';
-import 'package:mortaalim/TestingBeforeProdcution/MazeGame.dart';
-import 'package:mortaalim/TestingBeforeProdcution/SnakeLadder.dart';
-import 'package:mortaalim/TestingBeforeProdcution/UNOLIKE%20GAME.dart';
-import 'package:mortaalim/TestingBeforeProdcution/tasbiheTest.dart';
-import 'package:mortaalim/User_Input_Info_DataForm/LearningPreferencesForm/LearningPreferencesEnteringForm.dart';
+
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
 import 'package:mortaalim/games/MemoryFlipGame/MemoryFlip_index.dart';
-import 'package:mortaalim/games/MemoryFlipGame/SurvivalMode/MainSurvivalModePage.dart';
 import 'package:mortaalim/tools/appConfig/BanChecker/BannerChecker.dart';
 import 'package:mortaalim/tools/appConfig/UpdateChecker/update_Checker.dart';
+import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/BannerAndAvatarProfilePage/BannerAvatarProfile.dart';
-import 'package:mortaalim/widgets/ProfileSetup_Widget/MainProfile_Page/Widgets/UserDataProfileEntering.dart';
-import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
+
 import 'package:mortaalim/courses/primaire1Page/index_1PrimairePage.dart';
 import 'package:mortaalim/firebase_options.dart';
 import 'package:mortaalim/games/BreakingWalls/main_Qoridor.dart';
-import 'package:mortaalim/games/PuzzzleGame/Puzzle_Game.dart';
 import 'package:mortaalim/games/SugarSmash/SugraSmash.dart';
 
 import 'package:mortaalim/tools/Ads_Manager.dart';
@@ -37,6 +28,7 @@ import 'package:mortaalim/games/App_stories/favorite_Word/favorite_Page.dart';
 import 'package:mortaalim/games/App_stories/story_data.dart';  // Import your story list here
 import 'package:mortaalim/games/IQTest_game/iqGame_data.dart';
 import 'package:mortaalim/games/Piano_Game/Piano_main_page.dart';
+
 import 'package:mortaalim/games/Quiz_Game/quiz_Page.dart';
 import 'package:mortaalim/games/Shapes_game/Shapes_main.dart';
 import 'package:mortaalim/games/SpeedBombGame/speedBomb.dart';
@@ -55,6 +47,7 @@ import 'package:mortaalim/widgets/SplashPage/splashScreen.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
 import '../../l10n/app_localizations.dart';
 
 import 'IndexPage.dart';
@@ -64,7 +57,6 @@ import 'Themes/ThemeManager.dart';
 import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
 import 'l10n/amazigh_localizations.dart';
-
 
 final String appVersion = "1.0.0 (Build 1)";
 
@@ -77,7 +69,6 @@ final MusicRouteObserver routeObserver = MusicRouteObserver();
 final AudioManager  audioManager = AudioManager();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
 
   // Firebase Initialisation
   await Firebase.initializeApp(
@@ -117,7 +108,6 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
-
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -127,7 +117,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final uid = FirebaseAuth.instance.currentUser?.uid;
 
@@ -149,13 +138,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-
-
-
-
   @override
   Widget build(BuildContext context) {
-    final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
     return Consumer<ExperienceManager>(
       builder: (context, xpManager, child) {
         final currentLocale = Locale(xpManager.userProfile.preferredLanguage);
@@ -181,7 +165,6 @@ class _MyAppState extends State<MyApp> {
           routes: {
             'Index': (context) => Index(),
 
-
             'DrawingAlphabet': (context) => LanguageSelectorPage(onChangeLocale: _changeLanguage),
             'QuizGameApp': (context) => const QuizGameApp(),
             'AppStories': (context) => StoriesGridPage(stories: stories),
@@ -199,12 +182,12 @@ class _MyAppState extends State<MyApp> {
             "BreakingWalls": (context) => BreakingWalls(),
             "MemoryFlip" : (context) => MFIndexPage(),
 
-
             'index1Primaire': (context) => Index1Primaire(),
             'Profile': (context) => const BannerAvatarProfile(),
             'Shop': (context) => MainShopPageIndex(),
             'Credits': (context) => CreditsPage(),
             'ComingSoon': (context) => ComingSoonPage(),
+            'ComingSoonNotPage': (context) => ComingSoonNotPage(),
             'Setting': (context) => SettingsPage(onChangeLocale: _changeLanguage),
             'Splash': (context) => SplashPage(),
             "Auth": (context) => AuthGate(),
@@ -234,10 +217,8 @@ class _MyAppState extends State<MyApp> {
             if (locale.languageCode == 'zgh') {
               return const Locale('en');
             }
-
             return supportedLocales.first;
           },
-
           supportedLocales: const [
             Locale("fr"),
             Locale("ar"),
@@ -254,7 +235,6 @@ class _MyAppState extends State<MyApp> {
       },
     );
   }
-
   void _changeLanguage(Locale locale) {
     Provider.of<ExperienceManager>(navigatorKey.currentContext!, listen: false)
         .setPreferredLanguage(locale.languageCode);

@@ -578,7 +578,24 @@
         "selectGrade": "Bitte wählen Sie eine Klassenstufe aus",
         "no": "Nein",
         "yes": "Ja",
-        "areYouAStudent": "Sind Sie ein Schüler?"
+        "areYouAStudent": "Sind Sie ein Schüler?",
+         "preferNotToSay": "Möchte ich nicht angeben",
+        "elephant": "Elefant",
+         "rock": "Fels",
+         "book": "Buch",
+         "feather": "Feder",
+         "balloon": "Ballon",
+         "leaf": "Blatt",
+         "heavy": "Schwer",
+         "light": "Leicht",
+         "heavyLightGame": "Schwer-und-Leicht-Spiel",
+         "dragItemsToCorrectSide": "Ziehe die Gegenstände auf die richtige Seite",
+          "wrongDrop": "Hoppla! Falsches Feld, versuche es noch einmal.",
+          "finishedAllLevels": "Du hast alle Level abgeschlossen! Glückwunsch!",
+          "levelStart": "Level {level} beginnt jetzt!",
+            "mistakes": "Fehler",
+
+
 
 
 

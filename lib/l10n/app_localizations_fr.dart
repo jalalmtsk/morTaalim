@@ -1524,4 +1524,48 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get areYouAStudent => 'Êtes-vous étudiant ?';
+
+  @override
+  String get preferNotToSay => 'Préfère ne pas répondre';
+
+  @override
+  String get elephant => 'Éléphant';
+
+  @override
+  String get rock => 'Roche';
+
+  @override
+  String get book => 'Livre';
+
+  @override
+  String get feather => 'Plume';
+
+  @override
+  String get balloon => 'Ballon';
+
+  @override
+  String get leaf => 'Feuille';
+
+  @override
+  String get heavy => 'Lourd';
+
+  @override
+  String get light => 'Léger';
+
+  @override
+  String get heavyLightGame => 'Jeu Lourd ou Léger';
+
+  @override
+  String get dragItemsToCorrectSide => 'Glissez les éléments du côté correct';
+
+  @override
+  String get wrongDrop => 'Oups ! Mauvais emplacement, réessayez.';
+
+  @override
+  String get finishedAllLevels => 'Vous avez terminé tous les niveaux ! Félicitations !';
+
+  @override
+  String levelStart(Object level) {
+    return 'Le niveau $level commence maintenant !';
+  }
 }

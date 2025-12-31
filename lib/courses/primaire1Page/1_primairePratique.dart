@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/main.dart';
+import 'package:mortaalim/widgets/ComingSoon.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mortaalim/l10n/app_localizations.dart';
 
@@ -136,7 +137,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique> {
       case 'IndexFrench1Practise':
         return IndexFrench1Practise();
       case 'IndexArabic1Practise':
-        return IndexArabic1Practise();
+        return ComingSoonPage();
       case 'IndexScience1Practise':
         return IndexScience1Practise();
       case 'IndexIslamicEducation1Practise':

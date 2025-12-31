@@ -586,7 +586,24 @@
      "selectGrade": "ⴰⵔ ⵉⵣⵔⵉ ⵜⴰⵙⵎⴷ ⵏ ⵜⵎⵙⵙⵉⵔⵜ",
      "no": "ⵓⵔ",
      "yes": "ⵢⴰⵏ",
-     "areYouAStudent": "ⴰⵎⴰⵏⵓ ⴰⴷ ⴰⵙⵙⵎⴻⵏ?"
+     "areYouAStudent": "ⴰⵎⴰⵏⵓ ⴰⴷ ⴰⵙⵙⵎⴻⵏ?",
+       "preferNotToSay": "ⴰⵎⴰⵣⵉⵖ ⵏ ⵢⵓⵔⵉⴷ",
+      "elephant": "ⴰⵍⵉⴼⴰⵏⵜ",
+       "rock": "ⵓⵍⵎⵎⴰⵏ",
+       "book": "ⴰⵙⵉⴹⵓⵙ",
+       "feather": "ⴰⵖⴰⴷⴰⵍ",
+       "balloon": "ⴰⴱⴰⵍⵓⵏ",
+       "leaf": "ⵓⵙⵙⴰⵎ",
+
+       "heavy": "ⵙⵉⵏⴰⵏ",
+       "light": "ⵖⵔⴰⵏ",
+
+       "heavyLightGame": "ⴰⵢⴷⴰⵍ ⵏ ⵙⵉⵏⴰⵏ ⴷ ⵖⵔⴰⵏ",
+       "dragItemsToCorrectSide": "ⴰⴷⴷⵓ ⴰⵎⵙⵙⴰⵎ ⴰⵏⴰⵢ ⴰⵙⴽⵍⵍⵓⵙ",
+      "wrongDrop": "ⴰⵣⵓⵍ! ⵓⵙⴽⵏ ⵉⵎⵎⴰⵔⵓ, ⵙⴰⵏⴰⵎ ⵡⴰⵙⵙⵓⵙ.",
+        "finishedAllLevels": "ⴰⵎⴰⵣⵉⵖ! ⵜⵉⵏⵏⴰⵢⵉⵏ ⴰⵍⵍⵉ ⵓⵙⴽⵓⵏ! ⵢⵓⵙⵙⴰⵏ!",
+        "levelStart": "ⵉⵎⵎⴰⵔ {level} ⵙⵏⴰⵏ ⵢⵓⵙⵙⴰⵏ!",
+          "mistakes": "ⵉⵣⵣⵔⵉⵎⵏ",
 
 
 

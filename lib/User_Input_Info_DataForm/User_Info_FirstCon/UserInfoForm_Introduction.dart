@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/Page5_SchoolInfo.dart';
+import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/page2_age.dart';
 import 'package:provider/provider.dart';
 import '../../tools/audio_tool/Audio_Manager.dart';
 import 'Page1_Welcome.dart';
@@ -21,7 +22,7 @@ class UserInfoForm extends StatefulWidget {
 class _UserInfoFormState extends State<UserInfoForm> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
-  final int totalPages = 7;
+  final int totalPages = 8;
 
 
   bool canGoNextFromLanguage = false;
@@ -89,6 +90,7 @@ class _UserInfoFormState extends State<UserInfoForm> {
                   WelcomePage(onGetStarted: _nextPage),
                   LanguageTouch(
                     onLanguageSelected: _onLanguageSelected,),
+                  AgeCheckPage(onNext: _nextPage,),
                   NameAgePage(onNext: _nextPage),
                   CityCountryPage(onNext: _nextPage),
                   SchoolInfoPage(onNext: _nextPage),

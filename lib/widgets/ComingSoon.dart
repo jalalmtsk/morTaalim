@@ -66,18 +66,8 @@ class ComingSoonPage extends StatelessWidget {
                       color: Colors.purple,
                         onPressed: () {
                           audioManager.playEventSound('clickButton');
-                          _launchUrl('https://tiktok.com/@YOUR_USERNAME');
+                          _launchUrl('https://www.tiktok.com/@moortaalim');
                         }                     ),
-                    const SizedBox(width: 20),
-                    IconButton(
-                      icon: FaIcon(FontAwesomeIcons.youtube),
-                      iconSize: iconSize,
-                      color: Colors.red,
-                        onPressed: () {
-                          audioManager.playEventSound('clickButton');
-                          _launchUrl('https://tiktok.com/@YOUR_USERNAME');
-                        }
-                    ),
                     const SizedBox(width: 20),
                     IconButton(
                       icon: FaIcon(FontAwesomeIcons.tiktok),
@@ -85,7 +75,7 @@ class ComingSoonPage extends StatelessWidget {
                       color: Colors.black,
                       onPressed: () {
                         audioManager.playEventSound('clickButton');
-                        _launchUrl('https://tiktok.com/@YOUR_USERNAME');
+                        _launchUrl('https://www.tiktok.com/@moortaalim');
                       }
                     ),
                   ],

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 
+import '../../main.dart';
 
 class HeavyLightApp extends StatelessWidget {
   const HeavyLightApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return  HeavyLightGame();
+    return const HeavyLightGame();
   }
 }
 
@@ -19,45 +20,46 @@ class HeavyLightGame extends StatefulWidget {
 }
 
 class _HeavyLightGameState extends State<HeavyLightGame> {
-  final List<List<Map<String, dynamic>>> levels = [
+  // Raw levels with localization keys
+  final List<List<Map<String, dynamic>>> rawLevels = [
     [
       {
-        "label": "Elephant",
+        "key": "elephant",
         "image": "assets/images/PractiseImage/HeavyLightImages/elephant.jpg",
         "type": "heavy",
         "sound": "assets/sounds/elephant.mp3",
         "wrongSound": "assets/sounds/wrong.mp3"
       },
       {
-        "label": "Rock",
+        "key": "rock",
         "image": "assets/images/PractiseImage/HeavyLightImages/rock.png",
         "type": "heavy",
         "sound": "assets/sounds/rock.mp3",
         "wrongSound": "assets/sounds/wrong.mp3"
       },
       {
-        "label": "Book",
+        "key": "book",
         "image": "assets/images/PractiseImage/HeavyLightImages/book.png",
         "type": "heavy",
         "sound": "assets/sounds/book.mp3",
         "wrongSound": "assets/sounds/wrong.mp3"
       },
       {
-        "label": "Feather",
+        "key": "feather",
         "image": "assets/images/PractiseImage/HeavyLightImages/feather.png",
         "type": "light",
         "sound": "assets/sounds/feather.mp3",
         "wrongSound": "assets/sounds/wrong.mp3"
       },
       {
-        "label": "Balloon",
+        "key": "balloon",
         "image": "assets/images/PractiseImage/HeavyLightImages/ball.png",
         "type": "light",
         "sound": "assets/sounds/balloon.mp3",
         "wrongSound": "assets/sounds/wrong.mp3"
       },
       {
-        "label": "Leaf",
+        "key": "leaf",
         "image": "assets/images/PractiseImage/HeavyLightImages/leaf.png",
         "type": "light",
         "sound": "assets/sounds/leaf.mp3",
@@ -71,13 +73,41 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
   int currentLevel = 0;
 
   final ValueNotifier<String?> hoveredZone = ValueNotifier(null);
-
   final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
-    currentItems = List.from(levels[currentLevel]);
+    // Populate localized labels after the first frame
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        currentItems = rawLevels[currentLevel].map((item) {
+          return {
+            ...item,
+            "label": _getLocalizedLabel(item['key']),
+          };
+        }).toList();
+      });
+    });
+  }
+
+  String _getLocalizedLabel(String key) {
+    switch (key) {
+      case "elephant":
+        return tr(context).elephant;
+      case "rock":
+        return tr(context).rock;
+      case "book":
+        return tr(context).book;
+      case "feather":
+        return tr(context).feather;
+      case "balloon":
+        return tr(context).balloon;
+      case "leaf":
+        return tr(context).leaf;
+      default:
+        return key;
+    }
   }
 
   @override
@@ -89,7 +119,12 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
   void _resetGame() {
     setState(() {
       score.clear();
-      currentItems = List.from(levels[currentLevel]);
+      currentItems = rawLevels[currentLevel].map((item) {
+        return {
+          ...item,
+          "label": _getLocalizedLabel(item['key']),
+        };
+      }).toList();
     });
   }
 
@@ -104,20 +139,25 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
 
   void _onCorrectDrop() {
     if (score.length == currentItems.length) {
-      if (currentLevel + 1 < levels.length) {
+      if (currentLevel + 1 < rawLevels.length) {
         setState(() {
           currentLevel++;
           score.clear();
-          currentItems = List.from(levels[currentLevel]);
+          currentItems = rawLevels[currentLevel].map((item) {
+            return {
+              ...item,
+              "label": _getLocalizedLabel(item['key']),
+            };
+          }).toList();
         });
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Level ${currentLevel + 1} starts now!'),
+          content: Text(tr(context).levelStart(currentLevel + 1)),
           backgroundColor: Colors.blueAccent,
           duration: const Duration(seconds: 2),
         ));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text('🎉 You finished all levels! Congrats!'),
+          content: Text(tr(context).finishedAllLevels),
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 3),
         ));
@@ -134,7 +174,7 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
       backgroundColor: Colors.teal.shade50,
       appBar: AppBar(
         title: Text(
-          'Heavy or Light? - Level ${currentLevel + 1}',
+          '${tr(context).heavyLight} - ${tr(context).level} ${currentLevel + 1}',
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontFamily: 'ComicSans',
@@ -147,7 +187,6 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
-            tooltip: 'Reset Level',
             onPressed: _resetGame,
           ),
         ],
@@ -164,7 +203,7 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
                     valueListenable: hoveredZone,
                     builder: (context, value, _) {
                       return _buildDropZone(
-                        'Light',
+                        tr(context).light,
                         'light',
                         isHighlighted: value == 'light',
                       );
@@ -174,7 +213,7 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
                     valueListenable: hoveredZone,
                     builder: (context, value, _) {
                       return _buildDropZone(
-                        'Heavy',
+                        tr(context).heavy,
                         'heavy',
                         isHighlighted: value == 'heavy',
                       );
@@ -227,7 +266,8 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: dragging ? Colors.teal.withOpacity(0.4) : Colors.grey.withOpacity(0.3),
+            color:
+            dragging ? Colors.teal.withOpacity(0.4) : Colors.grey.withOpacity(0.3),
             blurRadius: 8,
             spreadRadius: 1,
             offset: const Offset(0, 4),
@@ -261,7 +301,7 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
     return DragTarget<Map<String, dynamic>>(
       onWillAccept: (data) {
         hoveredZone.value = type;
-        return true; // allow all drops
+        return true;
       },
       onLeave: (data) {
         hoveredZone.value = null;
@@ -274,7 +314,7 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
         if (correct) {
           _playSound(receivedItem['sound']);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: const Text('Great job!'),
+            content: Text(tr(context).greatJob),
             backgroundColor: Colors.green,
             duration: const Duration(milliseconds: 900),
             behavior: SnackBarBehavior.floating,
@@ -285,10 +325,9 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
           });
           _onCorrectDrop();
         } else {
-          // On wrong drop: play wrong sound & move item to the end of currentItems
           _playSound(receivedItem['wrongSound'] ?? 'assets/sounds/wrong.mp3');
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            content: const Text('Oops! Wrong drop, try again.'),
+            content: Text(tr(context).wrongDrop),
             backgroundColor: Colors.red,
             duration: const Duration(milliseconds: 900),
             behavior: SnackBarBehavior.floating,
@@ -296,9 +335,7 @@ class _HeavyLightGameState extends State<HeavyLightGame> {
           ));
 
           setState(() {
-            // Remove from current position
             currentItems.removeWhere((item) => item['label'] == receivedItem['label']);
-            // Add to the end
             currentItems.add(receivedItem);
           });
         }

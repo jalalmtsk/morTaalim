@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import '../../XpSystem.dart';
+import '../../main.dart';
 import '../../tools/Ads_Manager.dart';
 
 class ColorMatchingGame extends StatelessWidget {
@@ -150,7 +151,7 @@ class _ColorMatchingGameExerciseState extends State<ColorMatchingGameExercise> {
       backgroundColor: Colors.deepPurple.shade50,
       appBar: AppBar(
         backgroundColor: themeColor,
-        title: Center(child: Text('Jeu des Couleurs', style: TextStyle(fontWeight: FontWeight.bold))),
+        title: Center(child: Text(tr(context).findColor, style: TextStyle(fontWeight: FontWeight.bold))),
       ),
       body: Stack(
         children: [
@@ -161,12 +162,14 @@ class _ColorMatchingGameExerciseState extends State<ColorMatchingGameExercise> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text("🎉 Bien joué !",
+                  Text(
+                      textAlign: TextAlign.center,
+                      tr(context).keepUpTheGoodWork,
                       style: TextStyle(fontSize: 38, fontWeight: FontWeight.bold, color: themeColor)),
                   SizedBox(height: 16),
-                  Text("Tu as terminé la partie !", style: TextStyle(fontSize: 18)),
-                  Text("Score : $score / 10", style: TextStyle(fontSize: 24)),
-                  Text("Fautes : $wrong", style: TextStyle(fontSize: 20, color: Colors.red)),
+                  Text(tr(context).gameOver, style: TextStyle(fontSize: 18)),
+                  Text("${tr(context).score} : $score / 10", style: TextStyle(fontSize: 24)),
+                  Text("${"tr(context).mistakes"} : $wrong", style: TextStyle(fontSize: 20, color: Colors.red)),
                   SizedBox(height: 24),
                   if (_showFinalCelebration)
                     SizedBox(
@@ -181,7 +184,7 @@ class _ColorMatchingGameExerciseState extends State<ColorMatchingGameExercise> {
                       padding: EdgeInsets.symmetric(horizontal: 40, vertical: 14),
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                     ),
-                    child: Text("Rejouer", style: TextStyle(fontSize: 22, color: Colors.white)),
+                    child: Text(tr(context).playAgain, style: TextStyle(fontSize: 22, color: Colors.white)),
                   ),
                 ],
               ),
@@ -202,11 +205,9 @@ class _ColorMatchingGameExerciseState extends State<ColorMatchingGameExercise> {
                   style: TextStyle(fontSize: 24, fontWeight: FontWeight.w600, color: themeColor),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 20),
                 Text(current['emoji'] ?? '❓', style: TextStyle(fontSize: 80)),
-                Spacer(),
                 Wrap(
-                  spacing: 14,
+                  spacing: 8,
                   runSpacing: 14,
                   alignment: WrapAlignment.center,
                   children: options.map((option) {
@@ -259,7 +260,7 @@ class _ColorMatchingGameExerciseState extends State<ColorMatchingGameExercise> {
 
   Widget _buildStatCard(String label, String value, Color color) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
       decoration: BoxDecoration(
         color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(16),
@@ -268,8 +269,8 @@ class _ColorMatchingGameExerciseState extends State<ColorMatchingGameExercise> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Text(label,
-              style: TextStyle(fontSize: 16, color: color, fontWeight: FontWeight.w700)),
-          Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color)),
+              style: TextStyle(fontSize: 14, color: color, fontWeight: FontWeight.w700)),
+          Text(value, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: color)),
         ],
       ),
     );

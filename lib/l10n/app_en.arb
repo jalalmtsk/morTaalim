@@ -594,7 +594,23 @@
            "selectGrade": "Please select a grade",
            "no": "No",
            "yes": "Yes",
-           "areYouAStudent": "Are you a student?"
+           "areYouAStudent": "Are you a student?",
+            "preferNotToSay": "Prefer not to say",
+
+            "elephant": "Elephant",
+            "rock": "Rock",
+            "book": "Book",
+            "feather": "Feather",
+            "balloon": "Balloon",
+            "leaf": "Leaf",
+            "heavy": "Heavy",
+            "light": "Light",
+            "heavyLightGame": "Heavy and Light Game",
+            "dragItemsToCorrectSide": "Drag each item to the correct side",
+              "wrongDrop": "Oops! Wrong drop, try again.",
+              "finishedAllLevels": "You finished all levels! Congrats!",
+              "levelStart": "Level {level} starts now!",
+                "mistakes": "Mistakes"
 
 
 

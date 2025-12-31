@@ -34,6 +34,8 @@ class _NameAgePageState extends State<NameAgePage>
     [const Color(0xFFB2FEFA), const Color(0xFF0ED2F7)],
   ];
 
+  bool isMinor = false;
+
   @override
   void initState() {
     super.initState();
@@ -47,6 +49,7 @@ class _NameAgePageState extends State<NameAgePage>
       vsync: this,
       duration: const Duration(seconds: 6),
     )..addStatusListener((status) {
+      if (!mounted) return;   // ✅ Prevent crash after dispose()
       if (status == AnimationStatus.completed) {
         setState(() {
           currentGradientIndex =
@@ -59,100 +62,77 @@ class _NameAgePageState extends State<NameAgePage>
     _gradientController.forward();
   }
 
-  void _validateForm() {
-    final nameValid = _nameController.text.trim().isNotEmpty;
-    final lastNameValid = _lastNameController.text.trim().isNotEmpty;
-    final ageText = _ageController.text.trim();
-    final ageValid = ageText.isNotEmpty &&
-        int.tryParse(ageText) != null &&
-        int.parse(ageText) > 0;
-
-    final isValid = nameValid && lastNameValid && ageValid;
-
-    if (isValid != _isFormValid) {
-      setState(() {
-        _isFormValid = isValid;
-      });
-    }
-  }
-
   Future<void> _loadProfile() async {
     final prefs = await SharedPreferences.getInstance();
-    final experienceManager =
-    Provider.of<ExperienceManager>(context, listen: false);
-    final user = experienceManager.userProfile;
+    final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
 
-    final savedName = prefs.getString('name') ?? user.fullName;
-    final savedLastName = prefs.getString('lastName') ?? user.lastName;
-    final savedAge = prefs.getInt('age') ?? user.age;
+    int savedAge = prefs.getInt('age') ?? experienceManager.userProfile.age;
 
-    experienceManager.setFullName(savedName);
-    experienceManager.setLastName(savedLastName);
-    experienceManager.setAge(savedAge);
+    isMinor = savedAge < 18;
 
-    setState(() {
-      _nameController.text = savedName;
-      _lastNameController.text = savedLastName;
-      _ageController.text = (savedAge > 0) ? savedAge.toString() : '';
-    });
+    _ageController.text = savedAge > 0 ? savedAge.toString() : "";
+
+    _nameController.text =
+        prefs.getString('name') ?? experienceManager.userProfile.fullName;
+
+    if (!isMinor) {
+      _lastNameController.text =
+          prefs.getString('lastName') ?? experienceManager.userProfile.lastName;
+    }
 
     _validateForm();
   }
 
+  void _validateForm() {
+    final nameValid = _nameController.text.trim().isNotEmpty;
+    final ageValid = _ageController.text.trim().isNotEmpty;
+
+    bool lastNameValid = true;
+    if (!isMinor) {
+      lastNameValid = _lastNameController.text.trim().isNotEmpty;
+    }
+
+    _isFormValid = nameValid && ageValid && lastNameValid;
+    setState(() {});
+  }
+
   Future<bool> saveData() async {
-    setState(() {
-      _errorMessage = null;
-    });
+    if (!_formKey.currentState!.validate()) return false;
 
-    if (!_formKey.currentState!.validate()) {
-      setState(() {
-        _errorMessage = "Veuillez remplir correctement tous les champs.";
-      });
-      return false;
-    }
+    final prefs = await SharedPreferences.getInstance();
+    final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
 
-    try {
-      final experienceManager =
-      Provider.of<ExperienceManager>(context, listen: false);
-      final prefs = await SharedPreferences.getInstance();
+    final name = _nameController.text.trim();
+    final age = int.parse(_ageController.text.trim());
 
-      final name = _nameController.text.trim();
-      final lastName = _lastNameController.text.trim();
-      final age = int.parse(_ageController.text.trim());
+    final lastName = isMinor ? "" : _lastNameController.text.trim();
 
-      await prefs.setString('name', name);
-      await prefs.setString('lastName', lastName);
-      await prefs.setInt('age', age);
+    await prefs.setString('name', name);
+    await prefs.setInt('age', age);
+    await prefs.setString('lastName', lastName);
 
-      experienceManager.setFullName(name);
-      experienceManager.setLastName(lastName);
-      experienceManager.setAge(age);
+    experienceManager.setFullName(name);
+    experienceManager.setAge(age);
+    experienceManager.setLastName(lastName);
 
-      return true;
-    } catch (e) {
-      setState(() {
-        _errorMessage = "Erreur lors de la sauvegarde des données : $e";
-      });
-      return false;
-    }
+    return true;
   }
 
   @override
   void dispose() {
     _gradientController.dispose();
-    _nameController.removeListener(_validateForm);
-    _lastNameController.removeListener(_validateForm);
-    _ageController.removeListener(_validateForm);
     _nameController.dispose();
     _lastNameController.dispose();
     _ageController.dispose();
     super.dispose();
   }
 
+
   @override
   Widget build(BuildContext context) {
-    final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
     final audioManager = Provider.of<AudioManager>(context, listen: false);
+    final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
+
     return Scaffold(
       body: AnimatedBuilder(
         animation: _gradientController,
@@ -178,7 +158,7 @@ class _NameAgePageState extends State<NameAgePage>
               child: Stack(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(24.0),
+                    padding: const EdgeInsets.all(24),
                     child: Form(
                       key: _formKey,
                       child: ListView(
@@ -188,104 +168,52 @@ class _NameAgePageState extends State<NameAgePage>
                             child: Center(
                               child: Lottie.asset(
                                 'assets/animations/FirstTouchAnimations/Learning.json',
-                                fit: BoxFit.contain,
                               ),
                             ),
                           ),
 
-                          const SizedBox(height: 10),
-
-                           Text(
-                            tr(context).letsGetToKnowEachOther,
-                            style: TextStyle(
-                              fontSize: 28,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              shadows: [
-                                Shadow(
-                                  blurRadius: 8,
-                                  color: Colors.black38,
-                                  offset: Offset(0, 2),
-                                )
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-
-                          const SizedBox(height: 4),
+                          const SizedBox(height: 20),
 
                           Text(
-                            tr(context).fillInYourInformation,
+                            tr(context).letsGetToKnowEachOther,
                             textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white.withOpacity(0.9),
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
 
-                          const SizedBox(height: 40),
-
-                          if (_errorMessage != null)
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 12),
-                              child: Text(
-                                _errorMessage!,
-                                style: const TextStyle(color: Colors.red),
-                                textAlign: TextAlign.center,
-                              ),
-                            ),
+                          const SizedBox(height: 35),
 
                           _buildInputField(
                             controller: _nameController,
-                            label: tr(context).firstName,
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return tr(context).pleaseEnterYourFirstName;
-                              }
-                              return null;
-                            },
-                            onTap: ()
-                            {
-                              audioManager.playEventSound('PopButton');
-                            }
+                            label:isMinor ? tr(context).username : tr(context).firstName,
+                            onTap: () => audioManager.playEventSound('PopButton'),
+                            validator: (v) =>
+                            v == null || v.trim().isEmpty
+                                ? tr(context).pleaseEnterName
+                                : null,
                           ),
 
                           const SizedBox(height: 16),
 
-                          _buildInputField(
-                            controller: _lastNameController,
-                            label: tr(context).lastName,
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return tr(context).pleaseEnterYourLastName;
-                              }
-                              return null;
-                            },
-                            onTap: (){
-                              audioManager.playEventSound('PopButton');}
-                          ),
+                          if (!isMinor) ...[
+                            _buildInputField(
+                              controller: _lastNameController,
+                              label: tr(context).lastName,
+                              onTap: () => audioManager.playEventSound('PopButton'),
+                              validator: (v) {
+                                if (isMinor) return null;
+                                if (v == null || v.trim().isEmpty) {
+                                  return tr(context).pleaseEnterYourLastName;
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 16),
+                          ],
 
-                          const SizedBox(height: 16),
-
-                          _buildInputField(
-                            controller: _ageController,
-                            label: tr(context).age,
-                            keyboardType: TextInputType.number,
-                            validator: (value) {
-                              if (value == null || value.trim().isEmpty) {
-                                return tr(context).pleaseEnterYourAge;
-                              }
-                              final age = int.tryParse(value.trim());
-                              if (age == null || age <= 0) {
-                                return tr(context).pleaseEnterAValidAge;
-                              }
-                              return null;
-                            },
-                            onTap: ()
-                            {
-                              audioManager.playEventSound('PopButton');
-                            }
-                          ),
                         ],
                       ),
                     ),
@@ -300,30 +228,13 @@ class _NameAgePageState extends State<NameAgePage>
                         foregroundColor: Colors.deepOrange,
                         onPressed: () async {
                           audioManager.playEventSound('clickButton');
-                          final success = await saveData();
-                          if (success) {
+                          if (await saveData()) {
                             widget.onNext?.call();
                           }
                         },
                         child: const Icon(Icons.arrow_forward, size: 28),
-                        elevation: 6,
                       ),
                     ),
-
-                  Positioned(
-                    bottom: -10,
-                    right: -10,
-                    child: _isFormValid
-                        ? IgnorePointer(
-                      ignoring: true, // <-- this makes it non-clickable
-                      child: Lottie.asset(
-                        'assets/animations/TutorielGesture/click_Tuto.json',
-                        width: 100,
-                        height: 100,
-                      ),
-                    )
-                        : SizedBox.shrink(),
-                  ),
                 ],
               ),
             ),
@@ -336,9 +247,9 @@ class _NameAgePageState extends State<NameAgePage>
   Widget _buildInputField({
     required TextEditingController controller,
     required String label,
-     Function()? onTap,
     TextInputType keyboardType = TextInputType.text,
     String? Function(String?)? validator,
+    Function()? onTap,
   }) {
     return TextFormField(
       controller: controller,
@@ -349,16 +260,10 @@ class _NameAgePageState extends State<NameAgePage>
         labelText: label,
         labelStyle: TextStyle(color: Colors.white.withOpacity(0.9)),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: Colors.white.withOpacity(0.7)),
         ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.white),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: Colors.red),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white),
         ),
       ),
       validator: validator,

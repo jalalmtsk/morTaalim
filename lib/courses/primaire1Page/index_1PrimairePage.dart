@@ -115,112 +115,118 @@ class _Index1PrimaireState extends State<Index1Primaire>
 
         return Scaffold(
           backgroundColor: Colors.transparent,
-          body: Stack(
+          body: Column(
             children: [
-              // Background Image
-              Positioned.fill(
-                child: Image.asset(
-                  'assets/images/UI/BackGrounds/bg2.jpg',
-                  fit: BoxFit.cover,
-                ),
-              ),
-
-              // Blurred overlay for entire page
-              Positioned.fill(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                  child: Container(color: Colors.black.withOpacity(0.25)),
-                ),
-              ),
-
               Expanded(
-                child: Column(
+                child: Stack(
                   children: [
-                    // User status bar with blur
-                         Userstatutbar(),
-                    SlideTransition(
-                      position: _slideAnimation,
-                      child: FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                              child: Container(
-                                color: Colors.black.withOpacity(0.25),
-                                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
+                    // Background Image
+                    Positioned.fill(
+                      child: Image.asset(
+                        'assets/images/UI/BackGrounds/bg2.jpg',
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+
+                    // Blurred overlay for entire page
+                    Positioned.fill(
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                        child: Container(color: Colors.black.withOpacity(0.25)),
+                      ),
+                    ),
+
+                    // Main content → (NO Expanded here!)
+                    Column(
+                      children: [
+                        Userstatutbar(),
+
+                        SlideTransition(
+                          position: _slideAnimation,
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(20),
+                                child: BackdropFilter(
+                                  filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                                  child: Container(
+                                    color: Colors.black.withOpacity(0.25),
+                                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                                    child: Column(
                                       children: [
-                                        IconButton(
-                                          icon: const Icon(Icons.arrow_back,
-                                              color: Colors.deepOrange),
-                                          onPressed: () {
-                                            audioManager.playEventSound('cancelButton');
-                                            Navigator.pop(context);
-                                          },
+                                        Row(
+                                          children: [
+                                            IconButton(
+                                              icon: const Icon(Icons.arrow_back,
+                                                  color: Colors.deepOrange),
+                                              onPressed: () {
+                                                audioManager.playEventSound('cancelButton');
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                tr(context).class1,
+                                                style: headerTextStyle,
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                            const SizedBox(width: 48),
+                                          ],
                                         ),
-                                        Expanded(
-                                          child: Text(
-                                            tr(context).class1,
-                                            style: headerTextStyle,
-                                            textAlign: TextAlign.center,
+
+                                        const SizedBox(height: 8),
+
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(16),
+                                          child: BackdropFilter(
+                                            filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                                            child: Container(
+                                              color: Colors.black.withOpacity(0.3),
+                                              child: TabBar(
+                                                indicatorSize: TabBarIndicatorSize.tab,
+                                                indicator: BoxDecoration(
+                                                  color: Colors.white.withValues(alpha: 0.8),
+                                                  borderRadius: BorderRadius.circular(12),
+                                                ),
+                                                labelColor: Colors.deepOrange,
+                                                unselectedLabelColor: Colors.white70,
+                                                labelStyle: tabLabelStyle,
+                                                tabs: [
+                                                  Tab(
+                                                    icon: const Icon(Icons.track_changes_rounded),
+                                                    text: tr(context).exercices,
+                                                  ),
+                                                  Tab(
+                                                    icon: const Icon(Icons.menu_book),
+                                                    text: tr(context).courses,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        const SizedBox(width: 48),
-
                                       ],
                                     ),
-                                    const SizedBox(height: 8),
-                                    // Blurred TabBar
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(16),
-                                      child: BackdropFilter(
-                                        filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                                        child: Container(
-                                          color: Colors.black.withOpacity(0.3),
-                                          child: TabBar(
-                                            indicatorSize: TabBarIndicatorSize.tab,
-                                            indicator: BoxDecoration(
-                                              color: Colors.white.withValues(alpha: 0.8),
-                                              borderRadius: BorderRadius.circular(12),
-                                            ),
-                                            labelColor: Colors.deepOrange,
-                                            unselectedLabelColor: Colors.white70,
-                                            indicatorColor: Colors.deepOrange,
-                                            indicatorWeight: 3,
-                                            labelStyle: tabLabelStyle,
-                                            tabs: [
-                                               Tab(
-                                                  icon: Icon(Icons.track_changes_rounded),
-                                                  text: tr(context).exercices),
-                                              Tab(icon: const Icon(Icons.menu_book), text: tr(context).courses),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ),
 
-                    Expanded(
-                      child: TabBarView(
-                        children: [
-                          Primaire1Pratique(key: _keyTab2),
-                          ComingSoonNotPage()
-                          //Primaire1(key: _keyTab1, experienceManager: xpManager),
-                        ],
-                      ),
+                        // This Expanded is now VALID (inside Column, not inside Stack)
+                        Expanded(
+                          child: TabBarView(
+                            children: [
+                              Primaire1Pratique(key: _keyTab2),
+                              ComingSoonNotPage(),
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

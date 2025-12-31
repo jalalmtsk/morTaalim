@@ -125,7 +125,7 @@ class LanguageSelectorPage extends StatelessWidget {
                       ),
                       const Spacer(),
                       // XP & ADD BUTTON (for testing)
-                      ElevatedButton.icon(
+                     /* ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.deepOrange.withOpacity(0.9),
                           shape: RoundedRectangleBorder(
@@ -156,6 +156,7 @@ class LanguageSelectorPage extends StatelessWidget {
                         ),
                       ),
 
+                      */
                     ],
                   ),
                 ),

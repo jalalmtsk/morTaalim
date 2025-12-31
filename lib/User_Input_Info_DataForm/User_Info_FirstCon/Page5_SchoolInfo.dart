@@ -26,6 +26,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
   String? _selectedLyceeTrack;
 
   bool? _isStudent; // true = Student, false = Not Student
+  bool _preferNotToSaySchool = false;
 
   late AnimationController _gradientController;
   int currentGradientIndex = 0;
@@ -151,7 +152,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
 
 
   void _validateForm() {
-    final schoolNameValid = _schoolNameController.text.trim().isNotEmpty;
+    final schoolNameValid = _preferNotToSaySchool || _schoolNameController.text.trim().isNotEmpty;
     final schoolTypeValid = _selectedSchoolType != null && _selectedSchoolType!.isNotEmpty;
     final schoolLevelValid = _selectedSchoolLevel != null && _selectedSchoolLevel!.isNotEmpty;
     final gradeValid = _selectedGrade != null && _selectedGrade!.isNotEmpty;
@@ -167,6 +168,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
       });
     }
   }
+
 
   Future<void> _loadProfile() async {
     final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
@@ -198,7 +200,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
     setState(() { _isSaving = true; });
     try {
       final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
-      experienceManager.setSchoolName(_schoolNameController.text.trim());
+      experienceManager.setSchoolName(_preferNotToSaySchool ? "Prefer not to say" : _schoolNameController.text.trim());
       experienceManager.setSchoolType(_selectedSchoolType!);
       experienceManager.setSchoolLevel(_selectedSchoolLevel!);
       experienceManager.setSchoolGrade(_selectedGrade!);
@@ -242,10 +244,12 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
     required String label,
     required String validatorMessage,
     IconData? icon,
+    bool enabled = true, // ← add this
   }) {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     return TextFormField(
       controller: controller,
+      enabled: enabled, // ← forward it here
       onTap: () {
         audioManager.playEventSound('PopButton');
       },
@@ -268,6 +272,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
         ),
       ),
       validator: (value) {
+        if (!enabled) return null; // skip validation if disabled
         if (value == null || value.trim().isEmpty) {
           return validatorMessage;
         }
@@ -276,6 +281,7 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
       cursorColor: Colors.white,
     );
   }
+
 
   Widget _buildDropdownField({
     required String id, // 👈 add this
@@ -468,11 +474,42 @@ class _SchoolInfoPageState extends State<SchoolInfoPage>
                 ),
                 const SizedBox(height: 10),
                 _buildInputCard(
-                  child: _buildInputField(
-                      controller: _schoolNameController,
-                      label: tr(context).schoolName,
-                      validatorMessage: tr(context).pleaseEnterSchoolName,
-                      icon: Icons.school_outlined),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _buildInputField(
+                        controller: _schoolNameController,
+                        label: tr(context).schoolName,
+                        validatorMessage: tr(context).pleaseEnterSchoolName,
+                        icon: Icons.school_outlined,
+                        enabled: !_preferNotToSaySchool, // disable if prefer not to say
+                      ),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: _preferNotToSaySchool,
+                            onChanged: (val) {
+                              setState(() {
+                                _preferNotToSaySchool = val ?? false;
+                                if (_preferNotToSaySchool) {
+                                  _schoolNameController.text = "Prefer not to say";
+                                } else {
+                                  _schoolNameController.clear();
+                                }
+                                _validateForm();
+                              });
+                            },
+                            activeColor: Colors.white,
+                            checkColor: Colors.deepOrange,
+                          ),
+                          Text(
+                            tr(context).preferNotToSay,
+                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
                 ),
                 _buildInputCard(
                   child: Row(

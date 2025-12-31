@@ -3118,6 +3118,90 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Are you a student?'**
   String get areYouAStudent;
+
+  /// No description provided for @preferNotToSay.
+  ///
+  /// In en, this message translates to:
+  /// **'Prefer not to say'**
+  String get preferNotToSay;
+
+  /// No description provided for @elephant.
+  ///
+  /// In en, this message translates to:
+  /// **'Elephant'**
+  String get elephant;
+
+  /// No description provided for @rock.
+  ///
+  /// In en, this message translates to:
+  /// **'Rock'**
+  String get rock;
+
+  /// No description provided for @book.
+  ///
+  /// In en, this message translates to:
+  /// **'Book'**
+  String get book;
+
+  /// No description provided for @feather.
+  ///
+  /// In en, this message translates to:
+  /// **'Feather'**
+  String get feather;
+
+  /// No description provided for @balloon.
+  ///
+  /// In en, this message translates to:
+  /// **'Balloon'**
+  String get balloon;
+
+  /// No description provided for @leaf.
+  ///
+  /// In en, this message translates to:
+  /// **'Leaf'**
+  String get leaf;
+
+  /// No description provided for @heavy.
+  ///
+  /// In en, this message translates to:
+  /// **'Heavy'**
+  String get heavy;
+
+  /// No description provided for @light.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get light;
+
+  /// No description provided for @heavyLightGame.
+  ///
+  /// In en, this message translates to:
+  /// **'Heavy and Light Game'**
+  String get heavyLightGame;
+
+  /// No description provided for @dragItemsToCorrectSide.
+  ///
+  /// In en, this message translates to:
+  /// **'Drag each item to the correct side'**
+  String get dragItemsToCorrectSide;
+
+  /// No description provided for @wrongDrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Oops! Wrong drop, try again.'**
+  String get wrongDrop;
+
+  /// No description provided for @finishedAllLevels.
+  ///
+  /// In en, this message translates to:
+  /// **'You finished all levels! Congrats!'**
+  String get finishedAllLevels;
+
+  /// No description provided for @levelStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Level {level} starts now!'**
+  String levelStart(Object level);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

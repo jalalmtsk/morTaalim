@@ -588,7 +588,23 @@
      "selectGrade": "يرجى اختيار المستوى الدراسي",
      "no": "لا",
      "yes": "نعم",
-     "areYouAStudent": "هل أنت طالب؟"
+     "areYouAStudent": "هل أنت طالب؟",
+       "preferNotToSay": "أفضل عدم الإفصاح",
+
+     "elephant": "فيل",
+       "rock": "صخرة",
+       "book": "كتاب",
+       "feather": "ريشة",
+       "balloon": "بالون",
+       "leaf": "ورقة شجر",
+       "heavy": "ثقيل",
+       "light": "خفيف",
+       "heavyLightGame": "لعبة الثقيل والخفيف",
+       "dragItemsToCorrectSide": "اسحب العناصر إلى الجانب الصحيح",
+        "wrongDrop": "خطأ! حاول مرة أخرى.",
+         "finishedAllLevels": "لقد أكملت كل المستويات! تهانينا!",
+         "levelStart": "المستوى {level} يبدأ الآن!",
+           "mistakes": "أخطاء",
 
 
 
