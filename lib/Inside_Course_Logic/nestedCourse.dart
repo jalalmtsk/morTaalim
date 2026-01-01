@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
-import '../tools/VideoPlayer.dart';
 import '../tools/YoutubePlayerPage.dart';
 import '../tools/audio_tool.dart';
 import '../widgets/userStatutBar.dart';
@@ -61,9 +60,7 @@ class _CourseNodePageState extends State<CourseNodePage> with TickerProviderStat
         child: Column(
           children: [
             if (type == 'video' && videoController != null && videoController.isNotEmpty)
-              isYouTubeLink(videoController)
-                  ? YouTubeSectionPlayer(videoUrl: videoController)
-                  : SectionVideoPlayer(videoPath: videoController),
+                  YouTubeSectionPlayer(videoUrl: videoController)
           ],
         ),
       ),
