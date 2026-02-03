@@ -1,3 +1,4 @@
+/*
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -40,11 +41,12 @@ class DisconnectButton extends StatelessWidget {
   }
 }
 
-/*
 DisconnectButton(
   onSignedOut: () {
     print("User signed out!");
     // Do any other cleanup if needed
   },
 ),
+*
+
  */

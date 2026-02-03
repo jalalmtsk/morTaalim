@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../Manager/Services/CardVisibiltyManager.dart';
@@ -252,11 +251,6 @@ class _SettingsDialogState extends State<SettingsDialog> {
 
                     // === ACCOUNT & BACKUP ===
                     buildSectionTitle(tr(context).accountAndBackup),
-                    GoogleAccountCard(
-                      onDisconnectCallback: () {
-                        setState(() {});
-                      },
-                    ),
                     BackupCard(),
 
                     const SizedBox(height: 22),

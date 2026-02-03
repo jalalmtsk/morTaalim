@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:mortaalim/TestingBeforeProdcution/Hezz2FinalGame/Models/GameCardEnums.dart';
 
 import '../Models/Cards.dart';
@@ -58,7 +57,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
   int currentRound = 1;
   bool isBetweenRounds = false;
 
-  WebSocketChannel? channel;
 
   @override
   void initState() {
@@ -67,24 +65,11 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
     eliminatedPlayers = List.generate(widget.botCount + 1, (_) => false);
 
     if (widget.mode == GameMode.online) {
-      _connectOnline();
+      _start();
+
     } else {
       _start();
     }
-  }
-
-  void _connectOnline() {
-    channel = WebSocketChannel.connect(Uri.parse('ws://YOUR_SERVER_IP:8080'));
-    channel!.sink.add(jsonEncode({
-      'type': 'join_game',
-      'gameId': 'game123',
-      'player': 'Player_${Random().nextInt(1000)}',
-    }));
-
-    channel!.stream.listen((message) {
-      final data = jsonDecode(message);
-      _handleOnlineMessage(data);
-    });
   }
 
   void _handleOnlineMessage(Map<String, dynamic> data) {
@@ -797,7 +782,6 @@ class _GameScreenState extends State<GameScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    channel?.sink.close();
     super.dispose();
   }
 

@@ -2,11 +2,9 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import '../XpSystem.dart';
 
@@ -116,7 +114,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
       _setLoading(false);
     }
   }
-
+/*
   Future<void> _signInWithGoogle() async {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     audioManager.playEventSound("clickButton");
@@ -161,6 +159,8 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
     }
   }
 
+
+ */
   Future<void> _initializeUser() async {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -373,19 +373,9 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                       ],
                     ),
                   ),
-
-                _buildLoginButton(
-                  text: tr(context).loginWithGoogle,
-                  onPressed: (){
-                    audioManager.playEventSound("clickButton");
-                    _signInWithGoogle();
-                  } ,
-                  color: Colors.blueAccent,
-                  icon: Icons.g_mobiledata,
-                ),
                 const SizedBox(height: 12),
                 _buildLoginButton(
-                  text:tr(context).loginWithoutGoogle ,
+                  text:tr(context).enjoy ,
                   onPressed: (){
                     audioManager.playEventSound("clickButton");
                     _signInAnonymously();

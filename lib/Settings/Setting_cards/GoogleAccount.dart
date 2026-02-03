@@ -1,6 +1,7 @@
+/*
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mortaalim/main.dart';
 
 class GoogleAccountCard extends StatefulWidget {
@@ -16,6 +17,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
   bool _isConnecting = false;
   String? _googleError;
 
+  /*
   Future<void> _signInWithGoogle() async {
     setState(() {
       _isConnecting = true;
@@ -77,6 +79,7 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
     }
   }
 
+   */
   @override
   Widget build(BuildContext context) {
     final user = FirebaseAuth.instance.currentUser;
@@ -189,3 +192,6 @@ class _GoogleAccountCardState extends State<GoogleAccountCard> {
     );
   }
 }
+
+
+ */
