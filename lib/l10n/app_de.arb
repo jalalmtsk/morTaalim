@@ -597,6 +597,127 @@
 
 
 
+     "step": "Schritt",
+       "ofContext": "von",
+       "keepGoing": "Mach weiter!",
+       "back": "Zurück",
+       "next": "Weiter",
+       "allDone": "Geschafft!",
+
+       "weeklyGoalHint": "🗓️ Mein Ziel diese Woche...",
+       "longTermGoalHint": "🌟 Mein großer Traum ist...",
+
+       "celebrationTitle": "Du bist bereit!",
+       "celebrationSubtitle": "Dein Lernabenteuer ist startklar.\nLass uns loslegen! 🚀",
+
+       "prefStep1Title": "Was magst du?",
+       "prefStep1Question": "Wähle dein Lieblingsfach!",
+       "prefStep1Hint": "Tippe auf eines, um es auszuwählen!",
+
+       "prefStep2Title": "Wie lernst du am besten?",
+       "prefStep2Question": "Wähle deinen Lernstil!",
+       "prefStep2Hint": "Welcher passt am besten zu dir?",
+
+       "prefStep3Title": "Wann lernst du am liebsten?",
+       "prefStep3Question": "Wann ist DEINE Zeit?",
+       "prefStep3Hint": "Wann bist du am aufmerksamsten?",
+
+       "prefStep4Title": "Welches Niveau möchtest du?",
+       "prefStep4Question": "Wähle deinen Schwierigkeitsgrad!",
+       "prefStep4Hint": "Sei ehrlich – jedes Niveau ist großartig!",
+
+       "prefStep5Title": "Was ist dein großer Traum?",
+       "prefStep5Question": "Was möchtest du erreichen?",
+       "prefStep5Hint": "Erzähl uns von deinem Ziel!",
+
+       "subjectMath": "Mathematik",
+       "subjectArabic": "Arabisch",
+       "subjectEnglish": "Englisch",
+       "subjectFrench": "Französisch",
+       "subjectScience": "Naturwissenschaften",
+       "subjectIslamicEd": "Islamische Bildung",
+       "subjectArt": "Kunst",
+
+       "styleVisual": "Ich mag Bilder!",
+       "styleAudio": "Ich höre gerne zu!",
+       "styleHandsOn": "Ich lerne durch Ausprobieren!",
+
+       "timeMorning": "Am Morgen!",
+       "timeAfternoon": "Am Nachmittag!",
+       "timeEvening": "Am Abend!",
+
+       "difficultyEasy": "Einfach und spaßig!",
+       "difficultyChallenge": "Eine echte Herausforderung!",
+       "difficultyAdaptive": "Adaptiv!",
+
+       "goalExam": "Meine Prüfung bestehen!",
+       "goalImprove": "Mich verbessern!",
+       "goalCertificate": "Ein Zertifikat erhalten!",
+
+
+        "progressReset": "Der gesamte Fortschritt wurde zurückgesetzt.",
+         "edit": "Bearbeiten",
+         "myProfile": "Mein Profil",
+         "notSet": "Nicht festgelegt",
+         "practiseCourses": "Übungskurse",
+         "myCourses": "Meine Kurse",
+         "myProgress": "Mein Fortschritt",
+         "coursesCompleted": "abgeschlossene Kurse",
+         "badges": "Abzeichen",
+         "totalXp": "Gesamt-XP",
+         "done": "Fertig",
+         "keepUpTheGoodWork": "Mach weiter so!",
+         "preferredSubject": "Lieblingsfach",
+         "learningStyle": "Lernstil",
+         "studyTime": "Lernzeit",
+         "difficulty": "Schwierigkeitsgrad",
+         "goals": "Mein Ziel",
+         "step": "Schritt",
+         "keepGoing": "Mach weiter!",
+         "back": "Zurück",
+         "next": "Weiter",
+         "allDone": "Alles erledigt!",
+         "weeklyGoalHint": "🗓️ Mein Ziel diese Woche ist...",
+         "longTermGoalHint": "🌟 Mein großer Traum ist...",
+         "celebrationTitle": "Du bist startklar!",
+         "celebrationSubtitle": "Dein Lernabenteuer ist bereit.\nLass uns auf Entdeckungstour gehen! 🚀",
+         "prefStep1Title": "Was liebst du?",
+         "prefStep1Question": "Wähle dein Lieblingsfach!",
+         "prefStep1Hint": "Tippe auf eines, um es auszuwählen!",
+         "prefStep2Title": "Wie lernst du am besten?",
+         "prefStep2Question": "Wähle deinen Lernstil!",
+         "prefStep2Hint": "Welcher passt am besten zu DIR?",
+         "prefStep3Title": "Wann lernst du gerne?",
+         "prefStep3Question": "Welche Zeit ist DEINE Zeit?",
+         "prefStep3Hint": "Wann bist du am wachsten und bereit zum Lernen?",
+         "prefStep4Title": "Wie schwierig soll es sein?",
+         "prefStep4Question": "Wähle dein Herausforderungsniveau!",
+         "prefStep4Hint": "Sei ehrlich – alle Stufen sind großartig!",
+         "prefStep5Title": "Was ist dein großer Traum?",
+         "prefStep5Question": "Was möchtest du erreichen?",
+         "prefStep5Hint": "Erzähl uns von deinem Ziel!",
+         "subjectMath": "Mathematik",
+         "subjectArabic": "Arabisch",
+         "subjectEnglish": "Englisch",
+         "subjectFrench": "Französisch",
+         "subjectScience": "Naturwissenschaften",
+         "subjectIslamicEd": "Islamische Bildung",
+         "subjectArt": "Kunst",
+         "styleVisual": "Ich liebe Bilder!",
+         "styleAudio": "Ich höre gerne zu!",
+         "styleHandsOn": "Ich lerne gerne durch Ausprobieren!",
+         "timeMorning": "Morgens!",
+         "timeAfternoon": "Nachmittags!",
+         "timeEvening": "Abends!",
+         "difficultyEasy": "Einfach & spaßig!",
+         "difficultyChallenge": "Herausfordernd!",
+         "difficultyAdaptive": "Intelligent angepasst!",
+         "goalExam": "Meine Prüfung bestehen!",
+         "goalImprove": "Immer besser werden!",
+         "goalCertificate": "Ein Zertifikat erhalten!"
+
+
+
 
 
 

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:mortaalim/Shop/MainShopPageIndex.dart';
 import 'package:provider/provider.dart';
 import '../../IndexPage.dart';
 import '../../courses/primaire1Page/index_1PrimairePage.dart';
 import '../../games/Quiz_Game/ModeSelectorPage.dart';
 import '../../games/Quiz_Game/quiz_Page.dart';
 import '../../games/paitingGame/indexDrawingPage.dart';
+import '../../screens/main_shop_screen/MainShopPageIndex.dart';
 import 'Audio_Manager.dart';
 
 final Map<Type, String> widgetMusicMap = {

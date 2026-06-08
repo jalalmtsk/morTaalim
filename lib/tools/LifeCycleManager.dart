@@ -36,7 +36,7 @@ class _AppLifecycleManagerState extends State<AppLifecycleManager> with WidgetsB
       _resetTimer?.cancel();
 
       // 60 SECONDS TO GO TO SPLASH SCREEN AND REBUILD UI
-      _resetTimer = Timer(const Duration(seconds: 60), () {
+      _resetTimer = Timer(const Duration(seconds: 360), () {
         _shouldRestart = true;
       });
     } else if (state == AppLifecycleState.resumed) {

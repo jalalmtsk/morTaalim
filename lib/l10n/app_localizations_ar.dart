@@ -162,7 +162,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get startGame => 'ابدأ اللعبة';
 
   @override
-  String get step => 'خطوة';
+  String get step => 'الخطوة';
 
   @override
   String get jump => 'اقفز';
@@ -717,7 +717,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get global => 'عالمي';
 
   @override
-  String get coursesCompleted => 'الدورات المكتملة';
+  String get coursesCompleted => 'دورات مكتملة';
 
   @override
   String get exercices => 'التمارين';
@@ -729,7 +729,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get practiseCourses => 'دورات التدريب';
 
   @override
-  String get keepUpTheGoodWork => 'استمر في العمل الجيد';
+  String get keepUpTheGoodWork => 'واصل العمل الجيد!';
 
   @override
   String get classLevel => 'مستوى الصف';
@@ -1290,10 +1290,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get studyTime => 'وقت الدراسة';
 
   @override
-  String get difficulty => 'درجة الصعوبة';
+  String get difficulty => 'مستوى الصعوبة';
 
   @override
-  String get goals => 'الأهداف';
+  String get goals => 'هدفي';
 
   @override
   String get weeklyGoal => 'الهدف الأسبوعي';
@@ -1568,4 +1568,148 @@ class AppLocalizationsAr extends AppLocalizations {
   String levelStart(Object level) {
     return 'المستوى $level يبدأ الآن!';
   }
+
+  @override
+  String get mistakes => 'أخطاء';
+
+  @override
+  String get ofContext => 'من';
+
+  @override
+  String get keepGoing => 'واصل التقدم!';
+
+  @override
+  String get allDone => 'تم الانتهاء!';
+
+  @override
+  String get weeklyGoalHint => '🗓️ هدفي هذا الأسبوع هو...';
+
+  @override
+  String get longTermGoalHint => '🌟 حلمي الكبير هو...';
+
+  @override
+  String get celebrationTitle => 'أنت جاهز!';
+
+  @override
+  String get celebrationSubtitle => 'رحلة التعلم الخاصة بك جاهزة.\nهيا بنا نستكشف! 🚀';
+
+  @override
+  String get prefStep1Title => 'ماذا تحب؟';
+
+  @override
+  String get prefStep1Question => 'اختر مادتك المفضلة!';
+
+  @override
+  String get prefStep1Hint => 'اضغط على واحدة لاختيارها!';
+
+  @override
+  String get prefStep2Title => 'كيف تتعلم بشكل أفضل؟';
+
+  @override
+  String get prefStep2Question => 'اختر أسلوب تعلمك!';
+
+  @override
+  String get prefStep2Hint => 'أي منها يشبهك أكثر؟';
+
+  @override
+  String get prefStep3Title => 'متى تحب أن تدرس؟';
+
+  @override
+  String get prefStep3Question => 'ما هو وقتك المفضل؟';
+
+  @override
+  String get prefStep3Hint => 'متى تكون أكثر نشاطًا واستعدادًا؟';
+
+  @override
+  String get prefStep4Title => 'ما مستوى التحدي الذي تريده؟';
+
+  @override
+  String get prefStep4Question => 'اختر مستوى التحدي المناسب لك!';
+
+  @override
+  String get prefStep4Hint => 'كن صريحًا — جميع المستويات رائعة!';
+
+  @override
+  String get prefStep5Title => 'ما هو حلمك الكبير؟';
+
+  @override
+  String get prefStep5Question => 'ماذا تريد أن تحقق؟';
+
+  @override
+  String get prefStep5Hint => 'أخبرنا بهدفك!';
+
+  @override
+  String get subjectMath => 'الرياضيات';
+
+  @override
+  String get subjectArabic => 'اللغة العربية';
+
+  @override
+  String get subjectEnglish => 'اللغة الإنجليزية';
+
+  @override
+  String get subjectFrench => 'اللغة الفرنسية';
+
+  @override
+  String get subjectScience => 'العلوم';
+
+  @override
+  String get subjectIslamicEd => 'التربية الإسلامية';
+
+  @override
+  String get subjectArt => 'الفنون';
+
+  @override
+  String get styleVisual => 'أحب الصور!';
+
+  @override
+  String get styleAudio => 'أحب الاستماع!';
+
+  @override
+  String get styleHandsOn => 'أحب التطبيق العملي!';
+
+  @override
+  String get timeMorning => 'الصباح!';
+
+  @override
+  String get timeAfternoon => 'بعد الظهر!';
+
+  @override
+  String get timeEvening => 'المساء!';
+
+  @override
+  String get difficultyEasy => 'سهل وممتع!';
+
+  @override
+  String get difficultyChallenge => 'مليء بالتحديات!';
+
+  @override
+  String get difficultyAdaptive => 'يتكيف بذكاء!';
+
+  @override
+  String get goalExam => 'النجاح في الامتحان!';
+
+  @override
+  String get goalImprove => 'التحسن باستمرار!';
+
+  @override
+  String get goalCertificate => 'الحصول على شهادة!';
+
+  @override
+  String get progressReset => 'تمت إعادة تعيين جميع التقدمات.';
+
+  @override
+  String get edit => 'تعديل';
+
+  @override
+  String get notSet => 'غير محدد';
+
+  @override
+  String get myCourses => 'دوراتي';
+
+  @override
+  String get myProgress => 'تقدمي';
+
+  @override
+  String get totalXp => 'إجمالي نقاط الخبرة';
 }

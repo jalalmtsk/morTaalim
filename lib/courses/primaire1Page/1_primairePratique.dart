@@ -12,6 +12,51 @@ import 'PractiseCoursesSubjects/Math1/1_primaire_Math_Practise.dart';
 import 'PractiseCoursesSubjects/Science1/1_primaire_Science_Practise.dart';
 import 'PractiseCoursesSubjects/IslamicEducation1/1_primaire_IslamicEducation_Practise.dart';
 
+// ═══════════════════════════════════════════════════════════════
+//  SHARED THEME (same palette as Index1Primaire)
+// ═══════════════════════════════════════════════════════════════
+class _T {
+  static const orange      = Color(0xFFEA580C);
+  static const orangeLight = Color(0xFFFFF7ED);
+  static const orangeMid   = Color(0xFFFDBA74);
+  static const orangeDark  = Color(0xFF9A3412);
+  static const amber       = Color(0xFFF59E0B);
+  static const teal        = Color(0xFF0D9488);
+  static const tealLight   = Color(0xFFCCFBF1);
+  static const green       = Color(0xFF16A34A);
+  static const white       = Color(0xFFFFFFFF);
+
+  // Card accent colors — each InfoCard gets its own warm/cool tint
+  static const List<Color> infoAccents = [
+    Color(0xFFF97316), // orange  – fav subject
+    Color(0xFF0D9488), // teal    – learning style
+    Color(0xFF8B5CF6), // violet  – study time
+    Color(0xFFEC4899), // pink    – difficulty
+    Color(0xFF22C55E), // green   – goal
+  ];
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  COURSE CARD CONFIG
+// ═══════════════════════════════════════════════════════════════
+class _CourseConfig {
+  final String titleKey;
+  final String route;
+  final String image;
+  final Color  accent;
+  final String emoji;
+  const _CourseConfig({
+    required this.titleKey,
+    required this.route,
+    required this.image,
+    required this.accent,
+    required this.emoji,
+  });
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PAGE
+// ═══════════════════════════════════════════════════════════════
 class Primaire1Pratique extends StatefulWidget {
   const Primaire1Pratique({super.key});
 
@@ -19,340 +64,252 @@ class Primaire1Pratique extends StatefulWidget {
   State<Primaire1Pratique> createState() => _Primaire1PratiqueState();
 }
 
-class _Primaire1PratiqueState extends State<Primaire1Pratique> {
-  final List<Map<String, dynamic>> courses = [
-    {
-      'title': 'arabic',
-      'route': 'IndexArabic1Practise',
-      'image': 'assets/images/UI/BackGrounds/Course_BG/arabicCourse_bg.png',
-      'color': Colors.purpleAccent
-    },
-    {
-      'title': 'math',
-      'route': 'IndexMath1Practise',
-      'image': 'assets/images/UI/BackGrounds/Course_BG/mathCourse_bg.png',
-      'color': Colors.orangeAccent
-    },
-    {
-      'title': 'french',
-      'route': 'IndexFrench1Practise',
-      'image': 'assets/images/UI/BackGrounds/Course_BG/frenchCourse_bg.png',
-      'color': Colors.lightBlueAccent
-    },
-    {
-      'title': 'islamicEducation',
-      'route': 'IndexIslamicEducation1Practise',
-      'image': 'assets/images/UI/BackGrounds/Course_BG/islamCourse_bg.png',
-      'color': Colors.greenAccent
-    },
-    {
-      'title': 'science',
-      'route': 'IndexScience1Practise',
-      'image': 'assets/images/UI/BackGrounds/Course_BG/scienceCourse_bg.png',
-      'color': Colors.purpleAccent
-    },
+class _Primaire1PratiqueState extends State<Primaire1Pratique>
+    with SingleTickerProviderStateMixin {
+
+  // ── Course cards config ───────────────────────────────────────
+  static const _courses = [
+    _CourseConfig(
+      titleKey: 'arabic',
+      route:    'IndexArabic1Practise',
+      image:    'assets/images/UI/BackGrounds/Course_BG/arabicCourse_bg.png',
+      accent:   Color(0xFF8B5CF6),
+      emoji:    '📖',
+    ),
+    _CourseConfig(
+      titleKey: 'math',
+      route:    'IndexMath1Practise',
+      image:    'assets/images/UI/BackGrounds/Course_BG/mathCourse_bg.png',
+      accent:   Color(0xFFF97316),
+      emoji:    '🔢',
+    ),
+    _CourseConfig(
+      titleKey: 'french',
+      route:    'IndexFrench1Practise',
+      image:    'assets/images/UI/BackGrounds/Course_BG/frenchCourse_bg.png',
+      accent:   Color(0xFF3B82F6),
+      emoji:    '🥐',
+    ),
+    _CourseConfig(
+      titleKey: 'islamicEducation',
+      route:    'IndexIslamicEducation1Practise',
+      image:    'assets/images/UI/BackGrounds/Course_BG/islamCourse_bg.png',
+      accent:   Color(0xFF22C55E),
+      emoji:    '🌙',
+    ),
+    _CourseConfig(
+      titleKey: 'science',
+      route:    'IndexScience1Practise',
+      image:    'assets/images/UI/BackGrounds/Course_BG/scienceCourse_bg.png',
+      accent:   Color(0xFF06B6D4),
+      emoji:    '🔬',
+    ),
   ];
 
-  LearningPreferences? preferences;
-  final List<InfoCardData> infoCards = [];
+  LearningPreferences? _prefs;
+  final List<_InfoItem> _infoItems = [];
+
+  late final AnimationController _entryCtrl;
+  late final Animation<double>   _entryFade;
 
   @override
   void initState() {
     super.initState();
+    _entryCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    )..forward();
+    _entryFade = CurvedAnimation(parent: _entryCtrl, curve: Curves.easeOut);
     _loadPreferences();
   }
 
-  Future<void> _loadPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
-    final loadedPrefs = await LearningPreferences.fromPrefs(prefs);
+  @override
+  void dispose() {
+    _entryCtrl.dispose();
+    super.dispose();
+  }
 
+  Future<void> _loadPreferences() async {
+    final sp     = await SharedPreferences.getInstance();
+    final loaded = await LearningPreferences.fromPrefs(sp);
+    if (!mounted) return;
     setState(() {
-      preferences = loadedPrefs;
-      _updateInfoCards();
+      _prefs = loaded;
+      _rebuildInfoItems();
     });
   }
 
-  void _updateInfoCards() {
-    if (preferences == null) return;
-
-    infoCards.clear();
-    infoCards.addAll([
-      InfoCardData(
-        title: tr(context).preferredSubject,
-        content: preferences!.betterSubjects.isNotEmpty
-            ? preferences!.betterSubjects.first
-            : "Not set",
-        icon: Icons.book,
-        color: Colors.orangeAccent,
-        subtitle: tr(context).keepUpTheGoodWork,
-      ),
-      InfoCardData(
-        title: tr(context).learningStyle,
-        content: preferences!.preferredLearningStyle,
-        icon: Icons.psychology_outlined,
-        color: Colors.blueAccent,
-      ),
-      InfoCardData(
-        title: tr(context).studyTime,
-        content: preferences!.studyTimePreference,
-        icon: Icons.access_time,
-        color: Colors.green,
-      ),
-      InfoCardData(
-        title: tr(context).difficulty,
-        content: preferences!.difficultyPreference,
-        icon: Icons.speed,
-        color: Colors.redAccent,
-      ),
-      InfoCardData(
-        title: tr(context).goals,
-        content: preferences!.goalType,
-        icon: Icons.flag_outlined,
-        color: Colors.deepPurple,
-      ),
-    ]);
+  void _rebuildInfoItems() {
+    if (_prefs == null) return;
+    final l = tr(context);
+    _infoItems
+      ..clear()
+      ..addAll([
+        _InfoItem(
+          emoji:    '📚',
+          title:    l.preferredSubject,
+          value:    _prefs!.betterSubjects.isNotEmpty
+              ? _prefs!.betterSubjects.first
+              : l.notSet,
+          subtitle: l.keepUpTheGoodWork,
+          accent:   _T.infoAccents[0],
+        ),
+        _InfoItem(
+          emoji:    '🧠',
+          title:    l.learningStyle,
+          value:    _prefs!.preferredLearningStyle.isNotEmpty
+              ? _prefs!.preferredLearningStyle
+              : l.notSet,
+          accent:   _T.infoAccents[1],
+        ),
+        _InfoItem(
+          emoji:    '⏰',
+          title:    l.studyTime,
+          value:    _prefs!.studyTimePreference.isNotEmpty
+              ? _prefs!.studyTimePreference
+              : l.notSet,
+          accent:   _T.infoAccents[2],
+        ),
+        _InfoItem(
+          emoji:    '💪',
+          title:    l.difficulty,
+          value:    _prefs!.difficultyPreference.isNotEmpty
+              ? _prefs!.difficultyPreference
+              : l.notSet,
+          accent:   _T.infoAccents[3],
+        ),
+        _InfoItem(
+          emoji:    '🎯',
+          title:    l.goals,
+          value:    _prefs!.goalType.isNotEmpty ? _prefs!.goalType : l.notSet,
+          accent:   _T.infoAccents[4],
+        ),
+      ]);
   }
 
-  IconData getIcon(String key) {
+  String _label(String key) {
+    final l = tr(context);
     switch (key) {
-      case 'math':
-        return Icons.calculate_rounded;
-      case 'french':
-        return Icons.language;
-      case 'arabic':
-        return Icons.offline_bolt_outlined;
-      case 'islamicEducation':
-        return Icons.mosque_outlined;
-      case 'science':
-        return Icons.science;
-      default:
-        return Icons.book;
+      case 'math':             return l.math;
+      case 'french':           return l.french;
+      case 'arabic':           return l.arabic;
+      case 'islamicEducation': return l.islamicEducation;
+      case 'science':          return l.science;
+      default:                 return key;
     }
   }
 
-  Widget? getPage(String route) {
+  Widget? _getPage(String route) {
     switch (route) {
-      case 'IndexMath1Practise':
-        return const IndexMath1Practise();
-      case 'IndexFrench1Practise':
-        return IndexFrench1Practise();
-      case 'IndexArabic1Practise':
-        return ComingSoonPage();
-      case 'IndexScience1Practise':
-        return IndexScience1Practise();
-      case 'IndexIslamicEducation1Practise':
-        return IndexIslamicEducation1Practise();
-      default:
-        return null;
-    }
-  }
-
-  String getLabel(String key, AppLocalizations tr) {
-    switch (key) {
-      case 'math':
-        return tr.math;
-      case 'french':
-        return tr.french;
-      case 'arabic':
-        return tr.arabic;
-      case 'islamicEducation':
-        return tr.islamicEducation;
-      case 'science':
-        return tr.science;
-      default:
-        return tr.class1;
+      case 'IndexMath1Practise':             return const IndexMath1Practise();
+      case 'IndexFrench1Practise':           return IndexFrench1Practise();
+      case 'IndexArabic1Practise':           return ComingSoonPage();
+      case 'IndexScience1Practise':          return IndexScience1Practise();
+      case 'IndexIslamicEducation1Practise': return IndexIslamicEducation1Practise();
+      default:                               return null;
     }
   }
 
   Future<void> _editPreferences() async {
-    if (preferences == null) return;
-
+    if (_prefs == null) return;
     final result = await Navigator.push<LearningPreferences>(
       context,
       MaterialPageRoute(
-        builder: (_) => LearningPreferencesPages(
-          initialPreferences: preferences,
-        ),
+        builder: (_) => LearningPreferencesPages(initialPreferences: _prefs),
       ),
     );
-
     if (result != null) {
-      final prefs = await SharedPreferences.getInstance();
-      await result.saveToPrefs(prefs);
-
+      final sp = await SharedPreferences.getInstance();
+      await result.saveToPrefs(sp);
       setState(() {
-        preferences = result;
-        _updateInfoCards();
+        _prefs = result;
+        _rebuildInfoItems();
       });
     }
   }
 
+  // ═════════════════════════════════════════════════════════════
+  //  BUILD
+  // ═════════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
-    final trLoc = AppLocalizations.of(context)!;
-
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              SizedBox(
-                height: 130,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  itemCount: infoCards.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 16),
-                  itemBuilder: (context, index) {
-                    final card = infoCards[index];
-                    return SizedBox(
-                      width: 250,
-                      child: _InfoCard(
-                        title: card.title,
-                        content: card.content,
-                        icon: card.icon,
-                        color: card.color,
-                        subtitle: card.subtitle,
-                      ),
-                    );
-                  },
-                ),
-              ),
-              const SizedBox(height: 12),
-              Row( mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    trLoc.practiseCourses,
-                    style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.deepOrange.shade700,
-                    ),
-                  ),
-
-                  IconButton(onPressed: ()
-                  {
-                    audioManager.playEventSound("clickButton");
-                    _editPreferences();
-                  },
-                      icon: Icon(Icons.edit, size: 30, color: Colors.white,))
-                ],
-              ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 220,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  itemCount: courses.length,
-                  separatorBuilder: (_, __) => const SizedBox(width: 16),
-                  itemBuilder: (context, index) {
-                    final course = courses[index];
-                    final title = course['title'] as String;
-                    final route = course['route'] as String;
-                    final icon = getIcon(title);
-                    final label = getLabel(title, trLoc);
-                    final image = course['image'] as String;
-                    final color = course['color'] as Color;
-
-                    return _CourseCard(
-                      imagePath: image,
-                      overlayColor: color,
-                      icon: icon,
-                      label: label,
-                      onTap: () {
-                        final page = getPage(route);
-                        if (page != null) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (_) => page),
-                          );
-                        }
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class InfoCardData {
-  final String title;
-  final String content;
-  final IconData icon;
-  final Color color;
-  final String? subtitle;
-
-  InfoCardData({
-    required this.title,
-    required this.content,
-    required this.icon,
-    required this.color,
-    this.subtitle,
-  });
-}
-
-class _InfoCard extends StatelessWidget {
-  final String title;
-  final String content;
-  final IconData icon;
-  final Color color;
-  final String? subtitle;
-
-  const _InfoCard({
-    required this.title,
-    required this.content,
-    required this.icon,
-    required this.color,
-    this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      elevation: 8,
-      shadowColor: color.withOpacity(0.4),
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [color.withOpacity(0.85), color],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(20),
-        ),
+    return FadeTransition(
+      opacity: _entryFade,
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 22, color: Colors.white),
-            Text(title,
-                style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600)),
-            Text(content,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold)),
-            if (subtitle != null) ...[
-              Text(subtitle!,
-                  style: TextStyle(
-                      color: Colors.white.withOpacity(0.9),
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500)),
-            ]
+            // ── Section: My Profile ──────────────────────────
+            _SectionHeader(
+              emoji: '🌟',
+              label: tr(context).myProfile,
+              trailing: _EditButton(onTap: _editPreferences),
+            ),
+            const SizedBox(height: 10),
+
+            // Info cards — horizontal scroll
+            SizedBox(
+              height: 120,
+              child: _prefs == null
+                  ? const Center(
+                child: CircularProgressIndicator(
+                  color: _T.orange,
+                  strokeWidth: 2.5,
+                ),
+              )
+                  : ListView.separated(
+                scrollDirection: Axis.horizontal,
+                physics: const BouncingScrollPhysics(),
+                itemCount: _infoItems.length,
+                separatorBuilder: (_, __) => const SizedBox(width: 12),
+                itemBuilder: (_, i) =>
+                    _KidInfoCard(item: _infoItems[i]),
+              ),
+            ),
+
+            const SizedBox(height: 22),
+
+            // ── Section: Practice Courses ────────────────────
+            _SectionHeader(
+              emoji: '🚀',
+              label: tr(context).practiseCourses,
+            ),
+            const SizedBox(height: 12),
+
+            // 2-column grid of course cards
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: _courses.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 14,
+                crossAxisSpacing: 14,
+                childAspectRatio: 0.80,
+              ),
+              itemBuilder: (ctx, i) {
+                final c = _courses[i];
+                return _KidCourseCard(
+                  emoji:  c.emoji,
+                  label:  _label(c.titleKey),
+                  image:  c.image,
+                  accent: c.accent,
+                  // Make last item span full width if odd count
+                  isWide: _courses.length.isOdd && i == _courses.length - 1,
+                  onTap: () {
+                    final page = _getPage(c.route);
+                    if (page != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => page),
+                      );
+                    }
+                  },
+                );
+              },
+            ),
           ],
         ),
       ),
@@ -360,71 +317,358 @@ class _InfoCard extends StatelessWidget {
   }
 }
 
-class _CourseCard extends StatelessWidget {
-  final String imagePath;
-  final Color overlayColor;
-  final IconData icon;
-  final String label;
-  final VoidCallback onTap;
+// ═══════════════════════════════════════════════════════════════
+//  DATA  MODEL
+// ═══════════════════════════════════════════════════════════════
+class _InfoItem {
+  final String emoji;
+  final String title;
+  final String value;
+  final String? subtitle;
+  final Color   accent;
+  const _InfoItem({
+    required this.emoji,
+    required this.title,
+    required this.value,
+    required this.accent,
+    this.subtitle,
+  });
+}
 
-  const _CourseCard({
-    required this.imagePath,
-    required this.overlayColor,
-    required this.icon,
+// ═══════════════════════════════════════════════════════════════
+//  SMALL WIDGETS
+// ═══════════════════════════════════════════════════════════════
+
+/// Section heading with emoji + coloured label
+class _SectionHeader extends StatelessWidget {
+  final String emoji;
+  final String label;
+  final Widget? trailing;
+  const _SectionHeader({
+    required this.emoji,
     required this.label,
-    required this.onTap,
+    this.trailing,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      elevation: 6,
-      shadowColor: overlayColor.withOpacity(0.4),
-      borderRadius: BorderRadius.circular(26),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(26),
-        splashColor: Colors.white30,
-        onTap: onTap,
-        child: Container(
-          width: 200,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(26),
-            image: DecorationImage(
-              image: AssetImage(imagePath),
-              fit: BoxFit.cover,
-              colorFilter: ColorFilter.mode(
-                overlayColor.withOpacity(0.3),
-                BlendMode.darken,
+    return Row(
+      children: [
+        Text(emoji, style: const TextStyle(fontSize: 22)),
+        const SizedBox(width: 8),
+        Text(
+          label,
+          style: const TextStyle(
+            fontFamily: 'Fredoka One',
+            fontSize: 20,
+            color: _T.orange,
+          ),
+        ),
+        const Spacer(),
+        if (trailing != null) trailing!,
+      ],
+    );
+  }
+}
+
+/// Edit preferences pill button
+class _EditButton extends StatelessWidget {
+  final VoidCallback onTap;
+  const _EditButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [Color(0xFFF97316), Color(0xFFF59E0B)],
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: _T.orange.withOpacity(0.35),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.edit_rounded, size: 15, color: _T.white),
+            const SizedBox(width: 5),
+            Text(
+              tr(context).edit,
+              style: const TextStyle(
+                fontFamily: 'Fredoka One',
+                fontSize: 14,
+                color: _T.white,
               ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Horizontal info card — shows one preference item
+class _KidInfoCard extends StatelessWidget {
+  final _InfoItem item;
+  const _KidInfoCard({required this.item});
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = Color.lerp(item.accent, Colors.white, 0.82)!;
+    final fg = item.accent.withOpacity(1);
+
+    return Container(
+      width: 155,
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: item.accent.withOpacity(0.35), width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: item.accent.withOpacity(0.18),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 22, horizontal: 16),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CircleAvatar(
-                radius: 42,
-                backgroundColor: Colors.white,
-                child: Icon(icon, size: 40, color: overlayColor),
-              ),
-              const SizedBox(height: 10),
-              Text(
-                label,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  color: Colors.white,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black26,
-                      offset: Offset(1, 1),
-                      blurRadius: 4,
-                    )
-                  ],
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(children: [
+            Text(item.emoji, style: const TextStyle(fontSize: 20)),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                item.title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: fg,
                 ),
               ),
+            ),
+          ]),
+          const SizedBox(height: 8),
+          Text(
+            item.value,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontFamily: 'Fredoka One',
+              fontSize: 15,
+              color: Color.lerp(item.accent, Colors.black, 0.65)!,
+              height: 1.15,
+            ),
+          ),
+          if (item.subtitle != null) ...[
+            const SizedBox(height: 4),
+            Text(
+              item.subtitle!,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: fg.withOpacity(0.75),
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+/// Course card — image background + emoji + label + tap ripple
+class _KidCourseCard extends StatefulWidget {
+  final String       emoji;
+  final String       label;
+  final String       image;
+  final Color        accent;
+  final bool         isWide;
+  final VoidCallback onTap;
+
+  const _KidCourseCard({
+    required this.emoji,
+    required this.label,
+    required this.image,
+    required this.accent,
+    required this.onTap,
+    this.isWide = false,
+  });
+
+  @override
+  State<_KidCourseCard> createState() => _KidCourseCardState();
+}
+
+class _KidCourseCardState extends State<_KidCourseCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _press;
+  late final Animation<double>   _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _press = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 120),
+      lowerBound: 0,
+      upperBound: 0.04,
+    );
+    _scale = Tween<double>(begin: 1.0, end: 0.96).animate(
+      CurvedAnimation(parent: _press, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _press.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: (_) => _press.forward(),
+      onTapUp:   (_) => _press.reverse(),
+      onTapCancel: () => _press.reverse(),
+      onTap: widget.onTap,
+      child: ScaleTransition(
+        scale: _scale,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: widget.accent.withOpacity(0.30),
+                blurRadius: 16,
+                offset: const Offset(0, 6),
+              ),
             ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Background image
+                Image.asset(widget.image, fit: BoxFit.cover),
+
+                // Colour overlay — accent tint + bottom dark gradient
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.black.withOpacity(0.55),
+                        widget.accent.withOpacity(0.35),
+                        Colors.transparent,
+                      ],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
+                  ),
+                ),
+
+                // Accent top-left corner dot
+                Positioned(
+                  top: 12, left: 12,
+                  child: Container(
+                    width: 10,
+                    height: 10,
+                    decoration: BoxDecoration(
+                      color: widget.accent,
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: widget.accent.withOpacity(0.6),
+                          blurRadius: 6,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                // Content
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    // Emoji badge
+                    Container(
+                      width: 58,
+                      height: 58,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.92),
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: widget.accent.withOpacity(0.40),
+                            blurRadius: 14,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        widget.emoji,
+                        style: const TextStyle(fontSize: 28),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    // Subject label
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Text(
+                        widget.label,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        style: const TextStyle(
+                          fontFamily: 'Fredoka One',
+                          fontSize: 18,
+                          color: _T.white,
+                          height: 1.15,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black54,
+                              offset: Offset(0, 2),
+                              blurRadius: 6,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    // "Let's go!" pill
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: widget.accent.withOpacity(0.85),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        "Let's go!",
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w800,
+                          color: _T.white,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

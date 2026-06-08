@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../Settings/SettingPanelInGame.dart';
+import '../../screens/main_home_screen/Settings/SettingPanelInGame.dart';
 import '../../tools/audio_tool/Audio_Manager.dart';
 import '../../widgets/AIChatbot/BotFeatures/BotWithGreeting.dart';
 import '../HomeCourse.dart';

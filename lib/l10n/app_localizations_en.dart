@@ -717,7 +717,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get global => 'Global';
 
   @override
-  String get coursesCompleted => 'Courses Completed';
+  String get coursesCompleted => 'courses completed';
 
   @override
   String get exercices => 'Exercises';
@@ -729,7 +729,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get practiseCourses => 'Practice Courses';
 
   @override
-  String get keepUpTheGoodWork => 'Keep Up The Good Work';
+  String get keepUpTheGoodWork => 'Keep up the good work!';
 
   @override
   String get classLevel => 'Class Level';
@@ -768,7 +768,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accountAndBackup => 'Account and Backup';
 
   @override
-  String get preferredSubject => 'Preferred Subject';
+  String get preferredSubject => 'Favourite Subject';
 
   @override
   String get version => 'Version';
@@ -1293,7 +1293,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get difficulty => 'Difficulty';
 
   @override
-  String get goals => 'Goals';
+  String get goals => 'My Goal';
 
   @override
   String get weeklyGoal => 'Weekly Goal';
@@ -1568,4 +1568,148 @@ class AppLocalizationsEn extends AppLocalizations {
   String levelStart(Object level) {
     return 'Level $level starts now!';
   }
+
+  @override
+  String get mistakes => 'Mistakes';
+
+  @override
+  String get ofContext => 'of';
+
+  @override
+  String get keepGoing => 'Keep going!';
+
+  @override
+  String get allDone => 'All Done!';
+
+  @override
+  String get weeklyGoalHint => '🗓️ My goal this week is...';
+
+  @override
+  String get longTermGoalHint => '🌟 My big dream goal is...';
+
+  @override
+  String get celebrationTitle => 'You\'re all set!';
+
+  @override
+  String get celebrationSubtitle => 'Your learning adventure is ready.\nLet\'s go explore! 🚀';
+
+  @override
+  String get prefStep1Title => 'What do you love?';
+
+  @override
+  String get prefStep1Question => 'Pick your favourite subject!';
+
+  @override
+  String get prefStep1Hint => 'Tap one to pick it!';
+
+  @override
+  String get prefStep2Title => 'How do you learn best?';
+
+  @override
+  String get prefStep2Question => 'Pick your learning style!';
+
+  @override
+  String get prefStep2Hint => 'Which one sounds like YOU?';
+
+  @override
+  String get prefStep3Title => 'When do you like to study?';
+
+  @override
+  String get prefStep3Question => 'What time is YOUR time?';
+
+  @override
+  String get prefStep3Hint => 'When are you most awake & ready?';
+
+  @override
+  String get prefStep4Title => 'How hard do you want it?';
+
+  @override
+  String get prefStep4Question => 'Pick your challenge level!';
+
+  @override
+  String get prefStep4Hint => 'Be honest — all levels are great!';
+
+  @override
+  String get prefStep5Title => 'What is your big dream?';
+
+  @override
+  String get prefStep5Question => 'What do you want to do?';
+
+  @override
+  String get prefStep5Hint => 'Tell us your goal!';
+
+  @override
+  String get subjectMath => 'Math';
+
+  @override
+  String get subjectArabic => 'Arabic';
+
+  @override
+  String get subjectEnglish => 'English';
+
+  @override
+  String get subjectFrench => 'French';
+
+  @override
+  String get subjectScience => 'Science';
+
+  @override
+  String get subjectIslamicEd => 'Islamic Ed';
+
+  @override
+  String get subjectArt => 'Art';
+
+  @override
+  String get styleVisual => 'I love pictures!';
+
+  @override
+  String get styleAudio => 'I love listening!';
+
+  @override
+  String get styleHandsOn => 'I love doing things!';
+
+  @override
+  String get timeMorning => 'Morning!';
+
+  @override
+  String get timeAfternoon => 'Afternoon!';
+
+  @override
+  String get timeEvening => 'Evening!';
+
+  @override
+  String get difficultyEasy => 'Easy & fun!';
+
+  @override
+  String get difficultyChallenge => 'Challenging!';
+
+  @override
+  String get difficultyAdaptive => 'Smart adapt!';
+
+  @override
+  String get goalExam => 'Pass my exam!';
+
+  @override
+  String get goalImprove => 'Get better & better!';
+
+  @override
+  String get goalCertificate => 'Get a certificate!';
+
+  @override
+  String get progressReset => 'All progress has been reset.';
+
+  @override
+  String get edit => 'Edit';
+
+  @override
+  String get notSet => 'Not set';
+
+  @override
+  String get myCourses => 'My Courses';
+
+  @override
+  String get myProgress => 'My Progress';
+
+  @override
+  String get totalXp => 'Total XP';
 }

@@ -610,7 +610,131 @@
               "wrongDrop": "Oops! Wrong drop, try again.",
               "finishedAllLevels": "You finished all levels! Congrats!",
               "levelStart": "Level {level} starts now!",
-                "mistakes": "Mistakes"
+                "mistakes": "Mistakes",
+
+
+
+
+          "step":         "Step",
+          "ofContext":     "of",
+          "keepGoing":    "Keep going!",
+          "back":         "Back",
+          "next":         "Next",
+          "allDone":      "All Done!",
+
+          "weeklyGoalHint":    "🗓️ My goal this week is...",
+          "longTermGoalHint":  "🌟 My big dream goal is...",
+
+          "celebrationTitle":    "You're all set!",
+          "celebrationSubtitle": "Your learning adventure is ready.\nLet's go explore! 🚀",
+
+          "prefStep1Title":    "What do you love?",
+          "prefStep1Question": "Pick your favorite subject!",
+          "prefStep1Hint":     "Tap one to pick it!",
+
+          "prefStep2Title":    "How do you learn best?",
+          "prefStep2Question": "Pick your learning style!",
+          "prefStep2Hint":     "Which one sounds like YOU?",
+
+          "prefStep3Title":    "When do you like to study?",
+          "prefStep3Question": "What time is YOUR time?",
+          "prefStep3Hint":     "When are you most awake & ready?",
+
+          "prefStep4Title":    "How hard do you want it?",
+          "prefStep4Question": "Pick your challenge level!",
+          "prefStep4Hint":     "Be honest — all levels are great!",
+
+          "prefStep5Title":    "What is your big dream?",
+          "prefStep5Question": "What do you want to do?",
+          "prefStep5Hint":     "Tell us your goal!",
+
+          "subjectMath":       "Math",
+          "subjectArabic":     "Arabic",
+          "subjectEnglish":    "English",
+          "subjectFrench":     "French",
+          "subjectScience":    "Science",
+          "subjectIslamicEd":  "Islamic Ed",
+          "subjectArt":        "Art",
+
+          "styleVisual":   "I love pictures!",
+          "styleAudio":    "I love listening!",
+          "styleHandsOn":  "I love doing things!",
+
+          "timeMorning":   "Morning!",
+          "timeAfternoon": "Afternoon!",
+          "timeEvening":   "Evening!",
+
+          "difficultyEasy":      "Easy & fun!",
+          "difficultyChallenge": "Challenging!",
+          "difficultyAdaptive":  "Smart adapt!",
+
+          "goalExam":        "Pass my exam!",
+          "goalImprove":     "Get better & better!",
+          "goalCertificate": "Get a certificate!",
+
+
+           "progressReset": "All progress has been reset.",
+            "edit": "Edit",
+            "myProfile": "My Profile",
+            "notSet": "Not set",
+            "practiseCourses": "Practice Courses",
+            "myCourses": "My Courses",
+            "myProgress": "My Progress",
+            "coursesCompleted": "courses completed",
+            "badges": "Badges",
+            "totalXp": "Total XP",
+            "done": "Done",
+            "keepUpTheGoodWork": "Keep up the good work!",
+            "preferredSubject": "Favourite Subject",
+            "learningStyle": "Learning Style",
+            "studyTime": "Study Time",
+            "difficulty": "Difficulty",
+            "goals": "My Goal",
+            "step": "Step",
+            "keepGoing": "Keep going!",
+            "back": "Back",
+            "next": "Next",
+            "allDone": "All Done!",
+            "weeklyGoalHint": "🗓️ My goal this week is...",
+            "longTermGoalHint": "🌟 My big dream goal is...",
+            "celebrationTitle": "You're all set!",
+            "celebrationSubtitle": "Your learning adventure is ready.\nLet's go explore! 🚀",
+            "prefStep1Title": "What do you love?",
+            "prefStep1Question": "Pick your favourite subject!",
+            "prefStep1Hint": "Tap one to pick it!",
+            "prefStep2Title": "How do you learn best?",
+            "prefStep2Question": "Pick your learning style!",
+            "prefStep2Hint": "Which one sounds like YOU?",
+            "prefStep3Title": "When do you like to study?",
+            "prefStep3Question": "What time is YOUR time?",
+            "prefStep3Hint": "When are you most awake & ready?",
+            "prefStep4Title": "How hard do you want it?",
+            "prefStep4Question": "Pick your challenge level!",
+            "prefStep4Hint": "Be honest — all levels are great!",
+            "prefStep5Title": "What is your big dream?",
+            "prefStep5Question": "What do you want to do?",
+            "prefStep5Hint": "Tell us your goal!",
+            "subjectMath": "Math",
+            "subjectArabic": "Arabic",
+            "subjectEnglish": "English",
+            "subjectFrench": "French",
+            "subjectScience": "Science",
+            "subjectIslamicEd": "Islamic Ed",
+            "subjectArt": "Art",
+            "styleVisual": "I love pictures!",
+            "styleAudio": "I love listening!",
+            "styleHandsOn": "I love doing things!",
+            "timeMorning": "Morning!",
+            "timeAfternoon": "Afternoon!",
+            "timeEvening": "Evening!",
+            "difficultyEasy": "Easy & fun!",
+            "difficultyChallenge": "Challenging!",
+            "difficultyAdaptive": "Smart adapt!",
+            "goalExam": "Pass my exam!",
+            "goalImprove": "Get better & better!",
+            "goalCertificate": "Get a certificate!"
+
+
 
 
 

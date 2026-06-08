@@ -6,8 +6,13 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:marquee/marquee.dart';
 import 'package:mortaalim/Themes/ThemeManager.dart';
+import 'package:mortaalim/screens/main_home_screen/Settings/SettingPanelInGame.dart';
+import 'package:mortaalim/screens/main_home_screen/indexPage_tools/Course_index_tool/course_index.dart';
+import 'package:mortaalim/screens/main_home_screen/indexPage_tools/Game_index_tool/game_index.dart';
+import 'package:mortaalim/screens/main_home_screen/indexPage_tools/IT_index_tool/iT_index.dart';
+import 'package:mortaalim/screens/main_home_screen/indexPage_tools/animated_reward_fab.dart';
+import 'package:mortaalim/screens/main_home_screen/indexPage_tools/language_menu.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
-import 'package:mortaalim/Settings/SettingPanelInGame.dart';
 import 'package:mortaalim/tools/Reysable_Tools/SmartDuaaMorningNight_Dialog.dart';
 import 'package:mortaalim/tools/appConfig/AppNotificationDialog/appNotificationDialog.dart';
 import 'package:mortaalim/tools/appConfig/AppNotificationDialog/notificationManager.dart';
@@ -21,9 +26,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Manager/Services/CardVisibiltyManager.dart';
 import 'XpSystem.dart';
-import 'indexPage_tools/Course_index_tool/course_index.dart';
-import 'indexPage_tools/Game_index_tool/game_index.dart';
-import 'indexPage_tools/language_menu.dart';
 import 'main.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
@@ -233,17 +235,8 @@ class _IndexState extends State<Index>
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: Colors.transparent,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.orange,
-        onPressed: (){
-          audioManager.playEventSound('clickButton');
-          AdHelper.showRewardedAdWithLoading(context, () {
-            Provider.of<ExperienceManager>(context,
-                listen: false)
-                .addTokenBanner(context, 2);
-          });
-        }, child: Icon(Icons.ads_click_outlined, color: Colors.white,),),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat, // right bottom
+      floatingActionButton: const AnimatedRewardFAB(),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       body: Stack(
         children: [
           // Background
@@ -326,7 +319,6 @@ class _IndexState extends State<Index>
                   ),
 
                   const SizedBox(height: 10),
-
                   // Slide-in profile card
                   SlideTransition(
                     position: _profileSlideAnimation,
@@ -538,7 +530,7 @@ class _IndexState extends State<Index>
                       children: [
                         CourseTab(),
                         GamesTab(),
-                        ComingSoonNotPage(),
+                        ITTabs(),
                         ComingSoonNotPage(),
                       ],
                     ),

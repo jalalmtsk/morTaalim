@@ -5,371 +5,691 @@ import 'package:mortaalim/courses/primaire1Page/GlobalStatCard.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/MascotBubble.dart';
-import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/ProgressCard.dart';
 import '../../XpSystem.dart';
 import '../../l10n/app_localizations.dart';
 import '../../Inside_Course_Logic/HomeCourse.dart';
 import '../../main.dart';
 
+// ═══════════════════════════════════════════════════════════════
+//  THEME
+// ═══════════════════════════════════════════════════════════════
+class _T {
+  static const orange      = Color(0xFFEA580C);
+  static const orangeLight = Color(0xFFFFF7ED);
+  static const orangeMid   = Color(0xFFFDBA74);
+  static const amber       = Color(0xFFF59E0B);
+  static const teal        = Color(0xFF0D9488);
+  static const white       = Color(0xFFFFFFFF);
+
+  // Per-subject accent colors (warm → cool)
+  static const subjectAccents = [
+    Color(0xFFF97316), // math        — orange
+    Color(0xFF3B82F6), // french      — blue
+    Color(0xFF8B5CF6), // arabic      — violet
+    Color(0xFF22C55E), // islamic ed  — green
+    Color(0xFFEC4899), // art         — pink
+    Color(0xFF06B6D4), // science     — cyan
+  ];
+
+  static const subjectEmojis = ['🔢', '🥐', '📖', '🌙', '🎨', '🔬'];
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  PAGE
+// ═══════════════════════════════════════════════════════════════
 class Primaire1 extends StatefulWidget {
   final ExperienceManager experienceManager;
-
   const Primaire1({Key? key, required this.experienceManager}) : super(key: key);
 
   @override
   State<Primaire1> createState() => _Primaire1State();
 }
 
-class _Primaire1State extends State<Primaire1> {
+class _Primaire1State extends State<Primaire1>
+    with SingleTickerProviderStateMixin {
+
   final List<Map<String, String>> courses = [
-    {'title': 'math1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_mathematique.json'},
-    {'title': 'french1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_francais.json'},
-    {'title': 'arabic1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_arabe.json'},
-    {'title': 'islamicEducation1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_education_islamique.json'},
-    {'title': 'artEducation1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
+    {'title': 'math1',               'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_mathematique.json'},
+    {'title': 'french1',             'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_francais.json'},
+    {'title': 'arabic1',             'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_arabe.json'},
+    {'title': 'islamicEducation1',   'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_education_islamique.json'},
+    {'title': 'artEducation1',       'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_educationArtistique.json'},
     {'title': 'Activitéscientifique1', 'file': 'assets/courses/primaire1/Primaire1Cours/1primaire_activite_scientifique.json'},
   ];
 
   Map<String, double> courseProgress = {};
-  double overallProgressPct = 0.0; // 0.0 .. 1.0
+  double overallProgressPct = 0.0;
   bool isLoading = true;
 
-  // same prefix keys used by your CourseProgressionManager
   static const String _kProgressPrefix = 'gamified_progress';
+
+  late final AnimationController _entryCtrl;
+  late final Animation<double>   _entryFade;
 
   @override
   void initState() {
     super.initState();
-    widget.experienceManager.addListener(_onExperienceChanged);
-    _loadAllCoursesTotalSectionsAndProgress().then((_) {
-      _onExperienceChanged();
-    });  }
+    _entryCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    )..forward();
+    _entryFade = CurvedAnimation(parent: _entryCtrl, curve: Curves.easeOut);
+
+    widget.experienceManager.addListener(_onXpChanged);
+    _loadProgress().then((_) => _onXpChanged());
+  }
 
   @override
   void dispose() {
-    widget.experienceManager.removeListener(_onExperienceChanged);
+    widget.experienceManager.removeListener(_onXpChanged);
+    _entryCtrl.dispose();
     super.dispose();
   }
 
-  Future<void> _loadAllCoursesTotalSectionsAndProgress() async {
+  // ── Progress loading ──────────────────────────────────────────
+  Future<void> _loadProgress() async {
     setState(() => isLoading = true);
-
-    // read prefs early so we can show immediate saved progress (no need to wait for ExperienceManager init)
     final prefs = await SharedPreferences.getInstance();
 
-    int totalSectionsAll = 0;
-    int completedSectionsAll = 0;
+    int totalAll = 0, doneAll = 0;
     final totals = <String, int>{};
 
     for (var course in courses) {
-      final courseId = course['title']!;
-      final jsonFile = course['file']!;
+      final id  = course['title']!;
+      final raw = await rootBundle.loadString(course['file']!);
+      final sections = (jsonDecode(raw)['sections'] as List<dynamic>? ?? []);
+      final total = sections.length;
+      totals[id]  = total;
+      totalAll   += total;
 
-      // Load JSON (to determine total sections and optional per-section 'completed' flags)
-      final raw = await rootBundle.loadString(jsonFile);
-      final jsonData = jsonDecode(raw);
-      final sections = jsonData['sections'] as List<dynamic>? ?? [];
-      final totalSections = sections.length;
-
-      totals[courseId] = totalSections;
-      totalSectionsAll += totalSections;
-
-      // 1) Prefer persisted SharedPreferences saved completed list (same key your manager uses).
-      final savedKey = '$_kProgressPrefix\_$courseId';
-      final savedList = prefs.getStringList(savedKey);
-      int completedCount = 0;
-
-      if (savedList != null) {
-        // If prefs contains stored completed indices, use that
-        completedCount = savedList.length;
+      final saved = prefs.getStringList('${_kProgressPrefix}_$id');
+      int done;
+      if (saved != null) {
+        done = saved.length;
       } else {
-        // 2) If JSON contains per-section 'completed' flags, count them
-        bool jsonHasCompletedField = false;
-        int jsonCompletedCount = 0;
-        for (var sec in sections) {
-          if (sec is Map<String, dynamic> && sec.containsKey('completed')) {
-            jsonHasCompletedField = true;
-            if (sec['completed'] == true) jsonCompletedCount++;
-          } else if (sec is Map && sec.containsKey('completed')) {
-            jsonHasCompletedField = true;
-            if (sec['completed'] == true) jsonCompletedCount++;
+        bool hasFlag = false;
+        int flagDone = 0;
+        for (var s in sections) {
+          if (s is Map && s.containsKey('completed')) {
+            hasFlag = true;
+            if (s['completed'] == true) flagDone++;
           }
         }
-        if (jsonHasCompletedField) {
-          completedCount = jsonCompletedCount;
-        } else {
-          // 3) fallback to experienceManager (may be empty if it's not initialized yet)
-          completedCount = widget.experienceManager.courseProgressionManager
-              .getCompletedSections(courseId)
-              .length;
-        }
+        done = hasFlag
+            ? flagDone
+            : widget.experienceManager.courseProgressionManager
+            .getCompletedSections(id)
+            .length;
       }
 
-      completedSectionsAll += completedCount;
-
-      // per-course progress as fraction 0..1
-      courseProgress[courseId] = totalSections == 0 ? 0.0 : (completedCount / totalSections);
+      doneAll += done;
+      courseProgress[id] = total == 0 ? 0 : done / total;
     }
 
-    // Store totals into the manager so other parts can read totals
-    widget.experienceManager.courseProgressionManager.setTotalSectionsBatch(totals);
-
-    // Weighted overall progress across all courses (completed sections / total sections)
-    overallProgressPct = totalSectionsAll == 0 ? 0.0 : (completedSectionsAll / totalSectionsAll);
+    widget.experienceManager.courseProgressionManager
+        .setTotalSectionsBatch(totals);
+    overallProgressPct = totalAll == 0 ? 0 : doneAll / totalAll;
 
     if (!mounted) return;
-    setState(() {
-      isLoading = false;
-    });
+    setState(() => isLoading = false);
   }
 
-  void _onExperienceChanged() {
-    // When experienceManager notifies, recalc progress using the manager's authoritative data
+  void _onXpChanged() {
     if (!mounted) return;
-
-    int totalSectionsAll = 0;
-    int completedSectionsAll = 0;
-
-    for (var course in courses) {
-      final courseId = course['title']!;
-      final totalSections = widget.experienceManager.courseProgressionManager.getTotalSections(courseId);
-      final completedCount = widget.experienceManager.courseProgressionManager.getCompletedSections(courseId).length;
-
-      totalSectionsAll += totalSections;
-      completedSectionsAll += completedCount;
-
-      courseProgress[courseId] = totalSections == 0 ? 0.0 : (completedCount / totalSections);
+    int total = 0, done = 0;
+    for (var c in courses) {
+      final id = c['title']!;
+      final t  = widget.experienceManager.courseProgressionManager
+          .getTotalSections(id);
+      final d  = widget.experienceManager.courseProgressionManager
+          .getCompletedSections(id)
+          .length;
+      total += t;
+      done  += d;
+      courseProgress[id] = t == 0 ? 0 : d / t;
     }
-
-    overallProgressPct = totalSectionsAll == 0 ? 0.0 : (completedSectionsAll / totalSectionsAll);
-
-    setState(() {
-      // just update UI
-    });
+    overallProgressPct = total == 0 ? 0 : done / total;
+    setState(() {});
   }
 
-  IconData getCourseIcon(String title) {
-    switch (title) {
-      case 'math1':
-        return Icons.calculate_rounded;
-      case 'arabic1':
-        return Icons.accessibility_new_sharp;
-      case 'french1':
-        return Icons.language_rounded;
-      case 'Activitéscientifique1':
-        return Icons.translate_rounded;
-      case 'islamicEducation1':
-        return Icons.mosque;
-      case 'artEducation1':
-        return Icons.palette_rounded;
-      default:
-        return Icons.book_rounded;
-    }
-  }
-
-  String getCourseImagePath(String title) {
-    switch (title) {
-      case 'math1':
-        return 'assets/images/UI/BackGrounds/Course_BG/mathCourse_bg.png';
-      case 'arabic1':
-        return 'assets/images/UI/BackGrounds/Course_BG/arabicCourse_bg.png';
-      case 'french1':
-        return 'assets/images/UI/BackGrounds/Course_BG/frenchCourse_bg.png';
-      case 'Activitéscientifique1':
-        return 'assets/images/UI/BackGrounds/Course_BG/scienceCourse_bg.png';
-      case 'islamicEducation1':
-        return 'assets/images/UI/BackGrounds/Course_BG/islamCourse_bg.png';
-      case 'artEducation1':
-        return 'assets/images/UI/BackGrounds/Course_BG/artCourse_bg.png';
-      default:
-        return 'assets/images/default_bg.png';
-    }
-  }
-
-  String getCourseName(String key, AppLocalizations tr) {
+  // ── Helpers ───────────────────────────────────────────────────
+  String _name(String key, AppLocalizations l) {
     switch (key) {
-      case 'math1':
-        return tr.math;
-      case 'french1':
-        return tr.french;
-      case 'arabic1':
-        return tr.arabic;
-      case 'islamicEducation1':
-        return tr.islamicEducation;
-      case 'artEducation1':
-        return tr.artEducation;
-      default:
-        return tr.science;
+      case 'math1':               return l.math;
+      case 'french1':             return l.french;
+      case 'arabic1':             return l.arabic;
+      case 'islamicEducation1':   return l.islamicEducation;
+      case 'artEducation1':       return l.artEducation;
+      default:                    return l.science;
     }
+  }
+
+  String _image(String key) {
+    switch (key) {
+      case 'math1':               return 'assets/images/UI/BackGrounds/Course_BG/mathCourse_bg.png';
+      case 'arabic1':             return 'assets/images/UI/BackGrounds/Course_BG/arabicCourse_bg.png';
+      case 'french1':             return 'assets/images/UI/BackGrounds/Course_BG/frenchCourse_bg.png';
+      case 'islamicEducation1':   return 'assets/images/UI/BackGrounds/Course_BG/islamCourse_bg.png';
+      case 'artEducation1':       return 'assets/images/UI/BackGrounds/Course_BG/artCourse_bg.png';
+      default:                    return 'assets/images/UI/BackGrounds/Course_BG/scienceCourse_bg.png';
+    }
+  }
+
+  Color _accent(int i)  => _T.subjectAccents[i % _T.subjectAccents.length];
+  String _emoji(int i)  => _T.subjectEmojis[i % _T.subjectEmojis.length];
+
+  // ═════════════════════════════════════════════════════════════
+  //  BUILD
+  // ═════════════════════════════════════════════════════════════
+  @override
+  Widget build(BuildContext context) {
+    final screenW  = MediaQuery.of(context).size.width;
+    final audio    = Provider.of<AudioManager>(context, listen: false);
+    final cols     = screenW > 700 ? 3 : 2;
+
+    if (isLoading) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('🦁', style: TextStyle(fontSize: 48)),
+            const SizedBox(height: 16),
+            CircularProgressIndicator(
+              color: _T.orange,
+              strokeWidth: 3,
+            ),
+          ],
+        ),
+      );
+    }
+
+    return FadeTransition(
+      opacity: _entryFade,
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ── Global stats banner ──────────────────────────
+            _GlobalBanner(
+              progress: overallProgressPct,
+              badges: widget.experienceManager.courseProgressionManager
+                  .getBadges()
+                  .length,
+              xp: widget.experienceManager.courseProgressionManager
+                  .getCourseXp(),
+              completed: courseProgress.values.where((p) => p >= 1.0).length,
+              total: courses.length,
+            ),
+
+            const SizedBox(height: 20),
+
+            // ── Section header ───────────────────────────────
+            Row(children: [
+              const Text('📚', style: TextStyle(fontSize: 22)),
+              const SizedBox(width: 8),
+              Text(
+                tr(context).myCourses,
+                style: const TextStyle(
+                  fontFamily: 'Fredoka One',
+                  fontSize: 20,
+                  color: _T.orange,
+                ),
+              ),
+            ]),
+
+            const SizedBox(height: 12),
+
+            // ── Course grid ──────────────────────────────────
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: courses.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: cols,
+                mainAxisSpacing: 14,
+                crossAxisSpacing: 14,
+                childAspectRatio: 3 / 4,
+              ),
+              itemBuilder: (ctx, i) {
+                final c       = courses[i];
+                final id      = c['title']!;
+                final pct     = courseProgress[id] ?? 0.0;
+                final accent  = _accent(i);
+                final emoji   = _emoji(i);
+                final label   = _name(id, tr(context));
+                final imgPath = _image(id);
+
+                return _CourseGridCard(
+                  emoji:   emoji,
+                  label:   label,
+                  image:   imgPath,
+                  accent:  accent,
+                  percent: pct,
+                  onTap: () async {
+                    audio.playEventSound('clickButton2');
+                    await Navigator.push(
+                      ctx,
+                      MaterialPageRoute(
+                        builder: (_) => CoursePage(
+                          jsonFilePath: c['file']!,
+                          courseId:    id,
+                          experienceManager: widget.experienceManager,
+                        ),
+                      ),
+                    );
+                    await _loadProgress();
+                  },
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  GLOBAL BANNER  — replaces GlobalStatsCard row
+// ═══════════════════════════════════════════════════════════════
+class _GlobalBanner extends StatelessWidget {
+  final double progress;
+  final int badges, xp, completed, total;
+
+  const _GlobalBanner({
+    required this.progress,
+    required this.badges,
+    required this.xp,
+    required this.completed,
+    required this.total,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final pct = (progress * 100).round();
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(18, 16, 18, 18),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFFF97316), Color(0xFFF59E0B)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(26),
+        boxShadow: [
+          BoxShadow(
+            color: _T.orange.withOpacity(0.35),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Top: mascot + title + pct
+          Row(
+            children: [
+              const Text('🦁', style: TextStyle(fontSize: 36)),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      tr(context).myProgress,
+                      style: const TextStyle(
+                        fontFamily: 'Fredoka One',
+                        fontSize: 18,
+                        color: _T.white,
+                      ),
+                    ),
+                    Text(
+                      '$completed / $total ${tr(context).coursesCompleted}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white.withOpacity(0.85),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              // Big percentage circle
+              Container(
+                width: 54,
+                height: 54,
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.22),
+                  shape: BoxShape.circle,
+                ),
+                alignment: Alignment.center,
+                child: Text(
+                  '$pct%',
+                  style: const TextStyle(
+                    fontFamily: 'Fredoka One',
+                    fontSize: 16,
+                    color: _T.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 12),
+
+          // Progress bar
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 10,
+              backgroundColor: Colors.white.withOpacity(0.25),
+              valueColor: const AlwaysStoppedAnimation<Color>(_T.white),
+            ),
+          ),
+
+          const SizedBox(height: 14),
+
+          // Stats pills row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              _StatPill('🏅', '$badges', tr(context).badges),
+              _StatPill('⚡', '$xp XP',  tr(context).totalXp),
+              _StatPill('🎯', '$completed', tr(context).done),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StatPill extends StatelessWidget {
+  final String emoji;
+  final String value;
+  final String label;
+  const _StatPill(this.emoji, this.value, this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.20),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(emoji, style: const TextStyle(fontSize: 14)),
+              const SizedBox(width: 4),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontFamily: 'Fredoka One',
+                  fontSize: 14,
+                  color: _T.white,
+                ),
+              ),
+            ],
+          ),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: Colors.white.withOpacity(0.80),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  COURSE GRID CARD  — image bg + emoji + label + progress bar
+// ═══════════════════════════════════════════════════════════════
+class _CourseGridCard extends StatefulWidget {
+  final String       emoji;
+  final String       label;
+  final String       image;
+  final Color        accent;
+  final double       percent;
+  final VoidCallback onTap;
+
+  const _CourseGridCard({
+    required this.emoji,
+    required this.label,
+    required this.image,
+    required this.accent,
+    required this.percent,
+    required this.onTap,
+  });
+
+  @override
+  State<_CourseGridCard> createState() => _CourseGridCardState();
+}
+
+class _CourseGridCardState extends State<_CourseGridCard>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _press;
+  late final Animation<double>   _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _press = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 100),
+      lowerBound: 0,
+      upperBound: 0.04,
+    );
+    _scale = Tween<double>(begin: 1.0, end: 0.95).animate(
+      CurvedAnimation(parent: _press, curve: Curves.easeOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _press.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final audioManager = Provider.of<AudioManager>(context, listen: false);
+    final pctText = '${(widget.percent * 100).round()}%';
+    final isDone  = widget.percent >= 1.0;
 
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator(color: Colors.orangeAccent))
-          : Padding(
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          children: [
-            Row(
+    return GestureDetector(
+      onTapDown: (_) => _press.forward(),
+      onTapUp:   (_) => _press.reverse(),
+      onTapCancel: () => _press.reverse(),
+      onTap: widget.onTap,
+      child: ScaleTransition(
+        scale: _scale,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: widget.accent.withOpacity(0.28),
+                blurRadius: 18,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(24),
+            child: Stack(
+              fit: StackFit.expand,
               children: [
-                Expanded(
-                  flex: 3,
-                  child: GlobalStatsCard(
-                    progress: overallProgressPct,
-                    badges: widget.experienceManager.courseProgressionManager.getBadges().length,
-                    courseXp: widget.experienceManager.courseProgressionManager.getCourseXp(),
-                    completedCourses: courseProgress.values.where((p) => p >= 1.0).length,
-                    totalCourses: courses.length,
+                // Background image
+                Image.asset(widget.image, fit: BoxFit.cover),
+
+                // Dark gradient overlay
+                Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.black.withOpacity(0.65),
+                        widget.accent.withOpacity(0.30),
+                        Colors.black.withOpacity(0.05),
+                      ],
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                    ),
                   ),
                 ),
-                const SizedBox(width: 10),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: GridView.builder(
-                itemCount: courses.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: screenWidth > 700 ? 3 : 2,
-                  mainAxisSpacing: 18,
-                  crossAxisSpacing: 18,
-                  childAspectRatio: 4 / 3,
-                ),
-                itemBuilder: (context, index) {
-                  final course = courses[index];
-                  final title = course['title']!;
-                  final icon = getCourseIcon(title);
-                  final percent = courseProgress[title] ?? 0.0;
-                  final percentText = (percent * 100).toStringAsFixed(0);
 
-                  return GestureDetector(
-                    onTap: () async {
-                      audioManager.playEventSound('clickButton2');
-                      await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => CoursePage(
-                            jsonFilePath: course['file']!,
-                            courseId: title,
-                            experienceManager: widget.experienceManager,
-                          ),
-                        ),
-                      );
-                      // Recalculate after coming back (keeps UI fresh)
-                      await _loadAllCoursesTotalSectionsAndProgress();
-                    },
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Stack(
+                // ── COMPLETED badge ───────────────────────────
+                if (isDone)
+                  Positioned(
+                    top: 10, right: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF16A34A),
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF16A34A).withOpacity(0.4),
+                            blurRadius: 8,
+                          )
+                        ],
+                      ),
+                      child: const Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Positioned.fill(
-                            child: Image.asset(
-                              getCourseImagePath(title),
-                              fit: BoxFit.cover,
-                            ),
+                          Text('✓', style: TextStyle(
+                              color: _T.white, fontSize: 11,
+                              fontWeight: FontWeight.w900)),
+                          SizedBox(width: 3),
+                          Text('Done!', style: TextStyle(
+                              color: _T.white, fontSize: 11,
+                              fontWeight: FontWeight.w800)),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                // Accent corner dot
+                if (!isDone)
+                  Positioned(
+                    top: 12, left: 12,
+                    child: Container(
+                      width: 9, height: 9,
+                      decoration: BoxDecoration(
+                        color: widget.accent,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: widget.accent.withOpacity(0.55),
+                            blurRadius: 6,
                           ),
-                          Positioned.fill(
-                            child: Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.black.withOpacity(0.4),
-                                    Colors.black.withOpacity(0.0),
-                                  ],
-                                  begin: Alignment.bottomCenter,
-                                  end: Alignment.topCenter,
-                                ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+                // ── Centre content ────────────────────────────
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Emoji circle
+                      Container(
+                        width: 60,
+                        height: 60,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.90),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: widget.accent.withOpacity(0.35),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          widget.emoji,
+                          style: const TextStyle(fontSize: 28),
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      // Subject name
+                      Text(
+                        widget.label,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        style: const TextStyle(
+                          fontFamily: 'Fredoka One',
+                          fontSize: 17,
+                          color: _T.white,
+                          height: 1.15,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black54,
+                              offset: Offset(0, 2),
+                              blurRadius: 5,
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      // Progress bar + pct
+                      Column(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: LinearProgressIndicator(
+                              value: widget.percent,
+                              minHeight: 7,
+                              backgroundColor:
+                              Colors.white.withOpacity(0.25),
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                isDone ? const Color(0xFF4ADE80) : widget.accent,
                               ),
                             ),
                           ),
-                          Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.8),
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: Icon(
-                                    icon,
-                                    size: 35,
-                                    color: Colors.orangeAccent,
-                                    shadows: const [
-                                      Shadow(
-                                        blurRadius: 4,
-                                        color: Colors.black45,
-                                        offset: Offset(1, 1),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  getCourseName(title, tr(context)),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                    height: 1.2,
-                                    shadows: [
-                                      Shadow(
-                                        color: Colors.black,
-                                        blurRadius: 4,
-                                        offset: Offset(1, 1),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(height: 10),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 30),
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: LinearProgressIndicator(
-                                      value: percent,
-                                      minHeight: 8,
-                                      backgroundColor: Colors.white.withOpacity(0.3),
-                                      valueColor: const AlwaysStoppedAnimation(Colors.orangeAccent),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  "$percentText%",
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white,
-                                    shadows: [
-                                      Shadow(
-                                        blurRadius: 4,
-                                        color: Colors.black87,
-                                        offset: Offset(1, 1),
-                                      ),
-                                    ],
-                                  ),
+                          const SizedBox(height: 4),
+                          Text(
+                            pctText,
+                            style: const TextStyle(
+                              fontFamily: 'Fredoka One',
+                              fontSize: 13,
+                              color: _T.white,
+                              shadows: [
+                                Shadow(
+                                  color: Colors.black45,
+                                  blurRadius: 4,
                                 ),
                               ],
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  );
-                },
-              ),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

@@ -1,32 +1,12 @@
 name: mortaalim
 description: "A new Flutter project."
-# The following line prevents the package from being accidentally published to
-# pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: 'none'
 
-# The following defines the version and build number for your application.
-# A version number is three numbers separated by dots, like 1.2.43
-# followed by an optional build number separated by a +.
-# Both the version and the builder number may be overridden in flutter
-# build by specifying --build-name and --build-number, respectively.
-# In Android, build-name is used as versionN ame while build-number used as versionCode.
-# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
-# In iOS, build-name is used as CFBundleShortVersionString while build-number is used as CFBundleVersion.
-# Read more about iOS versioning at
-# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-# In Windows, build-name is used as the major, minor, and patch parts
-# of the product and file versions while build-number is used as the build suffix.
 version: 1.0.5+1
 
 environment:
   sdk: ^3.6.0
 
-# Dependencies specify other packages that your package needs in order to work.
-# To automatically upgrade your package dependencies to the latest versions
-# consider running `flutter pub upgrade --major-versions`. Alternatively,
-# dependencies can be manually updated by changing the version numbers below to
-# the latest version available on pub.dev. To see which dependencies have newer
-# versions available, run `flutter pub outdated`.
 dependencies:
   flutter:
     sdk: flutter
@@ -34,10 +14,6 @@ dependencies:
     sdk: flutter
   intl: ^0.20.2
 
-
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   shared_preferences: ^2.5.3
   youtube_player_flutter: ^9.1.1
@@ -71,154 +47,169 @@ dependencies:
   network_info_plus: ^6.1.4
 
 flutter_launcher_icons:
-    android: "launcher_icon"
-    ios: true
-    image_path: "assets/icons/MoorTaalimLogo.png"
-    min_sdk_android: 21 # android min sdk min:16, default 21
-    adaptive_icon_foreground: "assets/icons/MoorTaalimLogo.png"
-    adaptive_icon_background: "#ffffff"
-
-
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/MoorTaalimLogo.png"
+  min_sdk_android: 21
+  adaptive_icon_foreground: "assets/icons/MoorTaalimLogo.png"
+  adaptive_icon_background: "#ffffff"
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-
-
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
   flutter_lints: ^5.0.0
 
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
   generate: true
 
-  # To add assets to your application, add an assets section, like this:
   assets:
-  - assets/courses/
-  - assets/courses/primaire1/Primaire1Cours/
-  - assets/courses/primaire2/Primaire2Cours/
-  #Images
-  - assets/images/
-  - assets/images/Sketches/
-  - assets/images/Animals/Animal_images/
-  - assets/images/Animals/Animal_Houses/
-  - assets/icons/
-  - assets/images/GameGridImages/
-  - assets/images/PractiseImage/
-  - assets/images/PractiseImage/HeavyLightImages/
-  - assets/images/PractiseImage/WuduImages/
-  - assets/images/StoriesImages/InsideStoriesImages/
-  - assets/images/StoriesImages/StoriesCovers/
-  - assets/images/SugarSmash/
-  - assets/images/FlagImagesForTracingLetters/
-  - assets/images/AvatarImage/
-  - assets/images/AvatarImage/Beams/
-  - assets/images/AvatarImage/Aliens/
-  - assets/images/AvatarImage/Babies/
-  - assets/images/AvatarImage/OnlyAvatar/
-  - assets/images/AvatarImage/FantasyAvatars/
-  - assets/images/AvatarImage/RoyaltyAvatar/
-  - assets/images/badges/
-  - assets/images/Banners/
-  - assets/images/Banners/Sci_FI_Banners/
-  - assets/images/Banners/Islamic/
-  - assets/images/Banners/CuteBr/
-  - assets/images/Banners/FantasyBanners/
-  - assets/images/Banners/RoyalBanners/
-  - assets/images/UI/Buttons/
-  - assets/images/UI/BackGrounds/
-  - assets/images/UI/BackGrounds/Course_BG/
-  - assets/images/UI/BackGrounds/GamePractise_BG/Art_bg/
-  - assets/images/UI/BackGrounds/GamePractise_BG/Arabic_bg/
-  - assets/images/UI/BackGrounds/GamePractise_BG/Frennch_bg/
-  - assets/images/UI/BackGrounds/GamePractise_BG/IslamicEducation_bg/
-  - assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/
-  - assets/images/UI/BackGrounds/GamePractise_BG/Science_bg/
-  - assets/images/UI/utilities/
-  - assets/images/Puzz/PuzzMainImages/
-  - assets/images/Puzz/Puzz1/Puzz1_3x3/
-  - assets/images/PetImages/DragonPet/
-  - assets/images/PetImages/CatPet/
-  - assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/
-  - assets/images/UI/utilities/MemoryFlip_images/
-  - assets/images/UI/utilities/MemoryFlip_images/Cake/
-  - assets/images/UI/utilities/MemoryFlip_images/Candy/
-  - assets/images/UI/utilities/MemoryFlip_images/Dessert/
-  - assets/images/UI/utilities/MemoryFlip_images/FastFood/
-  - assets/images/UI/utilities/MemoryFlip_images/ItalianFood/
-  - assets/images/UI/utilities/MemoryFlip_images/Sushi/
-  - assets/images/UI/utilities/MemoryFlip_images/Vegetables/
-  - assets/images/cards/
+    - assets/courses/
+    - assets/courses/primaire1/Primaire1Cours/
+    - assets/courses/primaire2/Primaire2Cours/
+    - assets/images/
+    - assets/images/Sketches/
+    - assets/images/Animals/Animal_images/
+    - assets/images/Animals/Animal_Houses/
+    - assets/icons/
+    - assets/images/GameGridImages/
+    - assets/images/PractiseImage/
+    - assets/images/PractiseImage/HeavyLightImages/
+    - assets/images/PractiseImage/WuduImages/
+    - assets/images/StoriesImages/InsideStoriesImages/
+    - assets/images/StoriesImages/StoriesCovers/
+    - assets/images/SugarSmash/
+    - assets/images/FlagImagesForTracingLetters/
+    - assets/images/AvatarImage/
+    - assets/images/AvatarImage/Beams/
+    - assets/images/AvatarImage/Aliens/
+    - assets/images/AvatarImage/Babies/
+    - assets/images/AvatarImage/OnlyAvatar/
+    - assets/images/AvatarImage/FantasyAvatars/
+    - assets/images/AvatarImage/RoyaltyAvatar/
+    - assets/images/badges/
+    - assets/images/Banners/
+    - assets/images/Banners/Sci_FI_Banners/
+    - assets/images/Banners/Islamic/
+    - assets/images/Banners/CuteBr/
+    - assets/images/Banners/FantasyBanners/
+    - assets/images/Banners/RoyalBanners/
+    - assets/images/UI/Buttons/
+    - assets/images/UI/BackGrounds/
+    - assets/images/UI/BackGrounds/Course_BG/
+    - assets/images/UI/BackGrounds/GamePractise_BG/Art_bg/
+    - assets/images/UI/BackGrounds/GamePractise_BG/Arabic_bg/
+    - assets/images/UI/BackGrounds/GamePractise_BG/Frennch_bg/
+    - assets/images/UI/BackGrounds/GamePractise_BG/IslamicEducation_bg/
+    - assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/
+    - assets/images/UI/BackGrounds/GamePractise_BG/Science_bg/
+    - assets/images/UI/utilities/
+    - assets/images/Puzz/PuzzMainImages/
+    - assets/images/Puzz/Puzz1/Puzz1_3x3/
+    - assets/images/PetImages/DragonPet/
+    - assets/images/PetImages/CatPet/
+    - assets/images/UI/utilities/MemoryFlip_images/
+    - assets/images/UI/utilities/MemoryFlip_images/Cake/
+    - assets/images/UI/utilities/MemoryFlip_images/Candy/
+    - assets/images/UI/utilities/MemoryFlip_images/Dessert/
+    - assets/images/UI/utilities/MemoryFlip_images/FastFood/
+    - assets/images/UI/utilities/MemoryFlip_images/ItalianFood/
+    - assets/images/UI/utilities/MemoryFlip_images/Sushi/
+    - assets/images/UI/utilities/MemoryFlip_images/Vegetables/
+    - assets/images/GridImages/It_Grid/
+    - assets/audios/
+    - assets/audios/quranSourate/
+    - assets/audios/sound_effects/
+    - assets/audios/piano_notes/
+    - assets/audios/QuizGame_Sounds/
+    - assets/audios/tts_female/
+    - assets/audios/tts_female/Wudu/
+    - assets/audios/UI_Audio/SFX_Audio/
+    - assets/audios/UI_Audio/ButtonSounds/
+    - assets/audios/BackGround_Audio/
+    - assets/audios/SplashScreen_Audio/
+    - assets/audios/tts_female/arabic_Questions_QuizzGame/
+    - assets/audios/quranSourate/RandomAyat/
+    - assets/audios/Animals_sounds/Animals_sound/
+    # ── Fredoka font folder (required for asset bundling) ─────────
+    - assets/fonts/Fredoka/
+    - assets/animations/
+    - assets/animations/AnimatedAvatars/
+    - assets/animations/QuizzGame_Animation/
+    - assets/animations/LvlUnlocked/
+    - assets/animations/UIBannerAnimations/
+    - assets/animations/FirstTouchAnimations/
+    - assets/animations/UI_Animations/
+    - assets/animations/PetAnimations/
+    - assets/animations/TutorielGesture/
 
-    #Videos
+  fonts:
+    # ── Fredoka (standard width) ──────────────────────────────────
+    - family: Fredoka
+      fonts:
+        - asset: assets/fonts/Fredoka/Fredoka-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Fredoka/Fredoka-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Fredoka/Fredoka-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Fredoka/Fredoka-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Fredoka/Fredoka-Bold.ttf
+          weight: 700
 
-  #Audios
-  - assets/audios/
-  - assets/audios/quranSourate/
-  - assets/audios/sound_effects/
-  - assets/audios/piano_notes/
-  - assets/audios/QuizGame_Sounds/
-  - assets/audios/tts_female/
-  - assets/audios/tts_female/Wudu/
-  - assets/audios/UI_Audio/SFX_Audio/
-  - assets/audios/UI_Audio/ButtonSounds/
-  - assets/audios/BackGround_Audio/
-  - assets/audios/SplashScreen_Audio/
-  - assets/audios/tts_female/arabic_Questions_QuizzGame/
-  - assets/audios/quranSourate/RandomAyat/
-  - assets/audios/Animals_sounds/Animals_sound/
-  #Fonts
-  - assets/fonts/ComicNeue-Regular.ttf
-  - assets/fonts/ComicNeue-Bold.ttf
-  #Animations
-  - assets/animations/
-  - assets/animations/AnimatedAvatars/
-  - assets/animations/QuizzGame_Animation/
-  - assets/animations/LvlUnlocked/
-  - assets/animations/UIBannerAnimations/
-  - assets/animations/FirstTouchAnimations/
-  - assets/animations/UI_Animations/
-  - assets/animations/PetAnimations/
-  - assets/animations/TutorielGesture/
+    # ── Fredoka Condensed ─────────────────────────────────────────
+    - family: Fredoka_Condensed
+      fonts:
+        - asset: assets/fonts/Fredoka/Fredoka_Condensed-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Fredoka/Fredoka_Condensed-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Fredoka/Fredoka_Condensed-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Fredoka/Fredoka_Condensed-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Fredoka/Fredoka_Condensed-Bold.ttf
+          weight: 700
 
+    # ── Fredoka SemiCondensed ─────────────────────────────────────
+    - family: Fredoka_SemiCondensed
+      fonts:
+        - asset: assets/fonts/Fredoka/Fredoka_SemiCondensed-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Fredoka/Fredoka_SemiCondensed-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Fredoka/Fredoka_SemiCondensed-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Fredoka/Fredoka_SemiCondensed-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Fredoka/Fredoka_SemiCondensed-Bold.ttf
+          weight: 700
 
-  #   - images/a_dot_ham.jpeg
+    # ── Fredoka SemiExpanded ──────────────────────────────────────
+    - family: Fredoka_SemiExpanded
+      fonts:
+        - asset: assets/fonts/Fredoka/Fredoka_SemiExpanded-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Fredoka/Fredoka_SemiExpanded-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Fredoka/Fredoka_SemiExpanded-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Fredoka/Fredoka_SemiExpanded-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Fredoka/Fredoka_SemiExpanded-Bold.ttf
+          weight: 700
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
-
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
-
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
+    # ── Fredoka Expanded ──────────────────────────────────────────
+    - family: Fredoka_Expanded
+      fonts:
+        - asset: assets/fonts/Fredoka/Fredoka_Expanded-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Fredoka/Fredoka_Expanded-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Fredoka/Fredoka_Expanded-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Fredoka/Fredoka_Expanded-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Fredoka/Fredoka_Expanded-Bold.ttf
+          weight: 700

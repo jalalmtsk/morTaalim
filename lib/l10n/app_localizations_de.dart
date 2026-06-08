@@ -717,7 +717,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get global => 'Global';
 
   @override
-  String get coursesCompleted => 'Abgeschlossene Kurse';
+  String get coursesCompleted => 'abgeschlossene Kurse';
 
   @override
   String get exercices => 'Übungen';
@@ -726,10 +726,10 @@ class AppLocalizationsDe extends AppLocalizations {
   String get dashboard => 'Dashboard';
 
   @override
-  String get practiseCourses => 'Praxis-Kurse';
+  String get practiseCourses => 'Übungskurse';
 
   @override
-  String get keepUpTheGoodWork => 'Weiter so';
+  String get keepUpTheGoodWork => 'Mach weiter so!';
 
   @override
   String get classLevel => 'Klassenstufe';
@@ -768,7 +768,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get accountAndBackup => 'Konto und Sicherung';
 
   @override
-  String get preferredSubject => 'Bevorzugtes Fach';
+  String get preferredSubject => 'Lieblingsfach';
 
   @override
   String get version => 'Version';
@@ -1293,7 +1293,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get difficulty => 'Schwierigkeitsgrad';
 
   @override
-  String get goals => 'Ziele';
+  String get goals => 'Mein Ziel';
 
   @override
   String get weeklyGoal => 'Wöchentliches Ziel';
@@ -1568,4 +1568,148 @@ class AppLocalizationsDe extends AppLocalizations {
   String levelStart(Object level) {
     return 'Level $level beginnt jetzt!';
   }
+
+  @override
+  String get mistakes => 'Fehler';
+
+  @override
+  String get ofContext => 'von';
+
+  @override
+  String get keepGoing => 'Mach weiter!';
+
+  @override
+  String get allDone => 'Alles erledigt!';
+
+  @override
+  String get weeklyGoalHint => '🗓️ Mein Ziel diese Woche ist...';
+
+  @override
+  String get longTermGoalHint => '🌟 Mein großer Traum ist...';
+
+  @override
+  String get celebrationTitle => 'Du bist startklar!';
+
+  @override
+  String get celebrationSubtitle => 'Dein Lernabenteuer ist bereit.\nLass uns auf Entdeckungstour gehen! 🚀';
+
+  @override
+  String get prefStep1Title => 'Was liebst du?';
+
+  @override
+  String get prefStep1Question => 'Wähle dein Lieblingsfach!';
+
+  @override
+  String get prefStep1Hint => 'Tippe auf eines, um es auszuwählen!';
+
+  @override
+  String get prefStep2Title => 'Wie lernst du am besten?';
+
+  @override
+  String get prefStep2Question => 'Wähle deinen Lernstil!';
+
+  @override
+  String get prefStep2Hint => 'Welcher passt am besten zu DIR?';
+
+  @override
+  String get prefStep3Title => 'Wann lernst du gerne?';
+
+  @override
+  String get prefStep3Question => 'Welche Zeit ist DEINE Zeit?';
+
+  @override
+  String get prefStep3Hint => 'Wann bist du am wachsten und bereit zum Lernen?';
+
+  @override
+  String get prefStep4Title => 'Wie schwierig soll es sein?';
+
+  @override
+  String get prefStep4Question => 'Wähle dein Herausforderungsniveau!';
+
+  @override
+  String get prefStep4Hint => 'Sei ehrlich – alle Stufen sind großartig!';
+
+  @override
+  String get prefStep5Title => 'Was ist dein großer Traum?';
+
+  @override
+  String get prefStep5Question => 'Was möchtest du erreichen?';
+
+  @override
+  String get prefStep5Hint => 'Erzähl uns von deinem Ziel!';
+
+  @override
+  String get subjectMath => 'Mathematik';
+
+  @override
+  String get subjectArabic => 'Arabisch';
+
+  @override
+  String get subjectEnglish => 'Englisch';
+
+  @override
+  String get subjectFrench => 'Französisch';
+
+  @override
+  String get subjectScience => 'Naturwissenschaften';
+
+  @override
+  String get subjectIslamicEd => 'Islamische Bildung';
+
+  @override
+  String get subjectArt => 'Kunst';
+
+  @override
+  String get styleVisual => 'Ich liebe Bilder!';
+
+  @override
+  String get styleAudio => 'Ich höre gerne zu!';
+
+  @override
+  String get styleHandsOn => 'Ich lerne gerne durch Ausprobieren!';
+
+  @override
+  String get timeMorning => 'Morgens!';
+
+  @override
+  String get timeAfternoon => 'Nachmittags!';
+
+  @override
+  String get timeEvening => 'Abends!';
+
+  @override
+  String get difficultyEasy => 'Einfach & spaßig!';
+
+  @override
+  String get difficultyChallenge => 'Herausfordernd!';
+
+  @override
+  String get difficultyAdaptive => 'Intelligent angepasst!';
+
+  @override
+  String get goalExam => 'Meine Prüfung bestehen!';
+
+  @override
+  String get goalImprove => 'Immer besser werden!';
+
+  @override
+  String get goalCertificate => 'Ein Zertifikat erhalten!';
+
+  @override
+  String get progressReset => 'Der gesamte Fortschritt wurde zurückgesetzt.';
+
+  @override
+  String get edit => 'Bearbeiten';
+
+  @override
+  String get notSet => 'Nicht festgelegt';
+
+  @override
+  String get myCourses => 'Meine Kurse';
+
+  @override
+  String get myProgress => 'Mein Fortschritt';
+
+  @override
+  String get totalXp => 'Gesamt-XP';
 }

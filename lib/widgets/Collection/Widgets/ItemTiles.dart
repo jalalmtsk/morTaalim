@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import '../../../Shop/MainShopPageIndex.dart';
 import '../../../main.dart';
+import '../../../screens/main_shop_screen/MainShopPageIndex.dart';
 import 'LockOverlay.dart';
 
 class ItemTile extends StatefulWidget {

@@ -120,7 +120,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get jumpingBoard => 'ⵜⴰⵙⵉⵏⴰⵡⵉⵏ ⵜⵉⵍⵍⴰⴷⵓⵜ';
 
   @override
-  String get myProfile => 'ⵉⵙⵎⵉⵔⴰⵏ ⵉⵎⵎⴰⴷⴰⵏ';
+  String get myProfile => 'ⴰⵎⵍⴰⴼ ⵉⵏⵓ';
 
   @override
   String get stars => 'ⵉⵎⵓⴹⵉⵏ';
@@ -162,7 +162,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get startGame => 'ⴰⵖⴼⴰⵙ ⵜⴰⵙⵉⵏⴰⵡⵉⵏ';
 
   @override
-  String get step => 'ⵉⵙⵉ';
+  String get step => 'ⵜⴰⵙⵓⵔⵜ';
 
   @override
   String get jump => 'ⵉⵍⵍⴰⴷ';
@@ -387,7 +387,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get flickTheDancingFox => 'ⴼⵍⵉⴽ ⴰⵣⴳⴳⵯⴰⵏ';
 
   @override
-  String get next => 'ⵢⴰⵏⵙ';
+  String get next => 'ⵓⵣⵡⴰⵔ';
 
   @override
   String get previous => 'ⴰⵎⴰⵣⵉⴹ';
@@ -627,7 +627,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get haveFunAndLearnSomethingNew => 'ⵡⴰⵍⵍⵉ ⵏ ⵜⵉⵙⴰⵏ ⴷ ⵜⵎⵉⵔⵙⵜ ⴰⵎⵓⴹⴹⴰⵏ ⵎⴰⵢⵢⴰⵏ!';
 
   @override
-  String get back => 'ⵙⵡⴰⵍ';
+  String get back => 'ⵓⵔⵔⵉ';
 
   @override
   String get adFailedToLoadOrWasNotCompletedPleaseTryAgainLater => 'ⵜⵉⵏⵙⵉⵡⵉⵏ ⵓⵔ ⵜⵎⵓⵔⵜ ⴷ ⵓⵔ ⵜⴽⴼⵔⵉⵡⵉⵏ. ⴼⴼⵓⵙ ⴷⵉⵔⴰ.';
@@ -711,13 +711,13 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get learningPower => 'ⵜⵉⴳⵎⵉ ⵏ ⵓⵙⴼⵔⵓ';
 
   @override
-  String get badges => 'ⵜⴰⵣⵎⴻⵔⵜ';
+  String get badges => 'ⵜⵉⵙⵉⵏⴰⵡⵉⵏ';
 
   @override
   String get global => 'ⴰⴳⵍⵓⴱⴰⵍⴻ';
 
   @override
-  String get coursesCompleted => 'ⵜⵉⵍⵎⵉⴷⵉⵏ ⵉⵎⴻⵔⵃⵉⵏ';
+  String get coursesCompleted => 'ⵜⵉⵎⵙⵙⵓⵔⵉⵏ ⵉⵎⵎⴰⵍⵏ';
 
   @override
   String get exercices => 'ⵜⵓⴷⴻⵔⵜ';
@@ -726,10 +726,10 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get dashboard => 'ⵜⴰⴱⵍⵓⵜ ⵏ ⵓⵙⴳⴻⵍⴷ';
 
   @override
-  String get practiseCourses => 'ⵜⵉⵍⵎⵉⴷⵉⵏ ⵏ ⵜⴰⵣⵡⴰⵔⴰ';
+  String get practiseCourses => 'ⵜⵉⵎⵙⵙⵓⵔⵉⵏ ⵏ ⵓⵙⵙⵍⵎⴷ';
 
   @override
-  String get keepUpTheGoodWork => 'ⵙⵔⴰⵖ ⴰⴷ ⴷ-ⵜⵜⵡⵓⵍ';
+  String get keepUpTheGoodWork => 'ⴽⵎⵎⵍ ⴰⵅⴷⴷⵉⵎ ⴰⵢⵍⵍⵉ ⵉⴼⴽⴰⵏ!';
 
   @override
   String get classLevel => 'ⵜⴰⵇⴷⵉⵎⵜ ⵏ ⵜⴰⵡⴻⵏⵣⴰ';
@@ -768,7 +768,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get accountAndBackup => 'ⴰⴽⴰⵓⵏⵜ ⴷ ⵜⴰⵣⵡⴰⵔⴰ ⵏ ⵓⵙⴷⵓⴼ';
 
   @override
-  String get preferredSubject => 'ⴰⵙⴻⴼⵔⵓ ⵉ ⵢⴻⴼⵔⵓⵃ';
+  String get preferredSubject => 'ⴰⵙⵏⴼⴰⵍ ⴰⵎⵖⵍⴰⵏ';
 
   @override
   String get version => 'ⴰⵙⵎⴽⵀⴻⴷ';
@@ -1284,16 +1284,16 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get enterSubjects => 'ⵙⵙⵉ ⵜⴰⵙⵏⵓⵙⵉⵏ';
 
   @override
-  String get learningStyle => 'ⵜⴰⵎⵓⵔⵜ ⵏ ⵜⵎⵎⴰⵣⵉⵖⵜ';
+  String get learningStyle => 'ⴰⵖⴰⵏⵉⴱ ⵏ ⵓⵍⵎⵎⵓⴷ';
 
   @override
-  String get studyTime => 'ⵜⴰⵙⵔⴰ ⵏ ⵜⵎⵎⴰⵣⵉⵖⵜ';
+  String get studyTime => 'ⴰⴽⵓⴷ ⵏ ⵓⵍⵎⵎⵓⴷ';
 
   @override
-  String get difficulty => 'ⵜⴰⵙⵉⵡⴰⵏⵜ';
+  String get difficulty => 'ⴰⵙⵡⵉⵔ ⵏ ⵜⵓⵔⴰⴳⵜ';
 
   @override
-  String get goals => 'ⵜⵉⴼⵉⵔⵉⵡⵉⵏ';
+  String get goals => 'ⴰⵙⵡⵉⵔ ⵉⵏⵓ';
 
   @override
   String get weeklyGoal => 'ⴰⵎⴰⵢ ⴰⵎⵙⵙⵉⴹ';
@@ -1490,7 +1490,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get backupHowRestoreDesc => 'ⵢⴰⵡ \'ⵙⵡⴰⵍ ⵏ ⴰⵎⵓⵔ\' ⵓⴷ ⵢⴰⵙ ⵓⵎⵓⵔ ⵏⴰⴳ. ⵓⵙⵙⵓⵍ ⵏ ⵡⴰⵙ ⵓⵔ ⵏ ⵢⴰⵏⵙⵓⵔ.';
 
   @override
-  String get done => 'ⴰⵢⵙⵎ';
+  String get done => 'ⵉⵎⵎⴰⵍ';
 
   @override
   String get loginWithoutGoogle => 'ⵙⵉⵏⴽⵓⵍ ⵏⴰⵡⴰⴷ Google';
@@ -1568,4 +1568,148 @@ class AppLocalizationsZgh extends AppLocalizations {
   String levelStart(Object level) {
     return 'ⵉⵎⵎⴰⵔ $level ⵙⵏⴰⵏ ⵢⵓⵙⵙⴰⵏ!';
   }
+
+  @override
+  String get mistakes => 'ⵉⵣⵣⵔⵉⵎⵏ';
+
+  @override
+  String get ofContext => 'ⴳ';
+
+  @override
+  String get keepGoing => 'ⴽⵎⵎⵍ!';
+
+  @override
+  String get allDone => 'ⵉⵎⵎⴰⵍ!';
+
+  @override
+  String get weeklyGoalHint => '🗓️ ⴰⵙⵡⵉⵔ ⵉⵏⵓ ⵏ ⵓⵙⵙⴰⵏ ⴰ...';
+
+  @override
+  String get longTermGoalHint => '🌟 ⴰⵔⵎⵎⴰⵙ ⵉⵏⵓ ⴰⵎⵇⵇⵔⴰⵏ...';
+
+  @override
+  String get celebrationTitle => 'ⵜⴻⵀⵢⵢⴰⴷ!';
+
+  @override
+  String get celebrationSubtitle => 'ⴰⵎⵓⴷⴷⵓ ⵏ ⵓⵍⵎⵎⵓⴷ ⵉⵏⴽ ⵉⵀⵢⵢⴰ.\nⴰⴷ ⵏⴱⴷⵓ ⴰⵙⵏⵔⵎⵙ! 🚀';
+
+  @override
+  String get prefStep1Title => 'ⵎⴰⵜⵜⴰ ⵜⵃⵎⵎⵍⴷ?';
+
+  @override
+  String get prefStep1Question => 'ⴼⵔⵏ ⴰⵙⵏⴼⴰⵍ ⵉⵏⴽ ⴰⵎⵖⵍⴰⵏ!';
+
+  @override
+  String get prefStep1Hint => 'ⵙⵙⵉⵜⵜⵉ ⵅⴼ ⵢⴰⵏ ⴰⴷ ⵜⴼⵔⵏⴷ!';
+
+  @override
+  String get prefStep2Title => 'ⵎⴰⵏⵎⴽ ⵜⵍⵎⴷⴷ?';
+
+  @override
+  String get prefStep2Question => 'ⴼⵔⵏ ⴰⵖⴰⵏⵉⴱ ⵏ ⵓⵍⵎⵎⵓⴷ!';
+
+  @override
+  String get prefStep2Hint => 'ⵎⴰⵏ ⵡⴰⵏ ⵉⵛⴱⴰⵀⵏ ⴰⴽ?';
+
+  @override
+  String get prefStep3Title => 'ⵎⵍⵍⵉⵖ ⵜⵃⵎⵎⵍⴷ ⴰⴷ ⵜⵍⵎⴷⴷ?';
+
+  @override
+  String get prefStep3Question => 'ⵎⴰⵏ ⴰⴽⵓⴷ ⵉⵏⴽ?';
+
+  @override
+  String get prefStep3Hint => 'ⵎⵍⵍⵉⵖ ⵜⴳⴰⴷ ⴰⵎⵣⵣⵓ?';
+
+  @override
+  String get prefStep4Title => 'ⵎⴰⵏ ⴰⵙⵡⵉⵔ ⵜⵔⵉⴷ?';
+
+  @override
+  String get prefStep4Question => 'ⴼⵔⵏ ⴰⵙⵡⵉⵔ ⵏ ⵓⵎⵣⴰⵢ!';
+
+  @override
+  String get prefStep4Hint => 'ⵉⵍⵉ ⴰⵙⴷⵉⴷ — ⴽⵓ ⴰⵙⵡⵉⵔ ⵉⵍⴰ ⴰⵣⵔⴼ!';
+
+  @override
+  String get prefStep5Title => 'ⵎⴰⵏ ⴰⵔⵎⵎⴰⵙ ⵉⵏⴽ ⴰⵎⵇⵇⵔⴰⵏ?';
+
+  @override
+  String get prefStep5Question => 'ⵎⴰⵜⵜⴰ ⵜⵔⵉⴷ ⴰⴷ ⵜⴰⵡⴹⴷ?';
+
+  @override
+  String get prefStep5Hint => 'ⵉⵏⵉ ⴰⵏⵖ ⴰⵙⵡⵉⵔ ⵉⵏⴽ!';
+
+  @override
+  String get subjectMath => 'ⵜⵉⵙⵏⴰⵎⴰⵜⵉⵏ';
+
+  @override
+  String get subjectArabic => 'ⵜⴰⵄⵔⴰⴱⵜ';
+
+  @override
+  String get subjectEnglish => 'ⵜⴰⵏⴳⵍⵉⵣⵜ';
+
+  @override
+  String get subjectFrench => 'ⵜⴰⴼⵔⴰⵏⵙⵉⵙⵜ';
+
+  @override
+  String get subjectScience => 'ⵜⵉⵙⵏⵙⵉ';
+
+  @override
+  String get subjectIslamicEd => 'ⵜⴰⵔⴱⵉⵜ ⵜⴰⵙⵍⴰⵎⵜ';
+
+  @override
+  String get subjectArt => 'ⵜⴰⵣⵓⵔⵉ';
+
+  @override
+  String get styleVisual => 'ⵔⵉⵖ ⵜⵉⵡⵉⵏⵉ!';
+
+  @override
+  String get styleAudio => 'ⵔⵉⵖ ⴰⵙⵍⵍⵉ!';
+
+  @override
+  String get styleHandsOn => 'ⵔⵉⵖ ⴰⴷ ⵙⵡⴰⵍⵖ!';
+
+  @override
+  String get timeMorning => 'ⴰⵣⵓⵍ ⵏ ⵜⴼⵓⴽⵜ!';
+
+  @override
+  String get timeAfternoon => 'ⵜⴰⴷⴳⴳⵯⴰⵜ!';
+
+  @override
+  String get timeEvening => 'ⵜⴰⴷⴳⴳⵯⴰⵜ ⵏ ⵓⵢⵢⵓⵔ!';
+
+  @override
+  String get difficultyEasy => 'ⵉⵙⵀⵍ ⵓ ⵉⴼⵔⴰⵃ!';
+
+  @override
+  String get difficultyChallenge => 'ⴰⵎⵣⴰⵢ ⴰⵎⵇⵇⵔⴰⵏ!';
+
+  @override
+  String get difficultyAdaptive => 'ⴰⴷⴰⴱⵜⵉⴼ!';
+
+  @override
+  String get goalExam => 'ⴰⴷ ⵣⵔⵉⵖ ⴰⵎⵣⵔⴰⵢ!';
+
+  @override
+  String get goalImprove => 'ⴰⴷ ⵙⵙⵏⴼⵍⵖ ⵓⴳⴳⴰⵔ!';
+
+  @override
+  String get goalCertificate => 'ⴰⴷ ⴰⵡⵉⵖ ⴰⵙⴰⵜⵉ!';
+
+  @override
+  String get progressReset => 'ⵉⵜⵜⵓⵙⵙⴼⴼⵔ ⴽⵓⵍⵍⵓ ⵓⵙⵙⵉⴽⴽⵉⵍ.';
+
+  @override
+  String get edit => 'ⵙⵏⴼⵍ';
+
+  @override
+  String get notSet => 'ⵓⵔ ⵉⵜⵜⵓⵙⴱⴷⴷ';
+
+  @override
+  String get myCourses => 'ⵜⵉⵎⵙⵙⵓⵔⵉⵏ ⵉⵏⵓ';
+
+  @override
+  String get myProgress => 'ⴰⵙⵙⵉⴽⴽⵉⵍ ⵉⵏⵓ';
+
+  @override
+  String get totalXp => 'ⴰⵎⴰⵜⴰⵢ ⵏ XP';
 }

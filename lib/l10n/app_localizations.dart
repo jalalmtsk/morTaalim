@@ -1520,7 +1520,7 @@ abstract class AppLocalizations {
   /// No description provided for @coursesCompleted.
   ///
   /// In en, this message translates to:
-  /// **'Courses Completed'**
+  /// **'courses completed'**
   String get coursesCompleted;
 
   /// No description provided for @exercices.
@@ -1544,7 +1544,7 @@ abstract class AppLocalizations {
   /// No description provided for @keepUpTheGoodWork.
   ///
   /// In en, this message translates to:
-  /// **'Keep Up The Good Work'**
+  /// **'Keep up the good work!'**
   String get keepUpTheGoodWork;
 
   /// No description provided for @classLevel.
@@ -1622,7 +1622,7 @@ abstract class AppLocalizations {
   /// No description provided for @preferredSubject.
   ///
   /// In en, this message translates to:
-  /// **'Preferred Subject'**
+  /// **'Favourite Subject'**
   String get preferredSubject;
 
   /// No description provided for @version.
@@ -2672,7 +2672,7 @@ abstract class AppLocalizations {
   /// No description provided for @goals.
   ///
   /// In en, this message translates to:
-  /// **'Goals'**
+  /// **'My Goal'**
   String get goals;
 
   /// No description provided for @weeklyGoal.
@@ -3202,6 +3202,294 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Level {level} starts now!'**
   String levelStart(Object level);
+
+  /// No description provided for @mistakes.
+  ///
+  /// In en, this message translates to:
+  /// **'Mistakes'**
+  String get mistakes;
+
+  /// No description provided for @ofContext.
+  ///
+  /// In en, this message translates to:
+  /// **'of'**
+  String get ofContext;
+
+  /// No description provided for @keepGoing.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep going!'**
+  String get keepGoing;
+
+  /// No description provided for @allDone.
+  ///
+  /// In en, this message translates to:
+  /// **'All Done!'**
+  String get allDone;
+
+  /// No description provided for @weeklyGoalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'🗓️ My goal this week is...'**
+  String get weeklyGoalHint;
+
+  /// No description provided for @longTermGoalHint.
+  ///
+  /// In en, this message translates to:
+  /// **'🌟 My big dream goal is...'**
+  String get longTermGoalHint;
+
+  /// No description provided for @celebrationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re all set!'**
+  String get celebrationTitle;
+
+  /// No description provided for @celebrationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your learning adventure is ready.\nLet\'s go explore! 🚀'**
+  String get celebrationSubtitle;
+
+  /// No description provided for @prefStep1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you love?'**
+  String get prefStep1Title;
+
+  /// No description provided for @prefStep1Question.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your favourite subject!'**
+  String get prefStep1Question;
+
+  /// No description provided for @prefStep1Hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap one to pick it!'**
+  String get prefStep1Hint;
+
+  /// No description provided for @prefStep2Title.
+  ///
+  /// In en, this message translates to:
+  /// **'How do you learn best?'**
+  String get prefStep2Title;
+
+  /// No description provided for @prefStep2Question.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your learning style!'**
+  String get prefStep2Question;
+
+  /// No description provided for @prefStep2Hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Which one sounds like YOU?'**
+  String get prefStep2Hint;
+
+  /// No description provided for @prefStep3Title.
+  ///
+  /// In en, this message translates to:
+  /// **'When do you like to study?'**
+  String get prefStep3Title;
+
+  /// No description provided for @prefStep3Question.
+  ///
+  /// In en, this message translates to:
+  /// **'What time is YOUR time?'**
+  String get prefStep3Question;
+
+  /// No description provided for @prefStep3Hint.
+  ///
+  /// In en, this message translates to:
+  /// **'When are you most awake & ready?'**
+  String get prefStep3Hint;
+
+  /// No description provided for @prefStep4Title.
+  ///
+  /// In en, this message translates to:
+  /// **'How hard do you want it?'**
+  String get prefStep4Title;
+
+  /// No description provided for @prefStep4Question.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your challenge level!'**
+  String get prefStep4Question;
+
+  /// No description provided for @prefStep4Hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Be honest — all levels are great!'**
+  String get prefStep4Hint;
+
+  /// No description provided for @prefStep5Title.
+  ///
+  /// In en, this message translates to:
+  /// **'What is your big dream?'**
+  String get prefStep5Title;
+
+  /// No description provided for @prefStep5Question.
+  ///
+  /// In en, this message translates to:
+  /// **'What do you want to do?'**
+  String get prefStep5Question;
+
+  /// No description provided for @prefStep5Hint.
+  ///
+  /// In en, this message translates to:
+  /// **'Tell us your goal!'**
+  String get prefStep5Hint;
+
+  /// No description provided for @subjectMath.
+  ///
+  /// In en, this message translates to:
+  /// **'Math'**
+  String get subjectMath;
+
+  /// No description provided for @subjectArabic.
+  ///
+  /// In en, this message translates to:
+  /// **'Arabic'**
+  String get subjectArabic;
+
+  /// No description provided for @subjectEnglish.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
+  String get subjectEnglish;
+
+  /// No description provided for @subjectFrench.
+  ///
+  /// In en, this message translates to:
+  /// **'French'**
+  String get subjectFrench;
+
+  /// No description provided for @subjectScience.
+  ///
+  /// In en, this message translates to:
+  /// **'Science'**
+  String get subjectScience;
+
+  /// No description provided for @subjectIslamicEd.
+  ///
+  /// In en, this message translates to:
+  /// **'Islamic Ed'**
+  String get subjectIslamicEd;
+
+  /// No description provided for @subjectArt.
+  ///
+  /// In en, this message translates to:
+  /// **'Art'**
+  String get subjectArt;
+
+  /// No description provided for @styleVisual.
+  ///
+  /// In en, this message translates to:
+  /// **'I love pictures!'**
+  String get styleVisual;
+
+  /// No description provided for @styleAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'I love listening!'**
+  String get styleAudio;
+
+  /// No description provided for @styleHandsOn.
+  ///
+  /// In en, this message translates to:
+  /// **'I love doing things!'**
+  String get styleHandsOn;
+
+  /// No description provided for @timeMorning.
+  ///
+  /// In en, this message translates to:
+  /// **'Morning!'**
+  String get timeMorning;
+
+  /// No description provided for @timeAfternoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Afternoon!'**
+  String get timeAfternoon;
+
+  /// No description provided for @timeEvening.
+  ///
+  /// In en, this message translates to:
+  /// **'Evening!'**
+  String get timeEvening;
+
+  /// No description provided for @difficultyEasy.
+  ///
+  /// In en, this message translates to:
+  /// **'Easy & fun!'**
+  String get difficultyEasy;
+
+  /// No description provided for @difficultyChallenge.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenging!'**
+  String get difficultyChallenge;
+
+  /// No description provided for @difficultyAdaptive.
+  ///
+  /// In en, this message translates to:
+  /// **'Smart adapt!'**
+  String get difficultyAdaptive;
+
+  /// No description provided for @goalExam.
+  ///
+  /// In en, this message translates to:
+  /// **'Pass my exam!'**
+  String get goalExam;
+
+  /// No description provided for @goalImprove.
+  ///
+  /// In en, this message translates to:
+  /// **'Get better & better!'**
+  String get goalImprove;
+
+  /// No description provided for @goalCertificate.
+  ///
+  /// In en, this message translates to:
+  /// **'Get a certificate!'**
+  String get goalCertificate;
+
+  /// No description provided for @progressReset.
+  ///
+  /// In en, this message translates to:
+  /// **'All progress has been reset.'**
+  String get progressReset;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get edit;
+
+  /// No description provided for @notSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Not set'**
+  String get notSet;
+
+  /// No description provided for @myCourses.
+  ///
+  /// In en, this message translates to:
+  /// **'My Courses'**
+  String get myCourses;
+
+  /// No description provided for @myProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'My Progress'**
+  String get myProgress;
+
+  /// No description provided for @totalXp.
+  ///
+  /// In en, this message translates to:
+  /// **'Total XP'**
+  String get totalXp;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

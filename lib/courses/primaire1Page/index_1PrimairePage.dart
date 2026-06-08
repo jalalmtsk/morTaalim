@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mortaalim/XpSystem.dart';
-import 'package:mortaalim/courses/primaire1Page/1_primairePage.dart';
 import 'package:mortaalim/courses/primaire1Page/1_primairePratique.dart' hide Primaire1;
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/ComingSoonNotPage.dart';
@@ -28,32 +27,22 @@ class _Index1PrimaireState extends State<Index1Primaire>
   Key _keyTab2 = UniqueKey();
 
   static const _titles = [
-    'math',
-    'french',
-    'arabic',
-    'islamicEducation',
-    'artEducation',
+    'math', 'french', 'arabic', 'islamicEducation', 'artEducation',
   ];
 
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 800),
+      duration: const Duration(milliseconds: 600),
     );
-
     _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -1),
+      begin: const Offset(0, -0.3),
       end: Offset.zero,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-
-    _fadeAnimation = Tween<double>(
-      begin: 0,
-      end: 1,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
-
+    _fadeAnimation = Tween<double>(begin: 0, end: 1)
+        .animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
     _controller.forward();
   }
 
@@ -65,18 +54,16 @@ class _Index1PrimaireState extends State<Index1Primaire>
 
   Future<void> resetAllProgress() async {
     final prefs = await SharedPreferences.getInstance();
-
     for (final title in _titles) {
       await prefs.remove('progress_$title');
       await prefs.remove('progress1_$title');
       await prefs.remove('progress2_$title');
     }
-
     setState(() {
       _keyTab1 = UniqueKey();
       _keyTab2 = UniqueKey();
     });
-
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text('✅ Tous les progrès ont été réinitialisés.'),
@@ -88,26 +75,12 @@ class _Index1PrimaireState extends State<Index1Primaire>
 
   @override
   Widget build(BuildContext context) {
-    final xpManager = ExperienceManager();
     final audioManager = Provider.of<AudioManager>(context, listen: false);
-
-    const headerTextStyle = TextStyle(
-      fontSize: 24,
-      fontWeight: FontWeight.w700,
-      color: Colors.white,
-      shadows: [Shadow(blurRadius: 3, color: Colors.black54)],
-    );
-
-    const tabLabelStyle = TextStyle(
-      fontWeight: FontWeight.w600,
-      fontSize: 16,
-    );
 
     return DefaultTabController(
       length: 2,
       child: Builder(builder: (context) {
-        final TabController tabController = DefaultTabController.of(context)!;
-
+        final tabController = DefaultTabController.of(context)!;
         tabController.addListener(() {
           if (!tabController.indexIsChanging) return;
           audioManager.playEventSound('clickButton');
@@ -115,118 +88,48 @@ class _Index1PrimaireState extends State<Index1Primaire>
 
         return Scaffold(
           backgroundColor: Colors.transparent,
-          body: Column(
+          body: Stack(
             children: [
-              Expanded(
-                child: Stack(
+              // ── Background ──────────────────────────────────
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/UI/BackGrounds/bg2.jpg',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Positioned.fill(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                  child: Container(color: Colors.black.withOpacity(0.30)),
+                ),
+              ),
+
+              // ── Content ─────────────────────────────────────
+              SafeArea(
+                child: Column(
                   children: [
-                    // Background Image
-                    Positioned.fill(
-                      child: Image.asset(
-                        'assets/images/UI/BackGrounds/bg2.jpg',
-                        fit: BoxFit.cover,
+                    // Status bar (XP, coins, etc.)
+                    const Userstatutbar(),
+
+                    // Header + tabs (animated)
+                    SlideTransition(
+                      position: _slideAnimation,
+                      child: FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: _Header(audioManager: audioManager),
                       ),
                     ),
 
-                    // Blurred overlay for entire page
-                    Positioned.fill(
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                        child: Container(color: Colors.black.withOpacity(0.25)),
+                    const SizedBox(height: 8),
+
+                    // Tab content
+                    Expanded(
+                      child: TabBarView(
+                        children: [
+                          Primaire1Pratique(key: _keyTab2),
+                           ComingSoonNotPage(),
+                        ],
                       ),
-                    ),
-
-                    // Main content → (NO Expanded here!)
-                    Column(
-                      children: [
-                        Userstatutbar(),
-
-                        SlideTransition(
-                          position: _slideAnimation,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: BackdropFilter(
-                                  filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                                  child: Container(
-                                    color: Colors.black.withOpacity(0.25),
-                                    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(Icons.arrow_back,
-                                                  color: Colors.deepOrange),
-                                              onPressed: () {
-                                                audioManager.playEventSound('cancelButton');
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                            Expanded(
-                                              child: Text(
-                                                tr(context).class1,
-                                                style: headerTextStyle,
-                                                textAlign: TextAlign.center,
-                                              ),
-                                            ),
-                                            const SizedBox(width: 48),
-                                          ],
-                                        ),
-
-                                        const SizedBox(height: 8),
-
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(16),
-                                          child: BackdropFilter(
-                                            filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                                            child: Container(
-                                              color: Colors.black.withOpacity(0.3),
-                                              child: TabBar(
-                                                indicatorSize: TabBarIndicatorSize.tab,
-                                                indicator: BoxDecoration(
-                                                  color: Colors.white.withValues(alpha: 0.8),
-                                                  borderRadius: BorderRadius.circular(12),
-                                                ),
-                                                labelColor: Colors.deepOrange,
-                                                unselectedLabelColor: Colors.white70,
-                                                labelStyle: tabLabelStyle,
-                                                tabs: [
-                                                  Tab(
-                                                    icon: const Icon(Icons.track_changes_rounded),
-                                                    text: tr(context).exercices,
-                                                  ),
-                                                  Tab(
-                                                    icon: const Icon(Icons.menu_book),
-                                                    text: tr(context).courses,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        // This Expanded is now VALID (inside Column, not inside Stack)
-                        Expanded(
-                          child: TabBarView(
-                            children: [
-                              Primaire1Pratique(key: _keyTab2),
-                              ComingSoonNotPage(),
-                            ],
-                          ),
-                        ),
-                      ],
                     ),
                   ],
                 ),
@@ -235,6 +138,98 @@ class _Index1PrimaireState extends State<Index1Primaire>
           ),
         );
       }),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Header: back button + title + tab bar — all in one compact card
+// ─────────────────────────────────────────────────────────────
+class _Header extends StatelessWidget {
+  final AudioManager audioManager;
+  const _Header({required this.audioManager});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(18),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: Container(
+            color: Colors.white.withOpacity(0.08),
+            padding: const EdgeInsets.fromLTRB(4, 4, 4, 6),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // ── Back + Title row ──
+                Row(
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.arrow_back_ios_new_rounded,
+                          size: 18, color: Colors.deepOrange),
+                      onPressed: () {
+                        audioManager.playEventSound('cancelButton');
+                        Navigator.pop(context);
+                      },
+                    ),
+                    Expanded(
+                      child: Text(
+                        tr(context).class1,
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ),
+                    // Mirror of back button to keep title centered
+                    const SizedBox(width: 40),
+                  ],
+                ),
+
+                // ── Tab bar ──
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.25),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: TabBar(
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    dividerColor: Colors.transparent,
+                    indicator: BoxDecoration(
+                      color: Colors.white.withOpacity(0.85),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    labelColor: Colors.deepOrange,
+                    unselectedLabelColor: Colors.white60,
+                    labelStyle: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                    ),
+                    tabs: [
+                      Tab(
+                        iconMargin: const EdgeInsets.only(bottom: 2),
+                        icon: const Icon(Icons.track_changes_rounded, size: 18),
+                        text: tr(context).exercices,
+                      ),
+                      Tab(
+                        iconMargin: const EdgeInsets.only(bottom: 2),
+                        icon: const Icon(Icons.menu_book_rounded, size: 18),
+                        text: tr(context).courses,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

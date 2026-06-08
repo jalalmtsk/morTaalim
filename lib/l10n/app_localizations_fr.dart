@@ -162,7 +162,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get startGame => 'Démarrer le jeu';
 
   @override
-  String get step => 'Pas';
+  String get step => 'Étape';
 
   @override
   String get jump => 'Sauter';
@@ -717,7 +717,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get global => 'Global';
 
   @override
-  String get coursesCompleted => 'Cours terminés';
+  String get coursesCompleted => 'cours terminés';
 
   @override
   String get exercices => 'Exercices';
@@ -726,10 +726,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get dashboard => 'Tableau de bord';
 
   @override
-  String get practiseCourses => 'Cours pratiques';
+  String get practiseCourses => 'Cours d\'entraînement';
 
   @override
-  String get keepUpTheGoodWork => 'Continuez le bon travail';
+  String get keepUpTheGoodWork => 'Continue comme ça !';
 
   @override
   String get classLevel => 'Niveau de classe';
@@ -1290,10 +1290,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get studyTime => 'Temps d\'étude';
 
   @override
-  String get difficulty => 'Niveau de difficulté';
+  String get difficulty => 'Difficulté';
 
   @override
-  String get goals => 'Objectifs';
+  String get goals => 'Mon objectif';
 
   @override
   String get weeklyGoal => 'Objectif hebdomadaire';
@@ -1568,4 +1568,148 @@ class AppLocalizationsFr extends AppLocalizations {
   String levelStart(Object level) {
     return 'Le niveau $level commence maintenant !';
   }
+
+  @override
+  String get mistakes => 'Erreurs';
+
+  @override
+  String get ofContext => 'sur';
+
+  @override
+  String get keepGoing => 'Continue !';
+
+  @override
+  String get allDone => 'Tout est terminé !';
+
+  @override
+  String get weeklyGoalHint => '🗓️ Mon objectif cette semaine est...';
+
+  @override
+  String get longTermGoalHint => '🌟 Mon grand rêve est...';
+
+  @override
+  String get celebrationTitle => 'Tout est prêt !';
+
+  @override
+  String get celebrationSubtitle => 'Ton aventure d\'apprentissage est prête.\nAllons explorer ! 🚀';
+
+  @override
+  String get prefStep1Title => 'Qu\'est-ce que tu aimes ?';
+
+  @override
+  String get prefStep1Question => 'Choisis ta matière préférée !';
+
+  @override
+  String get prefStep1Hint => 'Appuie sur une matière pour la choisir !';
+
+  @override
+  String get prefStep2Title => 'Comment apprends-tu le mieux ?';
+
+  @override
+  String get prefStep2Question => 'Choisis ton style d\'apprentissage !';
+
+  @override
+  String get prefStep2Hint => 'Lequel te ressemble le plus ?';
+
+  @override
+  String get prefStep3Title => 'Quand aimes-tu étudier ?';
+
+  @override
+  String get prefStep3Question => 'Quel est TON moment ?';
+
+  @override
+  String get prefStep3Hint => 'Quand es-tu le plus éveillé(e) et prêt(e) ?';
+
+  @override
+  String get prefStep4Title => 'Quel niveau de difficulté souhaites-tu ?';
+
+  @override
+  String get prefStep4Question => 'Choisis ton niveau de défi !';
+
+  @override
+  String get prefStep4Hint => 'Sois honnête — tous les niveaux sont excellents !';
+
+  @override
+  String get prefStep5Title => 'Quel est ton grand rêve ?';
+
+  @override
+  String get prefStep5Question => 'Que veux-tu accomplir ?';
+
+  @override
+  String get prefStep5Hint => 'Parle-nous de ton objectif !';
+
+  @override
+  String get subjectMath => 'Mathématiques';
+
+  @override
+  String get subjectArabic => 'Arabe';
+
+  @override
+  String get subjectEnglish => 'Anglais';
+
+  @override
+  String get subjectFrench => 'Français';
+
+  @override
+  String get subjectScience => 'Sciences';
+
+  @override
+  String get subjectIslamicEd => 'Éducation islamique';
+
+  @override
+  String get subjectArt => 'Arts';
+
+  @override
+  String get styleVisual => 'J\'adore les images !';
+
+  @override
+  String get styleAudio => 'J\'adore écouter !';
+
+  @override
+  String get styleHandsOn => 'J\'aime apprendre en faisant !';
+
+  @override
+  String get timeMorning => 'Le matin !';
+
+  @override
+  String get timeAfternoon => 'L\'après-midi !';
+
+  @override
+  String get timeEvening => 'Le soir !';
+
+  @override
+  String get difficultyEasy => 'Facile et amusant !';
+
+  @override
+  String get difficultyChallenge => 'Un vrai défi !';
+
+  @override
+  String get difficultyAdaptive => 'Adaptatif et intelligent !';
+
+  @override
+  String get goalExam => 'Réussir mon examen !';
+
+  @override
+  String get goalImprove => 'M\'améliorer encore et encore !';
+
+  @override
+  String get goalCertificate => 'Obtenir un certificat !';
+
+  @override
+  String get progressReset => 'Toute la progression a été réinitialisée.';
+
+  @override
+  String get edit => 'Modifier';
+
+  @override
+  String get notSet => 'Non défini';
+
+  @override
+  String get myCourses => 'Mes cours';
+
+  @override
+  String get myProgress => 'Ma progression';
+
+  @override
+  String get totalXp => 'XP totale';
 }

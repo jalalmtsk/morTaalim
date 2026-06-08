@@ -11,8 +11,8 @@ import 'package:provider/provider.dart';
 import 'package:lottie/lottie.dart';
 
 import '../../XpSystem.dart';
+import '../../screens/main_home_screen/Settings/SettingPanelInGame.dart';
 import '../../tools/Ads_Manager.dart';
-import '../../Settings/SettingPanelInGame.dart';
 import 'Questions.dart';
 import 'question_model.dart';
 import 'ModeSelectorPage.dart';
