@@ -26,7 +26,7 @@ final List<Map<String, dynamic>> games = [
     'routeName': 'ShapeSorter',
     'image': 'assets/images/GameGridImages/Shape.png', // ✅ New key
     'locked': true,
-    'cost': 10,
+    'cost': 0,
     'unlockType': 'puzzle',
   },
 
@@ -36,7 +36,7 @@ final List<Map<String, dynamic>> games = [
     'routeName': 'AppStories',
     'image': 'assets/images/GameGridImages/StoriesGame.png', // ✅ New key
     'locked': true,
-    'cost': 10,
+    'cost': 0,
     'unlockType': 'reading',
   },
 
