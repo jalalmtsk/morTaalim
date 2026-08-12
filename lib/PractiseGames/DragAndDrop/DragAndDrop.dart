@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import '../../XpSystem.dart';
+import '../../tools/AD_Tools/adLabel.dart';
 import '../../tools/Ads_Manager.dart';
 import '../practiseWords.dart';
 
@@ -481,7 +482,7 @@ class _DragDropGameState extends State<DragDropGame>
     return Scaffold(
       backgroundColor: _Z.cream,
       bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
-          ? _CircusBannerBar(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
+          ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
           : null,
       body: Stack(children: [
         // Tent BG texture
@@ -743,61 +744,5 @@ class _DragDropGameState extends State<DragDropGame>
         ),
       ]),
     );
-  }
-}
-
-// ── Circus Banner bar ───────────────────────────────────────────
-class _CircusBannerBar extends StatefulWidget {
-  final BannerAd? bannerAd; final bool isLoaded;
-  const _CircusBannerBar({required this.bannerAd, required this.isLoaded});
-  @override State<_CircusBannerBar> createState() => _CircusBannerBarState();
-}
-class _CircusBannerBarState extends State<_CircusBannerBar>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _s;
-  late final Animation<double> _a;
-  @override void initState() {
-    super.initState();
-    _s = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 1100))..repeat(reverse: true);
-    _a = CurvedAnimation(parent: _s, curve: Curves.easeInOut);
-  }
-  @override void dispose() { _s.dispose(); super.dispose(); }
-  @override
-  Widget build(BuildContext context) {
-    final adH = (widget.bannerAd?.size.height?.toDouble() ?? 50.0).clamp(40.0, 90.0);
-    return SafeArea(top: false,
-        child: Container(
-          height: adH + 10,
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Color(0xFFDC2626), Color(0xFF7B2FFF)])),
-          // clip so overflow children can't escape
-          child: widget.isLoaded && widget.bannerAd != null
-              ? Center(child: SizedBox(height: adH,
-              width: widget.bannerAd!.size.width.toDouble(),
-              child: AdWidget(ad: widget.bannerAd!)))
-              : AnimatedBuilder(animation: _a, builder: (_, __) {
-            final t = _a.value;
-            return Padding(padding: const EdgeInsets.symmetric(
-                horizontal: 16, vertical: 6),
-                child: Row(children: [
-                  Opacity(opacity: 0.5+t*0.5,
-                      child: const Text('🎪', style: TextStyle(fontSize: 18))),
-                  const SizedBox(width: 10),
-                  Expanded(child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(height: 28,
-                          color: Colors.white.withOpacity(0.15+t*0.15),
-                          alignment: Alignment.center,
-                          child: Text('✨  Publicité  ✨',
-                              style: TextStyle(fontFamily: 'Fredoka One', fontSize: 12,
-                                  color: Colors.white.withOpacity(0.65+t*0.25)))))),
-                  const SizedBox(width: 10),
-                  Opacity(opacity: 0.5+t*0.5,
-                      child: const Text('🎡', style: TextStyle(fontSize: 18))),
-                ]));
-          }),
-        ));
   }
 }

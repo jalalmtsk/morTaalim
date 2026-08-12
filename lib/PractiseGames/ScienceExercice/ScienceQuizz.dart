@@ -297,7 +297,7 @@ class _ScienceQuizExerciseState extends State<ScienceQuizExercise> {
         child: Container(
           height: _bannerAd!.size.height.toDouble(),
           width: _bannerAd!.size.width.toDouble(),
-          child: AdWidget(ad: _bannerAd!),
+          child: FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded),
         ),
       )
           : null,

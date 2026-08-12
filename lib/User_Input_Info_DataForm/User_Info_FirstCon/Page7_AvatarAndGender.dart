@@ -157,6 +157,7 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
                         bottom: 20,
                         right: 20,
                         child: FloatingActionButton(
+                          heroTag: 'avatar_confirm',  // ← add this one line
                           backgroundColor: Colors.white,
                           foregroundColor: Colors.deepOrange,
                           elevation: 6,

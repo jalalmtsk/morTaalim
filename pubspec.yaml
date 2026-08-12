@@ -2,7 +2,7 @@ name: mortaalim
 description: "A new Flutter project."
 publish_to: 'none'
 
-version: 1.0.5+1
+version: 1.0.9+1
 
 environment:
   sdk: ^3.6.0
@@ -32,8 +32,8 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   google_mobile_ads: ^6.0.0
   percent_indicator: ^4.2.5
-  in_app_purchase: ^3.2.3
-  font_awesome_flutter: ^10.8.0
+  in_app_purchase: ^3.3.0
+  font_awesome_flutter: ^11.0.0
   flutter_staggered_animations: ^1.1.1
   cloud_firestore: ^6.0.0
   firebase_core: ^4.0.0

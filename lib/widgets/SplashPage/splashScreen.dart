@@ -1,21 +1,26 @@
 import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mortaalim/IndexPage.dart';
 import 'package:mortaalim/User_Input_Info_DataForm/User_Info_FirstCon/UserInfoForm_Introduction.dart';
-import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/XpSystem.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../Authentification/LogIn.dart';
+import '../../tools/Ads_Manager.dart';
 import 'CompanyLogoScreen.dart';
 import 'LoadingScreen.dart';
 
+// ─── NOTE : AgeCheckPage et setChildMode supprimés ───────────────────────────
+// MoorTaalim est une appli 100% enfants. La config COPPA est appliquée une
+// seule fois dans AdHelper.initializeAds() et ne change jamais.
+// ─────────────────────────────────────────────────────────────────────────────
+
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key}); // ❌ Removed onChangeLocale
+  const SplashPage({super.key});
 
   @override
   State<SplashPage> createState() => _SplashPageState();
@@ -28,45 +33,26 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   late List<_PreloadTask> _tasks;
   bool _loadingComplete = false;
 
-  late AnimationController _logoFadeController;
-  late Animation<double> _logoFade;
-
   @override
   void initState() {
     super.initState();
 
-    _logoFadeController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1200),
-    );
-    _logoFade = CurvedAnimation(
-      parent: _logoFadeController,
-      curve: Curves.easeInOut,
-    );
-
     _tasks = [
       _PreloadTask("Preload Assets", _preloadAssets),
-      _PreloadTask("Initialize AdMob", _initAdMob),
       _PreloadTask("Initialize TTS", _initTTS),
       _PreloadTask("Final Setup", _finalSetup),
     ];
-
-    _startIntro();
   }
 
-  void _startIntro() async {
-    final audioManager = Provider.of<AudioManager>(context, listen: false);
-    audioManager.playSfx("assets/audios/SplashScreen_Audio/modern_logo.mp3");
-    audioManager.playSfx("assets/audios/SplashScreen_Audio/openingZoom.mp3");
-
-    _logoFadeController.forward();
-
-    await Future.delayed(const Duration(seconds: 4));
-
-    if (mounted) {
-      setState(() => _showLoadingScreen = true);
-      _initializeApp();
-    }
+  // Called by CompanyLogoScreen itself the instant its Lottie animation
+  // actually finishes (or its own safety-net timeout fires) — so this
+  // phase takes exactly as long as the animation is designed to take,
+  // not a guessed delay that could cut it off early or pad it with dead
+  // air.
+  void _onLogoFinished() {
+    if (!mounted) return;
+    setState(() => _showLoadingScreen = true);
+    _initializeApp();
   }
 
   Future<void> _initializeApp() async {
@@ -77,23 +63,43 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
     if (!mounted) return;
 
-    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    // The Lottie/audio intro is now the very first thing shown on app
+    // launch (see main.dart's initialRoute), ahead of any auth check —
+    // previously AuthGate ran first and showed a bare CircularProgress-
+    // Indicator while Firebase resolved, so users never actually saw the
+    // splash animation before reaching either the login screen or the
+    // app. The sign-in check now happens here instead, after the intro
+    // has already played.
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => LoginPage()),
+      );
+      return;
+    }
 
-    // ✅ Use SharedPreferences to check if onboarding was completed
+    final xpManager = Provider.of<ExperienceManager>(context, listen: false);
+    if (xpManager.lastLogin == null ||
+        xpManager.lastLogin!.isBefore(DateTime.now().subtract(const Duration(seconds: 2)))) {
+      xpManager.onAppStart(user.uid);
+    }
+
     final prefs = await SharedPreferences.getInstance();
     final bool onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
 
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => onboardingCompleted
-            ? const Index()           // Go to IndexPage if onboarding was completed
-            : const UserInfoForm(),  // First launch or app reinstall -> onboarding
-      ),
-    );
+    if (!onboardingCompleted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const UserInfoForm()),
+      );
+    } else {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const Index()),
+      );
+    }
   }
-
-
 
   Future<void> _runWithTimeout(String name, Future<void> Function() action) async {
     debugPrint("Starting $name...");
@@ -130,7 +136,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _logoFadeController.dispose();
     _tts.stop();
     super.dispose();
   }
@@ -141,10 +146,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     await rootBundle.load('assets/audios/UI_Audio/SFX_Audio/CinematicStart_SFX.mp3');
     await rootBundle.load('assets/audios/AppLogoSound.mp3');
     await precacheImage(const AssetImage('assets/icons/logo3.png'), context);
-  }
-
-  Future<void> _initAdMob() async {
-    await MobileAds.instance.initialize();
   }
 
   Future<void> _initTTS() async {
@@ -160,7 +161,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 1200), // longer fade
+        duration: const Duration(milliseconds: 1200),
         switchInCurve: Curves.easeInOut,
         switchOutCurve: Curves.easeInOut,
         child: _showLoadingScreen
@@ -171,12 +172,11 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
         )
             : CompanyLogoScreen(
           key: const ValueKey('CompanyLogoScreen'),
-          fadeAnimation: _logoFade,
+          onFinished: _onLogoFinished,
         ),
       ),
     );
   }
-
 }
 
 class _PreloadTask {

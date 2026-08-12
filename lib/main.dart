@@ -86,7 +86,6 @@ void main() async {
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
 
   prefs = await SharedPreferences.getInstance();
-  AdHelper.initializeAds();
 
   final xpManager = ExperienceManager();
   await xpManager.loadData();
@@ -328,7 +327,12 @@ class _MyAppState extends State<MyApp> {
           locale: currentLocale,
           showPerformanceOverlay: false,
           showSemanticsDebugger: false,
-          initialRoute: 'Auth',
+          // The Jalnix/MoorTaalim Lottie splash (SplashPage → CompanyLogoScreen)
+          // is the true first screen now, so it always plays before the app
+          // even checks whether someone's signed in. 'Auth' (AuthGate) is
+          // still used for the logout → re-login round-trip, which should
+          // skip straight back to the login screen without replaying the intro.
+          initialRoute: 'Splash',
         );
       },
     );

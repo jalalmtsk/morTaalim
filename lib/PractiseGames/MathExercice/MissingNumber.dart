@@ -10,6 +10,7 @@ import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 
 import '../../XpSystem.dart';
+import '../../tools/AD_Tools/adLabel.dart';
 import '../../tools/Ads_Manager.dart';
 import 'Tools/AnimatedHeart.dart';
 
@@ -668,7 +669,7 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise>
       child: Scaffold(
         // ── Banner ad bar ───────────────────────────────────
         bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
-            ? _BannerBar(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
+            ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
             : null,
 
         body: Stack(
@@ -1341,85 +1342,4 @@ class _Bubble extends StatelessWidget {
   Widget build(BuildContext context) => Container(
       width: size, height: size,
       decoration: BoxDecoration(shape: BoxShape.circle, color: color));
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  BANNER AD BAR  — shimmer skeleton while loading
-// ═══════════════════════════════════════════════════════════════
-class _BannerBar extends StatefulWidget {
-  final BannerAd? bannerAd; final bool isLoaded;
-  const _BannerBar({required this.bannerAd, required this.isLoaded});
-  @override State<_BannerBar> createState() => _BannerBarState();
-}
-class _BannerBarState extends State<_BannerBar>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _shimCtrl;
-  late final Animation<double>   _shimAnim;
-  @override
-  void initState() {
-    super.initState();
-    _shimCtrl = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 1100))..repeat(reverse: true);
-    _shimAnim = CurvedAnimation(parent: _shimCtrl, curve: Curves.easeInOut);
-  }
-  @override void dispose() { _shimCtrl.dispose(); super.dispose(); }
-
-  @override
-  Widget build(BuildContext context) {
-    final adH = (widget.bannerAd?.size.height ?? 50).toDouble();
-    return SafeArea(
-      top: false,
-      child: Container(
-        height: adH + 10,
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF6C63FF), Color(0xFFFF6B9D)],
-          ),
-          boxShadow: [BoxShadow(
-              color: const Color(0xFF6C63FF).withOpacity(0.40),
-              blurRadius: 12, offset: const Offset(0, -4))],
-        ),
-        child: widget.isLoaded && widget.bannerAd != null
-            ? Center(child: SizedBox(
-            height: adH,
-            width:  widget.bannerAd!.size.width.toDouble(),
-            child:  AdWidget(ad: widget.bannerAd!)))
-            : AnimatedBuilder(
-          animation: _shimAnim,
-          builder: (_, __) {
-            final t = _shimAnim.value;
-            return Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 16, vertical: 6),
-              child: Row(children: [
-                Opacity(opacity: 0.5 + t * 0.5,
-                    child: const Text('🌈',
-                        style: TextStyle(fontSize: 18))),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: Container(
-                      height: 28,
-                      color: Colors.white.withOpacity(0.18 + t * 0.18),
-                      alignment: Alignment.center,
-                      child: Text('✨  Advertisement  ✨',
-                          style: TextStyle(fontFamily: _S.font,
-                              fontSize: 12,
-                              color: Colors.white.withOpacity(
-                                  0.60 + t * 0.30))),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Opacity(opacity: 0.5 + t * 0.5,
-                    child: const Text('🌈',
-                        style: TextStyle(fontSize: 18))),
-              ]),
-            );
-          },
-        ),
-      ),
-    );
-  }
 }

@@ -352,54 +352,6 @@ class _TileState2 extends State<_Tile> with SingleTickerProviderStateMixin {
 // ═══════════════════════════════════════════════════════════════
 //  BANNER AD BAR
 // ═══════════════════════════════════════════════════════════════
-class _BannerBar extends StatefulWidget {
-  final BannerAd? bannerAd; final bool isLoaded;
-  const _BannerBar({required this.bannerAd, required this.isLoaded});
-  @override State<_BannerBar> createState() => _BannerBarState();
-}
-class _BannerBarState extends State<_BannerBar> with SingleTickerProviderStateMixin {
-  late final AnimationController _sh = AnimationController(vsync: this,
-      duration: const Duration(milliseconds: 1100))..repeat(reverse: true);
-  late final Animation<double> _sa = CurvedAnimation(parent: _sh, curve: Curves.easeInOut);
-  @override void dispose() { _sh.dispose(); super.dispose(); }
-  @override
-  Widget build(BuildContext context) {
-    final adH = (widget.bannerAd?.size.height ?? 50).toDouble();
-    return SafeArea(
-      top: false,
-      child: Container(
-        height: adH + 10,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(colors: [_S.skyA, _S.skyB]),
-          boxShadow: [BoxShadow(color: Color(0x445C35CC), blurRadius: 12, offset: Offset(0, -4))],
-        ),
-        child: widget.isLoaded && widget.bannerAd != null
-            ? Center(child: SizedBox(height: adH, width: widget.bannerAd!.size.width.toDouble(),
-            child: AdWidget(ad: widget.bannerAd!)))
-            : AnimatedBuilder(animation: _sa, builder: (_, __) {
-          final t = _sa.value;
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-            child: Row(children: [
-              Opacity(opacity: 0.5+t*0.5, child: const Text('🌟', style: TextStyle(fontSize: 18))),
-              const SizedBox(width: 10),
-              Expanded(child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
-                  child: Container(height: 28,
-                      color: Colors.white.withOpacity(0.16+t*0.16),
-                      alignment: Alignment.center,
-                      child: Text('✨  Advertisement  ✨',
-                          style: TextStyle(fontFamily: _S.font, fontSize: 12,
-                              color: Colors.white.withOpacity(0.55+t*0.35)))))),
-              const SizedBox(width: 10),
-              Opacity(opacity: 0.5+t*0.5, child: const Text('🌟', style: TextStyle(fontSize: 18))),
-            ]),
-          );
-        }),
-      ),
-    );
-  }
-}
 
 // ═══════════════════════════════════════════════════════════════
 //  FUN LOADER
@@ -747,7 +699,7 @@ class _WordBoardGameState extends State<WordBoardGame>
       },
       child: Scaffold(
         bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
-            ? _BannerBar(bannerAd: _bannerAd, isLoaded: _bannerLoaded) : null,
+            ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _bannerLoaded) : null,
         body: Stack(children: [
           // Static gradient BG — no AnimationController = zero lag
           Container(decoration: const BoxDecoration(

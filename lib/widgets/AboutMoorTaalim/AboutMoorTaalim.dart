@@ -127,7 +127,7 @@ class _AboutMoorTaalimPageState extends State<AboutMoorTaalimPage> {
     );
   }
 
-  Widget _buildSocialIcon(IconData icon, Color color, VoidCallback onPressed) {
+  Widget _buildSocialIcon(FaIconData icon, Color color, VoidCallback onPressed) {
     return IconButton(
       icon: FaIcon(icon, color: color),
       iconSize: 40,

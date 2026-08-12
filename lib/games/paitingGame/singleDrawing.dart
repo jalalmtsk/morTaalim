@@ -304,7 +304,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
             child: SizedBox(
               width: _bannerAd!.size.width.toDouble(),
               height: _bannerAd!.size.height.toDouble(),
-              child: AdWidget(ad: _bannerAd!),
+              child: FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _adLoaded),
             ),
           )),
       ]),

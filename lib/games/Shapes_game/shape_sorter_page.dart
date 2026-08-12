@@ -323,7 +323,7 @@ class _ShapeSorterPageState extends State<ShapeSorterPage>
       // Bright warm background colour
       backgroundColor: const Color(0xFFFFF3E0),
       bottomNavigationBar: adsOn
-          ? _AdBannerBar(bannerAd: _bannerAd, isLoaded: _bannerLoaded)
+          ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _bannerLoaded)
           : null,
       body: Stack(children: [
         // ── ANIMATED GRADIENT BG ────────────────────────────
@@ -851,67 +851,6 @@ class _BrightBtn extends StatelessWidget {
               fontSize: 15, color: textColor ?? Colors.white))));
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  AD BANNER BAR
-// ═══════════════════════════════════════════════════════════════
-class _AdBannerBar extends StatefulWidget {
-  final BannerAd? bannerAd; final bool isLoaded;
-  const _AdBannerBar({required this.bannerAd, required this.isLoaded});
-  @override State<_AdBannerBar> createState() => _AdBannerBarState();
-}
-class _AdBannerBarState extends State<_AdBannerBar>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _s;
-  late final Animation<double>   _a;
-  @override void initState() {
-    super.initState();
-    _s = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 1100))..repeat(reverse: true);
-    _a = CurvedAnimation(parent: _s, curve: Curves.easeInOut);
-  }
-  @override void dispose() { _s.dispose(); super.dispose(); }
-  @override
-  Widget build(BuildContext context) {
-    final adH = (widget.bannerAd?.size.height.toDouble() ?? 50.0).clamp(40.0, 90.0);
-    return SafeArea(top: false,
-        child: Container(
-          height: adH + 10,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Color(0xFF6C63FF), Color(0xFFFF6B9D)]),
-            boxShadow: [BoxShadow(
-                color: Color(0x226C63FF), blurRadius: 12,
-                offset: Offset(0, -3))],
-          ),
-          child: widget.isLoaded && widget.bannerAd != null
-              ? Center(child: SizedBox(
-              height: adH,
-              width:  widget.bannerAd!.size.width.toDouble(),
-              child:  AdWidget(ad: widget.bannerAd!)))
-              : AnimatedBuilder(animation: _a, builder: (_, __) {
-            final t = _a.value;
-            return Padding(padding: const EdgeInsets.symmetric(
-                horizontal: 14, vertical: 5),
-                child: Row(children: [
-                  Opacity(opacity: .5+t*.5,
-                      child: const Text('🪐', style: TextStyle(fontSize: 16))),
-                  const SizedBox(width: 8),
-                  Expanded(child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Container(height: 26,
-                          color: Colors.white.withOpacity(.14+t*.14),
-                          alignment: Alignment.center,
-                          child: Text('✨  Advertisement  ✨',
-                              style: TextStyle(fontFamily: 'Fredoka One', fontSize: 11,
-                                  color: Colors.white.withOpacity(.65+t*.25)))))),
-                  const SizedBox(width: 8),
-                  Opacity(opacity: .5+t*.5,
-                      child: const Text('🌈', style: TextStyle(fontSize: 16))),
-                ]));
-          }),
-        ));
-  }
-}
 
 // ── Helpers ────────────────────────────────────────────────────
 class _BgDot {

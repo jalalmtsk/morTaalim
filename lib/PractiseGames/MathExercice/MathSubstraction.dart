@@ -10,6 +10,7 @@ import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 
 import '../../XpSystem.dart';
+import '../../tools/AD_Tools/adLabel.dart';
 import '../../tools/Ads_Manager.dart';
 import 'Tools/AnimatedHeart.dart';
 
@@ -521,7 +522,7 @@ class _MathSubtractionExerciseState extends State<MathSubtractionExercise>
       child: Scaffold(
         backgroundColor: _T.amberLight,
         bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
-            ? _AmberBannerBar(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
+            ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
             : null,
         body: Stack(children: [
           // ── ANIMATED BACKGROUND ──────────────────────────
@@ -1015,60 +1016,3 @@ class _TrnBtn extends StatelessWidget {
       ));
 }
 
-class _AmberBannerBar extends StatefulWidget {
-  final BannerAd? bannerAd; final bool isLoaded;
-  const _AmberBannerBar({required this.bannerAd, required this.isLoaded});
-  @override State<_AmberBannerBar> createState() => _AmberBannerBarState();
-}
-class _AmberBannerBarState extends State<_AmberBannerBar>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _s;
-  late final Animation<double> _a;
-  @override void initState() {
-    super.initState();
-    _s = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 1100))..repeat(reverse: true);
-    _a = CurvedAnimation(parent: _s, curve: Curves.easeInOut);
-  }
-  @override void dispose() { _s.dispose(); super.dispose(); }
-  @override
-  Widget build(BuildContext context) {
-    final adH = (widget.bannerAd?.size.height ?? 50).toDouble();
-    return SafeArea(top: false,
-      child: Container(
-        height: adH + 10,
-        decoration: const BoxDecoration(
-            gradient: LinearGradient(
-                colors: [Color(0xFFFFB300), Color(0xFFFF8F00)])),
-        child: widget.isLoaded && widget.bannerAd != null
-            ? Center(child: SizedBox(
-            height: adH,
-            width: widget.bannerAd!.size.width.toDouble(),
-            child: AdWidget(ad: widget.bannerAd!)))
-            : AnimatedBuilder(animation: _a,
-            builder: (_, __) {
-              final t = _a.value;
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                child: Row(children: [
-                  Opacity(opacity: 0.5 + t * 0.5,
-                      child: const Text('🚂', style: TextStyle(fontSize: 18))),
-                  const SizedBox(width: 10),
-                  Expanded(child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(height: 28,
-                          color: Colors.white.withOpacity(0.18 + t * 0.18),
-                          alignment: Alignment.center,
-                          child: Text('✨  Advertisement  ✨',
-                              style: TextStyle(fontFamily: _T.font, fontSize: 12,
-                                  color: Colors.white.withOpacity(0.60 + t * 0.30)))))),
-                  const SizedBox(width: 10),
-                  Opacity(opacity: 0.5 + t * 0.5,
-                      child: const Text('🚂', style: TextStyle(fontSize: 18))),
-                ]),
-              );
-            }),
-      ),
-    );
-  }
-}

@@ -237,6 +237,9 @@ class _IndexState extends State<Index>
       backgroundColor: Colors.transparent,
       floatingActionButton: const AnimatedRewardFAB(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
+          ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
+          : null,
       body: Stack(
         children: [
           // Background
@@ -436,6 +439,7 @@ class _IndexState extends State<Index>
                                                     color: Colors.white, size: 28),
                                               ),
                                             ),
+                                            /*
                                             Expanded(
                                               child: IconButton(
                                                 onPressed: () {
@@ -450,6 +454,8 @@ class _IndexState extends State<Index>
                                                     color: Colors.white, size: 30),
                                               ),
                                             ),
+
+                                             */
                                           ],
                                         ),
                                       ),
@@ -535,21 +541,6 @@ class _IndexState extends State<Index>
                       ],
                     ),
                   ),
-
-                  // Banner Ad
-                  if (context.watch<ExperienceManager>().adsEnabled &&
-                      _bannerAd != null &&
-                      _isBannerAdLoaded)
-                    SafeArea(
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: SizedBox(
-                          width: _bannerAd!.size.width.toDouble(),
-                          height: _bannerAd!.size.height.toDouble(),
-                          child: AdWidget(ad: _bannerAd!),
-                        ),
-                      ),
-                    ),
                 ],
               ),
             ),

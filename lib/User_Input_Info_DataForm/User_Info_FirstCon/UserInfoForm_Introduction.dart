@@ -10,8 +10,6 @@ import 'Page4_CityCountry.dart';
 import 'Page6_Banner.dart';
 import 'Page7_AvatarAndGender.dart';
 
-
-
 class UserInfoForm extends StatefulWidget {
   const UserInfoForm({Key? key}) : super(key: key);
 
@@ -24,14 +22,12 @@ class _UserInfoFormState extends State<UserInfoForm> {
   int _currentPage = 0;
   final int totalPages = 8;
 
-
   bool canGoNextFromLanguage = false;
 
   @override
   void initState() {
     super.initState();
   }
-
 
   void _nextPage() {
     if (_currentPage < totalPages - 1) {
@@ -58,9 +54,7 @@ class _UserInfoFormState extends State<UserInfoForm> {
   }
 
   void _onLanguageSelected() {
-    setState(() {
-      canGoNextFromLanguage = true;
-    });
+    setState(() => canGoNextFromLanguage = true);
     _nextPage();
   }
 
@@ -68,6 +62,7 @@ class _UserInfoFormState extends State<UserInfoForm> {
   Widget build(BuildContext context) {
     final progress = (_currentPage + 1) / totalPages;
     final audioManager = Provider.of<AudioManager>(context, listen: false);
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -82,21 +77,18 @@ class _UserInfoFormState extends State<UserInfoForm> {
             children: [
               PageView(
                 controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() => _currentPage = index);
-                },
-                physics: NeverScrollableScrollPhysics(),
+                onPageChanged: (index) => setState(() => _currentPage = index),
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   WelcomePage(onGetStarted: _nextPage),
-                  LanguageTouch(
-                    onLanguageSelected: _onLanguageSelected,),
-                  AgeCheckPage(onNext: _nextPage,),
+                  LanguageTouch(onLanguageSelected: _onLanguageSelected),
+                  // ✅ onUnderAge supprimé — AgeCheckPage n'a plus qu'un seul callback
+                  AgeCheckPage(onNext: _nextPage),
                   NameAgePage(onNext: _nextPage),
                   CityCountryPage(onNext: _nextPage),
                   SchoolInfoPage(onNext: _nextPage),
                   UserInfoBannerPage(onNext: _nextPage),
                   UserInfoAvatarAndGender(),
-
                 ],
               ),
 
@@ -153,15 +145,13 @@ class _UserInfoFormState extends State<UserInfoForm> {
                       backgroundColor: Colors.white.withOpacity(0.9),
                       foregroundColor: Colors.deepOrange,
                       elevation: 4,
-                      onPressed: ()
-                      {
+                      onPressed: () {
                         audioManager.playEventSound('cancelButton');
                         _prevPage();
                       },
                       child: const Icon(Icons.arrow_back, size: 24),
                     ),
                   ),
-
               ],
             ],
           ),

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_ListenMode.dart';
 import 'package:mortaalim/games/AnimalSound/AnimalSound_GuessTheSound.dart';
 import 'package:mortaalim/games/AnimalSound/MatchTheSound_Mode/AnimalSound_MatchAndDrop.dart';
 
 import '../../main.dart';
+import '../../XpSystem.dart';
 import '../../tools/Ads_Manager.dart';
 
 class AnimalsoundIndex extends StatefulWidget {
@@ -23,7 +25,7 @@ class _AnimalsoundIndexState extends State<AnimalsoundIndex> {
 
     // Load banner ad
     _bannerAd = AdHelper.getBannerAd(() {
-      setState(() => _isBannerLoaded = true);
+      if (mounted) setState(() => _isBannerLoaded = true);
     });
   }
 
@@ -47,12 +49,12 @@ class _AnimalsoundIndexState extends State<AnimalsoundIndex> {
     await AdHelper.showInterstitialAd(
         context: context,
         onDismissed: () {
-      Navigator.of(context).pop(); // Close loading dialog
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (_) => page),
-      );
-    });
+          Navigator.of(context).pop(); // Close loading dialog
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => page),
+          );
+        });
 
     // Ensure loading dialog is closed if ad fails to load
     if (Navigator.canPop(context)) Navigator.of(context).pop();
@@ -105,13 +107,8 @@ class _AnimalsoundIndexState extends State<AnimalsoundIndex> {
           ),
 
           // Banner Ad
-          if (_isBannerLoaded && _bannerAd != null)
-            Container(
-              color: Colors.transparent,
-              width: _bannerAd!.size.width.toDouble(),
-              height: _bannerAd!.size.height.toDouble(),
-              child: AdWidget(ad: _bannerAd!),
-            ),
+          if (context.watch<ExperienceManager>().adsEnabled)
+            FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerLoaded),
         ],
       ),
     );

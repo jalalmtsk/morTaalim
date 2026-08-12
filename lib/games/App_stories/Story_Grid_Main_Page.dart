@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../tools/Ads_Manager.dart';
 import 'Stories.dart';
 import 'story_book_page.dart';
 
@@ -69,15 +70,18 @@ class _StoriesGridPageState extends State<StoriesGridPage>
 
   void _loadAd() {
     InterstitialAd.load(
-      adUnitId: 'ca-app-pub-9936922975297046/8354774722',
-      request: const AdRequest(),
+      adUnitId: AdHelper.interstitialAdUnitId,
+      request: const AdRequest(nonPersonalizedAds: true),
       adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) { _interstitialAd = ad; _isAdReady = true; },
-        onAdFailedToLoad: (_) { _isAdReady = false; },
+        onAdLoaded: (ad) {
+          if (mounted) setState(() { _interstitialAd = ad; _isAdReady = true; });
+        },
+        onAdFailedToLoad: (_) {
+          if (mounted) setState(() => _isAdReady = false);
+        },
       ),
     );
   }
-
   @override
   void dispose() {
     _staggerCtrl.dispose();

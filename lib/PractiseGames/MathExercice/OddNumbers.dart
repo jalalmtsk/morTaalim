@@ -11,6 +11,7 @@ import 'package:mortaalim/widgets/userStatutBar.dart';
 
 import '../../XpSystem.dart';
 import '../../l10n/app_localizations.dart';
+import '../../tools/AD_Tools/adLabel.dart';
 import '../../tools/Ads_Manager.dart';
 import 'Tools/AnimatedHeart.dart';
 
@@ -539,7 +540,7 @@ class _EvenOddExerciseState extends State<EvenOddExercise>
       child: Scaffold(
         backgroundColor: _C.dark,
         bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
-            ? _CarnBannerBar(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
+            ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
             : null,
         body: Stack(children: [
           // Animated gradient BG
@@ -851,54 +852,4 @@ class _CarnBtn extends StatelessWidget {
           child: Text(label, style: const TextStyle(fontFamily: _C.font,
               fontSize: 18, color: _C.white,
               shadows: [Shadow(color: Colors.black26, blurRadius: 4)]))));
-}
-
-class _CarnBannerBar extends StatefulWidget {
-  final BannerAd? bannerAd; final bool isLoaded;
-  const _CarnBannerBar({required this.bannerAd, required this.isLoaded});
-  @override State<_CarnBannerBar> createState() => _CarnBannerBarState();
-}
-class _CarnBannerBarState extends State<_CarnBannerBar>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _s;
-  late final Animation<double> _a;
-  @override void initState() {
-    super.initState();
-    _s = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 1100))..repeat(reverse: true);
-    _a = CurvedAnimation(parent: _s, curve: Curves.easeInOut);
-  }
-  @override void dispose() { _s.dispose(); super.dispose(); }
-  @override
-  Widget build(BuildContext context) {
-    final adH = (widget.bannerAd?.size.height ?? 50).toDouble();
-    return SafeArea(top: false,
-        child: Container(
-          height: adH + 10,
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Color(0xFFFF6B9D), Color(0xFF7B2FFF)])),
-          child: widget.isLoaded && widget.bannerAd != null
-              ? Center(child: SizedBox(height: adH,
-              width: widget.bannerAd!.size.width.toDouble(),
-              child: AdWidget(ad: widget.bannerAd!)))
-              : AnimatedBuilder(animation: _a, builder: (_, __) {
-            final t = _a.value;
-            return Padding(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                child: Row(children: [
-                  Opacity(opacity: 0.5+t*0.5, child: const Text('🎡', style: TextStyle(fontSize: 18))),
-                  const SizedBox(width: 10),
-                  Expanded(child: ClipRRect(borderRadius: BorderRadius.circular(12),
-                      child: Container(height: 28,
-                          color: Colors.white.withOpacity(0.18+t*0.18),
-                          alignment: Alignment.center,
-                          child: Text('✨  Advertisement  ✨',
-                              style: TextStyle(fontFamily: _C.font, fontSize: 12,
-                                  color: Colors.white.withOpacity(0.60+t*0.30)))))),
-                  const SizedBox(width: 10),
-                  Opacity(opacity: 0.5+t*0.5, child: const Text('🎡', style: TextStyle(fontSize: 18))),
-                ]));
-          }),
-        ));
-  }
 }

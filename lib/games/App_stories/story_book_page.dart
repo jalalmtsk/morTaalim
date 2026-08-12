@@ -102,6 +102,7 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
 
   late ConfettiController _confetti;
   late MusicPlayer _music;
+  bool _isBannerAdLoaded = false;   // ← add this
 
   String get _progressKey => 'progress_${widget.story.title}';
   StoryTheme get _theme => themeFor(widget.storyIndex);
@@ -166,7 +167,10 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
 
   void _loadBannerAd() {
     _bannerAd?.dispose();
-    _bannerAd = AdHelper.getBannerAd(() => setState(() {}));
+    _isBannerAdLoaded = false;
+    _bannerAd = AdHelper.getBannerAd(() {
+      if (mounted) setState(() => _isBannerAdLoaded = true);
+    });
   }
 
   Future<void> _restoreProgress() async {
@@ -498,14 +502,8 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
             if (_showCompletion) _buildCompletionOverlay(),
           ],
         ),
-        bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled && _bannerAd != null
-            ? SafeArea(
-          child: SizedBox(
-            height: _bannerAd!.size.height.toDouble(),
-            width: _bannerAd!.size.width.toDouble(),
-            child: AdWidget(ad: _bannerAd!),
-          ),
-        )
+        bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
+            ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
             : null,
       ),
     );

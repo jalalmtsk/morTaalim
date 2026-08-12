@@ -260,7 +260,7 @@ class _MatchWordToImageState extends State<MatchWordToImage>
     return Scaffold(
       backgroundColor: _G.wall,
       bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
-          ? _GalleryBannerBar(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
+          ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
           : null,
       body: Stack(children: [
         // Gallery wall texture
@@ -486,60 +486,4 @@ class _WallTexturePainter extends CustomPainter {
         Paint()..color = _G.gold.withOpacity(0.10));
   }
   @override bool shouldRepaint(_) => false;
-}
-
-// ── Gallery Banner bar ──────────────────────────────────────────
-class _GalleryBannerBar extends StatefulWidget {
-  final BannerAd? bannerAd; final bool isLoaded;
-  const _GalleryBannerBar({required this.bannerAd, required this.isLoaded});
-  @override State<_GalleryBannerBar> createState() => _GalleryBannerBarState();
-}
-class _GalleryBannerBarState extends State<_GalleryBannerBar>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _s;
-  late final Animation<double> _a;
-  @override void initState() {
-    super.initState();
-    _s = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 1100))..repeat(reverse: true);
-    _a = CurvedAnimation(parent: _s, curve: Curves.easeInOut);
-  }
-  @override void dispose() { _s.dispose(); super.dispose(); }
-  @override
-  Widget build(BuildContext context) {
-    final adH = (widget.bannerAd?.size.height?.toDouble() ?? 50.0).clamp(40.0, 90.0);
-    return SafeArea(top: false,
-        child: Container(
-          height: adH + 10,
-          decoration: BoxDecoration(
-              color: _G.wallDeep,
-              border: Border(top: BorderSide(
-                  color: _G.gold.withOpacity(0.40), width: 2))),
-          child: widget.isLoaded && widget.bannerAd != null
-              ? Center(child: SizedBox(height: adH,
-              width: widget.bannerAd!.size.width.toDouble(),
-              child: AdWidget(ad: widget.bannerAd!)))
-              : AnimatedBuilder(animation: _a, builder: (_, __) {
-            final t = _a.value;
-            return Padding(padding: const EdgeInsets.symmetric(
-                horizontal: 16, vertical: 6),
-                child: Row(children: [
-                  Opacity(opacity: 0.5+t*0.5,
-                      child: const Text('🖼️', style: TextStyle(fontSize: 18))),
-                  const SizedBox(width: 10),
-                  Expanded(child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(height: 28,
-                          color: _G.gold.withOpacity(0.10+t*0.12),
-                          alignment: Alignment.center,
-                          child: Text('✨  Publicité  ✨',
-                              style: TextStyle(fontFamily: 'Fredoka One', fontSize: 12,
-                                  color: _G.gold.withOpacity(0.65+t*0.25)))))),
-                  const SizedBox(width: 10),
-                  Opacity(opacity: 0.5+t*0.5,
-                      child: const Text('🖼️', style: TextStyle(fontSize: 18))),
-                ]));
-          }),
-        ));
-  }
 }

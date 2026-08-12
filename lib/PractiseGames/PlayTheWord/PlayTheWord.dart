@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import '../../XpSystem.dart';
+import '../../tools/AD_Tools/adLabel.dart';
 import '../../tools/Ads_Manager.dart';
 import '../practiseWords.dart';
 
@@ -652,59 +653,50 @@ class _PlayTheWordState extends State<PlayTheWord>
 }
 
 // ── Banner bar ─────────────────────────────────────────────────
-class _FrenchBannerBar extends StatefulWidget {
-  final BannerAd? bannerAd; final bool isLoaded;
+
+class _FrenchBannerBar extends StatelessWidget {
+  final BannerAd? bannerAd;
+  final bool isLoaded;
   const _FrenchBannerBar({required this.bannerAd, required this.isLoaded});
-  @override State<_FrenchBannerBar> createState() => _FrenchBannerBarState();
-}
-class _FrenchBannerBarState extends State<_FrenchBannerBar>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _s;
-  late final Animation<double>   _a;
-  @override void initState() {
-    super.initState();
-    _s = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 1100))..repeat(reverse: true);
-    _a = CurvedAnimation(parent: _s, curve: Curves.easeInOut);
-  }
-  @override void dispose() { _s.dispose(); super.dispose(); }
+
   @override
   Widget build(BuildContext context) {
-    // FIX: clamp ad height so banner bar never overflows
-    final adH = (widget.bannerAd?.size.height.toDouble() ?? 50).clamp(40.0, 90.0);
-    return SafeArea(top: false,
-        child: SizedBox(
-          height: adH + 10,
-          child: Container(
-            decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [Color(0xFF1C3FAA), Color(0xFFDC2626)])),
-            child: widget.isLoaded && widget.bannerAd != null
-                ? Center(child: SizedBox(height: adH,
-                width: widget.bannerAd!.size.width.toDouble(),
-                child: AdWidget(ad: widget.bannerAd!)))
-                : AnimatedBuilder(animation: _a, builder: (_, __) {
-              final t = _a.value;
-              return Padding(padding: const EdgeInsets.symmetric(
-                  horizontal: 14, vertical: 5),
-                  child: Row(children: [
-                    Opacity(opacity: .5+t*.5,
-                        child: const Text('🗼', style: TextStyle(fontSize: 16))),
-                    const SizedBox(width: 8),
-                    Expanded(child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Container(height: 26,
-                            color: Colors.white.withOpacity(.13+t*.13),
-                            alignment: Alignment.center,
-                            child: Text('✨  Publicité  ✨',
-                                style: TextStyle(fontFamily: _P.font, fontSize: 11,
-                                    color: Colors.white.withOpacity(.65+t*.25)))))),
-                    const SizedBox(width: 8),
-                    Opacity(opacity: .5+t*.5,
-                        child: const Text('🥐', style: TextStyle(fontSize: 16))),
-                  ]));
-            }),
-          ),
-        ));
+    final adH = (bannerAd?.size.height ?? 50).toDouble();
+    return SafeArea(
+      top: false,
+      child: Container(
+        height: adH + 20,
+        color: const Color(0xFFF5F5F5),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              color: const Color(0xFFEEEEEE),
+              child: const Text(
+                'Ad',
+                style: TextStyle(
+                  fontSize: 10,
+                  color: Color(0xFF757575),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            Expanded(
+              child: isLoaded && bannerAd != null
+                  ? Center(
+                child: SizedBox(
+                  height: adH,
+                  width: bannerAd!.size.width.toDouble(),
+                  child: FamilyAdBanner(bannerAd: bannerAd, isLoaded: isLoaded),
+                ),
+              )
+                  : const NeutralAdPlaceholder(),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }

@@ -687,7 +687,7 @@ class _WordGamePageState extends State<_WordGamePage>
         child: Scaffold(
           backgroundColor: _C.bg0,
           bottomNavigationBar: adsOn
-              ? _SpaceBannerBar(bannerAd: _bannerAd, isLoaded: _bannerLoaded)
+              ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _bannerLoaded)
               : null,
           body: Stack(children: [
             // Star field BG
@@ -1235,71 +1235,6 @@ class _SpaceBtn extends StatelessWidget {
           alignment: Alignment.center,
           child: Text(label, style: TextStyle(fontFamily: _C.font,
               fontSize: 15, color: textColor))));
-}
-
-
-// ═══════════════════════════════════════════════════════════════
-//  SPACE BANNER AD BAR
-//  Shimmer skeleton while loading → real ad when ready.
-// ═══════════════════════════════════════════════════════════════
-class _SpaceBannerBar extends StatefulWidget {
-  final BannerAd? bannerAd; final bool isLoaded;
-  const _SpaceBannerBar({required this.bannerAd, required this.isLoaded});
-  @override State<_SpaceBannerBar> createState() => _SpaceBannerBarState();
-}
-class _SpaceBannerBarState extends State<_SpaceBannerBar>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _s;
-  late final Animation<double>   _a;
-  @override void initState() {
-    super.initState();
-    _s = AnimationController(vsync: this,
-        duration: const Duration(milliseconds: 1100))..repeat(reverse: true);
-    _a = CurvedAnimation(parent: _s, curve: Curves.easeInOut);
-  }
-  @override void dispose() { _s.dispose(); super.dispose(); }
-  @override
-  Widget build(BuildContext context) {
-    final adH = (widget.bannerAd?.size.height.toDouble() ?? 50.0)
-        .clamp(40.0, 90.0);
-    return SafeArea(top: false,
-        child: Container(
-          height: adH + 10,
-          decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  colors: [Color(0xFF1A1060), Color(0xFF0B0B2A)])),
-          child: widget.isLoaded && widget.bannerAd != null
-              ? Center(child: SizedBox(
-              height: adH,
-              width:  widget.bannerAd!.size.width.toDouble(),
-              child:  AdWidget(ad: widget.bannerAd!)))
-              : AnimatedBuilder(animation: _a, builder: (_, __) {
-            final t = _a.value;
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
-              child: Row(children: [
-                Opacity(opacity: .5+t*.5,
-                    child: const Text('🌟', style: TextStyle(fontSize: 16))),
-                const SizedBox(width: 8),
-                Expanded(child: ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Container(height: 26,
-                        decoration: BoxDecoration(
-                            color: _C.cyan.withOpacity(.08+t*.10),
-                            border: Border.all(
-                                color: _C.cyan.withOpacity(.20+t*.18), width: 1)),
-                        alignment: Alignment.center,
-                        child: Text('✨  Advertisement  ✨',
-                            style: TextStyle(fontFamily: _C.font, fontSize: 11,
-                                color: _C.cyan.withOpacity(.55+t*.28)))))),
-                const SizedBox(width: 8),
-                Opacity(opacity: .5+t*.5,
-                    child: const Text('🚀', style: TextStyle(fontSize: 16))),
-              ]),
-            );
-          }),
-        ));
-  }
 }
 
 // ═══════════════════════════════════════════════════════════════

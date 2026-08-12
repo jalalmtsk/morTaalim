@@ -990,7 +990,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                 color: Colors.orange.shade200,
                 height: _bannerAd!.size.height.toDouble(),
                 width: _bannerAd!.size.width.toDouble(),
-                child: AdWidget(ad: _bannerAd!),
+                child: FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded),
               ),
             )
                 : null,

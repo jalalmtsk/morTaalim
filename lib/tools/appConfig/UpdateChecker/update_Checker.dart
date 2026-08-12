@@ -258,7 +258,7 @@ class UpdateChecker {
   }
 
   Widget _buildSocialButton({
-    required IconData icon,
+    required FaIconData icon,
     required Color color,
     required VoidCallback onTap,
   }) {
@@ -448,7 +448,7 @@ class _OptionalUpdateDialog extends StatelessWidget {
   }
 
   Widget _buildSocialButton({
-    required IconData icon,
+    required FaIconData icon,
     required Color color,
     required VoidCallback onTap,
   }) {

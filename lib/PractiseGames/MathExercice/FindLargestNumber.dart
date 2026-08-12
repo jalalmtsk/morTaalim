@@ -10,6 +10,7 @@ import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 
 import '../../XpSystem.dart';
+import '../../tools/AD_Tools/adLabel.dart';
 import '../../tools/Ads_Manager.dart';
 import 'Tools/AnimatedHeart.dart';
 
@@ -630,7 +631,7 @@ class _FindLargestNumberExerciseState
         ),
         // context.watch mirrors Index: rebuilds automatically when adsEnabled changes.
         bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
-            ? _BannerAdBar(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
+            ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
             : null,
       ),
     );
@@ -1216,135 +1217,3 @@ class _CloudPainter extends CustomPainter {
   bool shouldRepaint(_) => false;
 }
 
-// ═══════════════════════════════════════════════════════════════
-//  BANNER AD BAR
-//  Shimmer skeleton while loading → real AdWidget once ready.
-//  Height is stable so the layout never jumps.
-// ═══════════════════════════════════════════════════════════════
-class _BannerAdBar extends StatefulWidget {
-  final BannerAd? bannerAd;
-  final bool      isLoaded;
-  const _BannerAdBar({required this.bannerAd, required this.isLoaded});
-
-  @override
-  State<_BannerAdBar> createState() => _BannerAdBarState();
-}
-
-class _BannerAdBarState extends State<_BannerAdBar>
-    with SingleTickerProviderStateMixin {
-
-  late final AnimationController _shimmerCtrl;
-  late final Animation<double>   _shimmerAnim;
-
-  @override
-  void initState() {
-    super.initState();
-    _shimmerCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1100),
-    )..repeat(reverse: true);
-    _shimmerAnim = CurvedAnimation(parent: _shimmerCtrl, curve: Curves.easeInOut);
-  }
-
-  @override
-  void dispose() { _shimmerCtrl.dispose(); super.dispose(); }
-
-  @override
-  Widget build(BuildContext context) {
-    final adH = (widget.bannerAd?.size.height ?? 50).toDouble();
-
-    return SafeArea(
-      top: false,
-      child: Container(
-        height: adH + 10,
-        decoration: BoxDecoration(
-          // Same sky palette as the game background
-          gradient: const LinearGradient(
-            colors: [Color(0xFFB8E4F9), Color(0xFFF0F8FF)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-          border: Border(
-            top: BorderSide(
-              color: const Color(0xFF3A86FF).withOpacity(0.20),
-              width: 1.5,
-            ),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF48B4E0).withOpacity(0.18),
-              blurRadius: 14,
-              offset: const Offset(0, -5),
-            ),
-          ],
-        ),
-        child: widget.isLoaded && widget.bannerAd != null
-        // ── Real ad ──────────────────────────────────────────
-            ? Center(
-          child: SizedBox(
-            height: adH,
-            width:  widget.bannerAd!.size.width.toDouble(),
-            child:  AdWidget(ad: widget.bannerAd!),
-          ),
-        )
-        // ── Shimmer skeleton while the ad loads ───────────────
-            : AnimatedBuilder(
-          animation: _shimmerAnim,
-          builder: (_, __) {
-            final t = _shimmerAnim.value;
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-              child: Row(
-                children: [
-                  // Balloon deco left
-                  Opacity(
-                    opacity: 0.4 + t * 0.4,
-                    child: const Text('🎈', style: TextStyle(fontSize: 20)),
-                  ),
-                  const SizedBox(width: 10),
-                  // Animated shimmer bar
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        height: 30,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [
-                              const Color(0xFF3A86FF).withOpacity(0.18 + t * 0.22),
-                              const Color(0xFF87CEEB).withOpacity(0.35 + t * 0.30),
-                              const Color(0xFF3A86FF).withOpacity(0.18 + t * 0.22),
-                            ],
-                            stops: [0.0, 0.5, 1.0],
-                          ),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          '✨  Advertisement loading…  ✨',
-                          style: TextStyle(
-                            fontFamily: 'Fredoka One',
-                            fontSize: 12,
-                            color: const Color(0xFF3A86FF).withOpacity(0.55 + t * 0.30),
-                            letterSpacing: 0.4,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  // Balloon deco right
-                  Opacity(
-                    opacity: 0.4 + t * 0.4,
-                    child: const Text('🎈', style: TextStyle(fontSize: 20)),
-                  ),
-                ],
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
