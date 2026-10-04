@@ -122,6 +122,75 @@ class AdHelper {
     );
   }
 
+  // ── Rewarded préchargé (pour boutons "Watch Ad" qui doivent connaître
+  // la disponibilité SANS jamais afficher une pub toute seule) ─────────────
+  //
+  // IMPORTANT : ne jamais appeler showRewardedAd()/showRewardedAdWithLoading()
+  // juste pour "tester" si une pub existe — ces méthodes affichent la pub
+  // immédiatement dès qu'elle est chargée, ce qui déclenche une pub surprise
+  // sans action de l'utilisateur (violation Google Play). Utiliser
+  // preloadRewardedAd() + isRewardedAdReady à la place.
+
+  static RewardedAd? _preloadedRewardedAd;
+
+  /// true seulement si une pub récompensée est chargée et prête à être
+  /// affichée suite à un tap explicite de l'utilisateur.
+  static bool get isRewardedAdReady => _preloadedRewardedAd != null;
+
+  /// Charge une pub récompensée en arrière-plan SANS l'afficher.
+  static void preloadRewardedAd({VoidCallback? onLoaded, VoidCallback? onFailed}) {
+    if (_preloadedRewardedAd != null) {
+      onLoaded?.call();
+      return;
+    }
+    RewardedAd.load(
+      adUnitId: rewardedAdUnitId,
+      request: _childRequest,
+      rewardedAdLoadCallback: RewardedAdLoadCallback(
+        onAdLoaded: (RewardedAd ad) {
+          _preloadedRewardedAd = ad;
+          onLoaded?.call();
+        },
+        onAdFailedToLoad: (error) {
+          debugPrint('❌ Preload RewardedAd failed: ${error.message}');
+          _preloadedRewardedAd = null;
+          onFailed?.call();
+        },
+      ),
+    );
+  }
+
+  /// Affiche la pub préchargée. À appeler UNIQUEMENT depuis le onTap d'un
+  /// bouton explicitement étiqueté "Regarder une pub" / "Watch Ad".
+  /// Recharge automatiquement une nouvelle pub après affichage.
+  static Future<bool> showPreloadedRewardedAd(BuildContext context) {
+    final completer = Completer<bool>();
+    final ad = _preloadedRewardedAd;
+
+    if (ad == null) {
+      return Future.value(false);
+    }
+    _preloadedRewardedAd = null; // consommée
+
+    ad.fullScreenContentCallback = FullScreenContentCallback(
+      onAdDismissedFullScreenContent: (ad) {
+        ad.dispose();
+        preloadRewardedAd();
+        if (!completer.isCompleted) completer.complete(false);
+      },
+      onAdFailedToShowFullScreenContent: (ad, error) {
+        ad.dispose();
+        preloadRewardedAd();
+        if (!completer.isCompleted) completer.complete(false);
+      },
+    );
+    ad.show(onUserEarnedReward: (_, __) {
+      if (!completer.isCompleted) completer.complete(true);
+    });
+
+    return completer.future;
+  }
+
   // ── Rewarded (avec loading dialog) ───────────────────────────────────────
 
   static Future<void> showRewardedAdWithLoading(

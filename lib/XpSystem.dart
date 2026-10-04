@@ -856,22 +856,30 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
 
 
 
-  String generateBackupCode({int length = 6}) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  // Codes a forte entropie (10 caracteres, alphabet mixte majuscule/minuscule/
+  // chiffres, sans caracteres ambigus) : ~62^10 combinaisons possibles, contre
+  // seulement 36^6 avant -- rend le brute-force du code de sauvegarde
+  // impraticable. Voir aussi les regles Firestore recommandees (firestore.rules)
+  // qui doivent restreindre la lecture/ecriture de la collection "backups".
+  String generateBackupCode({int length = 10}) {
+    const characters =
+        'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
     final random = Random.secure();
-    return List.generate(length, (_) => characters[random.nextInt(characters.length)]).join();
+    return List.generate(
+        length, (_) => characters[random.nextInt(characters.length)]).join();
   }
+
+  static const Duration _backupCodeTtl = Duration(days: 7);
 
   Future<String> saveBackup() async {
     String backupCode;
 
     while (true) {
-      backupCode = generateBackupCode(length: 6);
+      backupCode = generateBackupCode();
       final doc = await _firestore.collection('backups').doc(backupCode).get();
-
       if (!doc.exists) break;
-      backupCode = "${backupCode}_${DateTime.now().millisecondsSinceEpoch}";
-      break;
+      // Collision extremement improbable avec 10 caracteres, mais on regenere
+      // par securite plutot que de suffixer un timestamp predictible.
     }
 
     final backupData = {
@@ -887,24 +895,36 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
       "unlockedLanguages": _unlockedLanguages,
       "unlockedCourses": _unlockedCourses,
       "adsEnabled": _adsEnabled,
+      "ownerUid": _userId,
       "createdAt": FieldValue.serverTimestamp(),
     };
 
     await _firestore.collection('backups').doc(backupCode).set(backupData);
 
-    print("✅ Backup saved with code: $backupCode");
+    if (kDebugMode) print("✅ Backup saved (code hidden in release logs)");
     return backupCode;
   }
 
   Future<void> loadBackup(String backupCode) async {
-    final backupDoc = await _firestore.collection('backups').doc(backupCode).get();
+    final backupRef = _firestore.collection('backups').doc(backupCode);
+    final backupDoc = await backupRef.get();
 
     if (!backupDoc.exists) {
-      print("❌ Backup not found");
       throw Exception("Backup not found");
     }
 
     final data = backupDoc.data()!;
+
+    // Expiration : un code non utilise devient invalide apres 7 jours,
+    // ce qui reduit fortement la fenetre d'exploitation en cas de fuite
+    // ou de tentative de brute-force du code.
+    final createdAt = (data['createdAt'] as Timestamp?)?.toDate();
+    if (createdAt != null &&
+        DateTime.now().difference(createdAt) > _backupCodeTtl) {
+      await backupRef.delete();
+      throw Exception("Backup code expired");
+    }
+
     userProfile.loadFromMap(data);
 
     _xp = data["xp"] ?? 0;
@@ -922,7 +942,13 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _adsEnabled = data["adsEnabled"] ?? _adsEnabled;
 
     await _saveData();
-    print("✅ Backup loaded successfully from code: $backupCode");
+
+    // Usage unique : une fois restaure, le code est detruit immediatement.
+    // Cela ferme la fenetre d'exploitation pour quiconque devinerait ou
+    // intercepterait un code apres qu'il ait deja servi.
+    await backupRef.delete();
+
+    if (kDebugMode) print("✅ Backup loaded successfully");
 
     // Navigate to Auth screen (restart flow)
     navigatorKey.currentState?.pushNamedAndRemoveUntil('Auth', (route) => false);

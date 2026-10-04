@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/XpSystem.dart';
+import 'package:mortaalim/main.dart';
 
 class AnimatedRewardFAB extends StatefulWidget {
   const AnimatedRewardFAB({super.key});
@@ -46,8 +47,11 @@ class _AnimatedRewardFABState extends State<AnimatedRewardFAB>
       scale: _pulseAnimation,
       child: Stack(
         clipBehavior: Clip.none,
+        alignment: Alignment.center,
         children: [
-          // Main FAB Button
+          // Bouton principal : etiquette texte "Watch Ad" obligatoire
+          // (Families Ads Policy) pour ne jamais se confondre avec un
+          // element de jeu/cadeau.
           GestureDetector(
             onTap: () {
               audioManager.playEventSound('clickButton');
@@ -57,10 +61,9 @@ class _AnimatedRewardFABState extends State<AnimatedRewardFAB>
               });
             },
             child: Container(
-              width: 62,
-              height: 62,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
-                shape: BoxShape.circle,
+                borderRadius: BorderRadius.circular(30),
                 gradient: const LinearGradient(
                   colors: [Color(0xFFFF9800), Color(0xFFFF5722)],
                   begin: Alignment.topLeft,
@@ -75,12 +78,30 @@ class _AnimatedRewardFABState extends State<AnimatedRewardFAB>
                   ),
                 ],
               ),
-              child: ClipOval(
-                child: Lottie.asset(
-                  'assets/animations/UI_Animations/Ads2Gift.json', // 🔁 replace with your Lottie file
-                  fit: BoxFit.cover,
-                  repeat: true,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ClipOval(
+                    child: SizedBox(
+                      width: 34,
+                      height: 34,
+                      child: Lottie.asset(
+                        'assets/animations/UI_Animations/Ads2Gift.json',
+                        fit: BoxFit.cover,
+                        repeat: true,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    tr(context).watchAd,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

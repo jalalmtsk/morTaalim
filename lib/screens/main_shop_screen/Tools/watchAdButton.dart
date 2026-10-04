@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import '../../../XpSystem.dart';
+import '../../../main.dart';
 import '../../../tools/Ads_Manager.dart';
 
 class WatchAdButton extends StatefulWidget {
@@ -31,20 +32,23 @@ class _WatchAdFABState extends State<WatchAdButton>
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    _checkAdAvailability();
+    // Precharge une pub en arriere-plan, sans jamais l'afficher toute seule.
+    _preloadAd();
   }
 
-  Future<void> _checkAdAvailability() async {
-    bool available = await AdHelper.showRewardedAd(context).timeout(
-      const Duration(seconds: 5),
-      onTimeout: () => false,
+  void _preloadAd() {
+    AdHelper.preloadRewardedAd(
+      onLoaded: () {
+        if (mounted) setState(() => adAvailable = true);
+      },
+      onFailed: () {
+        if (mounted) setState(() => adAvailable = false);
+      },
     );
-
-    setState(() => adAvailable = available);
   }
 
   void _onTap() async {
-    if (!adAvailable) {
+    if (!adAvailable || !AdHelper.isRewardedAdReady) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('No ads available right now.'),
@@ -54,9 +58,12 @@ class _WatchAdFABState extends State<WatchAdButton>
       return;
     }
 
-    setState(() => showLottie = true);
+    setState(() {
+      adAvailable = false;
+      showLottie = true;
+    });
 
-    bool earnedReward = await AdHelper.showRewardedAd(context);
+    bool earnedReward = await AdHelper.showPreloadedRewardedAd(context);
 
     if (earnedReward) {
       Provider.of<ExperienceManager>(context, listen: false)
@@ -67,7 +74,7 @@ class _WatchAdFABState extends State<WatchAdButton>
       if (mounted) setState(() => showLottie = false);
     });
 
-    _checkAdAvailability();
+    _preloadAd();
   }
 
   @override
@@ -78,10 +85,13 @@ class _WatchAdFABState extends State<WatchAdButton>
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
+    // FloatingActionButton.extended avec une etiquette texte explicite :
+    // exige par la Families Ads Policy de Google Play, qui interdit les
+    // declencheurs de pub non etiquetes ou qui se confondent avec le jeu.
+    return FloatingActionButton.extended(
       onPressed: _onTap,
       backgroundColor: adAvailable ? Colors.greenAccent : Colors.grey,
-      child: AnimatedSwitcher(
+      icon: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
         transitionBuilder: (child, animation) => ScaleTransition(
           scale: animation,
@@ -90,19 +100,26 @@ class _WatchAdFABState extends State<WatchAdButton>
         child: showLottie
             ? SizedBox(
           key: const ValueKey('lottie'),
-          height: 80,
-          width: 80,
+          height: 32,
+          width: 32,
           child: Lottie.asset(
             'assets/animations/UI_Animations/AdsGift.json',
             repeat: true,
             fit: BoxFit.contain,
           ),
         )
-            : Icon(
-          Icons.local_activity,
-          key: const ValueKey('icon'),
+            : const Icon(
+          Icons.ondemand_video,
+          key: ValueKey('icon'),
           color: Colors.white,
-          size: 28,
+          size: 22,
+        ),
+      ),
+      label: Text(
+        tr(context).watchAd,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );

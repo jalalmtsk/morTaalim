@@ -1,0 +1,59 @@
+rules_version = '2';
+
+// MoorTaalim - Firestore Security Rules
+//
+// A coller dans Firebase Console > Firestore Database > Rules
+// (ou deployer avec `firebase deploy --only firestore:rules` si vous
+// utilisez le Firebase CLI).
+//
+// Contexte : l'app authentifie tous les utilisateurs, y compris de facon
+// anonyme (signInAnonymously), donc request.auth != null est toujours vrai
+// pour un utilisateur legitime de l'app. Ces regles s'appuient sur cette
+// authentification pour restreindre l'acces aux seules donnees possedees
+// par l'utilisateur qui fait la requete.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── users/{uid} ──────────────────────────────────────────────────────
+    // Chaque utilisateur ne peut lire/ecrire QUE son propre document.
+    // "isLocked" et "adsEnabled" sont des champs controles par l'admin
+    // (banissement, activation des pubs) : un client ne doit jamais pouvoir
+    // les modifier lui-meme, meme en ecrivant son propre document.
+    match /users/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+
+      allow create: if request.auth != null && request.auth.uid == uid
+        && !('isLocked' in request.resource.data)
+        && !('adsEnabled' in request.resource.data);
+
+      allow update: if request.auth != null && request.auth.uid == uid
+        // Interdit toute tentative de modifier isLocked/adsEnabled depuis
+        // le client, meme si ces champs existent deja sur le document.
+        && !request.resource.data.diff(resource.data)
+              .affectedKeys().hasAny(['isLocked', 'adsEnabled']);
+
+      allow delete: if false;
+    }
+
+    // ── backups/{code} ───────────────────────────────────────────────────
+    // Le code de sauvegarde EST le secret (10 caracteres aleatoires,
+    // ~3x10^17 combinaisons). On exige simplement d'etre authentifie
+    // (anonyme ou non) pour lire/creer/supprimer -- cela bloque tout appel
+    // direct hors de l'app (ex: script qui appelle l'API REST Firestore
+    // sans passer par le SDK/l'auth) et, combine a l'entropie du code et a
+    // sa duree de vie de 7 jours + suppression apres utilisation cote
+    // client, rend la fuite de donnees par devinette du code impraticable.
+    //
+    // Pour un niveau de securite supplementaire, activez App Check sur ce
+    // projet Firebase : cela bloque les appels qui ne viennent pas d'une
+    // build authentique de l'app (protege aussi contre le brute-force
+    // automatise, meme avec un token d'auth anonyme valide).
+    match /backups/{code} {
+      allow read, delete: if request.auth != null;
+      allow create: if request.auth != null
+        && request.resource.data.ownerUid == request.auth.uid;
+      allow update: if false; // un backup est cree puis supprime, jamais modifie
+    }
+  }
+}
