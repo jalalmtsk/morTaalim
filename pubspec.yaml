@@ -32,7 +32,7 @@ dependencies:
   flutter_colorpicker: ^1.1.0
   google_mobile_ads: ^6.0.0
   percent_indicator: ^4.2.5
-  font_awesome_flutter: ^11.0.0
+  font_awesome_flutter: ^10.8.0
   flutter_staggered_animations: ^1.1.1
   cloud_firestore: ^6.0.0
   firebase_core: ^4.0.0
@@ -72,6 +72,8 @@ flutter:
     - assets/images/Animals/Animal_Houses/
     - assets/icons/
     - assets/images/GameGridImages/
+    - assets/images/Games/BrainBuilder/
+    - assets/images/Games/PuzzleLand/
     - assets/images/PractiseImage/
     - assets/images/PractiseImage/HeavyLightImages/
     - assets/images/PractiseImage/WuduImages/
@@ -83,6 +85,12 @@ flutter:
     - assets/images/badges/
     - assets/images/Banners/Kids/
     - assets/images/UI/KidScene/
+    - assets/images/UI/Badges/
+    - assets/images/UI/Frames/
+    - assets/images/UI/Bars/
+    - assets/images/UI/Collection/
+    - assets/images/UI/Loading/
+    - assets/images/UI/Toasts/
     - assets/images/quiz/
     - assets/images/magic_paint/
     - assets/images/UI/Buttons/

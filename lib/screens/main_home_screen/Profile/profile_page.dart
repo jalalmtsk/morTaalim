@@ -1,3 +1,4 @@
+import 'package:mortaalim/widgets/KidScene/glossy_bar.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -13,6 +14,11 @@ import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/BannerAndAvatarProfilePage/BannerAvatarProfile.dart';
 import 'package:mortaalim/widgets/ProfileSetup_Widget/MainProfile_Page/Widgets/UserDataProfileEntering.dart';
 import 'package:provider/provider.dart';
+import 'Badges/badge_catalog.dart';
+import 'package:mortaalim/widgets/Collection/my_collection_page.dart';
+import 'Customize/customize_page.dart';
+import 'Customize/profile_look.dart';
+import 'Badges/my_badges_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileAssets {
@@ -66,27 +72,9 @@ class ProfileStats {
   }
 }
 
-class _Badge {
-  final String asset;
-  final String Function(BuildContext) name, how;
-  final bool Function(ProfileStats) earned;
-  const _Badge(this.asset, this.name, this.how, this.earned);
-}
-
-final List<_Badge> _badges = [
-  _Badge(ProfileAssets.badgeSteps, (c) => tr(c).badgeFirstSteps, (c) => tr(c).badgeFirstStepsHow, (s) => s.lessons + s.gamePlays >= 1),
-  _Badge(ProfileAssets.badgeBook, (c) => tr(c).badgeBookLover, (c) => tr(c).badgeBookLoverHow, (s) => s.courseLessons >= 10),
-  _Badge(ProfileAssets.badgeCode, (c) => tr(c).badgeCodeStarter, (c) => tr(c).badgeCodeStarterHow, (s) => s.itLessons >= 1),
-];
-
 /// A friendly title that grows with the level.
 String profileTitle(BuildContext context, int level) {
-  final t = tr(context);
-  if (level <= 2) return t.titleLittleLearner;
-  if (level <= 4) return t.titleCuriousExplorer;
-  if (level <= 7) return t.titleBrightThinker;
-  if (level <= 11) return t.titleStarScholar;
-  return t.titleKnowledgeHero;
+  return titleName(context, ProfileTitleStore.shownTier(level));
 }
 
 class ProfilePage extends StatefulWidget {
@@ -103,6 +91,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   late final AnimationController _idle =
       AnimationController(vsync: this, duration: const Duration(seconds: 8))..repeat();
   ProfileStats _stats = ProfileStats.empty;
+  BadgeStats _bstats = BadgeStats.empty;
   bool _precached = false;
   bool _busy = false;
 
@@ -130,8 +119,16 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
   }
 
   Future<void> _refresh() async {
+    final level = Provider.of<ExperienceManager>(context, listen: false).level;
     final s = await ProfileStats.load();
-    if (mounted) setState(() => _stats = s);
+    final b = await BadgeStats.load(level: level);
+    await ProfileTitleStore.load();
+    if (mounted) {
+      setState(() {
+        _stats = s;
+        _bstats = b;
+      });
+    }
   }
 
   Future<void> _open(Widget page) async {
@@ -141,22 +138,6 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
     await Navigator.push(context, MaterialPageRoute(builder: (_) => page));
     _busy = false;
     if (mounted) _refresh();
-  }
-
-  void _showBadge(_Badge b) {
-    final earned = b.earned(_stats);
-    Provider.of<AudioManager>(context, listen: false).playEventSound('clickButton2');
-    showDialog(
-      context: context,
-      barrierColor: KidColors.purpleDeep.withOpacity(0.35),
-      builder: (ctx) => KidDialog(
-        headerAsset: b.asset,
-        headerAspect: 0.77,
-        title: b.name(ctx),
-        message: earned ? '${tr(ctx).badgeEarned}\n${b.how(ctx)}' : b.how(ctx),
-        actions: [KidOutlineButton(label: tr(ctx).awesome, onTap: () => Navigator.pop(ctx))],
-      ),
-    );
   }
 
   @override
@@ -198,9 +179,10 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                           idle: _idle,
                           banner: xp.selectedBannerImage,
                           avatar: xp.selectedAvatar,
+                          frame: xp.selectedAvatarFrame,
                           name: (name.isEmpty || name == 'Player') ? t.homeHiNoName : name,
                           title: profileTitle(context, xp.level),
-                          onEdit: () => _open(const BannerAvatarProfile()),
+                          onEdit: () => _open(const CustomizePage()),
                         ),
                       ),
                       SizedBox(height: 10 * s),
@@ -222,7 +204,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                                 scale: s,
                                 icon: ProfileAssets.palette,
                                 label: t.customizeLabel,
-                                onTap: () => _open(const BannerAvatarProfile())),
+                                onTap: () => _open(const CustomizePage())),
                           ),
                         ]),
                       ),
@@ -291,7 +273,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                           scale: s,
                           title: t.myBadges,
                           trailing: KidPressable(
-                            onTap: () => _open(const QuestsPage(startOnMilestones: true)),
+                            onTap: () => _open(const MyBadgesPage()),
                             child: Row(mainAxisSize: MainAxisSize.min, children: [
                               Text(t.viewAll, style: kidBodyStyle(14 * s, color: KidColors.purpleDeep, weight: FontWeight.w700)),
                               Transform.flip(
@@ -301,21 +283,21 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
                             ]),
                           ),
                           child: Row(children: [
-                            for (final b in _badges)
+                            for (final b in previewBadges(_bstats))
                               Expanded(
                                 child: _BadgeView(
                                   scale: s,
                                   badge: b,
-                                  earned: b.earned(st),
+                                  earned: b.earned(_bstats),
                                   idle: _idle,
-                                  onTap: () => _showBadge(b),
+                                  onTap: () => showBadgeStory(context, b, _bstats),
                                 ),
                               ),
                           ]),
                         ),
                       ),
                       SizedBox(height: 12 * s),
-                      step(7, _CollectionsCard(scale: s, idle: _idle, onTap: () => _open(CollectionPagePremium()))),
+                      step(7, _CollectionsCard(scale: s, idle: _idle, onTap: () => _open(const MyCollectionPage()))),
                     ],
                   ),
                 ),
@@ -345,8 +327,9 @@ class _HeaderCard extends StatelessWidget {
   final double scale;
   final Animation<double> idle;
   final String banner, avatar, name, title;
+  final String frame;
   final VoidCallback onEdit;
-  const _HeaderCard({required this.scale, required this.idle, required this.banner, required this.avatar,
+  const _HeaderCard({required this.scale, required this.idle, required this.banner, required this.avatar, this.frame = '',
       required this.name, required this.title, required this.onEdit});
 
   @override
@@ -418,7 +401,9 @@ class _HeaderCard extends StatelessWidget {
             builder: (_, c) => Transform.translate(offset: Offset(0, sin(idle.value * 4 * pi) * 2.5 * s), child: c),
             child: KidPressable(
               onTap: onEdit,
-              child: Container(
+              child: AvatarFrames.of(frame) != null
+                  ? FramedAvatar(avatar: avatar, frame: frame, size: av, fill: const Color(0xFFDDEBFF))
+                  : Container(
                 width: av,
                 height: av,
                 padding: EdgeInsets.all(5 * s),
@@ -610,24 +595,7 @@ class _ProgressTile extends StatelessWidget {
                 child: Text(title, maxLines: 1, style: kidBodyStyle(15 * s, color: _ink, weight: FontWeight.w700)),
               ),
               SizedBox(height: 4 * s),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: SizedBox(
-                  height: 8 * s,
-                  child: Stack(children: [
-                    const Positioned.fill(child: ColoredBox(color: Color(0xFFD9D6E0))),
-                    AnimatedFractionallySizedBox(
-                      duration: const Duration(milliseconds: 600),
-                      curve: Curves.easeOutCubic,
-                      widthFactor: value.clamp(0.0, 1.0),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                            gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: bar)),
-                      ),
-                    ),
-                  ]),
-                ),
-              ),
+              GlossyBar(value: value, height: 13 * s, color: GlossyBar.forColor(bar.last)),
               SizedBox(height: 3 * s),
               Text(sub, style: kidBodyStyle(11.5 * s, color: KidColors.muted, weight: FontWeight.w600)),
             ],
@@ -640,7 +608,7 @@ class _ProgressTile extends StatelessWidget {
 
 class _BadgeView extends StatelessWidget {
   final double scale;
-  final _Badge badge;
+  final AppBadge badge;
   final bool earned;
   final Animation<double> idle;
   final VoidCallback onTap;
@@ -656,7 +624,7 @@ class _BadgeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final s = scale;
-    Widget img = Image.asset(badge.asset, width: 96 * s, height: 96 * s * 0.77, fit: BoxFit.contain);
+    Widget img = Image.asset(badge.asset, width: 96 * s, height: 96 * s * 0.86, fit: BoxFit.contain);
     if (!earned) img = ColorFiltered(colorFilter: _grey, child: img);
     return KidPressable(
       onTap: onTap,

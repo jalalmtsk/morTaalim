@@ -1,3 +1,5 @@
+import 'package:mortaalim/widgets/KidScene/kid_toast.dart';
+import 'package:mortaalim/widgets/KidScene/glossy_bar.dart';
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui' show FontFeature;
@@ -233,6 +235,7 @@ class _QuestsPageState extends State<QuestsPage> with TickerProviderStateMixin {
 
   Future<void> _claim(DailyQuest q) async {
     if (!_q.ready(q) || !await QuestStore.claimQuest(q.id) || !mounted) return;
+    KidToast.show(KidToastKind.quest);
     if (q.rewardType == QuestReward.gold) {
       _xp.addTokenBanner(context, q.reward);
     } else {
@@ -265,6 +268,7 @@ class _QuestsPageState extends State<QuestsPage> with TickerProviderStateMixin {
 
   Future<void> _claimTreasure() async {
     if (_q.claimedCount < dailyQuests.length || !await QuestStore.claimTreasure() || !mounted) return;
+    KidToast.show(KidToastKind.quest);
     _xp.addGems(context, treasureGems);
     _celebrate();
     _refresh();
@@ -272,6 +276,7 @@ class _QuestsPageState extends State<QuestsPage> with TickerProviderStateMixin {
 
   Future<void> _claimMilestone(Milestone m) async {
     if (_q.total(m.track) < m.target || !await QuestStore.claimMilestone(m) || !mounted) return;
+    KidToast.show(KidToastKind.quest);
     _xp.addGems(context, m.gems);
     _celebrate();
     _refresh();
@@ -607,24 +612,8 @@ class _Bar extends StatelessWidget {
   const _Bar({required this.value, required this.height, required this.colors});
 
   @override
-  Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(height),
-        child: SizedBox(
-          height: height,
-          child: Stack(children: [
-            const Positioned.fill(child: ColoredBox(color: Color(0xFFDCD8E2))),
-            AnimatedFractionallySizedBox(
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.easeOutCubic,
-              widthFactor: value.clamp(0.0, 1.0),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                    gradient: LinearGradient(begin: Alignment.topCenter, end: Alignment.bottomCenter, colors: colors)),
-              ),
-            ),
-          ]),
-        ),
-      );
+  Widget build(BuildContext context) =>
+      GlossyBar(value: value, height: height * 1.5, color: GlossyBar.forColor(colors.last));
 }
 
 /// Glossy 3D pill button drawn in code, so it keeps its round ends at any

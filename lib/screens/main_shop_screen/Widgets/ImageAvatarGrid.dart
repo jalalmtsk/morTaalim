@@ -1,3 +1,4 @@
+import 'package:mortaalim/widgets/KidScene/kid_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../XpSystem.dart';
@@ -56,6 +57,7 @@ class ImageAvatarGrid extends StatelessWidget {
                 );
                 xpManager.unlockAvatar(imagePath);
                 xpManager.selectAvatar(imagePath);
+                KidToast.show(KidToastKind.avatar);
 
               },
               child:  Text(tr(context).pay, style: TextStyle(color: Colors.deepOrange)),

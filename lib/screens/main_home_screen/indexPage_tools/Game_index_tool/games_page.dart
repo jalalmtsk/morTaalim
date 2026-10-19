@@ -1,3 +1,4 @@
+import 'package:mortaalim/widgets/KidScene/glossy_bar.dart';
 import 'dart:math';
 
 import 'package:confetti/confetti.dart';
@@ -11,6 +12,9 @@ import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart';
 import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:mortaalim/games/BrainBuilder/bb_common.dart';
+import 'package:mortaalim/games/PuzzleLand/pz_common.dart' show pzTitleFor;
 
 import 'game_data.dart';
 
@@ -27,6 +31,7 @@ class GamesAssets {
   static const String tilePuzzle = '${dir}games_tile_puzzle.webp';
   static const String tilePaint = '${dir}games_tile_paint.webp';
   static const String tileBrain = '${dir}games_tile_brain.webp';
+  static const String tileAnimals = '${dir}games_tile_animals.webp';
   static const String starOn = '${dir}games_star_on.webp';
   static const String starOff = '${dir}games_star_off.webp';
   static const String trophy = '${dir}games_trophy.webp';
@@ -54,6 +59,8 @@ class _GameStyle {
 }
 
 const Map<String, _GameStyle> _styles = {
+  'BrainBuilder': _GameStyle(GameCategory.logic, BBAssets.tile, 'blue', []),
+  'PuzzleLand': _GameStyle(GameCategory.logic, '${GamesAssets.dir}games_tile_puzzleland.webp', 'purple', []),
   'quizGame': _GameStyle(GameCategory.logic, GamesAssets.tileBrain, 'yellow', []),
   'WordExplorer': _GameStyle(GameCategory.words, GamesAssets.tileWords, 'green', []),
   'MemoryFlip': _GameStyle(GameCategory.logic, GamesAssets.tileMemory, 'pink', []),
@@ -61,7 +68,7 @@ const Map<String, _GameStyle> _styles = {
   'MagicPainting': _GameStyle(GameCategory.creative, GamesAssets.tilePaint, 'purple', []),
   'drawingAlphabet': _GameStyle(GameCategory.words, null, 'orange', [Color(0xFFFFE3B3), Color(0xFFFFB86B)]),
   'appStories': _GameStyle(GameCategory.words, null, 'blue', [Color(0xFFCFE8FF), Color(0xFF7CB8FF)]),
-  'AnimalSounds': _GameStyle(GameCategory.creative, null, 'green', [Color(0xFFD4F7D9), Color(0xFF7FD78F)]),
+  'AnimalSounds': _GameStyle(GameCategory.creative, GamesAssets.tileAnimals, 'green', []),
   'WordLink': _GameStyle(GameCategory.words, null, 'pink', [Color(0xFFFFD9EC), Color(0xFFFF8CC6)]),
   'Piano': _GameStyle(GameCategory.creative, null, 'purple', [Color(0xFFE7DBFF), Color(0xFFAE8CFF)]),
 };
@@ -71,6 +78,10 @@ _GameStyle _styleOf(String title) =>
 
 String gameTitle(AppLocalizations t, String key) {
   switch (key) {
+    case 'BrainBuilder':
+      return bbTitleFor(t.localeName);
+    case 'PuzzleLand':
+      return pzTitleFor(t.localeName);
     case 'drawingAlphabet':
       return t.drawingAlphabet;
     case 'quizGame':
@@ -793,25 +804,7 @@ class _ChallengeCard extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 4 * s),
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: SizedBox(
-                    height: 7 * s,
-                    width: 110 * s,
-                    child: Stack(children: [
-                      const Positioned.fill(child: ColoredBox(color: Color(0xFFE3DAF8))),
-                      AnimatedFractionallySizedBox(
-                        duration: const Duration(milliseconds: 450),
-                        curve: Curves.easeOutCubic,
-                        widthFactor: claimed ? 1 : done / GameProgress.goal,
-                        child: const DecoratedBox(
-                          decoration: BoxDecoration(
-                              gradient: LinearGradient(colors: [Color(0xFFFFC23A), Color(0xFFFFA514)])),
-                        ),
-                      ),
-                    ]),
-                  ),
-                ),
+                GlossyBar(value: claimed ? 1 : done / GameProgress.goal, height: 12 * s, width: 120 * s, color: 'amber'),
               ],
             ),
           ),

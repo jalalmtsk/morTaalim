@@ -1,3 +1,4 @@
+import 'package:mortaalim/widgets/KidScene/glossy_bar.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -159,29 +160,7 @@ class QmProgress extends StatelessWidget {
         Text(label, style: qmTitle(14 * s)),
         SizedBox(width: 10 * s),
         Expanded(
-          child: Container(
-            height: 14 * s,
-            decoration: BoxDecoration(
-              color: const Color(0xFFEAD9C2),
-              borderRadius: BorderRadius.circular(8 * s),
-            ),
-            alignment: AlignmentDirectional.centerStart,
-            child: TweenAnimationBuilder<double>(
-              tween: Tween(end: value.clamp(0.0, 1.0)),
-              duration: const Duration(milliseconds: 450),
-              curve: Curves.easeOutCubic,
-              builder: (_, v, __) => FractionallySizedBox(
-                widthFactor: max(0.06, v),
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8 * s),
-                    gradient: const LinearGradient(colors: [Color(0xFF32D3F5), Color(0xFF1C8DE8)]),
-                    border: Border.all(color: Colors.white.withOpacity(0.7), width: 1.5 * s),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          child: GlossyBar(value: max(0.06, value), height: 18 * s, color: 'cyan', duration: const Duration(milliseconds: 450)),
         ),
         if (showStars) SizedBox(width: 8 * s),
         if (showStars)

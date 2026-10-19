@@ -1,3 +1,4 @@
+import 'package:mortaalim/widgets/KidScene/kid_toast.dart';
 import 'package:mortaalim/Manager/models/avatar_catalog.dart';
 import 'dart:async';
 import 'dart:math';
@@ -512,13 +513,6 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   void spendGems(BuildContext context, int amount) => SpendStarBanner(context, amount);
 
   void addTokenBanner(BuildContext context, int amount) {
-    if (_tokenBannerVisible) {
-      // A banner is already showing: still give the reward, just skip a second banner.
-      Tolims += amount;
-      notifyListeners();
-      _saveData();
-      return;
-    }
 
     Tolims += amount;
     _recentlyAddedTokens = amount;
@@ -546,17 +540,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
       final overlay = Overlay.of(context);
       if (overlay == null) return;
 
-      late OverlayEntry entry;
-      entry = OverlayEntry(
-        builder: (ctx) => AnimatedTokenBanner(
-          tokenAmount: amount,
-          onDismiss: () {
-            entry.remove();
-            _tokenBannerVisible = false;
-          },
-        ),
-      );
-      overlay.insert(entry);
+KidToast.reward(gold: amount);
+      _tokenBannerVisible = false;
     });
   }
 
@@ -663,14 +648,7 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
       final overlay = Overlay.of(context);
       if (overlay == null) return;
 
-      late OverlayEntry bannerEntry;
-      bannerEntry = OverlayEntry(
-        builder: (ctx) => AnimatedStarBanner(
-          starAmount: amount,
-          onDismiss: () => bannerEntry.remove(),
-        ),
-      );
-      overlay.insert(bannerEntry);
+KidToast.reward(gems: amount);
     });
   }
 

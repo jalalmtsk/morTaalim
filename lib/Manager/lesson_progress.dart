@@ -1,3 +1,4 @@
+import 'package:mortaalim/widgets/KidScene/kid_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /// Remembers which lessons a child has opened in each subject, the last
@@ -23,8 +24,11 @@ class LessonTracker {
   /// Call when a lesson/exercise of [subject] is opened.
   Future<void> record(String subject, int lessonIndex) async {
     final p = await SharedPreferences.getInstance();
-    final done = (p.getStringList(_kDone(subject)) ?? const []).toSet()..add('$lessonIndex');
+    final before = (p.getStringList(_kDone(subject)) ?? const []).toSet();
+    final done = {...before, '$lessonIndex'};
     await p.setStringList(_kDone(subject), done.toList());
+    // School courses record when a lesson is opened; the other trackers on completion.
+    if (scope.isNotEmpty && !before.contains('$lessonIndex')) KidToast.show(KidToastKind.lesson);
     await p.setString(_kLast, subject);
     await p.setString(_kToday, _today());
     await ActivityLog.markToday();

@@ -1,3 +1,5 @@
+import 'package:mortaalim/games/PuzzleLand/pz_common.dart' show pzTitleFor;
+import 'package:mortaalim/games/BrainBuilder/bb_common.dart';
 import 'package:flutter/material.dart';
 import 'package:mortaalim/Themes/ThemeManager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
@@ -408,6 +410,10 @@ class _GameGridState extends State<GameGrid>
 
   String _getCourseTitle(AppLocalizations tr, String key) {
     switch (key) {
+      case 'BrainBuilder':
+        return bbTitleFor(tr.localeName);
+      case 'PuzzleLand':
+        return pzTitleFor(tr.localeName);
       case 'drawingAlphabet':
         return tr.drawingAlphabet;
       case 'quizGame':

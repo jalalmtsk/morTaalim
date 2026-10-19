@@ -1,3 +1,5 @@
+import 'widgets/KidScene/glossy_bar.dart';
+import 'widgets/Collection/my_collection_page.dart';
 import 'dart:async';
 import 'dart:math';
 
@@ -27,6 +29,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Manager/Services/CardVisibiltyManager.dart';
+import 'Manager/models/banner_catalog.dart';
+import 'screens/main_home_screen/Profile/Customize/profile_look.dart';
 import 'XpSystem.dart';
 import 'main.dart';
 
@@ -287,7 +291,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
 
   Widget _tabPage() => switch (_tab) {
         1 => const QuestsPage(embedded: true),
-        2 => const CollectionPagePremium(embedded: true),
+        2 => const MyCollectionPage(embedded: true),
         3 => const MainShopPageIndex(embedded: true),
         _ => const ProfilePage(embedded: true),
       };
@@ -369,6 +373,8 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
                             scale: s,
                             name: xp.userProfile.fullName,
                             avatar: xp.selectedAvatar,
+                            banner: BannerCatalog.resolve(xp.selectedBannerImage),
+                            frame: xp.selectedAvatarFrame,
                             level: xp.level,
                             xpNow: xp.currentLevelXP,
                             xpNeed: xp.requiredXPForNextLevel,
@@ -548,13 +554,13 @@ class _CurrencyPill extends StatelessWidget {
 
 class _HeroCard extends StatelessWidget {
   final double scale;
-  final String name, avatar;
+  final String name, avatar, banner, frame;
   final int level, xpNow, xpNeed;
   final Animation<double> idle;
   final VoidCallback onAvatar, onSettings;
 
   const _HeroCard({
-    required this.scale, required this.name, required this.avatar, required this.level,
+    required this.scale, required this.name, required this.avatar, required this.banner, this.frame = '', required this.level,
     required this.xpNow, required this.xpNeed, required this.idle, required this.onAvatar, required this.onSettings,
   });
 
@@ -577,7 +583,8 @@ class _HeroCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(r - 3),
         child: Stack(
           children: [
-            Positioned.fill(child: Image.asset(HomeAssets.heroBg, fit: BoxFit.cover, alignment: Alignment.centerRight)),
+            Positioned.fill(child: Image.asset(banner, fit: BoxFit.cover, alignment: Alignment.centerRight,
+                errorBuilder: (_, __, ___) => Image.asset(HomeAssets.heroBg, fit: BoxFit.cover, alignment: Alignment.centerRight))),
             // darken the left side a touch so the white text pops
             Positioned.fill(
               child: DecoratedBox(
@@ -598,7 +605,9 @@ class _HeroCard extends StatelessWidget {
                 child: AnimatedBuilder(
                   animation: idle,
                   builder: (_, c) => Transform.translate(offset: Offset(0, sin(idle.value * 4 * pi) * 2.5 * s), child: c),
-                  child: Container(
+                  child: AvatarFrames.of(frame) != null
+                      ? FramedAvatar(avatar: avatar, frame: frame, size: av, fill: const Color(0xFFFFE9A8))
+                      : Container(
                     width: av,
                     height: av,
                     padding: EdgeInsets.all(av * 0.05),
@@ -676,20 +685,7 @@ class _HeroCard extends StatelessWidget {
                     Text(tr(context).levelN(level), style: kidBodyStyle(14 * s, color: _ink, weight: FontWeight.w700)),
                     SizedBox(width: 10 * s),
                     Expanded(
-                      child: Container(
-                        height: 12 * s,
-                        decoration: BoxDecoration(color: const Color(0xFFD9D0F5), borderRadius: BorderRadius.circular(20)),
-                        alignment: AlignmentDirectional.centerStart,
-                        child: FractionallySizedBox(
-                          widthFactor: max(0.04, progress),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              gradient: const LinearGradient(colors: [Color(0xFFFFC23A), Color(0xFFFFA514)]),
-                            ),
-                          ),
-                        ),
-                      ),
+                      child: GlossyBar(value: max(0.04, progress), height: 17 * s, color: 'gold'),
                     ),
                     SizedBox(width: 10 * s),
                     Text('$xpNow / $xpNeed XP', style: kidBodyStyle(12 * s, color: _ink, weight: FontWeight.w700)),

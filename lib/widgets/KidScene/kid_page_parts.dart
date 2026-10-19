@@ -1,3 +1,4 @@
+import 'package:mortaalim/widgets/KidScene/glossy_bar.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -163,34 +164,13 @@ class KidIconArt extends StatelessWidget {
   }
 }
 
-/// Thin rounded progress bar (grey track, yellow fill).
+/// Glossy progress bar (sprite track + coloured fill), see [GlossyBar].
 class KidProgressBar extends StatelessWidget {
   final double value, height, width;
-  const KidProgressBar({super.key, required this.value, required this.height, this.width = double.infinity});
+  final String color;
+  const KidProgressBar({super.key, required this.value, required this.height, this.width = double.infinity, this.color = 'gold'});
 
   @override
-  Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(height),
-      child: SizedBox(
-        height: height,
-        width: width,
-        child: Stack(children: [
-          const Positioned.fill(child: ColoredBox(color: Color(0xFFDCD6E6))),
-          AnimatedFractionallySizedBox(
-            duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOutCubic,
-            widthFactor: value.clamp(0.0, 1.0),
-            child: const DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.topCenter, end: Alignment.bottomCenter,
-                    colors: [Color(0xFFFFD84A), Color(0xFFFFB21A)]),
-              ),
-            ),
-          ),
-        ]),
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      GlossyBar(value: value, height: height * 1.5, width: width.isFinite ? width : null, color: color);
 }

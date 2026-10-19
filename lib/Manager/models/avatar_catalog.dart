@@ -23,7 +23,21 @@ class AvatarCatalog {
   static const String girlPuffs = '${dir}girl_puffs.webp';
   static const String boyBlackHair = '${dir}boy_black_hair.webp';
 
+  // 2026 set
+  static const String boyHoodie = '${dir}boy_hoodie.webp';
+  static const String girlBraids = '${dir}girl_braids.webp';
+  static const String robotBlue = '${dir}robot_blue.webp';
+  static const String foxCub = '${dir}fox_cub.webp';
+  static const String panda = '${dir}panda.webp';
+  static const String kitty = '${dir}kitty.webp';
+  static const String astronaut = '${dir}astronaut.webp';
+  static const String girlHijabPurple = '${dir}girl_hijab_purple.webp';
+  static const String dragon = '${dir}dragon.webp';
+
   static const List<String> all = [
+    boyHoodie, girlBraids, robotBlue,
+    foxCub, panda, kitty,
+    astronaut, girlHijabPurple, dragon,
     mascot, boyCurly, girlGlasses,
     girlHijab, boyGinger, fox,
     robot, girlPuffs, boyBlackHair,
@@ -45,6 +59,15 @@ class AvatarCatalog {
     {'image': robot, 'cost': 0},
     {'image': girlPuffs, 'cost': 0},
     {'image': boyBlackHair, 'cost': 0},
+    {'image': boyHoodie, 'cost': 0},
+    {'image': girlBraids, 'cost': 0},
+    {'image': robotBlue, 'cost': 0},
+    {'image': foxCub, 'cost': 0},
+    {'image': panda, 'cost': 0},
+    {'image': kitty, 'cost': 0},
+    {'image': astronaut, 'cost': 0},
+    {'image': girlHijabPurple, 'cost': 0},
+    {'image': dragon, 'cost': 0},
   ];
 
   static bool isValid(String? path) => path != null && all.contains(path);

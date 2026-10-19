@@ -1,3 +1,4 @@
+import 'package:mortaalim/widgets/KidScene/kid_toast.dart';
 import 'dart:math';
 import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart' show kidGemAsset;
 import 'package:flutter/material.dart';
@@ -81,6 +82,7 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
               // Unlock & select the banner
               xpManager.unlockBanner(path);
               xpManager.selectBannerImage(path);
+              KidToast.show(KidToastKind.banner);
 
               // Sync or save state if needed
               await xpManager.syncWithFirebaseIfOnline();

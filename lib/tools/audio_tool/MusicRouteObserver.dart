@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../IndexPage.dart';
+import '../../games/BrainBuilder/brain_builder_menu.dart';
 import '../../courses/primaire1Page/index_1PrimairePage.dart';
 import '../../games/Quiz_Game/ModeSelectorPage.dart';
 import '../../games/Quiz_Game/quiz_Page.dart';
@@ -15,6 +16,7 @@ final Map<Type, String> widgetMusicMap = {
   DrawingIndex: 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
   MagicPaintPage: 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
   QuizGameApp: 'assets/audios/BackGround_Audio/FunnyHappyMusic.mp3',
+  BrainBuilderMenu: 'assets/audios/BackGround_Audio/FunnyHappyMusic.mp3',
   Index1Primaire: 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
 };
 
