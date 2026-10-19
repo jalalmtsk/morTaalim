@@ -1,3 +1,4 @@
+import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart' show kidGemAsset;
 import 'package:flutter/material.dart';
 
 class StarCountPulse extends StatefulWidget {
@@ -70,7 +71,7 @@ class _StarCountPulseState extends State<StarCountPulse>
           children: [
             ScaleTransition(
               scale: _pulseAnimation,
-              child: Icon(Icons.star, color: Colors.amber, size: 12),
+              child: Image.asset(kidGemAsset, width: 12, height: 12),
             ),
             const SizedBox(width: 6),
             Stack(

@@ -123,7 +123,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get myProfile => 'ملفي الشخصي';
 
   @override
-  String get stars => 'نجوم';
+  String get stars => "جواهر";
 
   @override
   String get lives => 'محاولات';
@@ -399,7 +399,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get forb => 'لـ';
 
   @override
-  String get notEnoughStars => 'لا توجد نجوم كافية';
+  String get notEnoughStars => "لا توجد جواهر كافية";
 
   @override
   String get courseLocked => 'الدورة مقفلة';
@@ -516,7 +516,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get store => 'المتجر';
 
   @override
-  String get tolims => 'توليمز';
+  String get tolims => "ذهب";
 
   @override
   String get spinningWheel => 'عجلة الحظ';
@@ -1338,16 +1338,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get getCertified => 'الحصول على شهادة';
 
   @override
-  String get notEnoughTolims => 'ليس لديك ما يكفي من التوليمز!';
+  String get notEnoughTolims => "ليس لديك ما يكفي من الذهب!";
 
   @override
   String youGotStars(Object count) {
-    return 'لقد حصلت على $count نجوم!';
+    return "لقد حصلت على $count جواهر!";
   }
 
   @override
   String getStars(Object count) {
-    return 'احصل على $count نجوم';
+    return "احصل على $count جواهر";
   }
 
   @override
@@ -2007,6 +2007,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get notEnoughGems => "لا تكفي الجواهر بعد — واصل اللعب!";
 
   @override
+  String get notEnoughGold => "لا يكفي الذهب بعد — واصل اللعب!";
+
+  @override
   String get geography => "الجغرافيا";
 
   @override
@@ -2046,7 +2049,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String unlockGameFor(int n) {
-    return "فتح هذه اللعبة مقابل $n جواهر؟";
+    return "فتح هذه اللعبة مقابل $n ذهب؟";
   }
 
   @override

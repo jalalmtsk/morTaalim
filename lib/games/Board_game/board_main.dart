@@ -118,11 +118,11 @@ class _BoardGamePageState extends State<BoardGamePage>
           if (lives == 0) {
             int starsEarned = (score / 20).floor();
             if (starsEarned > 0) {
-              xpManager.addStarBanner(context, starsEarned);
+              xpManager.addGems(context, starsEarned);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                     content:
-                    Text('You earned $starsEarned star(s)! Total Stars: ${xpManager.stars}')),
+                    Text('You earned $starsEarned gem(s)! Total gems: ${xpManager.gems}')),
               );
             }
             _showGameOverDialog(xpManager);
@@ -142,7 +142,7 @@ class _BoardGamePageState extends State<BoardGamePage>
       barrierDismissible: false,
       builder: (_) => AlertDialog(
         title: const Text("Game Over🎮"),
-        content: Text('Final score: $score\nXP: ${xpManager.xp}\nStars: ${xpManager.stars}'),
+        content: Text('Final score: $score\nXP: ${xpManager.xp}\nGems: ${xpManager.gems}'),
         actions: [
           TextButton(
             onPressed: () {
@@ -332,7 +332,7 @@ class _BoardGamePageState extends State<BoardGamePage>
             ),
 
             ElevatedButton(onPressed: (){
-                xpManager.addStarBanner(context,20);
+                xpManager.addGems(context, 20);
             }, child: Text("LOL")),
             const SizedBox(height: 30),
             Text(

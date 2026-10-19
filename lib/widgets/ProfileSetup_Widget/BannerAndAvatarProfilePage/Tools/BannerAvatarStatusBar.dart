@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart' show kidCoinAsset, kidGemAsset;
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import '../../../../XpSystem.dart';
@@ -50,8 +51,8 @@ class BannerAvatarStatusBar extends StatelessWidget {
     final user = xpManager.userProfile;
     final playerName = user.fullName;
     final banner = xpManager.selectedBannerImage;
-    final stars = xpManager.stars;
-    final tokens = xpManager.saveTokenCount;
+    final stars = xpManager.gems;
+    final tokens = xpManager.gold;
 
     // Sparkle when new stars or tokens are gained
     final showSparkle =
@@ -109,7 +110,7 @@ class BannerAvatarStatusBar extends StatelessWidget {
                             Row(
                               children: [
                                 const SizedBox(width: 20),
-                                const Icon(Icons.star, color: Colors.amber, size: 20),
+                                Image.asset(kidGemAsset, width: 20, height: 20),
                                 const SizedBox(width: 6),
                                 Text(
                                   "$stars",
@@ -124,8 +125,7 @@ class BannerAvatarStatusBar extends StatelessWidget {
                             Row(
                               children: [
                                 const SizedBox(width: 20),
-                                const Icon(Icons.generating_tokens_rounded,
-                                    color: Colors.greenAccent, size: 20),
+                                Image.asset(kidCoinAsset, width: 20, height: 20),
                                 const SizedBox(width: 6),
 
                                 Text(

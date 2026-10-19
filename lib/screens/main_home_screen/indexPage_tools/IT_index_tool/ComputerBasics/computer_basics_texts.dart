@@ -130,7 +130,7 @@ const Map<String, Map<String, String>> _t = {
   'adventure': {'en': 'Your computer adventure', 'fr': 'Ton aventure informatique', 'ar': 'مغامرتك مع الحاسوب', 'de': 'Dein Computer-Abenteuer'},
   'completedN': {'en': '{n} / 8 completed', 'fr': '{n} / 8 terminées', 'ar': '{n} / 8 مكتملة', 'de': '{n} / 8 geschafft'},
   'play': {'en': 'PLAY', 'fr': 'JOUER', 'ar': 'العب', 'de': 'LOS'},
-  'earnStars': {'en': 'Complete lessons to earn stars!', 'fr': 'Termine les leçons pour gagner des étoiles !', 'ar': 'أكمل الدروس لتربح النجوم!', 'de': 'Schaffe Lektionen und sammle Sterne!'},
+  'earnStars': {'en': 'Complete lessons to earn gold!', 'fr': 'Termine les leçons pour gagner de l\'or !', 'ar': 'أكمل الدروس لتربح الذهب!', 'de': 'Schaffe Lektionen und sammle Gold!'},
   'allDone': {'en': 'You finished Computer Basics! 🎉', 'fr': "Tu as fini les bases de l'ordinateur ! 🎉", 'ar': 'أنهيت أساسيات الحاسوب! 🎉', 'de': 'Du hast die Computer-Grundlagen geschafft! 🎉'},
 };
 

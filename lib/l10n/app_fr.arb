@@ -46,7 +46,7 @@
 
   "myProfile": "Mon profil",
 
-  "stars": "Étoiles",
+  "stars": "Gemmes",
   "lives": "Vies",
   "score": "Score",
   "name": "Nom",
@@ -154,7 +154,7 @@
     "previous": "Précédent",
     "pageOf": "Page de",
      "forb": "Pour",
-     "notEnoughStars": "Pas assez d'étoiles",
+     "notEnoughStars": "Pas assez de gemmes",
 
 
      "courseLocked": "Cours verrouillé",
@@ -203,8 +203,8 @@
      "fantasy": "Fantastique",
      "islamic": "Islamique",
      "store": "Boutique",
-     "stars": "Étoiles",
-     "tolims": "Tolims",
+     "stars": "Gemmes",
+     "tolims": "Or",
      "spinningWheel": "Roue de la fortune",
      "spin": "Tourner",
      "reroll": "Relancer",
@@ -528,11 +528,11 @@
     "improveSkills": "Améliorer les compétences",
     "getCertified": "Obtenir une certification",
 
-   "tolims": "Tolims",
-    "stars": "Étoiles",
-    "notEnoughTolims": "Pas assez de Tolims !",
-    "youGotStars": "Vous avez reçu {count} étoiles !",
-    "getStars": "Obtenir {count} étoiles",
+   "tolims": "Or",
+    "stars": "Gemmes",
+    "notEnoughTolims": "Pas assez d'or !",
+    "youGotStars": "Tu as reçu {count} gemmes !",
+    "getStars": "Obtenir {count} gemmes",
 
     "missingNumber": "Nombre manquant",
     "findLargest": "Trouver le plus grand",
@@ -835,6 +835,7 @@
   "challengeDone": "Défi réussi — à demain !",
   "unlockGameFree": "Débloquer ce jeu gratuitement ?",
   "notEnoughGems": "Pas encore assez de gemmes — continue à jouer !",
+  "notEnoughGold": "Pas encore assez d'or — continue à jouer !",
   "geography": "Géographie",
   "coursesHeroTop": "Garde ta curiosité",
   "coursesHeroBottom": "en éveil !",
@@ -847,7 +848,7 @@
   "learningGoalMsg": "Fais une leçon aujourd'hui",
   "learningGoalDone": "Objectif atteint — bravo !",
   "challengeGoal": "Joue à {n} jeux différents",
-  "unlockGameFor": "Débloquer ce jeu pour {n} gemmes ?",
+  "unlockGameFor": "Débloquer ce jeu pour {n} or ?",
   "lessonsCount": "{a} / {b} leçons",
   "itHeroTop": "Petits esprits.",
   "itHeroBottom": "Grandes idées !",

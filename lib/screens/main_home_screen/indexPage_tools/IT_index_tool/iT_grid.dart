@@ -1,5 +1,4 @@
 import 'package:mortaalim/Manager/models/avatar_catalog.dart';
-import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -14,7 +13,7 @@ import '../../../../main.dart';
 import '../../../../tools/Ads_Manager.dart';
 import '../../../../tools/AnimatedGridItem.dart';
 import '../../../../tools/audio_tool/Audio_Manager.dart';
-import '../../../../tools/loading_page.dart';
+import '../../../../widgets/KidScene/kid_page_parts.dart' show kidCoinAsset;
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Tag colours (one accent per content category)
@@ -109,10 +108,6 @@ class _ITGridState extends State<ITGrid>
 
   // ── Helpers ───────────────────────────────────────────────────────────────
 
-  Future<void> _simulateLoading() async {
-    await Future.delayed(Duration(seconds: 1 + Random().nextInt(2)));
-  }
-
   void _triggerUnlockAnimation(AudioManager audio) {
     audio.playSfx('assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3');
     audio.playSfx('assets/audios/QuizGame_Sounds/crowd-cheering-6229.mp3');
@@ -137,7 +132,7 @@ class _ITGridState extends State<ITGrid>
       AudioManager audio,
       ) {
     final cost = course['cost'] as int? ?? 10;
-    final hasEnough = xpManager.stars >= cost;
+    final hasEnough = xpManager.gold >= cost;
     final tag = course['tag'] as String? ?? '';
     final tagColor = _tagColors[tag] ?? Colors.blueGrey;
 
@@ -212,11 +207,11 @@ class _ITGridState extends State<ITGrid>
                     ],
                   ),
                   const SizedBox(height: 14),
-                  // Stars needed
+                  // Gold needed
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(Icons.star, color: Colors.amber, size: 32),
+                      Image.asset(kidCoinAsset, width: 32, height: 32),
                       const SizedBox(width: 6),
                       Text(
                         '$cost',
@@ -227,7 +222,7 @@ class _ITGridState extends State<ITGrid>
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'stars to unlock',
+                        tr(context).goldLabel,
                         style: TextStyle(
                           fontSize: 15,
                           color: Colors.grey.shade600,
@@ -238,7 +233,7 @@ class _ITGridState extends State<ITGrid>
                   const SizedBox(height: 6),
                   // Current balance
                   Text(
-                    'Your balance: ${xpManager.stars} ⭐',
+                    '${tr(context).goldLabel}: ${xpManager.gold}',
                     style: TextStyle(
                       color: hasEnough
                           ? Colors.green.shade700
@@ -264,8 +259,7 @@ class _ITGridState extends State<ITGrid>
                           const SizedBox(width: 8),
                           Expanded(
                             child: Text(
-                              'You need ${cost - xpManager.stars} more ⭐. '
-                                  'Keep learning to earn more stars!',
+                              tr(context).notEnoughGold,
                               style: TextStyle(
                                 color: Colors.red.shade700,
                                 fontSize: 13,
@@ -317,7 +311,6 @@ class _ITGridState extends State<ITGrid>
                       onPressed: hasEnough
                           ? () {
                         xpManager.unlockCourse(course['title'], cost);
-                        xpManager.SpendStarBanner(context, cost);
                         xpManager.addXP(10, context: context);
                         Navigator.pop(context);
                         _triggerUnlockAnimation(audio);
@@ -445,15 +438,7 @@ class _ITGridState extends State<ITGrid>
       onTap: () {
         if (isUnlocked) {
           audio.playEventSound('PopButton');
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => LoadingPage(
-                loadingFuture: _simulateLoading(),
-                nextRouteName: course['routeName'],
-              ),
-            ),
-          );
+          Navigator.pushNamed(context, course['routeName']);
         } else {
           _showUnlockDialog(context, course, xpManager, audio);
         }
@@ -613,8 +598,7 @@ class _ITGridState extends State<ITGrid>
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.star,
-                            size: 16, color: Colors.amber),
+                        Image.asset(kidCoinAsset, width: 16, height: 16),
                         const SizedBox(width: 2),
                         Text(
                           '$cost',
@@ -783,7 +767,7 @@ class _ITGridState extends State<ITGrid>
                       ),
                     ),
                   ),
-                  // Stars pill
+                  // Gold pill
                   Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 4),
@@ -793,10 +777,10 @@ class _ITGridState extends State<ITGrid>
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.star, color: Colors.amber, size: 18),
+                        Image.asset(kidCoinAsset, width: 18, height: 18),
                         const SizedBox(width: 4),
                         Text(
-                          '${xpManager.stars}',
+                          '${xpManager.gold}',
                           style: const TextStyle(
                             color: Colors.white,
                             fontWeight: FontWeight.bold,

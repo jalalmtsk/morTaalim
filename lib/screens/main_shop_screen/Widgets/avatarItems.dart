@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart' show kidGemAsset;
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -85,7 +86,7 @@ class _AvatarItemWidgetState extends State<AvatarItemWidget>
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
              SnackBar(
-              content: Text("${tr(context).notEnoughStars}! ${tr(context).earnMoreToUnlockThisAvatar}"),
+              content: Text("${tr(context).notEnoughGems}! ${tr(context).earnMoreToUnlockThisAvatar}"),
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -212,12 +213,10 @@ class _AvatarItemWidgetState extends State<AvatarItemWidget>
                               Shimmer.fromColors(
                                 baseColor: Colors.deepOrange,
                                 highlightColor: Colors.yellow,
-                                child: const Icon(Icons.star,
-                                    color: Colors.amber, size: 24),
+                                child: Image.asset(kidGemAsset, width: 24, height: 24),
                               )
                             else
-                              const Icon(Icons.star,
-                                  color: Colors.amber, size: 22),
+                              Image.asset(kidGemAsset, width: 22, height: 22),
                             const SizedBox(width: 4),
                             Text(
                               '${widget.cost}',

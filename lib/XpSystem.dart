@@ -113,8 +113,13 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   // -------------- Getters -------------------
 
   int get xp => _xp;
-  int get stars => _stars;
-  int get saveTokenCount => Tolims;
+
+  /// The app has exactly two currencies:
+  ///  • gold  – earned by playing, spent on unlocking games / courses / languages
+  ///  • gems  – rarer, spent on skins (avatars, banners, frames)
+  /// (Stored under the legacy "Tolims"/"stars" keys so existing saves keep their balance.)
+  int get gold => Tolims;
+  int get gems => _stars;
   bool get banned => _banned;
 
   //------------------------------------------------------------------//
@@ -330,24 +335,28 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
 
   bool isCourseUnlocked(String title) => _unlockedCourses.contains(title);
 
-  void unlockCourse(String title, int cost) {
-    if (!_unlockedCourses.contains(title) && _stars >= cost) {
-      _unlockedCourses.add(title);
-      _stars -= cost;
-      _saveData();
-      notifyListeners();
-    }
+  /// Unlocks a game / course with gold. Returns true when it is (now) unlocked.
+  bool unlockCourse(String title, int cost) {
+    if (_unlockedCourses.contains(title)) return true;
+    if (Tolims < cost) return false;
+    _unlockedCourses.add(title);
+    Tolims -= cost;
+    _saveData();
+    notifyListeners();
+    return true;
   }
 
   bool isLanguageUnlocked(String code) => _unlockedLanguages.contains(code);
 
-  void unlockLanguage(String code, int cost) {
-    if (!_unlockedLanguages.contains(code) && _stars >= cost) {
-      _unlockedLanguages.add(code);
-      _stars -= cost;
-      _saveData();
-      notifyListeners();
-    }
+  /// Unlocks a language with gold. Returns true when it is (now) unlocked.
+  bool unlockLanguage(String code, int cost) {
+    if (_unlockedLanguages.contains(code)) return true;
+    if (Tolims < cost) return false;
+    _unlockedLanguages.add(code);
+    Tolims -= cost;
+    _saveData();
+    notifyListeners();
+    return true;
   }
 
   Future<void> changeLanguage(Locale locale) async {
@@ -493,6 +502,14 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   }
 
   // ---------------- Reward & Banner methods -------------------
+
+  /// Gold: rewards from playing; spent on unlocking games, courses and languages.
+  void addGold(BuildContext context, int amount) => addTokenBanner(context, amount);
+  void spendGold(BuildContext context, int amount) => SpendTokenBanner(context, amount);
+
+  /// Gems: spent on skins (avatars, banners, frames).
+  void addGems(BuildContext context, int amount) => addStarBanner(context, amount);
+  void spendGems(BuildContext context, int amount) => SpendStarBanner(context, amount);
 
   void addTokenBanner(BuildContext context, int amount) {
     if (_tokenBannerVisible) {

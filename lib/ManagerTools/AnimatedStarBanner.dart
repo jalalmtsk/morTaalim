@@ -1,6 +1,6 @@
+import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart' show kidGemAsset;
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:provider/provider.dart';
@@ -91,10 +91,7 @@ class _AnimatedStarBannerState extends State<AnimatedStarBanner>
                       SizedBox(
                         width: 80,
                         height: 80,
-                        child: Lottie.asset(
-                          'assets/animations/UIBannerAnimations/AddStar.json',
-                          repeat: false,
-                        ),
+                        child: Padding(padding: const EdgeInsets.all(10), child: Image.asset(kidGemAsset, fit: BoxFit.contain)),
                       ),
                       const SizedBox(width: 6),
                       Expanded(
@@ -102,7 +99,7 @@ class _AnimatedStarBannerState extends State<AnimatedStarBanner>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '+${widget.starAmount} Star${widget.starAmount > 1 ? 's' : ''} earned!',
+                              '+${widget.starAmount} ${tr(context).gemsLabel}!',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 17,
@@ -129,10 +126,7 @@ class _AnimatedStarBannerState extends State<AnimatedStarBanner>
                       SizedBox(
                         width: 80,
                         height: 80,
-                        child: Lottie.asset(
-                          'assets/animations/UIBannerAnimations/AddStar.json',
-                          repeat: false,
-                        ),
+                        child: Padding(padding: const EdgeInsets.all(10), child: Image.asset(kidGemAsset, fit: BoxFit.contain)),
                       ),
                     ],
                   ),

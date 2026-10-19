@@ -21,7 +21,7 @@ class ImageAvatarGrid extends StatelessWidget {
         context: parentContext,
         builder: (context) => AlertDialog(
           title:  Text(tr(context).confirmPurchase),
-          content: Text("${tr(context).doYouWantToUnlockThis} ${tr(context).avatar} ${tr(context).forb} $cost ⭐?"),
+          content: Text("${tr(context).doYouWantToUnlockThis} ${tr(context).avatar} ${tr(context).forb} $cost 💎?"),
           actions: [
             TextButton(
               onPressed: () {
@@ -36,7 +36,7 @@ class ImageAvatarGrid extends StatelessWidget {
                 Navigator.pop(context); // close dialog first
 
                 // Spend stars
-                xpManager.SpendStarBanner(parentContext, cost);
+                xpManager.spendGems(parentContext, cost);
 
                 // Play sound effects
                 audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/MarimbaWin_SFX.mp3");
@@ -86,7 +86,7 @@ class ImageAvatarGrid extends StatelessWidget {
           cost: cost,
           unlocked: unlocked,
           selected: selected,
-          userStars: xpManager.stars,
+          userStars: xpManager.gems,
           onSelect: () => xpManager.selectAvatar(imagePath),
           onBuy: () => showPurchaseDialog(context, imagePath, cost),
         );

@@ -1,3 +1,4 @@
+import 'package:mortaalim/games/paitingGame/magic/magic_paint_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart' hide Index;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -9,7 +10,6 @@ import 'package:mortaalim/Manager/models/LearningPrefrences.dart';
 
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
 import 'package:mortaalim/games/MemoryMatch/memory_match_page.dart';
-import 'package:mortaalim/games/PianoTiles_game/piano_tiles.dart';
 import 'package:mortaalim/screens/main_home_screen/Settings/setting_Page.dart';
 import 'package:mortaalim/screens/main_home_screen/indexPage_tools/IT_index_tool/IT_exercices/computerPart.dart';
 import 'package:mortaalim/screens/main_home_screen/indexPage_tools/IT_index_tool/IT_exercices/it_input_output.dart';
@@ -33,12 +33,12 @@ import 'package:mortaalim/games/App_stories/Story_Grid_Main_Page.dart';
 import 'package:mortaalim/games/App_stories/favorite_Word/favorite_Page.dart';
 import 'package:mortaalim/games/App_stories/story_data.dart';
 import 'package:mortaalim/games/IQTest_game/iqGame_data.dart';
-import 'package:mortaalim/games/Piano_Game/Piano_main_page.dart';
+import 'package:mortaalim/games/Piano_Game/piano_forte_page.dart';
 
 import 'package:mortaalim/games/Quiz_Game/quiz_Page.dart';
 import 'package:mortaalim/games/Shapes_game/Shapes_main.dart';
 import 'package:mortaalim/games/SpeedBombGame/speedBomb.dart';
-import 'package:mortaalim/games/Tracing_Alphabet_app/language_selector.dart';
+import 'package:mortaalim/games/Tracing_Alphabet_app/alpha_draw_menu.dart';
 import 'package:mortaalim/games/WordExplorer/WordExplorerPage.dart';
 import 'package:mortaalim/games/WordLink/Word_Link_boardGame.dart';
 import 'package:mortaalim/games/paitingGame/indexDrawingPage.dart';
@@ -234,16 +234,16 @@ class _MyAppState extends State<MyApp> {
             'Index': (context) => Index(),
 
             // ── existing games ─────────────────────────────────────────
-            'DrawingAlphabet': (context) => LanguageSelectorPage(onChangeLocale: _changeLanguage),
+            'DrawingAlphabet': (context) => const AlphaDrawMenuPage(),
             'QuizGameApp':     (context) => const QuizGameApp(),
             'AppStories':      (context) => StoriesGridPage(stories: stories),
             'AnimalSounds':    (context) => AnimalsoundIndex(),
             'ShapeSorter':     (context) => const ShapeSorterApp(),
-            'Piano':           (context) => const PianoTilesBoard(),
+            'Piano':           (context) => const PianoFortePage(),
             'PlaneDestroyer':  (context) => const SpeedBomb(),
             'WordLink':        (context) => const WordBoardGame(),
             'IQGame':          (context) => const IQTestApp(),
-            'MagicPainting':   (context) => DrawingIndex(),
+            'MagicPainting':   (context) => const MagicPaintPage(),
             'JumpingBoard':    (context) => const JumpingBoard(),
             'WordExplorer':    (context) => WordExplorer(),
             'FavoriteWords':   (context) => const FavoriteWordsPage(),

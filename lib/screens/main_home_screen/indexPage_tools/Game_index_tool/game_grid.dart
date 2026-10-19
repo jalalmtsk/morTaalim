@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:mortaalim/Themes/ThemeManager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
@@ -9,7 +8,7 @@ import '../../../../XpSystem.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../../main.dart';
 import '../../../../tools/AnimatedGridItem.dart';
-import '../../../../tools/loading_page.dart';
+import '../../../../widgets/KidScene/kid_page_parts.dart' show kidCoinAsset;
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 import 'package:confetti/confetti.dart';
@@ -46,12 +45,6 @@ class _GameGridState extends State<GameGrid>
     WidgetsBinding.instance.removeObserver(this);
     _confettiController.dispose();
     super.dispose();
-  }
-
-  Future<void> simulateLoading() async {
-    final random = Random();
-    final seconds = 1 + random.nextInt(2);
-    await Future.delayed(Duration(seconds: seconds));
   }
 
   void showUnlockAnimation() {
@@ -115,8 +108,8 @@ class _GameGridState extends State<GameGrid>
                             "Name: ${xpManager.userProfile.fullName} ${xpManager.userProfile.lastName}\n"
                             "Age: ${xpManager.userProfile.age}\n"
                             "Gender: ${xpManager.userProfile.gender}\n"
-                            "Tolim: ${xpManager.Tolims}\n"
-                            "Stars: ${xpManager.stars}\n"
+                            "Gold: ${xpManager.gold}\n"
+                            "Gems: ${xpManager.gems}\n"
 
                             "xp: ${xpManager.xp}";
  
@@ -162,22 +155,14 @@ class _GameGridState extends State<GameGrid>
                     onTap: () {
                       if (isUnlocked) {
                         audioManager.playEventSound('PopButton');
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => LoadingPage(
-                              loadingFuture: simulateLoading(),
-                              nextRouteName: game['routeName'],
-                            ),
-                          ),
-                        );
+                        Navigator.pushNamed(context, game['routeName']);
                       } else {
                         audioManager.playEventSound('clickButton2');
                         showDialog(
                           context: context,
                           builder: (_) => AlertDialog(
                             title: Text(tr(context).unlock),
-                            content: Text("${tr(context).unlockThisCourseFor} $cost ⭐?"),
+                            content: Text(tr(context).unlockGameFor(cost)),
                             actions: [
                               TextButton(
                                 onPressed: () {
@@ -188,7 +173,7 @@ class _GameGridState extends State<GameGrid>
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  if (xpManager.stars >= cost) {
+                                  if (xpManager.gold >= cost) {
                                     audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3");
                                     triggerConfetti();
                                     xpManager.unlockCourse(game['title'], cost);
@@ -204,7 +189,7 @@ class _GameGridState extends State<GameGrid>
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(
                                         duration: const Duration(milliseconds: 1200),
-                                        content: Text(tr(context).notEnoughStars),
+                                        content: Text(tr(context).notEnoughGold),
                                       ),
                                     );
                                   }
@@ -282,7 +267,7 @@ class _GameGridState extends State<GameGrid>
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        const Icon(Icons.star, size: 28, color: Colors.amber),
+                                        Image.asset(kidCoinAsset, width: 28, height: 28),
                                         const SizedBox(width: 2),
                                         Text(
                                           "$cost",
@@ -346,7 +331,7 @@ class _GameGridState extends State<GameGrid>
                   context: context,
                   builder: (_) => AlertDialog(
                     title: const Text('Reset Purchases (Dev Only)'),
-                    content: const Text('Are you sure you want to reset all unlocked courses, stars, and progress?'),
+                    content: const Text('Are you sure you want to reset all unlocked courses, gold, gems and progress?'),
                     actions: [
                       TextButton(
                         onPressed: () => Navigator.pop(context),

@@ -123,7 +123,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get myProfile => 'Mon profil';
 
   @override
-  String get stars => 'Étoiles';
+  String get stars => "Gemmes";
 
   @override
   String get lives => 'Vies';
@@ -399,7 +399,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get forb => 'Pour';
 
   @override
-  String get notEnoughStars => 'Pas assez d\'étoiles';
+  String get notEnoughStars => "Pas assez de gemmes";
 
   @override
   String get courseLocked => 'Cours verrouillé';
@@ -516,7 +516,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get store => 'Boutique';
 
   @override
-  String get tolims => 'Tolims';
+  String get tolims => "Or";
 
   @override
   String get spinningWheel => 'Roue de la fortune';
@@ -1338,16 +1338,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get getCertified => 'Obtenir une certification';
 
   @override
-  String get notEnoughTolims => 'Pas assez de Tolims !';
+  String get notEnoughTolims => "Pas assez d'or !";
 
   @override
   String youGotStars(Object count) {
-    return 'Vous avez reçu $count étoiles !';
+    return "Tu as reçu $count gemmes !";
   }
 
   @override
   String getStars(Object count) {
-    return 'Obtenir $count étoiles';
+    return "Obtenir $count gemmes";
   }
 
   @override
@@ -2007,6 +2007,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get notEnoughGems => "Pas encore assez de gemmes — continue à jouer !";
 
   @override
+  String get notEnoughGold => "Pas encore assez d'or — continue à jouer !";
+
+  @override
   String get geography => "Géographie";
 
   @override
@@ -2046,7 +2049,7 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String unlockGameFor(int n) {
-    return "Débloquer ce jeu pour $n gemmes ?";
+    return "Débloquer ce jeu pour $n or ?";
   }
 
   @override

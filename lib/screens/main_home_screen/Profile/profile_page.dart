@@ -184,7 +184,7 @@ class _ProfilePageState extends State<ProfilePage> with TickerProviderStateMixin
               width: w,
               child: Column(children: [
                 const SizedBox(height: 6),
-                step(0, KidPageHeader(scale: s, title: t.myProfile, gold: xp.saveTokenCount, gems: xp.stars, showBack: !widget.embedded)),
+                step(0, KidPageHeader(scale: s, title: t.myProfile, gold: xp.gold, gems: xp.gems, showBack: !widget.embedded)),
                 SizedBox(height: 8 * s),
                 Expanded(
                   child: ListView(

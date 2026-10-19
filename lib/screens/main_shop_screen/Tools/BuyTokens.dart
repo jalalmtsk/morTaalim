@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart' show kidGemAsset;
 import '../../../XpSystem.dart';
 import '../../../l10n/app_localizations.dart';
 
@@ -47,7 +48,7 @@ class _BuyTokenWidgetState extends State<BuyTokenWidget>
   }
 
   void _increment() {
-    if (selectedTolims + tolimsPerStar <= widget.xpManager.Tolims) {
+    if (selectedTolims + tolimsPerStar <= widget.xpManager.gold) {
       setState(() {
         selectedTolims += tolimsPerStar;
       });
@@ -65,7 +66,7 @@ class _BuyTokenWidgetState extends State<BuyTokenWidget>
   }
 
   void _buyStars() async {
-    final canBuy = widget.xpManager.Tolims >= selectedTolims;
+    final canBuy = widget.xpManager.gold >= selectedTolims;
     final starsToGet = selectedTolims ~/ tolimsPerStar;
 
     if (canBuy && starsToGet > 0) {
@@ -95,8 +96,8 @@ class _BuyTokenWidgetState extends State<BuyTokenWidget>
 
   @override
   Widget build(BuildContext context) {
-    final stars = widget.xpManager.stars;
-    final tolims = widget.xpManager.Tolims;
+    final stars = widget.xpManager.gems;
+    final tolims = widget.xpManager.gold;
 
     return Container(
       margin: const EdgeInsets.all(20),
@@ -119,13 +120,13 @@ class _BuyTokenWidgetState extends State<BuyTokenWidget>
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Tolims and Stars Display
+          // Gold and Gems display
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildInfoCard(AppLocalizations.of(context)!.tolims,
+              _buildInfoCard(AppLocalizations.of(context)!.goldLabel,
                   tolims.toString(), Colors.white),
-              _buildInfoCard(AppLocalizations.of(context)!.stars,
+              _buildInfoCard(AppLocalizations.of(context)!.gemsLabel,
                   stars.toString(), Colors.yellowAccent),
             ],
           ),
@@ -157,7 +158,7 @@ class _BuyTokenWidgetState extends State<BuyTokenWidget>
             ],
           ),
           const SizedBox(height: 24),
-          // Buy Stars Button
+          // Trade gold for gems
           ScaleTransition(
             scale: _buttonScale,
             child: ElevatedButton.icon(
@@ -169,7 +170,7 @@ class _BuyTokenWidgetState extends State<BuyTokenWidget>
                     borderRadius: BorderRadius.circular(16)),
                 backgroundColor: Colors.greenAccent[700],
               ),
-              icon: const Icon(Icons.star, color: Colors.white),
+              icon: Image.asset(kidGemAsset, width: 24, height: 24),
               label: Text(
                 AppLocalizations.of(context)!
                     .getStars((selectedTolims ~/ tolimsPerStar)),

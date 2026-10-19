@@ -6,7 +6,6 @@ import 'package:mortaalim/XpSystem.dart';
 import 'package:mortaalim/l10n/app_localizations.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
-import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart';
 import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
 import 'package:provider/provider.dart';
@@ -85,15 +84,7 @@ Future<void> openITLesson(BuildContext context, ITTopic topic, int index) async 
   Provider.of<AudioManager>(context, listen: false).playEventSound('PopButton');
   await _tracker.record(topic.id, index);
   if (!context.mounted) return;
-  await Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (_) => LoadingPage(
-        loadingFuture: Future.delayed(Duration(milliseconds: 900 + Random().nextInt(700))),
-        nextRouteName: topic.lessons[index].route,
-      ),
-    ),
-  );
+  await Navigator.pushNamed(context, topic.lessons[index].route);
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -221,7 +212,7 @@ class _ITPageState extends State<ITPage> with TickerProviderStateMixin {
                 child: Column(
                   children: [
                     const SizedBox(height: 6),
-                    step(0, KidPageHeader(scale: s, title: t.homeIT, gold: xp.saveTokenCount, gems: xp.stars)),
+                    step(0, KidPageHeader(scale: s, title: t.homeIT, gold: xp.gold, gems: xp.gems)),
                     SizedBox(height: 8 * s),
                     Expanded(
                       child: CustomScrollView(
@@ -758,7 +749,7 @@ class _ITTopicPageState extends State<ITTopicPage> with TickerProviderStateMixin
               width: w,
               child: Column(children: [
                 const SizedBox(height: 6),
-                step(0, KidPageHeader(scale: s, title: topic.label(t), gold: xp.saveTokenCount, gems: xp.stars)),
+                step(0, KidPageHeader(scale: s, title: topic.label(t), gold: xp.gold, gems: xp.gems)),
                 SizedBox(height: 10 * s),
                 Expanded(
                   child: ListView(

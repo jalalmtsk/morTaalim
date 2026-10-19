@@ -123,7 +123,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get myProfile => 'ⴰⵎⵍⴰⴼ ⵉⵏⵓ';
 
   @override
-  String get stars => 'ⵉⵎⵓⴹⵉⵏ';
+  String get stars => "ⵉⵢⵇⵓⵜⵏ";
 
   @override
   String get lives => 'ⵉⵎⴰⵍⴰⵙⵏ';
@@ -399,7 +399,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get forb => 'ⴳ';
 
   @override
-  String get notEnoughStars => 'ⵓⵔ ⵉⵎⵎⵔⴰ ⵉⵎⴰⵙⵉⵏ';
+  String get notEnoughStars => "ⵓⵔ ⵜⵡⴰⴷ ⵜⵢⵇⵓⵜⵉⵏ";
 
   @override
   String get courseLocked => 'ⵜⵓⵙⵎⵎⵓⵔⵜ ⵓⵔ ⵉⵙⴽⵔⴼ';
@@ -516,7 +516,7 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get store => 'ⵜⵓⵙⴽⵔⴼⵜ';
 
   @override
-  String get tolims => 'ⵜⵓⵍⵉⵎⵣ';
+  String get tolims => "ⵓⵔⵖ";
 
   @override
   String get spinningWheel => 'ⴰⵎⵔⴰⴳ ⵏ ⵜⴰⵙⵉⵔⵜ';
@@ -1338,16 +1338,16 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get getCertified => 'ⵙⵙⵉ ⵜⵉⵙⵓⵍⵉ';
 
   @override
-  String get notEnoughTolims => 'ⵓⵔ ⵉⵎⵔⵉ ⵜⵓⵍⵉⵎⵣ!';
+  String get notEnoughTolims => "ⵓⵔ ⵉⵎⵔⵉ ⵓⵔⵖ!";
 
   @override
   String youGotStars(Object count) {
-    return 'ⴰⵣⵓⵍ ⵏⵏⵙⵎⴽ $count ⵉⵎⵓⴹⵉⵏ!';
+    return "ⴰⵣⵓⵍ ⵏⵏⵙⵎⴽ $count ⵏ ⵜⵢⵇⵓⵜⵉⵏ!";
   }
 
   @override
   String getStars(Object count) {
-    return 'ⵎⵙⵎⴽ $count ⵉⵎⵓⴹⵉⵏ';
+    return "ⵎⵙⵎⴽ $count ⵏ ⵜⵢⵇⵓⵜⵉⵏ";
   }
 
   @override
@@ -2007,6 +2007,9 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get notEnoughGems => "ⵓⵔ ⵜⵡⴰⴷ ⵜⵢⵇⵓⵜⵉⵏ — ⴽⵎⵎⵍ ⵜⵓⵔⴰⵔⵜ!";
 
   @override
+  String get notEnoughGold => "ⵓⵔ ⵉⵡⴰⴷ ⵓⵔⵖ — ⴽⵎⵎⵍ ⵜⵓⵔⴰⵔⵜ!";
+
+  @override
   String get geography => "ⵜⴰⵊⵓⵖⵔⴰⴼⵜ";
 
   @override
@@ -2046,7 +2049,7 @@ class AppLocalizationsZgh extends AppLocalizations {
 
   @override
   String unlockGameFor(int n) {
-    return "ⴰⵔⵎ ⵜⵓⵔⴰⵔⵜ ⴰⴷ ⵙ $n ⵏ ⵜⵢⵇⵓⵜⵉⵏ?";
+    return "ⴰⵔⵎ ⵜⵓⵔⴰⵔⵜ ⴰⴷ ⵙ $n ⵏ ⵓⵔⵖ?";
   }
 
   @override

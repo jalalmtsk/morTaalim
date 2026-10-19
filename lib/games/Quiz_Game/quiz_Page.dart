@@ -16,6 +16,7 @@ import '../../tools/Ads_Manager.dart';
 import 'Questions.dart';
 import 'question_model.dart';
 import 'ModeSelectorPage.dart';
+import 'magic/quiz_magic_menu.dart';
 
 enum GameMode { single, multiplayer }
 
@@ -24,7 +25,7 @@ class QuizGameApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ModeSelectorPage();
+    return const QuizMagicMenuPage();
   }
 }
 
@@ -435,7 +436,7 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
                 ],
               ),
               actions: [
-                if (xpManager.Tolims > 0)
+                if (xpManager.gold > 0)
                   TextButton(
                     onPressed: () {
                       timer?.cancel();

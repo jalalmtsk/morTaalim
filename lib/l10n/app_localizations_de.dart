@@ -123,7 +123,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get myProfile => 'Mein Profil';
 
   @override
-  String get stars => 'Sterne';
+  String get stars => "Edelsteine";
 
   @override
   String get lives => 'Leben';
@@ -399,7 +399,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get forb => 'Für';
 
   @override
-  String get notEnoughStars => 'Nicht genug Sterne';
+  String get notEnoughStars => "Nicht genug Edelsteine";
 
   @override
   String get courseLocked => 'Kurs gesperrt';
@@ -516,7 +516,7 @@ class AppLocalizationsDe extends AppLocalizations {
   String get store => 'Shop';
 
   @override
-  String get tolims => 'Tolims';
+  String get tolims => "Gold";
 
   @override
   String get spinningWheel => 'Glücksrad';
@@ -1338,16 +1338,16 @@ class AppLocalizationsDe extends AppLocalizations {
   String get getCertified => 'Zertifikat erhalten';
 
   @override
-  String get notEnoughTolims => 'Nicht genug Tolims!';
+  String get notEnoughTolims => "Nicht genug Gold!";
 
   @override
   String youGotStars(Object count) {
-    return 'Du hast $count Sterne erhalten!';
+    return "Du hast $count Edelsteine erhalten!";
   }
 
   @override
   String getStars(Object count) {
-    return '$count Sterne erhalten';
+    return "$count Edelsteine erhalten";
   }
 
   @override
@@ -2007,6 +2007,9 @@ class AppLocalizationsDe extends AppLocalizations {
   String get notEnoughGems => "Noch nicht genug Edelsteine — spiel weiter!";
 
   @override
+  String get notEnoughGold => "Noch nicht genug Gold — spiel weiter!";
+
+  @override
   String get geography => "Geografie";
 
   @override
@@ -2046,7 +2049,7 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String unlockGameFor(int n) {
-    return "Dieses Spiel für $n Edelsteine freischalten?";
+    return "Dieses Spiel für $n Gold freischalten?";
   }
 
   @override

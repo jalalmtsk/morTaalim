@@ -47,7 +47,7 @@
 
   "myProfile": "My Profile",
 
-  "stars": "Stars",
+  "stars": "Gems",
   "lives": "Lives",
   "score": "Score",
   "name": "Name",
@@ -154,7 +154,7 @@
     "previous": "Previous",
     "pageOf": "Page of",
     "forb": "For",
-     "notEnoughStars": "Not enough stars",
+     "notEnoughStars": "Not enough gems",
 
 
 
@@ -204,8 +204,8 @@
     "fantasy": "Fantasy",
     "islamic": "Islamic",
     "store": "Store",
-    "stars": "Stars",
-    "tolims": "Tolims",
+    "stars": "Gems",
+    "tolims": "Gold",
     "spinningWheel": "Spinning Wheel",
     "spin": "Spin",
     "reroll": "Reroll",
@@ -521,11 +521,11 @@
    "improveSkills": "Improve Skills",
    "getCertified": "Get Certified",
 
-   "tolims": "Tolims",
-   "stars": "Étoiles",
-   "notEnoughTolims": "Pas assez de Tolims !",
-   "youGotStars": "Vous avez reçu {count} étoiles !",
-   "getStars": "Obtenir {count} étoiles",
+   "tolims": "Gold",
+   "stars": "Gems",
+   "notEnoughTolims": "Not enough gold!",
+   "youGotStars": "You got {count} gems!",
+   "getStars": "Get {count} gems",
 
   "missingNumber": "Missing Number",
    "findLargest": "Find Largest",
@@ -832,6 +832,7 @@
   "challengeDone": "Challenge done — see you tomorrow!",
   "unlockGameFree": "Unlock this game for free?",
   "notEnoughGems": "Not enough gems yet — keep playing!",
+  "notEnoughGold": "Not enough gold yet — keep playing!",
   "geography": "Geography",
   "coursesHeroTop": "Keep your curiosity",
   "coursesHeroBottom": "growing!",
@@ -845,7 +846,7 @@
   "learningGoalDone": "Goal reached — great job!",
   "challengeGoal": "Play {n} different games",
   "@challengeGoal": {"placeholders": {"n": {"type": "int"}}},
-  "unlockGameFor": "Unlock this game for {n} gems?",
+  "unlockGameFor": "Unlock this game for {n} gold?",
   "@unlockGameFor": {"placeholders": {"n": {"type": "int"}}},
   "lessonsCount": "{a} / {b} lessons",
   "@lessonsCount": {"placeholders": {"a": {"type": "int"}, "b": {"type": "int"}}},

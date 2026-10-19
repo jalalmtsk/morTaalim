@@ -29,7 +29,7 @@ class LottieAvatarGrid extends StatelessWidget {
         context: context,
         builder: (context) => AlertDialog(
           title:  Text(tr(context).confirmPurchase),
-          content: Text("Do you want to unlock this avatar for $cost ⭐?"),
+          content: Text("Do you want to unlock this avatar for $cost 💎?"),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -38,7 +38,7 @@ class LottieAvatarGrid extends StatelessWidget {
             TextButton(
               onPressed: () async {
                 Navigator.pop(context); // Close purchase dialog
-                xpManager.SpendStarBanner(context, cost);
+                xpManager.spendGems(context, cost);
 
                 // Show unlock dialog with animations
                 showUnlockDialog(lottiePath);
@@ -81,7 +81,7 @@ class LottieAvatarGrid extends StatelessWidget {
           cost: cost,
           unlocked: unlocked,
           selected: selected,
-          userStars: xpManager.stars,
+          userStars: xpManager.gems,
           onSelect: () => xpManager.selectAvatar(lottiePath),
           onBuy: () => showPurchaseDialog(lottiePath, cost),
         );

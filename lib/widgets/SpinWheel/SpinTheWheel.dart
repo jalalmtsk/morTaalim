@@ -32,12 +32,12 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
   int _selectedIndex = 0;
 
   final List<String> _rewards = [
-    'Star +1',
+    'Gem +1',
     'Nothing',
-    'Star +2',
+    'Gem +2',
     'XP +10',
     'XP +20',
-    'Tolim +2',
+    'Gold +2',
     'XP +5',
     'Try Again',
   ];
@@ -197,16 +197,14 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
       Provider.of<ExperienceManager>(context, listen: false).addXP(
           xpAmount, context: context);
       _showSnackBar('${tr(context).youEarned} $xpAmount XP!');
-    } else if (reward.startsWith('Tolim +')) {
-      final tolimAmount = int.tryParse(reward.substring(7)) ?? 0;
-      Provider.of<ExperienceManager>(context, listen: false).addTokenBanner(
-          context, tolimAmount);
-      _showSnackBar('${tr(context).youEarned} $tolimAmount Tolims!');
-    } else if (reward.startsWith('Star +')) {
-      final starAmount = int.tryParse(reward.substring(6)) ?? 0;
-      Provider.of<ExperienceManager>(context, listen: false).addStarBanner(
-          context, starAmount);
-      _showSnackBar('${tr(context).youEarned}  $starAmount Star${starAmount > 1 ? 's' : ''}!');
+    } else if (reward.startsWith('Gold +')) {
+      final goldAmount = int.tryParse(reward.substring(6)) ?? 0;
+      Provider.of<ExperienceManager>(context, listen: false).addGold(context, goldAmount);
+      _showSnackBar('${tr(context).youEarned} $goldAmount ${tr(context).goldLabel}!');
+    } else if (reward.startsWith('Gem +')) {
+      final gemAmount = int.tryParse(reward.substring(5)) ?? 0;
+      Provider.of<ExperienceManager>(context, listen: false).addGems(context, gemAmount);
+      _showSnackBar('${tr(context).youEarned} $gemAmount ${tr(context).gemsLabel}!');
     } else if (reward == 'Try Again') {
       _showSnackBar('${tr(context).tryAgain} ');
       _canSpin = true;

@@ -40,7 +40,7 @@ class ImageAvatarItemWidget extends StatelessWidget {
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
              SnackBar(
-              content: Text(tr(context).notEnoughStars),
+              content: Text(tr(context).notEnoughGems),
               behavior: SnackBarBehavior.floating,
             ),
           );
@@ -103,7 +103,7 @@ class ImageAvatarItemWidget extends StatelessWidget {
                     baseColor: Colors.deepOrange,
                     highlightColor: Colors.yellow,
                     child: Text(
-                      '$cost ⭐',
+                      '$cost 💎',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,

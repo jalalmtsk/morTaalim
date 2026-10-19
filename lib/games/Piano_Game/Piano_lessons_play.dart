@@ -96,9 +96,9 @@ class _InteractiveLessonPageState extends State<InteractiveLessonPage> {
           lessonCompleted = true;
           // Bonus for completing lesson
           xpManager.addXP(5, context: context);
-          xpManager.addStarBanner(context, 1);
+          xpManager.addGems(context, 1);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('🎉 Lesson Completed! You earned 50 XP & 1 star!')),
+            const SnackBar(content: Text('🎉 Lesson Completed! You earned 50 XP & 1 gem!')),
           );
         }
       });

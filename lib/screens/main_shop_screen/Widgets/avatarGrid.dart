@@ -19,7 +19,7 @@ class AvatarGrid extends StatelessWidget {
         context: parentContext,
         builder: (context) => AlertDialog(
           title:  Text(tr(context).confirmPurchase),
-          content: Text("${tr(context).doYouWantToUnlockThis} $emoji for $cost ⭐?"),
+          content: Text("${tr(context).doYouWantToUnlockThis} $emoji for $cost 💎?"),
           actions: [
             TextButton(
               onPressed: () {
@@ -35,7 +35,7 @@ class AvatarGrid extends StatelessWidget {
                 await Future.delayed(const Duration(milliseconds: 300));
 
                 // Deduct stars & unlock avatar
-                xpManager.SpendStarBanner(parentContext, cost);
+                xpManager.spendGems(parentContext, cost);
 
 
                 // Show the fancy unlocked dialog with Lottie, confetti, sounds
@@ -78,7 +78,7 @@ class AvatarGrid extends StatelessWidget {
           cost: cost,
           unlocked: unlocked,
           selected: selected,
-          userStars: xpManager.stars,
+          userStars: xpManager.gems,
           onSelect: () => xpManager.selectAvatar(emoji),
           onBuy: () => showPurchaseDialog(context, emoji, cost),
         );

@@ -7,7 +7,6 @@ import 'package:mortaalim/XpSystem.dart';
 import 'package:mortaalim/l10n/app_localizations.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
-import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart';
 import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
 import 'package:provider/provider.dart';
@@ -215,15 +214,7 @@ class _GamesPageState extends State<GamesPage> with TickerProviderStateMixin {
     final completed = await GameProgress.recordPlay(g['title']);
     if (!mounted) return;
     if (completed) xp.addTokenBanner(context, GameProgress.reward);
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => LoadingPage(
-          loadingFuture: Future.delayed(Duration(milliseconds: 900 + Random().nextInt(700))),
-          nextRouteName: g['routeName'],
-        ),
-      ),
-    );
+    await Navigator.pushNamed(context, g['routeName']);
     _launching = false;
     if (mounted) _refresh();
   }
@@ -237,8 +228,8 @@ class _GamesPageState extends State<GamesPage> with TickerProviderStateMixin {
       context: context,
       barrierColor: KidColors.purpleDeep.withOpacity(0.35),
       builder: (ctx) => KidDialog(
-        headerAsset: GamesAssets.gem,
-        headerAspect: 0.9196,
+        headerAsset: GamesAssets.coin,
+        headerAspect: 0.9813,
         title: name,
         message: cost == 0 ? tr(ctx).unlockGameFree : tr(ctx).unlockGameFor(cost),
         actions: [
@@ -260,8 +251,7 @@ class _GamesPageState extends State<GamesPage> with TickerProviderStateMixin {
       ),
     );
     if (ok != true || !mounted) return;
-    if (xp.stars >= cost) {
-      xp.unlockCourse(g['title'], cost);
+    if (xp.unlockCourse(g['title'], cost)) {
       xp.addXP(10, context: context);
       _audio.playSfx('assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3');
       _confetti.play();
@@ -272,7 +262,7 @@ class _GamesPageState extends State<GamesPage> with TickerProviderStateMixin {
         behavior: SnackBarBehavior.floating,
         backgroundColor: KidColors.purpleDeep,
         duration: const Duration(milliseconds: 1600),
-        content: Text(tr(context).notEnoughGems, style: kidBodyStyle(15, color: Colors.white, weight: FontWeight.w600)),
+        content: Text(tr(context).notEnoughGold, style: kidBodyStyle(15, color: Colors.white, weight: FontWeight.w600)),
       ));
     }
   }
@@ -313,7 +303,7 @@ class _GamesPageState extends State<GamesPage> with TickerProviderStateMixin {
                 child: Column(
                   children: [
                     const SizedBox(height: 6),
-                    step(0, KidPageHeader(scale: s, title: tr(context).games, gold: xp.saveTokenCount, gems: xp.stars)),
+                    step(0, KidPageHeader(scale: s, title: tr(context).games, gold: xp.gold, gems: xp.gems)),
                     SizedBox(height: 8 * s),
                     Expanded(
                       child: CustomScrollView(
@@ -714,14 +704,14 @@ class _GameCard extends StatelessWidget {
                             Container(
                               padding: EdgeInsetsDirectional.only(start: 2 * s, end: 8 * s, top: 1 * s, bottom: 1 * s),
                               decoration: BoxDecoration(
-                                color: const Color(0xFFE0F0FF),
+                                color: const Color(0xFFFFF3C4),
                                 borderRadius: BorderRadius.circular(20),
                               ),
                               child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                Image.asset(GamesAssets.gem, width: 18 * s, height: 18 * s),
+                                Image.asset(GamesAssets.coin, width: 18 * s, height: 18 * s),
                                 SizedBox(width: 3 * s),
                                 Text(cost == 0 ? tr(context).free : '$cost',
-                                    style: kidBodyStyle(13 * s, color: const Color(0xFF1E40AF), weight: FontWeight.w700)),
+                                    style: kidBodyStyle(13 * s, color: const Color(0xFF8A5A00), weight: FontWeight.w700)),
                               ]),
                             ),
                         ],
@@ -748,7 +738,12 @@ class _GameCard extends StatelessWidget {
     if (style.art != null) {
       return Image.asset(style.art!, fit: BoxFit.cover, alignment: Alignment.center, filterQuality: FilterQuality.medium);
     }
-    return KidIconArt(image: game['image'] ?? '', colors: style.backdrop, idle: idle, phase: phase, scale: s);
+    // The game's own picture fills the whole tile (cropped, never letter-boxed).
+    final img = (game['image'] ?? '') as String;
+    if (img.isEmpty) {
+      return KidIconArt(image: img, colors: style.backdrop, idle: idle, phase: phase, scale: s);
+    }
+    return Image.asset(img, fit: BoxFit.cover, alignment: const Alignment(0, -0.2), filterQuality: FilterQuality.medium);
   }
 }
 

@@ -5,6 +5,7 @@ import '../../courses/primaire1Page/index_1PrimairePage.dart';
 import '../../games/Quiz_Game/ModeSelectorPage.dart';
 import '../../games/Quiz_Game/quiz_Page.dart';
 import '../../games/paitingGame/indexDrawingPage.dart';
+import '../../games/paitingGame/magic/magic_paint_page.dart';
 import '../../screens/main_shop_screen/MainShopPageIndex.dart';
 import 'Audio_Manager.dart';
 
@@ -12,6 +13,7 @@ final Map<Type, String> widgetMusicMap = {
   Index: 'assets/audios/BackGround_Audio/IndexBackGroundMusic_BCG.mp3',
   MainShopPageIndex : 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
   DrawingIndex: 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
+  MagicPaintPage: 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
   QuizGameApp: 'assets/audios/BackGround_Audio/FunnyHappyMusic.mp3',
   Index1Primaire: 'assets/audios/BackGround_Audio/CuteBabyMusic2_BCG.mp3',
 };

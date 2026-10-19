@@ -320,7 +320,7 @@ class _CPState extends State<ComputerPartsExercise> with TickerProviderStateMixi
     final s = _mistakes<=1 ? r.stars : max(1,r.stars-1);
     final x = _mistakes<=1 ? r.xp   : (r.xp*.65).round();
     _totStars+=s; _totXp+=x;
-    xpMgr.addStarBanner(context, s);
+    xpMgr.addGems(context, s);
     xpMgr.addXP(x, context:context);
     audio.playSfx('assets/audios/UI_Audio/SFX_Audio/victory1_SFX.mp3');
     _confetti.play();
@@ -826,7 +826,7 @@ class _CPState extends State<ComputerPartsExercise> with TickerProviderStateMixi
                 child:Opacity(opacity:max(v,.15),child:Padding(padding:const EdgeInsets.symmetric(horizontal:4),
                     child:Icon(Icons.star_rounded,color:Colors.amber,size:46))))))),
         const SizedBox(height:20),
-        _rStat('⭐','$stars ${l=='ar'?'نجوم':l=='fr'?'étoiles':'stars'}',Colors.amber),
+        _rStat('💎','$stars ${l=='ar'?'جواهر':l=='fr'?'gemmes':'gems'}',Colors.lightBlueAccent),
         const SizedBox(height:8),
         _rStat('❌','$_mistakes ${l=='ar'?'أخطاء':l=='fr'?'erreurs':'mistakes'}',Colors.redAccent),
         const SizedBox(height:24),
@@ -881,7 +881,7 @@ class _CPState extends State<ComputerPartsExercise> with TickerProviderStateMixi
       Container(padding:const EdgeInsets.all(18),
           decoration:BoxDecoration(color:Colors.white.withOpacity(.06),borderRadius:BorderRadius.circular(18),border:Border.all(color:Colors.white.withOpacity(.1))),
           child:Column(children:[
-            _wStat(Icons.star_rounded,Colors.amber,{'en':'Total Stars','fr':'Étoiles totales','ar':'مجموع النجوم'}[l]!,'$_totStars'),
+            _wStat(Icons.diamond_rounded,Colors.lightBlueAccent,{'en':'Total gems','fr':'Gemmes totales','ar':'مجموع الجواهر'}[l]!,'$_totStars'),
             const SizedBox(height:10),
             _wStat(Icons.bolt,Colors.cyanAccent,{'en':'Total XP','fr':'XP total','ar':'مجموع نقاط الخبرة'}[l]!,'$_totXp XP'),
           ])),

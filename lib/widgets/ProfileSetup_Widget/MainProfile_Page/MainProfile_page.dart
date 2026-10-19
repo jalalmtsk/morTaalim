@@ -57,7 +57,7 @@ class _MainProfilePageState extends State<MainProfilePage> with SingleTickerProv
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text("Reset Progress?"),
-        content: const Text("Are you sure you want to reset your XP and stars?"),
+        content: const Text("Are you sure you want to reset your XP, gold and gems?"),
         actions: [
           TextButton(onPressed: () => Navigator.pop(ctx, false), child: const Text("Cancel")),
           ElevatedButton(
@@ -71,7 +71,7 @@ class _MainProfilePageState extends State<MainProfilePage> with SingleTickerProv
 
     if (confirmed ?? false) {
       Provider.of<ExperienceManager>(context, listen: false).resetData();
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("XP and stars reset.")));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("XP, gold and gems reset.")));
     }
   }
 
@@ -84,8 +84,8 @@ class _MainProfilePageState extends State<MainProfilePage> with SingleTickerProv
     final level = xpManager.level;
     final progress = xpManager.levelProgress;
     final xp = xpManager.xp;
-    final stars = xpManager.stars;
-    final tokens = xpManager.saveTokenCount;
+    final stars = xpManager.gems;
+    final tokens = xpManager.gold;
     final userName = user.fullName.isNotEmpty ? user.fullName : 'Unknown';
     final favoriteColor = Colors.deepPurple;
 
@@ -224,22 +224,22 @@ class _MainProfilePageState extends State<MainProfilePage> with SingleTickerProv
 
             const SizedBox(height: 20),
 
-            // Stars & Tokens Row
+            // Gold & Gems row
             Row(
               children: [
                 Expanded(
                   child: InfoProfileCard(
-                    icon: Icons.star_rounded,
-                    title: "$stars Stars",
-                    iconColor: Colors.amber,
+                    icon: Icons.monetization_on_rounded,
+                    title: "$tokens ${AppLocalizations.of(context)!.goldLabel}",
+                    iconColor: Colors.amber.shade700,
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: InfoProfileCard(
-                    icon: Icons.token,
-                    title: "$tokens Tokens",
-                    iconColor: Colors.green.shade700,
+                    icon: Icons.diamond_rounded,
+                    title: "$stars ${AppLocalizations.of(context)!.gemsLabel}",
+                    iconColor: Colors.lightBlue.shade600,
                   ),
                 ),
               ],

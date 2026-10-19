@@ -187,7 +187,7 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
       return;
     }
     final xpManager = Provider.of<ExperienceManager>(context, listen: false);
-    if (xpManager.saveTokenCount < 5) { await _doSave(); return; }
+    if (xpManager.gold < 5) { await _doSave(); return; }
     final choice = await showDialog<String>(context: context, builder: (_) => _SaveDialog());
     if (choice == null) return;
     if (choice == 'ad') { await _doSave(); }

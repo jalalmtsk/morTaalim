@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart' show kidGemAsset;
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/main.dart';
@@ -60,7 +61,7 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
       context: context,
       builder: (_) => AlertDialog(
         title:  Text(tr(context).unlockBanner),
-        content: Text("${tr(context).unlockThis} ${tr(context).banner} ${tr(context).forb} $cost ⭐?"),
+        content: Text("${tr(context).unlockThis} ${tr(context).banner} ${tr(context).forb} $cost 💎?"),
         actions: [
           TextButton(
             onPressed: () {
@@ -75,7 +76,7 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
               Navigator.pop(context);
 
               // Deduct stars
-              xpManager.SpendStarBanner(context, cost);
+              xpManager.spendGems(context, cost);
 
               // Unlock & select the banner
               xpManager.unlockBanner(path);
@@ -229,9 +230,7 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.star, color: Colors.white, size: 18, shadows: [
-            Shadow(color: Colors.black38, offset: Offset(1, 1), blurRadius: 1)
-          ]),
+          Image.asset(kidGemAsset, width: 18, height: 18),
           const SizedBox(width: 6),
           Text(
             "$cost",
@@ -303,12 +302,12 @@ class _ImageBannerGridState extends State<ImageBannerGrid>
               audioManager.playEventSound("clickButton2");
               xpManager.selectBannerImage(path);
               setState(() => selectedIndex = index);
-            } else if (xpManager.stars >= cost) {
+            } else if (xpManager.gems >= cost) {
               audioManager.playEventSound("PopButton");
               showPurchaseDialog(context, path, cost, xpManager, index);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("Not enough stars!")),
+                SnackBar(content: Text(tr(context).notEnoughGems)),
               );
               audioManager.playEventSound("invalid");
             }

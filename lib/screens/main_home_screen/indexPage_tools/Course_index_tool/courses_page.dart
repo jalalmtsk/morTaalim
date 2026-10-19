@@ -218,7 +218,7 @@ class _CoursesPageState extends State<CoursesPage> with TickerProviderStateMixin
                 child: Column(
                   children: [
                     const SizedBox(height: 6),
-                    step(0, KidPageHeader(scale: s, title: t.courses, gold: xp.saveTokenCount, gems: xp.stars)),
+                    step(0, KidPageHeader(scale: s, title: t.courses, gold: xp.gold, gems: xp.gems)),
                     SizedBox(height: 8 * s),
                     Expanded(
                       child: CustomScrollView(

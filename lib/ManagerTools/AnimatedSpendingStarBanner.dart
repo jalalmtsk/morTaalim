@@ -1,6 +1,6 @@
+import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart' show kidGemAsset;
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
@@ -87,10 +87,7 @@ class _AnimatedStarSpentBannerState extends State<AnimatedStarSpentBanner>
                       SizedBox(
                         width: 60,
                         height: 60,
-                        child: Lottie.asset(
-                          'assets/animations/unlock_key.json',
-                          repeat: false,
-                        ),
+                        child: Padding(padding: const EdgeInsets.all(10), child: Image.asset(kidGemAsset, fit: BoxFit.contain)),
                       ),
                       const SizedBox(width: 10),
                       Expanded(
@@ -98,7 +95,7 @@ class _AnimatedStarSpentBannerState extends State<AnimatedStarSpentBanner>
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '- ${widget.starAmount} ⭐ ${widget.starAmount > 1 ? 's' : ''} spent',
+                              '-${widget.starAmount} ${tr(context).gemsLabel}',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 17,
@@ -125,10 +122,7 @@ class _AnimatedStarSpentBannerState extends State<AnimatedStarSpentBanner>
                       SizedBox(
                         width: 60,
                         height: 60,
-                        child: Lottie.asset(
-                          'assets/animations/unlock_key.json',
-                          repeat: false,
-                        ),
+                        child: Padding(padding: const EdgeInsets.all(10), child: Image.asset(kidGemAsset, fit: BoxFit.contain)),
                       ),
                     ],
                   ),

@@ -3776,6 +3776,9 @@ abstract class AppLocalizations {
   /// Not enough gems yet — keep playing!
   String get notEnoughGems;
 
+  /// Not enough gold yet — keep playing!
+  String get notEnoughGold;
+
   /// Geography
   String get geography;
 

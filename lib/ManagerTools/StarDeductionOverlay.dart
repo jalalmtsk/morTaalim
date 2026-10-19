@@ -1,3 +1,4 @@
+import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart' show kidGemAsset;
 import 'dart:math';
 import 'package:flutter/material.dart';
 
@@ -128,7 +129,7 @@ class _StarDeductionAnimationState extends State<_StarDeductionAnimation>
                   scale: scale,
                   child: Opacity(
                     opacity: opacity,
-                    child: const Icon(Icons.star, color: Colors.amber, size: 24),
+                    child: Image.asset(kidGemAsset, width: 24, height: 24),
                   ),
                 ),
               );

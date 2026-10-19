@@ -10,7 +10,6 @@ import '../../widgets/RewardChest.dart';
 import 'BannerTab/IndexBanner.dart';
 import 'FunMojiTab/IndexFunMoji.dart';
 import 'GiftsTabs/IndexGiftTabs.dart';
-import 'StarsTab/IndexStars.dart';
 
 class MainShopPageIndex extends StatefulWidget {
   /// True when shown as a tab of the home screen (no back button).
@@ -28,7 +27,7 @@ class _MainShopPageIndexState extends State<MainShopPageIndex>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
         _playClickSound();
@@ -120,7 +119,6 @@ class _MainShopPageIndexState extends State<MainShopPageIndex>
                     Tab(icon: Icon(Icons.card_giftcard), text: tr(context).spinningWheel),
                     Tab(icon: Icon(Icons.face_2_sharp), text: tr(context).funMoji),
                     Tab(icon: Icon(Icons.filter_b_and_w_outlined), text: tr(context).banners),
-                    Tab(icon: Icon(Icons.token), text: tr(context).stars),
                   ],
                 ),
               ),
@@ -153,7 +151,6 @@ class _MainShopPageIndexState extends State<MainShopPageIndex>
                         _animatedTab(IndexGiftsPage()),
                         _animatedTab(IndexFunMojiPage()),
                         _animatedTab(IndexBanner()),
-                        _animatedTab(IndexStars()),
                       ],
                     ),
                   ),
@@ -228,7 +225,7 @@ class _MainShopPageIndexState extends State<MainShopPageIndex>
               onRewardCollected: ({required bool isRare}) {
                 if (isRare) {
                   Provider.of<ExperienceManager>(context, listen: false)
-                      .addStarBanner(context, starReward);
+                      .addGems(context, starReward);
                 } else {
                   Provider.of<ExperienceManager>(context, listen: false)
                       .addXP(xpReward, context: context);

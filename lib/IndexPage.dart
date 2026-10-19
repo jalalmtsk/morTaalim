@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
@@ -13,7 +14,6 @@ import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/tools/Reysable_Tools/SmartDuaaMorningNight_Dialog.dart';
 import 'package:mortaalim/tools/appConfig/AppNotificationDialog/notificationManager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
-import 'package:mortaalim/tools/loading_page.dart';
 import 'package:mortaalim/widgets/Collection/Collection.dart';
 import 'package:mortaalim/screens/main_home_screen/indexPage_tools/Religion_index_tool/religion_page.dart';
 import 'package:mortaalim/screens/main_home_screen/Quests/quests_page.dart';
@@ -261,7 +261,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
             width: double.infinity,
             height: 50,
             showArrow: false,
-            onPressed: xp.saveTokenCount >= 3 ? () => Navigator.pop(ctx, true) : null,
+            onPressed: xp.gold >= 3 ? () => Navigator.pop(ctx, true) : null,
           ),
         ],
       ),
@@ -357,7 +357,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
                 child: Column(
                   children: [
                     const SizedBox(height: 6),
-                    step(0, _Header(scale: s, gold: xp.saveTokenCount, gems: xp.stars,
+                    step(0, _Header(scale: s, gold: xp.gold, gems: xp.gems,
                         onAddGold: _openShop, onAddGems: _buyGem)),
                     const SizedBox(height: 8),
                     Expanded(
@@ -419,6 +419,35 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
               ),
             ),
           ),
+          // DEBUG ONLY: +200 gold / +200 gems (never shown in release builds)
+          if (kDebugMode)
+            Positioned(
+              left: 12,
+              bottom: 24,
+              child: SafeArea(
+                child: Material(
+                  color: Colors.redAccent,
+                  shape: const StadiumBorder(),
+                  elevation: 4,
+                  child: InkWell(
+                    customBorder: const StadiumBorder(),
+                    onTap: () {
+                      xp.addGold(context, 200);
+                      xp.addGems(context, 200);
+                    },
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        Icon(Icons.bug_report_rounded, color: Colors.white, size: 18),
+                        SizedBox(width: 6),
+                        Text('+200 gold & gems',
+                            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13)),
+                      ]),
+                    ),
+                  ),
+                ),
+              ),
+            ),
         ],
       );
   }

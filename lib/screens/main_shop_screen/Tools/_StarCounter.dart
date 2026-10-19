@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart' show kidGemAsset;
 import 'package:flutter/material.dart';
 
 class StarCounter extends StatefulWidget {
@@ -60,7 +61,7 @@ class _StarCounterState extends State<StarCounter>
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.star, size: 32, color: Colors.white),
+            Image.asset(kidGemAsset, width: 32, height: 32),
             const SizedBox(width: 10),
             Text(
               '${widget.stars}',

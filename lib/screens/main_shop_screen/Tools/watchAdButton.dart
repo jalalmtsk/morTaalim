@@ -67,7 +67,7 @@ class _WatchAdFABState extends State<WatchAdButton>
 
     if (earnedReward) {
       Provider.of<ExperienceManager>(context, listen: false)
-          .addStarBanner(context, 1);
+          .addGems(context, 1);
     }
 
     Future.delayed(const Duration(seconds: 2), () {

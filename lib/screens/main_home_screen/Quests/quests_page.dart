@@ -236,7 +236,7 @@ class _QuestsPageState extends State<QuestsPage> with TickerProviderStateMixin {
     if (q.rewardType == QuestReward.gold) {
       _xp.addTokenBanner(context, q.reward);
     } else {
-      _xp.addStarBanner(context, q.reward);
+      _xp.addGems(context, q.reward);
     }
     _celebrate();
     _refresh();
@@ -265,14 +265,14 @@ class _QuestsPageState extends State<QuestsPage> with TickerProviderStateMixin {
 
   Future<void> _claimTreasure() async {
     if (_q.claimedCount < dailyQuests.length || !await QuestStore.claimTreasure() || !mounted) return;
-    _xp.addStarBanner(context, treasureGems);
+    _xp.addGems(context, treasureGems);
     _celebrate();
     _refresh();
   }
 
   Future<void> _claimMilestone(Milestone m) async {
     if (_q.total(m.track) < m.target || !await QuestStore.claimMilestone(m) || !mounted) return;
-    _xp.addStarBanner(context, m.gems);
+    _xp.addGems(context, m.gems);
     _celebrate();
     _refresh();
   }
@@ -347,7 +347,7 @@ class _QuestsPageState extends State<QuestsPage> with TickerProviderStateMixin {
               width: w,
               child: Column(children: [
                 const SizedBox(height: 6),
-                step(0, KidPageHeader(scale: s, title: t.navQuests, gold: xp.saveTokenCount, gems: xp.stars, showBack: !widget.embedded)),
+                step(0, KidPageHeader(scale: s, title: t.navQuests, gold: xp.gold, gems: xp.gems, showBack: !widget.embedded)),
                 SizedBox(height: 8 * s),
                 Expanded(
                   child: ListView(

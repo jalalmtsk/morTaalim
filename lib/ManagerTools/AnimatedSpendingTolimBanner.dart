@@ -1,6 +1,6 @@
+import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart' show kidCoinAsset;
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:provider/provider.dart';
@@ -85,10 +85,7 @@ class _AnimatedTokenSpentBannerState extends State<AnimatedTokenSpentBanner>
                     SizedBox(
                       width: 60,
                       height: 60,
-                      child: Lottie.asset(
-                        'assets/animations/Spend/medal_spent.json', // 🎯 Customize with a new asset if needed
-                        repeat: false,
-                      ),
+                      child: Padding(padding: const EdgeInsets.all(10), child: Image.asset(kidCoinAsset, fit: BoxFit.contain)),
                     ),
                     const SizedBox(width: 10),
                     Expanded(
@@ -96,7 +93,7 @@ class _AnimatedTokenSpentBannerState extends State<AnimatedTokenSpentBanner>
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '-${widget.tokenAmount} Tolim${widget.tokenAmount > 1 ? 's' : ''} spent',
+                            '-${widget.tokenAmount} ${tr(context).goldLabel}',
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 17,
@@ -123,10 +120,7 @@ class _AnimatedTokenSpentBannerState extends State<AnimatedTokenSpentBanner>
                     SizedBox(
                       width: 60,
                       height: 60,
-                      child: Lottie.asset(
-                        'assets/animations/Spend/medal_spent.json',
-                        repeat: false,
-                      ),
+                      child: Padding(padding: const EdgeInsets.all(10), child: Image.asset(kidCoinAsset, fit: BoxFit.contain)),
                     ),
                   ],
                 ),

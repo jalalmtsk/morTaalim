@@ -7,6 +7,7 @@ import 'package:mortaalim/main.dart';
 import 'package:provider/provider.dart';
 import '../../XpSystem.dart';
 import '../ManagerTools/AppGlobal.dart';
+import 'KidScene/kid_page_parts.dart' show kidCoinAsset, kidGemAsset;
 
 class Userstatutbar extends StatefulWidget {
   const Userstatutbar({super.key});
@@ -78,8 +79,8 @@ class _UserStatutBar extends State<Userstatutbar>
     // Prevent animations on first build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final xpManager = context.read<ExperienceManager>();
-      previousStars = xpManager.stars;
-      previousTokens = xpManager.saveTokenCount;
+      previousStars = xpManager.gems;
+      previousTokens = xpManager.gold;
       previousXP = xpManager.xp;
       _displayedStars = previousStars.toDouble();
       _displayedTokens = previousTokens.toDouble();
@@ -258,16 +259,16 @@ class _UserStatutBar extends State<Userstatutbar>
     final xpManager = Provider.of<ExperienceManager>(context);
 
     if (_initialized) {
-      if (xpManager.stars != previousStars) {
-        final delta = xpManager.stars - previousStars;
-        previousStars = xpManager.stars;
-        _triggerStarAnimation(delta > 0, delta, xpManager.stars);
+      if (xpManager.gems != previousStars) {
+        final delta = xpManager.gems - previousStars;
+        previousStars = xpManager.gems;
+        _triggerStarAnimation(delta > 0, delta, xpManager.gems);
       }
 
-      if (xpManager.saveTokenCount != previousTokens) {
-        final delta = xpManager.saveTokenCount - previousTokens;
-        previousTokens = xpManager.saveTokenCount;
-        _triggerTokenAnimation(delta > 0, delta, xpManager.saveTokenCount);
+      if (xpManager.gold != previousTokens) {
+        final delta = xpManager.gold - previousTokens;
+        previousTokens = xpManager.gold;
+        _triggerTokenAnimation(delta > 0, delta, xpManager.gold);
       }
 
       if (xpManager.xp != previousXP) {
@@ -374,7 +375,7 @@ class _UserStatutBar extends State<Userstatutbar>
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.star, color: Colors.amber, size: 22),
+                              Image.asset(kidGemAsset, width: 22, height: 22),
                               const SizedBox(width: 6),
                               AnimatedBuilder(
                                 animation: _starColorController,
@@ -402,8 +403,8 @@ class _UserStatutBar extends State<Userstatutbar>
                         children: [
                           Row(
                             children: [
-                              const Icon(Icons.generating_tokens, color: Colors.green, size: 22),
-                              const SizedBox(width: 2),
+                              Image.asset(kidCoinAsset, width: 22, height: 22),
+                              const SizedBox(width: 6),
                               AnimatedBuilder(
                                 animation: _tokenColorController,
                                 builder: (_, __) => Text(

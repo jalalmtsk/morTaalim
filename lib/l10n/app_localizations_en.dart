@@ -123,7 +123,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get myProfile => 'My Profile';
 
   @override
-  String get stars => 'Étoiles';
+  String get stars => "Gems";
 
   @override
   String get lives => 'Lives';
@@ -399,7 +399,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get forb => 'For';
 
   @override
-  String get notEnoughStars => 'Not enough stars';
+  String get notEnoughStars => "Not enough gems";
 
   @override
   String get courseLocked => 'Course Locked';
@@ -516,7 +516,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get store => 'Store';
 
   @override
-  String get tolims => 'Tolims';
+  String get tolims => "Gold";
 
   @override
   String get spinningWheel => 'Spinning Wheel';
@@ -1338,16 +1338,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get getCertified => 'Get Certified';
 
   @override
-  String get notEnoughTolims => 'Pas assez de Tolims !';
+  String get notEnoughTolims => "Not enough gold!";
 
   @override
   String youGotStars(Object count) {
-    return 'Vous avez reçu $count étoiles !';
+    return "You got $count gems!";
   }
 
   @override
   String getStars(Object count) {
-    return 'Obtenir $count étoiles';
+    return "Get $count gems";
   }
 
   @override
@@ -2007,6 +2007,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get notEnoughGems => "Not enough gems yet — keep playing!";
 
   @override
+  String get notEnoughGold => "Not enough gold yet — keep playing!";
+
+  @override
   String get geography => "Geography";
 
   @override
@@ -2046,7 +2049,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String unlockGameFor(int n) {
-    return "Unlock this game for $n gems?";
+    return "Unlock this game for $n gold?";
   }
 
   @override
