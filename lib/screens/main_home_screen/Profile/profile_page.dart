@@ -45,7 +45,7 @@ class ProfileStats {
 
   // Totals available in the app today (bars fill against these).
   static const int courseTotal = 18; // grade 1: math 8, french 3, science 4, islamic 3
-  static const int itTotal = 5;
+  static const int itTotal = 9; // computer basics 8 + binary 1
   static const int religionTotal = 12; // quran 6, duas 3, prayer 3
   static const int gamesTotal = 10;
 

@@ -11,6 +11,9 @@ import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart';
 import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
 import 'package:provider/provider.dart';
 
+import 'ComputerBasics/computer_basics_lesson.dart';
+import 'ComputerBasics/computer_basics_menu.dart';
+
 class ITAssets {
   ITAssets._();
   static const String dir = 'assets/images/UI/KidScene/';
@@ -51,11 +54,9 @@ class ITTopic {
 
 /// Only lessons whose routes are live in main.dart are listed.
 final List<ITTopic> itTopics = [
+  // Opens the Computer Basics lesson map (computer_basics_menu.dart).
   ITTopic('basics', (t) => t.itBasics, ITLevel.beginner, 'orange', [
-    ITLesson((t) => t.lessonWhatIsComputer, 'IT_WhatIsComputer', 'assets/images/GridImages/It_Grid/whatComputer_grid.png'),
-    ITLesson((t) => t.lessonComputerParts, 'IT_ComputerParts', 'assets/images/GridImages/It_Grid/computerParts_grid.png'),
-    ITLesson((t) => t.lessonMousePractice, 'IT_MousePractice', 'assets/images/GridImages/It_Grid/mousePractise_grid.png'),
-    ITLesson((t) => t.lessonInputOutput, 'IT_InputOutput', 'assets/images/GridImages/It_Grid/inputOutput_grid.png'),
+    for (final l in computerBasicsLessons) ITLesson((t) => t.itBasics, '', l.thumb),
   ]),
   ITTopic('coding', (t) => t.itCoding, ITLevel.explorer, 'purple', [
     ITLesson((t) => t.lessonBinary, 'IT_BinaryNumbers', 'assets/images/IT/binary.png'),
@@ -166,7 +167,7 @@ class _ITPageState extends State<ITPage> with TickerProviderStateMixin {
     await Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (_, __, ___) => ITTopicPage(topic: t),
+        pageBuilder: (_, __, ___) => t.id == 'basics' ? const ComputerBasicsMenuPage() : ITTopicPage(topic: t),
         transitionsBuilder: (_, a, __, child) => FadeTransition(opacity: a, child: child),
         transitionDuration: const Duration(milliseconds: 320),
       ),
@@ -177,6 +178,7 @@ class _ITPageState extends State<ITPage> with TickerProviderStateMixin {
 
   /// Continue: the next unopened lesson of the last topic (or the first one).
   Future<void> _continue(ITTopic t) async {
+    if (t.id == 'basics') return _openTopic(t);
     if (_busy) return;
     _busy = true;
     final done = await _tracker.doneIn(t.id);

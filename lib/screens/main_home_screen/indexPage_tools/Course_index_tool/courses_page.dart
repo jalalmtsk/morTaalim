@@ -11,7 +11,6 @@ import 'package:mortaalim/l10n/app_localizations.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/ConnectivityManager/Connectivity_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
-import 'package:mortaalim/User_Input_Info_DataForm/LearningPreferencesForm/LearningPreferencesEnteringForm.dart';
 import 'package:mortaalim/widgets/KidScene/kid_form.dart';
 import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart';
 import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
@@ -180,16 +179,6 @@ class _CoursesPageState extends State<CoursesPage> with TickerProviderStateMixin
     if (_opening) return;
     _opening = true;
     try {
-      final prefs = await SharedPreferences.getInstance();
-      if (!(prefs.getBool('hasSetPreferences') ?? false) && mounted) {
-        // First course ever: ask the learning preferences once (as before).
-        final result = await Navigator.push(context, MaterialPageRoute(builder: (_) => LearningPreferencesPages()));
-        if (result != null) {
-          await prefs.setBool('hasSetPreferences', true);
-          await prefs.setString('userPreferences', result.toString());
-        }
-      }
-      if (!mounted) return;
       _audio.playEventSound('PopButton');
       await Navigator.push(context, MaterialPageRoute(builder: (_) => s.page!()));
     } finally {

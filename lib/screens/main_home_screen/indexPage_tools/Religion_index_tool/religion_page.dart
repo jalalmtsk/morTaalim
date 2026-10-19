@@ -15,6 +15,9 @@ import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart';
 import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
 import 'package:mortaalim/widgets/RandomAyat_Card/Ayat_List.dart';
 import 'quran_page.dart';
+import 'Stories/stories_data.dart';
+import 'Stories/stories_pages.dart';
+import 'Manners/manners_page.dart';
 import 'package:provider/provider.dart';
 
 class ReligionAssets {
@@ -123,8 +126,9 @@ List<_Topic> get _topics => [
       _Topic('quran', (c) => tr(c).relQuran, (c) => tr(c).relQuranSub, RelCategory.listen, true, _quranCount),
       _Topic('prayer', (c) => tr(c).relPrayer, (c) => tr(c).relPrayerSub, RelCategory.practice, false, _prayerActivities.length),
       _Topic('duas', (c) => tr(c).relDuas, (c) => tr(c).relDuasSub, RelCategory.listen, true, _duaas.length),
-      _Topic('stories', (c) => tr(c).relStories, (c) => tr(c).relStoriesSub, RelCategory.learn, false, 0),
-      _Topic('manners', (c) => tr(c).relManners, (c) => tr(c).relMannersSub, RelCategory.practice, true, 0),
+      _Topic('stories', (c) => tr(c).relStories, (c) => tr(c).relStoriesSub, RelCategory.learn, false,
+          allStories.where((s) => s.available).length),
+      _Topic('manners', (c) => tr(c).relManners, (c) => tr(c).relMannersSub, RelCategory.practice, false, manners.length),
       _Topic('basics', (c) => tr(c).relBasics, (c) => tr(c).relBasicsSub, RelCategory.learn, false, 0),
     ];
 
@@ -261,7 +265,9 @@ class _ReligionPageState extends State<ReligionPage> with TickerProviderStateMix
     audio.playEventSound('clickButton');
     final page = switch (t.id) {
       'quran' => const QuranPage(),
+      'stories' => const StoriesMenuPage(),
       'duas' => const DuasPage(),
+      'manners' => const MannersPage(),
       _ => const PrayerPage(),
     };
     await Navigator.push(context, _fade(page));
