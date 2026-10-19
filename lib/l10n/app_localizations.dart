@@ -3490,6 +3490,756 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Total XP'**
   String get totalXp;
+
+  /// A world of discovery!
+  String get loginWorldOfDiscovery;
+
+  /// Learn, play and grow every day.
+  String get loginLearnPlayGrow;
+
+  /// Let's explore
+  String get loginLetsExplore;
+
+  /// For parents
+  String get loginForParents;
+
+  /// Ask a grown-up
+  String get parentGateTitle;
+
+  /// You can link a Google account at any time in Settings to keep your child's progress safe.
+  String get parentsInfoGoogle;
+
+  /// Choose your language
+  String get langChooseTitle;
+
+  /// Let's learn together!
+  String get langLearnTogether;
+
+  /// Continue
+  String get continueLabel;
+
+  /// What's your name?
+  String get nameTitle;
+
+  /// Let's make this adventure yours!
+  String get nameSubtitle;
+
+  /// Your name
+  String get nameLabel;
+
+  /// Your first name
+  String get nameHint;
+
+  /// Your adventure starts here.
+  String get nameHelper;
+
+  /// How much is a × b?
+  String parentGateQuestion(int a, int b);
+
+  /// Where are you from?
+  String get whereFromTitle;
+
+  /// Let's explore your world!
+  String get whereFromSubtitle;
+
+  /// Choose your country
+  String get chooseCountry;
+
+  /// Choose your city
+  String get chooseCity;
+
+  /// Skip for now
+  String get skipForNow;
+
+  /// Search your city…
+  String get searchCity;
+
+  /// Type your city
+  String get typeYourCity;
+
+  /// Popular cities
+  String get popularCities;
+
+  /// No city found — use what you typed
+  String get noCityFound;
+
+  /// Are you a student?
+  String get studentTitle;
+
+  /// Let's choose your learning path!
+  String get studentSubtitle;
+
+  /// Yes
+  String get studentYes;
+
+  /// I go to school
+  String get studentYesSub;
+
+  /// No
+  String get studentNo;
+
+  /// I learn my way
+  String get studentNoSub;
+
+  /// Tell us about your school
+  String get schoolTitle;
+
+  /// Make learning fit your journey.
+  String get schoolSubtitle;
+
+  /// (optional)
+  String get optionalTag;
+
+  /// Enter your school name
+  String get enterSchoolName;
+
+  /// Choose your level
+  String get chooseSchoolLevel;
+
+  /// Choose your grade
+  String get chooseGrade;
+
+  /// Choose your track
+  String get chooseTrack;
+
+  /// Shown for High School only
+  String get trackHighSchoolOnly;
+
+  /// Give your profile your own style!
+  String get bannerSubtitle;
+
+  /// Your profile
+  String get yourProfile;
+
+  /// Pick your favorite
+  String get pickYourFavorite;
+
+  /// Use this banner
+  String get useThisBanner;
+
+  /// How old are you?
+  String get ageTitle;
+
+  /// An adventure just for you!
+  String get ageSubtitle;
+
+  /// years old
+  String get yearsOld;
+
+  /// Make it yours!
+  String get avatarTitle;
+
+  /// Choose your gender and avatar
+  String get avatarSubtitle;
+
+  /// Gender
+  String get genderLabel;
+
+  /// Boy
+  String get genderBoy;
+
+  /// Girl
+  String get genderGirl;
+
+  /// Choose your avatar
+  String get chooseAvatar;
+
+  /// Creating your adventure...
+  String get loadTitle;
+
+  /// A little magic, just for you!
+  String get loadSubtitle;
+
+  /// Almost ready to explore!
+  String get loadAlmost;
+
+  /// Preparing your learning world
+  String get loadPhase1;
+
+  /// Packing your backpack
+  String get loadPhase2;
+
+  /// Unlocking your first lessons
+  String get loadPhase3;
+
+  /// Adding a sprinkle of stars
+  String get loadPhase4;
+
+  /// Hi,
+  String get homeHi;
+
+  /// Hi there!
+  String get homeHiNoName;
+
+  /// Ready for a new adventure?
+  String get homeReady;
+
+  /// Verse of the day
+  String get verseOfTheDay;
+
+  /// Tap to listen
+  String get tapToListen;
+
+  /// IT
+  String get homeIT;
+
+  /// Religion
+  String get homeReligion;
+
+  /// Daily adventure
+  String get dailyAdventure;
+
+  /// Done for today — come back tomorrow!
+  String get dailyDoneMsg;
+
+  /// Magic Shop
+  String get magicShop;
+
+  /// Avatars, banners & more!
+  String get magicShopSub;
+
+  /// Explore
+  String get exploreLabel;
+
+  /// Gold
+  String get goldLabel;
+
+  /// Gems
+  String get gemsLabel;
+
+  /// Get a gem
+  String get getAGem;
+
+  /// Home
+  String get navHome;
+
+  /// Quests
+  String get navQuests;
+
+  /// Collections
+  String get navCollections;
+
+  /// Shop
+  String get navShop;
+
+  /// Profile
+  String get navProfile;
+
+  /// Level {n}
+  String levelN(int n);
+
+  /// Visit {n} different sections today
+  String dailyGoalMsg(int n);
+
+  /// Trade {n} gold for 1 gem?
+  String tradeGoldForGem(int n);
+
+  /// Word Explorer
+  String get wordExplorer;
+
+  /// Play
+  String get playLabel;
+
+  /// Play.
+  String get heroPlay;
+
+  /// Learn.
+  String get heroLearn;
+
+  /// Shine!
+  String get heroShine;
+
+  /// Every game is a new discovery.
+  String get gamesHeroSub;
+
+  /// All
+  String get filterAll;
+
+  /// Words
+  String get filterWords;
+
+  /// Logic
+  String get filterLogic;
+
+  /// Creative
+  String get filterCreative;
+
+  /// Today's challenge
+  String get todaysChallenge;
+
+  /// Challenge done — see you tomorrow!
+  String get challengeDone;
+
+  /// Unlock this game for free?
+  String get unlockGameFree;
+
+  /// Not enough gems yet — keep playing!
+  String get notEnoughGems;
+
+  /// Geography
+  String get geography;
+
+  /// Keep your curiosity
+  String get coursesHeroTop;
+
+  /// growing!
+  String get coursesHeroBottom;
+
+  /// Start
+  String get startLabel;
+
+  /// Your subjects
+  String get yourSubjects;
+
+  /// Soon
+  String get soonBadge;
+
+  /// New lessons are on the way!
+  String get gradeSoonTitle;
+
+  /// Lessons for this grade are coming soon. Meanwhile, try 1st Grade!
+  String get gradeSoonBody;
+
+  /// Learning goal
+  String get learningGoal;
+
+  /// Complete one lesson today
+  String get learningGoalMsg;
+
+  /// Goal reached — great job!
+  String get learningGoalDone;
+
+  /// Play {n} different games
+  String challengeGoal(int n);
+
+  /// Unlock this game for {n} gems?
+  String unlockGameFor(int n);
+
+  /// {a} / {b} lessons
+  String lessonsCount(int a, int b);
+
+  /// Little minds.
+  String get itHeroTop;
+
+  /// Big ideas!
+  String get itHeroBottom;
+
+  /// Discover the magic of technology
+  String get itHeroSub;
+
+  /// Beginner
+  String get levelBeginner;
+
+  /// Explorer
+  String get levelExplorer;
+
+  /// Creator
+  String get levelCreator;
+
+  /// Computer Basics
+  String get itBasics;
+
+  /// Coding
+  String get itCoding;
+
+  /// Typing
+  String get itTyping;
+
+  /// Internet Safety
+  String get itSafety;
+
+  /// Robotics
+  String get itRobotics;
+
+  /// Digital Creativity
+  String get itCreativity;
+
+  /// What is a computer?
+  String get lessonWhatIsComputer;
+
+  /// Computer parts
+  String get lessonComputerParts;
+
+  /// Mouse practice
+  String get lessonMousePractice;
+
+  /// Input & output
+  String get lessonInputOutput;
+
+  /// Binary numbers
+  String get lessonBinary;
+
+  /// Tech challenge
+  String get techChallenge;
+
+  /// Finish one IT lesson today
+  String get techChallengeMsg;
+
+  /// Lesson {n}
+  String lessonN(int n);
+
+  /// Listen, learn and shine with your faith
+  String get religionHeroSub;
+
+  /// Listen & read along
+  String get listenReadAlong;
+
+  /// Morning duaa
+  String get duaaMorning;
+
+  /// Afternoon duaa
+  String get duaaAfternoon;
+
+  /// Night duaa
+  String get duaaNight;
+
+  /// Practice
+  String get practiseTitle;
+
+  /// Daily light
+  String get dailyLight;
+
+  /// Listen to a verse or practise today
+  String get dailyLightMsg;
+
+  /// Quran
+  String get relQuran;
+
+  /// Listen & memorize
+  String get relQuranSub;
+
+  /// Prayer
+  String get relPrayer;
+
+  /// Learn step by step
+  String get relPrayerSub;
+
+  /// Daily Duas
+  String get relDuas;
+
+  /// For everyday moments
+  String get relDuasSub;
+
+  /// Stories
+  String get relStories;
+
+  /// Stories to inspire
+  String get relStoriesSub;
+
+  /// Good Manners
+  String get relManners;
+
+  /// Kindness every day
+  String get relMannersSub;
+
+  /// Islamic Basics
+  String get relBasics;
+
+  /// Discover the essentials
+  String get relBasicsSub;
+
+  /// Learn with
+  String get relHeroTop;
+
+  /// heart
+  String get relHeroBottom;
+
+  /// Discover, listen and grow
+  String get relHeroSub;
+
+  /// Continue listening
+  String get continueListening;
+
+  /// Start listening
+  String get startListening;
+
+  /// Surah Al-Fatihah
+  String get surahFatiha;
+
+  /// Listen
+  String get relListen;
+
+  /// Learn
+  String get relLearn;
+
+  /// A little kindness today
+  String get kindnessTitle;
+
+  /// Help someone and share a smile — tap when done
+  String get kindnessMsg;
+
+  /// Beautiful! Allah loves the kind
+  String get kindnessDone;
+
+  /// done
+  String get relDone;
+
+  /// Now
+  String get nowLabel;
+
+  /// Ameen
+  String get ameen;
+
+  /// Wudu is the first step of prayer
+  String get wuduFirstStep;
+
+  /// Small steps.
+  String get questHeroTop;
+
+  /// Big discoveries!
+  String get questHeroBottom;
+
+  /// Learn something new every day
+  String get questHeroSub;
+
+  /// Daily
+  String get questDaily;
+
+  /// Milestones
+  String get questMilestones;
+
+  /// New quests in
+  String get newQuestsIn;
+
+  /// Curious Reader
+  String get questReader;
+
+  /// Complete 1 lesson
+  String get questReaderSub;
+
+  /// Play & Discover
+  String get questPlayer;
+
+  /// Tech Explorer
+  String get questTech;
+
+  /// Complete 1 IT lesson
+  String get questTechSub;
+
+  /// Claim
+  String get claimLabel;
+
+  /// Go
+  String get goLabel;
+
+  /// Done
+  String get doneLabel;
+
+  /// Daily treasure
+  String get dailyTreasure;
+
+  /// Claim all 3 quests
+  String get dailyTreasureSub;
+
+  /// Opened — see you tomorrow!
+  String get treasureOpened;
+
+  /// Your next milestone
+  String get nextMilestone;
+
+  /// You reached every milestone! 🎉
+  String get allMilestonesDone;
+
+  /// Complete {n} lessons
+  String milestoneLessons(int n);
+
+  /// Play {n} games
+  String milestoneGames(int n);
+
+  /// Edit profile
+  String get editProfile;
+
+  /// Customize
+  String get customizeLabel;
+
+  /// My learning journey
+  String get myLearningJourney;
+
+  /// Lessons
+  String get statLessons;
+
+  /// Games
+  String get statGames;
+
+  /// Learning streak
+  String get statStreak;
+
+  /// My badges
+  String get myBadges;
+
+  /// View all
+  String get viewAll;
+
+  /// First Steps
+  String get badgeFirstSteps;
+
+  /// Finish your first lesson or game.
+  String get badgeFirstStepsHow;
+
+  /// Book Lover
+  String get badgeBookLover;
+
+  /// Complete 10 course lessons.
+  String get badgeBookLoverHow;
+
+  /// Code Starter
+  String get badgeCodeStarter;
+
+  /// Complete your first IT lesson.
+  String get badgeCodeStarterHow;
+
+  /// You earned this badge! 🎉
+  String get badgeEarned;
+
+  /// Little Learner
+  String get titleLittleLearner;
+
+  /// Curious Explorer
+  String get titleCuriousExplorer;
+
+  /// Bright Thinker
+  String get titleBrightThinker;
+
+  /// Star Scholar
+  String get titleStarScholar;
+
+  /// Knowledge Hero
+  String get titleKnowledgeHero;
+
+  /// My Collections
+  String get myCollections;
+
+  /// Avatars, banners & badges
+  String get myCollectionsSub;
+
+  /// {n} days
+  String daysN(int n);
+
+  /// {n} lessons
+  String lessonsN(int n);
+
+  /// {n} played
+  String playedN(int n);
+
+  /// Audio
+  String get secAudio;
+
+  /// Language & Home
+  String get secLanguageHome;
+
+  /// Save your progress
+  String get secSaveProgress;
+
+  /// More
+  String get secMore;
+
+  /// Show verse of the day
+  String get showVerseOfDay;
+
+  /// Show daily duaa
+  String get showDailyDuaa;
+
+  /// Backup account
+  String get backupAccount;
+
+  /// Keep your learning safe across devices
+  String get backupSub;
+
+  /// Parents only
+  String get parentsOnly;
+
+  /// Parental area
+  String get parentalArea;
+
+  /// Help & support
+  String get helpSupport;
+
+  /// About MoorTaalim
+  String get aboutMoorTaalim;
+
+  /// ON
+  String get toggleOn;
+
+  /// OFF
+  String get toggleOff;
+
+  /// Tamazight is not fully supported yet — Team Jalnix is working on it!
+  String get zghNotice;
+
+  /// I listen
+  String get quranHeroTop;
+
+  /// and I learn
+  String get quranHeroBottom;
+
+  /// At my pace, one verse at a time
+  String get quranHeroSub;
+
+  /// Resume listening
+  String get resumeListening;
+
+  /// Surahs
+  String get tabSurahs;
+
+  /// Favorites
+  String get tabFavorites;
+
+  /// Search a surah
+  String get searchSurah;
+
+  /// Listen
+  String get modeListen;
+
+  /// Repeat
+  String get modeRepeat;
+
+  /// Memorize
+  String get modeMemorize;
+
+  /// Audio coming soon
+  String get audioSoon;
+
+  /// Verses
+  String get versesTitle;
+
+  /// Tap ♡ to add a surah to your favorites
+  String get noFavorites;
+
+  /// Nothing found
+  String get noResults;
+
+  /// Tap to reveal
+  String get tapToReveal;
+
+  /// Hide all
+  String get hideAll;
+
+  /// Well done!
+  String get mmWellDone;
+
+  /// Play again
+  String get mmReplay;
+
+  /// Next level
+  String get mmNextLevel;
+
+  /// Find the matching pairs!
+  String get mmFindPairs;
+
+  /// Look, remember, match!
+  String get mmTagline;
+
+  /// Restart
+  String get mmRestart;
+
+  /// Hint
+  String get mmHint;
+
+  /// Moves: {n}
+  String mmMovesN(int n);
+
+  /// Pairs: {a} / {b}
+  String mmPairs(int a, int b);
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

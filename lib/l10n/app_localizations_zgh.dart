@@ -1712,4 +1712,784 @@ class AppLocalizationsZgh extends AppLocalizations {
 
   @override
   String get totalXp => 'ⴰⵎⴰⵜⴰⵢ ⵏ XP';
+
+  @override
+  String get loginWorldOfDiscovery => "ⴰⵎⴰⴹⴰⵍ ⵏ ⵜⵓⴼⵜⵉⵏ!";
+
+  @override
+  String get loginLearnPlayGrow => "ⵍⵎⴷ, ⵓⵔⴰⵔ ⴷ ⵜⵉⵎⵖⵓⵔⵜ ⴽⵓ ⴰⵙⵙ.";
+
+  @override
+  String get loginLetsExplore => "ⴱⴷⵓ";
+
+  @override
+  String get loginForParents => "ⵉ ⵉⵎⴰⵔⴰⵡⵏ";
+
+  @override
+  String get parentGateTitle => "ⵙⵇⵙⴰ ⴰⵎⵇⵔⴰⵏ";
+
+  @override
+  String get parentsInfoGoogle => "ⵜⵣⵎⵔⵎ ⴰⴷ ⵜⵇⵇⵏⵎ ⴰⵎⵉⴹⴰⵏ Google ⴳ ⵜⵙⵖⴰⵍ ⴰⴷ ⵜⵃⴹⵓⵎ ⴰⵙⵉⵡⵉⵙ ⵏ ⵜⴰⵔⵡⴰ ⵏⵏⵓⵏ.";
+
+  @override
+  String get langChooseTitle => "ⵙⵜⵉ ⵜⵓⵜⵍⴰⵢⵜ ⵏⵏⴽ";
+
+  @override
+  String get langLearnTogether => "ⴰⴷ ⵏⵍⵎⴷ ⵎⵢⴰⵡⴰⵏ!";
+
+  @override
+  String get continueLabel => "ⴽⵎⵎⵍ";
+
+  @override
+  String get nameTitle => "ⵎⴰ ⵉⴳⴰⵏ ⵉⵙⵎ ⵏⵏⴽ?";
+
+  @override
+  String get nameSubtitle => "ⴰⴷ ⵜⴳ ⵜⴰⴷⵓⵙⵉ ⴰⴷ ⵜⵉⵏⵏⴽ!";
+
+  @override
+  String get nameLabel => "ⵉⵙⵎ ⵏⵏⴽ";
+
+  @override
+  String get nameHint => "ⵉⵙⵎ ⵏⵏⴽ ⴰⵎⵣⵡⴰⵔⵓ";
+
+  @override
+  String get nameHelper => "ⵜⴰⴷⵓⵙⵉ ⵏⵏⴽ ⵜⴱⴷⴰ ⴷⴰ.";
+
+  @override
+  String parentGateQuestion(int a, int b) {
+    return "ⵎⵏⵏⴰⵡ ⴰⵢⴰ $a × $b?";
+  }
+
+  @override
+  String get whereFromTitle => "ⵎⴰⵏⵉ ⵜⴽⴽⵉⴷ?";
+
+  @override
+  String get whereFromSubtitle => "ⴰⴷ ⵏⵙⵙⵓⴷⵓ ⴰⵎⴰⴹⴰⵍ ⵏⵏⴽ!";
+
+  @override
+  String get chooseCountry => "ⵙⵜⵉ ⵜⴰⵎⵓⵔⵜ ⵏⵏⴽ";
+
+  @override
+  String get chooseCity => "ⵙⵜⵉ ⵜⴰⵎⴷⵉⵏⵜ ⵏⵏⴽ";
+
+  @override
+  String get skipForNow => "ⵣⴳⵔ ⵖⵉⵍⴰ";
+
+  @override
+  String get searchCity => "ⵔⵣⵓ ⵜⴰⵎⴷⵉⵏⵜ ⵏⵏⴽ…";
+
+  @override
+  String get typeYourCity => "ⴰⵔⵓ ⵜⴰⵎⴷⵉⵏⵜ ⵏⵏⴽ";
+
+  @override
+  String get popularCities => "ⵜⵉⵎⴷⵉⵏⵉⵏ ⵉⵜⵜⵓⵙⵙⵏⵏ";
+
+  @override
+  String get noCityFound => "ⵓⵔ ⵏⵓⴼⵉ ⵜⴰⵎⴷⵉⵏⵜ — ⵙⵎⵔⵙ ⴰⵢⴰ";
+
+  @override
+  String get studentTitle => "ⵉⵙ ⴽⵢⵢ ⴷ ⴰⵏⵍⵎⴰⴷ?";
+
+  @override
+  String get studentSubtitle => "ⴰⴷ ⵏⵙⵜⵉ ⴰⴱⵔⵉⴷ ⵏ ⵓⵍⵎⴰⴷ ⵏⵏⴽ!";
+
+  @override
+  String get studentYes => "ⵢⴰⵀ";
+
+  @override
+  String get studentYesSub => "ⴷⴷⵓⵖ ⵙ ⵜⵉⵏⵎⵍ";
+
+  @override
+  String get studentNo => "ⵓⵀⵓ";
+
+  @override
+  String get studentNoSub => "ⵍⵎⴷⵖ ⵙ ⵓⴱⵔⵉⴷ ⵉⵏⵓ";
+
+  @override
+  String get schoolTitle => "ⵉⵏⵉ ⵖⴼ ⵜⵉⵏⵎⵍ ⵏⵏⴽ";
+
+  @override
+  String get schoolSubtitle => "ⴰⵍⵎⴰⴷ ⵉⵎⵙⴰⵙⴰⵏ ⴷ ⵓⴱⵔⵉⴷ ⵏⵏⴽ.";
+
+  @override
+  String get optionalTag => "(ⴰⵙⵜⵉ)";
+
+  @override
+  String get enterSchoolName => "ⴰⵔⵓ ⵉⵙⵎ ⵏ ⵜⵉⵏⵎⵍ ⵏⵏⴽ";
+
+  @override
+  String get chooseSchoolLevel => "ⵙⵜⵉ ⴰⵙⵡⵉⵔ ⵏⵏⴽ";
+
+  @override
+  String get chooseGrade => "ⵙⵜⵉ ⴰⵙⵎⵉⵍ ⵏⵏⴽ";
+
+  @override
+  String get chooseTrack => "ⵙⵜⵉ ⴰⴱⵔⵉⴷ ⵏⵏⴽ";
+
+  @override
+  String get trackHighSchoolOnly => "ⵉ ⵜⵙⵏⴰⵡⵉⵢⵜ ⴽⴰ";
+
+  @override
+  String get bannerSubtitle => "ⵔⵏⵓ ⴰⵙⵍⵓⴱ ⵏⵏⴽ ⵉ ⵓⵎⴰⵖⵏ ⵏⵏⴽ!";
+
+  @override
+  String get yourProfile => "ⴰⵎⴰⵖⵏ ⵏⵏⴽ";
+
+  @override
+  String get pickYourFavorite => "ⵙⵜⵉ ⵡⴰ ⵜⵔⵉⴷ";
+
+  @override
+  String get useThisBanner => "ⵙⵎⵔⵙ ⵜⴰⵏⵏⴰⵢⵜ ⴰ";
+
+  @override
+  String get ageTitle => "ⵎⵏⵏⴰⵡ ⵏ ⵓⵙⴳⴳⵯⴰⵙ ⴰⵔⴰ ⵖⵓⵔⴽ?";
+
+  @override
+  String get ageSubtitle => "ⵜⴰⴷⵓⵙⵉ ⵉ ⴽⵢⵢ ⴽⴰ!";
+
+  @override
+  String get yearsOld => "ⵉⵙⴳⴳⵯⴰⵙⵏ";
+
+  @override
+  String get avatarTitle => "ⴳⴳ ⵜ ⵉⵏⵏⴽ!";
+
+  @override
+  String get avatarSubtitle => "ⵙⵜⵉ ⴰⵏⴰⵡ ⴷ ⵓⴰⴼⴰⵜⴰⵔ ⵏⵏⴽ";
+
+  @override
+  String get genderLabel => "ⴰⵏⴰⵡ";
+
+  @override
+  String get genderBoy => "ⴰⵔⴱⴰ";
+
+  @override
+  String get genderGirl => "ⵜⴰⵔⴱⴰⵜ";
+
+  @override
+  String get chooseAvatar => "ⵙⵜⵉ ⴰⴼⴰⵜⴰⵔ ⵏⵏⴽ";
+
+  @override
+  String get loadTitle => "ⵏⵙⵏⵓⵍⴼⴰ ⵜⴰⴷⵓⵙⵉ ⵏⵏⴽ...";
+
+  @override
+  String get loadSubtitle => "ⵎⵥⵥⵉ ⵏ ⵜⵙⵓⵔⵜ, ⵉ ⴽⵢⵢ ⴽⴰ!";
+
+  @override
+  String get loadAlmost => "ⵇⵔⵉⴱ ⴰⴷ ⵏⴱⴷⵓ!";
+
+  @override
+  String get loadPhase1 => "ⵏⵙⵙⵓⵊⴷ ⴰⵎⴰⴹⴰⵍ ⵏ ⵓⵍⵎⴰⴷ ⵏⵏⴽ";
+
+  @override
+  String get loadPhase2 => "ⵏⵙⵙⵓⵊⴷ ⵜⴰⵙⵓⵎⵜ ⵏⵏⴽ";
+
+  @override
+  String get loadPhase3 => "ⵏⵕⵥⵎ ⵜⵉⵖⵔⴰ ⵏⵏⴽ ⵜⵉⵎⵣⵡⵓⵔⴰ";
+
+  @override
+  String get loadPhase4 => "ⵏⵔⵏⵓ ⴽⵔⴰ ⵏ ⵉⵜⵔⴰⵏ";
+
+  @override
+  String get homeHi => "ⴰⵣⵓⵍ,";
+
+  @override
+  String get homeHiNoName => "ⴰⵣⵓⵍ!";
+
+  @override
+  String get homeReady => "ⵉⵙ ⵜⵓⵊⴷⴷ ⵉ ⵜⴰⵡⵙⵙⵓⵔⵜ ⵜⴰⵎⴰⵢⵏⵓⵜ?";
+
+  @override
+  String get verseOfTheDay => "ⵜⴰⵢⵜ ⵏ ⵡⴰⵙⵙ";
+
+  @override
+  String get tapToListen => "ⴷⴷⵓⵇⵇⵙ ⴰⴷ ⵜⵙⴼⵍⴷⴷ";
+
+  @override
+  String get homeIT => "ⵜⵉⵏⴼⵓⵔⵎⴰⵜⵉⴽ";
+
+  @override
+  String get homeReligion => "ⴰⴷⵉⵏ";
+
+  @override
+  String get dailyAdventure => "ⵜⴰⵡⵙⵙⵓⵔⵜ ⵏ ⵡⴰⵙⵙ";
+
+  @override
+  String get dailyDoneMsg => "ⵜⴽⵎⵎⵍⴷ ⴰⵙⵙⴰ — ⴰⵖⵓⵍ ⴰⵙⴽⴽⴰ!";
+
+  @override
+  String get magicShop => "ⵜⴰⵃⴰⵏⵓⵜ ⵜⴰⵙⵃⵔⴰⵏⵜ";
+
+  @override
+  String get magicShopSub => "ⵉⵡⵍⴰⴼⵏ, ⵉⴱⴰⵏⵉⵢⵔⵏ ⴷ ⵓⴳⴳⴰⵔ!";
+
+  @override
+  String get exploreLabel => "ⵙⵙⵓⴷⵓ";
+
+  @override
+  String get goldLabel => "ⵓⵔⵖ";
+
+  @override
+  String get gemsLabel => "ⵉⵢⵇⵓⵜⵏ";
+
+  @override
+  String get getAGem => "ⴰⵡⵉ ⵢⴰⵜ ⵜⵢⵇⵓⵜ";
+
+  @override
+  String get navHome => "ⴰⵙⵏⵓⴱⴳ";
+
+  @override
+  String get navQuests => "ⵜⵉⵡⵓⵔⵉⵡⵉⵏ";
+
+  @override
+  String get navCollections => "ⵜⵉⵛⵔⴰⴹ";
+
+  @override
+  String get navShop => "ⵜⴰⵃⴰⵏⵓⵜ";
+
+  @override
+  String get navProfile => "ⴰⵎⴰⵖⵏⵓ";
+
+  @override
+  String levelN(int n) {
+    return "ⴰⵙⵡⵉⵔ $n";
+  }
+
+  @override
+  String dailyGoalMsg(int n) {
+    return "ⵔⵣⵓ $n ⵏ ⵉⴳⵣⵎⴰⵏ ⴰⵙⵙⴰ";
+  }
+
+  @override
+  String tradeGoldForGem(int n) {
+    return "ⵙⵏⴼⵍ $n ⵏ ⵓⵔⵖ ⵙ 1 ⵜⵢⵇⵓⵜ?";
+  }
+
+  @override
+  String get wordExplorer => "ⴰⵎⵙⵙⵓⴷⵓ ⵏ ⵜⴳⵓⵔⵉⵡⵉⵏ";
+
+  @override
+  String get playLabel => "ⵓⵔⴰⵔ";
+
+  @override
+  String get heroPlay => "ⵓⵔⴰⵔ.";
+
+  @override
+  String get heroLearn => "ⵍⵎⴷ.";
+
+  @override
+  String get heroShine => "ⴼⴼⵓⵍⴽⵉ!";
+
+  @override
+  String get gamesHeroSub => "ⴽⵓ ⵜⵓⵔⴰⵔⵜ ⴷ ⴰⵙⵙⵓⴷⵓ ⴰⵎⴰⵢⵏⵓ.";
+
+  @override
+  String get filterAll => "ⴰⴽⴽ";
+
+  @override
+  String get filterWords => "ⵜⵉⴳⵓⵔⵉⵡⵉⵏ";
+
+  @override
+  String get filterLogic => "ⵜⴰⵍⵓⴳⵉⵇⵜ";
+
+  @override
+  String get filterCreative => "ⴰⵙⵏⴼⴍⵉ";
+
+  @override
+  String get todaysChallenge => "ⴰⵙⵉⴽⵍ ⵏ ⵡⴰⵙⵙ";
+
+  @override
+  String get challengeDone => "ⵜⵙⵎⴷⴷ ⴰⵙⵉⴽⵍ — ⴰⵔ ⴰⵙⴽⴽⴰ!";
+
+  @override
+  String get unlockGameFree => "ⴰⵔⵎ ⵜⵓⵔⴰⵔⵜ ⴰⴷ ⵙ ⵓⵏⴳⴳⴰⵍ?";
+
+  @override
+  String get notEnoughGems => "ⵓⵔ ⵜⵡⴰⴷ ⵜⵢⵇⵓⵜⵉⵏ — ⴽⵎⵎⵍ ⵜⵓⵔⴰⵔⵜ!";
+
+  @override
+  String get geography => "ⵜⴰⵊⵓⵖⵔⴰⴼⵜ";
+
+  @override
+  String get coursesHeroTop => "ⴰⵔ ⵜⵜⴰⵎⵖⵉ";
+
+  @override
+  String get coursesHeroBottom => "ⵜⴰⵙⵜⵙⴰⵢⵜ ⵏⵏⴽ!";
+
+  @override
+  String get startLabel => "ⴱⴷⵓ";
+
+  @override
+  String get yourSubjects => "ⵜⵉⵏⵓⵔⴰⵔⵉⵏ ⵏⵏⴽ";
+
+  @override
+  String get soonBadge => "ⵖⵓⵔ ⵜⵉⴷⵜ";
+
+  @override
+  String get gradeSoonTitle => "ⵉⵍⵎⵎⴰⴷⵏ ⵉⵎⴰⵢⵏⵓⵜⵏ ⵍⵍⴰⵏ ⴳ ⵓⴱⵔⵉⴷ!";
+
+  @override
+  String get gradeSoonBody => "ⵉⵍⵎⵎⴰⴷⵏ ⵏ ⵓⵙⵡⵉⵔ ⴰⴷ ⴰⴷ ⴷⴰⵙⵏ. ⵔⵣⵓ ⴰⵙⵡⵉⵔ ⴰⵎⵣⵡⴰⵔⵓ!";
+
+  @override
+  String get learningGoal => "ⵉⵙⵡⵉ ⵏ ⵓⵍⵎⵎⵓⴷ";
+
+  @override
+  String get learningGoalMsg => "ⴽⵎⵎⵍ ⵢⴰⵏ ⵓⵍⵎⵎⵓⴷ ⴰⵙⵙⴰ";
+
+  @override
+  String get learningGoalDone => "ⵜⵍⴽⵎⴷ ⵉⵙⵡⵉ — ⵢⵓⴼ!";
+
+  @override
+  String challengeGoal(int n) {
+    return "ⵓⵔⴰⵔ $n ⵏ ⵜⵓⵔⴰⵔⵉⵏ";
+  }
+
+  @override
+  String unlockGameFor(int n) {
+    return "ⴰⵔⵎ ⵜⵓⵔⴰⵔⵜ ⴰⴷ ⵙ $n ⵏ ⵜⵢⵇⵓⵜⵉⵏ?";
+  }
+
+  @override
+  String lessonsCount(int a, int b) {
+    return "$a / $b ⵉⵍⵎⵎⴰⴷⵏ";
+  }
+
+  @override
+  String get itHeroTop => "ⵉⵇⵔⵔⴰⵢⵏ ⵉⵎⵥⵥⴰⵏ.";
+
+  @override
+  String get itHeroBottom => "ⵜⵉⵡⵏⴳⵉⵎⵉⵏ ⵜⵉⵎⵇⵇⵔⴰⵏⵉⵏ!";
+
+  @override
+  String get itHeroSub => "ⵙⵙⵓⴷⵓ ⵜⴰⵙⵃⵔⵜ ⵏ ⵜⵜⵉⴽⵏⵓⵍⵓⵊⵉⵜ";
+
+  @override
+  String get levelBeginner => "ⴰⵎⴱⴷⴰⵢ";
+
+  @override
+  String get levelExplorer => "ⴰⵎⵙⵙⵓⴷⵓ";
+
+  @override
+  String get levelCreator => "ⴰⵎⵙⵏⴼⵍⵓ";
+
+  @override
+  String get itBasics => "ⵉⵙⵓⵍⴰⵙ ⵏ ⵓⵙⵎⵙⵙⵓ";
+
+  @override
+  String get itCoding => "ⴰⵙⵖⵉⵡⵙ";
+
+  @override
+  String get itTyping => "ⴰⵙⵙⴽⵛⵎ ⵙ ⵓⵏⴰⵙⵉⵡ";
+
+  @override
+  String get itSafety => "ⵜⴰⵏⴼⵍⵉⵜ ⴳ ⵓⵏⵜⵔⵏⵉⵜ";
+
+  @override
+  String get itRobotics => "ⵜⴰⵔⵓⴱⵓⵜⵉⴽⵜ";
+
+  @override
+  String get itCreativity => "ⴰⵙⵏⴼⵍⵓ ⴰⵏⵓⵎⴰⵏ";
+
+  @override
+  String get lessonWhatIsComputer => "ⵎⴰ ⵢⴰⴷ ⴷ ⴰⵙⵎⵙⵙⵓ?";
+
+  @override
+  String get lessonComputerParts => "ⵉⴼⵔⴷⵉⵙⵏ ⵏ ⵓⵙⵎⵙⵙⵓ";
+
+  @override
+  String get lessonMousePractice => "ⴰⵙⵎⵔⵙ ⵏ ⵜⵖⵔⴷⴰ";
+
+  @override
+  String get lessonInputOutput => "ⴰⵙⴽⵛⵎ ⴷ ⵓⴼⵓⵖ";
+
+  @override
+  String get lessonBinary => "ⵉⵎⴹⴰⵏ ⵉⵙⵉⵏⴰⵏ";
+
+  @override
+  String get techChallenge => "ⴰⵙⵉⴽⵍ ⵏ ⵜⵜⵉⴽⵏⵓⵍⵓⵊⵉⵜ";
+
+  @override
+  String get techChallengeMsg => "ⴽⵎⵎⵍ ⵢⴰⵏ ⵓⵍⵎⵎⵓⴷ ⵏ ⵜⵏⴼⵓⵔⵎⴰⵜⵉⴽ ⴰⵙⵙⴰ";
+
+  @override
+  String lessonN(int n) {
+    return "ⴰⵍⵎⵎⵓⴷ $n";
+  }
+
+  @override
+  String get religionHeroSub => "ⵙⴼⵍⴷ, ⵍⵎⴷ ⵜⴼⴼⵓⵍⴽⵉⴷ ⵙ ⵓⵎⴰⵏ ⵏⵏⴽ";
+
+  @override
+  String get listenReadAlong => "ⵙⴼⵍⴷ ⵜⵖⵔⴷ";
+
+  @override
+  String get duaaMorning => "ⴰⴷⵓⵄⴰ ⵏ ⵜⵉⴼⴰⵡⵜ";
+
+  @override
+  String get duaaAfternoon => "ⴰⴷⵓⵄⴰ ⵏ ⵜⵡⵓⵔⵉ";
+
+  @override
+  String get duaaNight => "ⴰⴷⵓⵄⴰ ⵏ ⵜⵉⵎⴷⴷⵉⵜ";
+
+  @override
+  String get practiseTitle => "ⵙⵎⵔⵙ";
+
+  @override
+  String get dailyLight => "ⵜⴰⴼⴰⵡⵜ ⵏ ⵡⴰⵙⵙ";
+
+  @override
+  String get dailyLightMsg => "ⵙⴼⵍⴷ ⵉ ⵢⴰⵜ ⵜⴰⵢⵜ ⵏⵖ ⵙⵎⵔⵙ ⴰⵙⵙⴰ";
+
+  @override
+  String get relQuran => "ⵍⵇⵓⵔⴰⵏ";
+
+  @override
+  String get relQuranSub => "ⵙⴼⵍⴷ ⵜⵃⴹⵓⴷ";
+
+  @override
+  String get relPrayer => "ⵜⴰⵥⴰⵍⵍⵉⵜ";
+
+  @override
+  String get relPrayerSub => "ⵍⵎⴷ ⵙ ⵜⵉⴼⵔⵓⵙⵉⵏ";
+
+  @override
+  String get relDuas => "ⵉⴷⵓⵄⴰⵜⵏ ⵏ ⵡⴰⵙⵙ";
+
+  @override
+  String get relDuasSub => "ⵉ ⴽⵓ ⵜⴰⵙⵔⴰⴳⵜ";
+
+  @override
+  String get relStories => "ⵜⵉⵏⴼⵓⵙⵉⵏ";
+
+  @override
+  String get relStoriesSub => "ⵜⵉⵏⴼⵓⵙⵉⵏ ⵉ ⵓⵙⵙⵏⴽⵔ";
+
+  @override
+  String get relManners => "ⵜⵉⵎⵓⵔⴰ ⵉⴼⵓⵍⴽⵉⵏ";
+
+  @override
+  String get relMannersSub => "ⵜⴰⵏⴼⵍⵉⵜ ⴽⵓ ⴰⵙⵙ";
+
+  @override
+  String get relBasics => "ⵉⵙⵓⵍⴰⵙ ⵏ ⵍⵉⵙⵍⴰⵎ";
+
+  @override
+  String get relBasicsSub => "ⵙⵙⵓⴷⵓ ⵉⵙⵓⵍⴰⵙ";
+
+  @override
+  String get relHeroTop => "ⵍⵎⴷ ⵙ";
+
+  @override
+  String get relHeroBottom => "ⵓⵍ";
+
+  @override
+  String get relHeroSub => "ⵙⵙⵓⴷⵓ, ⵙⴼⵍⴷ, ⵜⵎⵖⵉⴷ";
+
+  @override
+  String get continueListening => "ⴽⵎⵎⵍ ⴰⵙⴼⵍⴷ";
+
+  @override
+  String get startListening => "ⴱⴷⵓ ⴰⵙⴼⵍⴷ";
+
+  @override
+  String get surahFatiha => "ⵜⴰⵙⵓⵔⵜ ⵏ ⵍⴼⴰⵜⵉⵃⴰ";
+
+  @override
+  String get relListen => "ⵙⴼⵍⴷ";
+
+  @override
+  String get relLearn => "ⵍⵎⴷ";
+
+  @override
+  String get kindnessTitle => "ⵢⴰⵜ ⵜⵏⴼⵍⵉⵜ ⴰⵙⵙⴰ";
+
+  @override
+  String get kindnessMsg => "ⵄⴰⵡⵏ ⵢⴰⵏ ⵜⴱⴹⴷ ⴰⴹⵚⴰ — ⴷⴷⵓⵇⵇⵙ ⵎⵍⵎⵉ ⵜⴽⵎⵎⵍⴷ";
+
+  @override
+  String get kindnessDone => "ⵢⵓⴼ! ⵕⴱⴱⵉ ⵉⵔⴰ ⵉⵎⴰⵏⴼⵍⵉⵜⵏ";
+
+  @override
+  String get relDone => "ⵉⵜⵜⵓⴽⵎⵎⵍⵏ";
+
+  @override
+  String get nowLabel => "ⵖⵉⵍⴰ";
+
+  @override
+  String get ameen => "ⴰⵎⵉⵏ";
+
+  @override
+  String get wuduFirstStep => "ⴰⵡⵢⴰⴹ ⴷ ⴰⵙⵓⵔⵉⴼ ⴰⵎⵣⵡⴰⵔⵓ ⵏ ⵜⵥⴰⵍⵍⵉⵜ";
+
+  @override
+  String get questHeroTop => "ⵜⵉⴼⵔⵓⵙⵉⵏ ⵜⵉⵎⵥⵥⴰⵏⵉⵏ.";
+
+  @override
+  String get questHeroBottom => "ⵉⵙⵙⵓⴷⵓⵜⵏ ⵉⵎⵇⵇⵔⴰⵏⵏ!";
+
+  @override
+  String get questHeroSub => "ⵍⵎⴷ ⴽⵔⴰ ⴰⵎⴰⵢⵏⵓ ⴽⵓ ⴰⵙⵙ";
+
+  @override
+  String get questDaily => "ⵏ ⵡⴰⵙⵙ";
+
+  @override
+  String get questMilestones => "ⵉⵙⵡⵉⵔⵏ";
+
+  @override
+  String get newQuestsIn => "ⵜⵉⵡⵓⵔⵉⵡⵉⵏ ⵜⵉⵎⴰⵢⵏⵓⵜⵉⵏ ⴷⴳ";
+
+  @override
+  String get questReader => "ⴰⵎⵖⵔⴰⴹ ⴰⵎⵙⵙⵓⴷⵓ";
+
+  @override
+  String get questReaderSub => "ⴽⵎⵎⵍ 1 ⵓⵍⵎⵎⵓⴷ";
+
+  @override
+  String get questPlayer => "ⵓⵔⴰⵔ ⵜⵙⵙⵓⴷⵓⴷ";
+
+  @override
+  String get questTech => "ⴰⵎⵙⵙⵓⴷⵓ ⵏ ⵜⵜⵉⴽⵏⵓⵍⵓⵊⵉⵜ";
+
+  @override
+  String get questTechSub => "ⴽⵎⵎⵍ 1 ⵓⵍⵎⵎⵓⴷ ⵏ ⵜⵏⴼⵓⵔⵎⴰⵜⵉⴽ";
+
+  @override
+  String get claimLabel => "ⴰⵡⵉ";
+
+  @override
+  String get goLabel => "ⴷⴷⵓ";
+
+  @override
+  String get doneLabel => "ⵉⴽⵎⵎⵍ";
+
+  @override
+  String get dailyTreasure => "ⴰⴳⴰⵏⵉⵎ ⵏ ⵡⴰⵙⵙ";
+
+  @override
+  String get dailyTreasureSub => "ⴰⵡⵉ ⴽⵔⴰⴹ ⵜⵉⵡⵓⵔⵉⵡⵉⵏ";
+
+  @override
+  String get treasureOpened => "ⵉⵜⵜⵓⵕⵥⵎ — ⴰⵔ ⴰⵙⴽⴽⴰ!";
+
+  @override
+  String get nextMilestone => "ⴰⵙⵡⵉⵔ ⵏⵏⴽ ⴷ ⵉⴷⴷⴰⵏ";
+
+  @override
+  String get allMilestonesDone => "ⵜⵍⴽⵎⴷ ⴰⴽⴽ ⵉⵙⵡⵉⵔⵏ! 🎉";
+
+  @override
+  String milestoneLessons(int n) {
+    return "ⴽⵎⵎⵍ $n ⵏ ⵉⵍⵎⵎⴰⴷⵏ";
+  }
+
+  @override
+  String milestoneGames(int n) {
+    return "ⵓⵔⴰⵔ $n ⵏ ⵜⵓⵔⴰⵔⵉⵏ";
+  }
+
+  @override
+  String get editProfile => "ⵙⵏⴼⵍ ⴰⵎⴰⵖⵏⵓ";
+
+  @override
+  String get customizeLabel => "ⵙⵎⴰⵙⵙ";
+
+  @override
+  String get myLearningJourney => "ⴰⴱⵔⵉⴷ ⵉⵏⵓ ⵏ ⵓⵍⵎⵎⵓⴷ";
+
+  @override
+  String get statLessons => "ⵉⵍⵎⵎⴰⴷⵏ";
+
+  @override
+  String get statGames => "ⵜⵓⵔⴰⵔⵉⵏ";
+
+  @override
+  String get statStreak => "ⵓⵙⵙⴰⵏ ⵉⵎⴹⴼⴰⵕⵏ";
+
+  @override
+  String get myBadges => "ⵜⵉⵎⴰⵜⴰⵔ ⵉⵏⵓ";
+
+  @override
+  String get viewAll => "ⵥⵕ ⴰⴽⴽ";
+
+  @override
+  String get badgeFirstSteps => "ⵜⵉⴼⵔⵓⵙⵉⵏ ⵜⵉⵎⵣⵡⵓⵔⴰ";
+
+  @override
+  String get badgeFirstStepsHow => "ⴽⵎⵎⵍ ⴰⵍⵎⵎⵓⴷ ⵏⵖ ⵜⵓⵔⴰⵔⵜ ⵜⴰⵎⵣⵡⴰⵔⵓⵜ.";
+
+  @override
+  String get badgeBookLover => "ⴰⵎⴰⵔⴰⴳ ⵏ ⵉⴷⵍⵉⵙⵏ";
+
+  @override
+  String get badgeBookLoverHow => "ⴽⵎⵎⵍ 10 ⵏ ⵉⵍⵎⵎⴰⴷⵏ.";
+
+  @override
+  String get badgeCodeStarter => "ⴰⵎⵙⵖⵉⵡⵙ ⴰⵎⴱⴷⴰⵢ";
+
+  @override
+  String get badgeCodeStarterHow => "ⴽⵎⵎⵍ ⴰⵍⵎⵎⵓⴷ ⴰⵎⵣⵡⴰⵔⵓ ⵏ ⵜⵏⴼⵓⵔⵎⴰⵜⵉⴽ.";
+
+  @override
+  String get badgeEarned => "ⵜⵔⴱⵃⴷ ⵜⴰⵎⴰⵜⴰⵔⵜ ⴰ! 🎉";
+
+  @override
+  String get titleLittleLearner => "ⴰⵎⵍⵎⴰⴷ ⴰⵎⵥⵥⵢⴰⵏ";
+
+  @override
+  String get titleCuriousExplorer => "ⴰⵎⵙⵙⵓⴷⵓ ⴰⵎⵙⵜⴰⵏ";
+
+  @override
+  String get titleBrightThinker => "ⴰⵎⵅⵎⵎⴰⵎ ⵉⴼⵓⵍⴽⵉⵏ";
+
+  @override
+  String get titleStarScholar => "ⴰⵏⵍⵎⴰⴷ ⴰⵜⵔⴰⵔ";
+
+  @override
+  String get titleKnowledgeHero => "ⴰⵎⵣⵡⴰⵔⵓ ⵏ ⵜⵓⵙⵙⵏⴰ";
+
+  @override
+  String get myCollections => "ⵜⵉⵛⵔⴰⴹ ⵉⵏⵓ";
+
+  @override
+  String get myCollectionsSub => "ⵉⵡⵍⴰⴼⵏ, ⵉⴱⴰⵏⵉⵢⵔⵏ ⴷ ⵜⵉⵎⴰⵜⴰⵔ";
+
+  @override
+  String daysN(int n) {
+    return "$n ⵏ ⵓⵙⵙⴰⵏ";
+  }
+
+  @override
+  String lessonsN(int n) {
+    return "$n ⵏ ⵉⵍⵎⵎⴰⴷⵏ";
+  }
+
+  @override
+  String playedN(int n) {
+    return "$n ⵜⵓⵔⴰⵔⵉⵏ";
+  }
+
+  @override
+  String get secAudio => "ⴰⵎⵙⵍⴰⵢ";
+
+  @override
+  String get secLanguageHome => "ⵜⵓⵜⵍⴰⵢⵜ ⴷ ⵓⵙⵏⵓⴱⴳ";
+
+  @override
+  String get secSaveProgress => "ⵃⴹⵓ ⴰⵙⵓⵎⵔ ⵏⵏⴽ";
+
+  @override
+  String get secMore => "ⵓⴳⴳⴰⵔ";
+
+  @override
+  String get showVerseOfDay => "ⵙⵎⵍ ⵜⴰⵢⵜ ⵏ ⵡⴰⵙⵙ";
+
+  @override
+  String get showDailyDuaa => "ⵙⵎⵍ ⴰⴷⵓⵄⴰ ⵏ ⵡⴰⵙⵙ";
+
+  @override
+  String get backupAccount => "ⴰⵎⵉⴹⴰⵏ ⵏ ⵓⵃⴹⴰⵢ";
+
+  @override
+  String get backupSub => "ⵃⴹⵓ ⴰⵍⵎⵎⵓⴷ ⵏⵏⴽ ⴳ ⴽⵓ ⵉⵍⵍⵉⵍⵏ";
+
+  @override
+  String get parentsOnly => "ⵉ ⵉⵎⴰⵔⴰⵡⵏ ⴽⴰⴷ";
+
+  @override
+  String get parentalArea => "ⴰⵙⵓⵔⵙ ⵏ ⵉⵎⴰⵔⴰⵡⵏ";
+
+  @override
+  String get helpSupport => "ⵜⴰⵡⵙⵙⴰ";
+
+  @override
+  String get aboutMoorTaalim => "ⵅⴼ MoorTaalim";
+
+  @override
+  String get toggleOn => "ON";
+
+  @override
+  String get toggleOff => "OFF";
+
+  @override
+  String get zghNotice => "ⵜⴰⵎⴰⵣⵉⵖⵜ ⵓⵔ ⵜⴽⵎⵎⵍ ⴰⵔ ⴷⵖⵉ — Jalnix ⵜⵜⵅⴷⴰⵎⵏ ⴼⵍⵍⴰⵙ!";
+
+  @override
+  String get quranHeroTop => "ⵙⴼⵍⴷⵖ";
+
+  @override
+  String get quranHeroBottom => "ⵍⵎⴷⵖ";
+
+  @override
+  String get quranHeroSub => "ⵙ ⵓⵏⵣⴳⵓⵎ ⵉⵏⵓ, ⵜⴰⵢⵜ ⵙ ⵜⴰⵢⵜ";
+
+  @override
+  String get resumeListening => "ⴽⵎⵎⵍ ⴰⵙⴼⵍⴷ";
+
+  @override
+  String get tabSurahs => "ⵜⵉⵙⵓⵔⵉⵏ";
+
+  @override
+  String get tabFavorites => "ⵉⵎⵓⴼⴰⵢⵏ";
+
+  @override
+  String get searchSurah => "ⵔⵣⵓ ⵜⴰⵙⵓⵔⵜ";
+
+  @override
+  String get modeListen => "ⵙⴼⵍⴷ";
+
+  @override
+  String get modeRepeat => "ⴰⵍⵙ";
+
+  @override
+  String get modeMemorize => "ⵃⴹⵓ";
+
+  @override
+  String get audioSoon => "ⴰⵎⵙⵍⴰⵢ ⵖⵓⵔ ⵜⵉⴷⵜ";
+
+  @override
+  String get versesTitle => "ⵜⵉⵢⵜⵉⵏ";
+
+  @override
+  String get noFavorites => "ⴷⴷⵓⵇⵇⵙ ♡ ⴰⴷ ⵜⵔⵏⵓⴷ ⵜⴰⵙⵓⵔⵜ";
+
+  @override
+  String get noResults => "ⵓⵔ ⵉⵍⵍⵉ ⵢⴰⵜ";
+
+  @override
+  String get tapToReveal => "ⴷⴷⵓⵇⵇⵙ ⴰⴷ ⵜⵥⵕⴷ";
+
+  @override
+  String get hideAll => "ⴼⴼⵔ ⴰⴽⴽ";
+
+  @override
+  String get mmWellDone => "ⵢⵓⴼ!";
+
+  @override
+  String get mmReplay => "ⴰⵍⵙ";
+
+  @override
+  String get mmNextLevel => "ⴰⵙⵡⵉⵔ ⵉⴹⴼⵕⵏ";
+
+  @override
+  String get mmFindPairs => "ⴰⴼ ⵜⵉⵢⵓⴳⴰ!";
+
+  @override
+  String get mmTagline => "ⵥⵕ, ⵙⵎⵜⵜⵉ, ⵙⵎⵙⴰⵙⴰ!";
+
+  @override
+  String get mmRestart => "ⴰⵍⴰⵙ";
+
+  @override
+  String get mmHint => "ⵜⴰⵎⵓⵜⵍⵜ";
+
+  @override
+  String mmMovesN(int n) {
+    return "ⵜⵉⵎⵓⵙⵙⵉⵡⵉⵏ: $n";
+  }
+
+  @override
+  String mmPairs(int a, int b) {
+    return "ⵜⵉⵢⵓⴳⴰ: $a / $b";
+  }
 }

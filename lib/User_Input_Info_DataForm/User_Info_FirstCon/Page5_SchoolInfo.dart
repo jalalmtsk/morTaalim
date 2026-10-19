@@ -1,641 +1,665 @@
-import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
-import 'package:mortaalim/tools/Reysable_Tools/MarqueeEffect_TextTool.dart';
-import 'package:provider/provider.dart';
-import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
-import '../../XpSystem.dart';
-import '../../main.dart';
+import 'dart:math';
 
+import 'package:flutter/material.dart';
+import 'package:mortaalim/main.dart';
+import 'package:mortaalim/widgets/KidScene/kid_form.dart';
+import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
+import 'package:provider/provider.dart';
+
+import '../../XpSystem.dart';
+import '../../tools/audio_tool/Audio_Manager.dart';
+
+/// Onboarding — "Tell us about your school" (shown when the child said they
+/// go to school). Stored values are the same English keys as before
+/// ('Public', 'Primary', 'Grade 1', 'Science', …).
 class SchoolInfoPage extends StatefulWidget {
   final VoidCallback? onNext;
+  final VoidCallback? onBack;
 
-  const SchoolInfoPage({Key? key, this.onNext}) : super(key: key);
+  const SchoolInfoPage({Key? key, this.onNext, this.onBack}) : super(key: key);
 
   @override
   State<SchoolInfoPage> createState() => _SchoolInfoPageState();
 }
 
-class _SchoolInfoPageState extends State<SchoolInfoPage>
-    with SingleTickerProviderStateMixin {
-  final _formKey = GlobalKey<FormState>();
+class _SchoolInfoPageState extends State<SchoolInfoPage> with TickerProviderStateMixin {
   final TextEditingController _schoolNameController = TextEditingController();
+  final FocusNode _nameFocus = FocusNode();
 
   String? _selectedSchoolType;
   String? _selectedSchoolLevel;
   String? _selectedGrade;
   String? _selectedLyceeTrack;
-
-  bool? _isStudent; // true = Student, false = Not Student
   bool _preferNotToSaySchool = false;
+  bool _precached = false;
 
-  late AnimationController _gradientController;
-  int currentGradientIndex = 0;
-
-  bool _isFormValid = false;
-  String? _errorMessage;
-  bool _isSaving = false;
-
-  final List<List<Color>> gradientSets = [
-    [Colors.deepPurple.shade400, Colors.deepPurple.shade800],
-    [Colors.orange.shade300, Colors.orange.shade700],
-    [Colors.teal.shade300, Colors.teal.shade700],
-  ];
-
-  final List<String> schoolTypes = ['Private', 'Public', 'Other'];
-  final List<String> schoolLevels = ['Primary', 'Middle School', 'High School'];
-
-  final Map<String, List<String>> gradesByLevel = {
+  static const List<String> schoolTypes = ['Public', 'Private', 'Other'];
+  static const List<String> schoolLevels = ['Primary', 'Middle School', 'High School'];
+  static const Map<String, List<String>> gradesByLevel = {
     'Primary': ['Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 'Grade 6'],
     'Middle School': ['Grade 7', 'Grade 8', 'Grade 9'],
     'High School': ['Common Track', '1st Year Bac', 'Baccalaureate'],
   };
+  static const List<String> lyceeTracks = ['Science', 'Arts'];
 
-  final List<String> lyceeTracks = ['Science', 'Arts'];
+  late final AnimationController _intro =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 1600));
+  late final AnimationController _idle =
+      AnimationController(vsync: this, duration: const Duration(seconds: 8))..repeat();
+
+  static const List<String> _assets = [
+    KidAssets.valleyBg,
+    KidAssets.wordmark,
+    KidAssets.backBtn,
+    KidAssets.mascotPeek,
+    KidAssets.exclaim,
+  ];
 
   @override
   void initState() {
     super.initState();
     _loadProfile();
-
-    _schoolNameController.addListener(_validateForm);
-
-    _gradientController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 6),
-    )..addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        setState(() {
-          currentGradientIndex = (currentGradientIndex + 1) % gradientSets.length;
-        });
-        _gradientController.forward(from: 0);
-      }
-    });
-
-    _gradientController.forward();
+    _nameFocus.addListener(() => setState(() {}));
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_precached) {
+      _precached = true;
+      KidAssets.precache(context, _assets);
+      _intro.forward();
+    }
+  }
 
-  String localizeSchoolType(BuildContext context, String type) {
-    switch (type) {
+  void _loadProfile() {
+    final user = Provider.of<ExperienceManager>(context, listen: false).userProfile;
+    final name = user.schoolName;
+    if (name == 'Prefer not to say') {
+      _preferNotToSaySchool = true;
+    } else if (name != 'Not a student') {
+      _schoolNameController.text = name;
+    }
+    _selectedSchoolType = schoolTypes.contains(user.schoolType) ? user.schoolType : null;
+    _selectedSchoolLevel = schoolLevels.contains(user.schoolLevel) ? user.schoolLevel : null;
+    final grades = gradesByLevel[_selectedSchoolLevel] ?? const [];
+    _selectedGrade = grades.contains(user.schoolGrade) ? user.schoolGrade : null;
+    _selectedLyceeTrack = lyceeTracks.contains(user.lyceeTrack) ? user.lyceeTrack : null;
+  }
+
+  @override
+  void dispose() {
+    _schoolNameController.dispose();
+    _nameFocus.dispose();
+    _intro.dispose();
+    _idle.dispose();
+    super.dispose();
+  }
+
+  // ── Localized labels ─────────────────────────────────────────────────────
+  String _type(String t) {
+    switch (t) {
       case 'Private':
         return tr(context).schoolTypePrivate;
       case 'Public':
         return tr(context).schoolTypePublic;
-      case 'Other':
-        return tr(context).schoolTypeOther;
       default:
-        return type;
+        return tr(context).schoolTypeOther;
     }
   }
 
-  String localizeSchoolLevel(BuildContext context, String level) {
-    switch (level) {
+  String _level(String l) {
+    switch (l) {
       case 'Primary':
         return tr(context).schoolLevelPrimary;
       case 'Middle School':
         return tr(context).schoolLevelMiddle;
-      case 'High School':
+      default:
         return tr(context).schoolLevelHigh;
+    }
+  }
+
+  String _grade(String g) {
+    switch (g) {
+      case 'Grade 1':
+        return tr(context).gradesPrimary1;
+      case 'Grade 2':
+        return tr(context).gradesPrimary2;
+      case 'Grade 3':
+        return tr(context).gradesPrimary3;
+      case 'Grade 4':
+        return tr(context).gradesPrimary4;
+      case 'Grade 5':
+        return tr(context).gradesPrimary5;
+      case 'Grade 6':
+        return tr(context).gradesPrimary6;
+      case 'Grade 7':
+        return tr(context).gradesMiddle1;
+      case 'Grade 8':
+        return tr(context).gradesMiddle2;
+      case 'Grade 9':
+        return tr(context).gradesMiddle3;
+      case 'Common Track':
+        return tr(context).gradesHigh1;
+      case '1st Year Bac':
+        return tr(context).gradesHigh2;
+      case 'Baccalaureate':
+        return tr(context).gradesHigh3;
       default:
-        return level;
+        return g;
     }
   }
 
-  String localizeGrade(BuildContext context, String level, String grade) {
-    switch (level) {
-      case 'Primary':
-        switch (grade) {
-          case 'Grade 1': return tr(context).gradesPrimary1;
-          case 'Grade 2': return tr(context).gradesPrimary2;
-          case 'Grade 3': return tr(context).gradesPrimary3;
-          case 'Grade 4': return tr(context).gradesPrimary4;
-          case 'Grade 5': return tr(context).gradesPrimary5;
-          case 'Grade 6': return tr(context).gradesPrimary6;
-        }
-        break;
-      case 'Middle School':
-        switch (grade) {
-          case 'Grade 7': return tr(context).gradesMiddle1;
-          case 'Grade 8': return tr(context).gradesMiddle2;
-          case 'Grade 9': return tr(context).gradesMiddle3;
-        }
-        break;
-      case 'High School':
-        switch (grade) {
-          case 'Common Track': return tr(context).gradesHigh1;
-          case '1st Year Bac': return tr(context).gradesHigh2;
-          case 'Baccalaureate': return tr(context).gradesHigh3;
-        }
-        break;
-    }
-    return grade;
-  }
+  String _track(String t) =>
+      t == 'Science' ? tr(context).lyceeTrackScience : tr(context).lyceeTrackLiterature;
 
-  String _getLocalizedValue(String id, String value) {
-    switch (id) {
-      case 'schoolType':
-        return localizeSchoolType(context, value);
-      case 'schoolLevel':
-        return localizeSchoolLevel(context, value);
-      case 'grade':
-        return localizeGrade(context, _selectedSchoolLevel ?? '', value);
-      case 'track':
-        switch (value) {
-          case 'Science': return tr(context).lyceeTrackScience;
-          case 'Arts': return tr(context).lyceeTrackLiterature;
-          default: return value;
-        }
-      default:
-        return value;
-    }
-  }
+  bool get _isHigh => _selectedSchoolLevel == 'High School';
 
+  bool get _isValid =>
+      _selectedSchoolType != null &&
+      _selectedSchoolLevel != null &&
+      _selectedGrade != null &&
+      (!_isHigh || _selectedLyceeTrack != null);
 
-  void _validateForm() {
-    final schoolNameValid = _preferNotToSaySchool || _schoolNameController.text.trim().isNotEmpty;
-    final schoolTypeValid = _selectedSchoolType != null && _selectedSchoolType!.isNotEmpty;
-    final schoolLevelValid = _selectedSchoolLevel != null && _selectedSchoolLevel!.isNotEmpty;
-    final gradeValid = _selectedGrade != null && _selectedGrade!.isNotEmpty;
-    final lyceeTrackValid = _selectedSchoolLevel == 'High School'
-        ? _selectedLyceeTrack != null && _selectedLyceeTrack!.isNotEmpty
-        : true;
-
-    final isValid = schoolNameValid && schoolTypeValid && schoolLevelValid && gradeValid && lyceeTrackValid;
-
-    if (isValid != _isFormValid) {
-      setState(() {
-        _isFormValid = isValid;
-      });
-    }
-  }
-
-
-  Future<void> _loadProfile() async {
-    final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
-    final user = experienceManager.userProfile;
-
+  // ── Pickers ──────────────────────────────────────────────────────────────
+  Future<void> _pickLevel() async {
+    FocusScope.of(context).unfocus();
+    final am = Provider.of<AudioManager>(context, listen: false)..playEventSound('PopButton');
+    final v = await showKidOptionSheet<String>(
+      context: context,
+      title: tr(context).chooseSchoolLevel,
+      options: schoolLevels,
+      selected: _selectedSchoolLevel,
+      label: _level,
+      leading: (l) => Text(l == 'Primary' ? '🎒' : (l == 'Middle School' ? '📚' : '🎓'),
+          style: const TextStyle(fontSize: 24)),
+    );
+    if (v == null || !mounted) return;
+    am.playEventSound('clickButton2');
     setState(() {
-      _schoolNameController.text = user.schoolName;
-      _selectedSchoolType = user.schoolType.isNotEmpty ? user.schoolType : null;
-      _selectedSchoolLevel = user.schoolLevel.isNotEmpty ? user.schoolLevel : null;
-      _selectedGrade = user.schoolGrade.isNotEmpty ? user.schoolGrade : null;
-      _selectedLyceeTrack = user.lyceeTrack.isNotEmpty ? user.lyceeTrack : null;
+      if (v != _selectedSchoolLevel) {
+        _selectedGrade = null;
+        _selectedLyceeTrack = null;
+      }
+      _selectedSchoolLevel = v;
     });
-
-    _validateForm();
   }
 
-  Future<bool> saveData() async {
-    setState(() { _errorMessage = null; });
-
-    if (_selectedSchoolType == null ||
-        _selectedSchoolLevel == null ||
-        _selectedGrade == null ||
-        (_selectedSchoolLevel == 'High School' && _selectedLyceeTrack == null) ||
-        _schoolNameController.text.trim().isEmpty) {
-      setState(() { _errorMessage = "Please complete all fields"; });
-      return false;
-    }
-
-    setState(() { _isSaving = true; });
-    try {
-      final experienceManager = Provider.of<ExperienceManager>(context, listen: false);
-      experienceManager.setSchoolName(_preferNotToSaySchool ? "Prefer not to say" : _schoolNameController.text.trim());
-      experienceManager.setSchoolType(_selectedSchoolType!);
-      experienceManager.setSchoolLevel(_selectedSchoolLevel!);
-      experienceManager.setSchoolGrade(_selectedGrade!);
-      experienceManager.setLyceeTrack(_selectedSchoolLevel == 'High School'
-          ? _selectedLyceeTrack!
-          : '');
-      return true;
-    } catch (e) {
-      setState(() { _errorMessage = "Error saving data: $e"; });
-      return false;
-    } finally {
-      if (mounted) setState(() { _isSaving = false; });
-    }
-  }
-
-
-  @override
-  void dispose() {
-    _gradientController.dispose();
-    _schoolNameController.removeListener(_validateForm);
-    _schoolNameController.dispose();
-    super.dispose();
-  }
-
-  Widget _buildInputCard({required Widget child}) {
-    return Card(
-      color: Colors.white.withOpacity(0.15),
-      elevation: 8,
-      shadowColor: Colors.black45,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 2),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 2),
-        child: child,
-      ),
+  Future<void> _pickGrade() async {
+    if (_selectedSchoolLevel == null) return;
+    FocusScope.of(context).unfocus();
+    final am = Provider.of<AudioManager>(context, listen: false)..playEventSound('PopButton');
+    final v = await showKidOptionSheet<String>(
+      context: context,
+      title: tr(context).chooseGrade,
+      options: gradesByLevel[_selectedSchoolLevel]!,
+      selected: _selectedGrade,
+      label: _grade,
     );
+    if (v == null || !mounted) return;
+    am.playEventSound('clickButton2');
+    setState(() => _selectedGrade = v);
   }
 
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String label,
-    required String validatorMessage,
-    IconData? icon,
-    bool enabled = true, // ← add this
-  }) {
-    final audioManager = Provider.of<AudioManager>(context, listen: false);
-    return TextFormField(
-      controller: controller,
-      enabled: enabled, // ← forward it here
-      onTap: () {
-        audioManager.playEventSound('PopButton');
-      },
-      style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: const TextStyle(color: Colors.white70, fontSize: 16),
-        prefixIcon: icon != null ? Icon(icon, color: Colors.white70, size: 24) : null,
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: Colors.white70.withOpacity(0.6), width: 1.8),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.white, width: 2),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Colors.redAccent, width: 2),
-        ),
-      ),
-      validator: (value) {
-        if (!enabled) return null; // skip validation if disabled
-        if (value == null || value.trim().isEmpty) {
-          return validatorMessage;
-        }
-        return null;
-      },
-      cursorColor: Colors.white,
+  Future<void> _pickTrack() async {
+    FocusScope.of(context).unfocus();
+    final am = Provider.of<AudioManager>(context, listen: false)..playEventSound('PopButton');
+    final v = await showKidOptionSheet<String>(
+      context: context,
+      title: tr(context).chooseTrack,
+      options: lyceeTracks,
+      selected: _selectedLyceeTrack,
+      label: _track,
+      leading: (t) => Text(t == 'Science' ? '🔬' : '📖', style: const TextStyle(fontSize: 24)),
     );
+    if (v == null || !mounted) return;
+    am.playEventSound('clickButton2');
+    setState(() => _selectedLyceeTrack = v);
   }
 
+  void _save() {
+    final em = Provider.of<ExperienceManager>(context, listen: false);
+    final name = _schoolNameController.text.trim();
+    em.setSchoolName(_preferNotToSaySchool || name.isEmpty ? 'Prefer not to say' : name);
+    em.setSchoolType(_selectedSchoolType!);
+    em.setSchoolLevel(_selectedSchoolLevel!);
+    em.setSchoolGrade(_selectedGrade!);
+    em.setLyceeTrack(_isHigh ? _selectedLyceeTrack! : '');
+  }
 
-  Widget _buildDropdownField({
-    required String id, // 👈 add this
-    required String label,
-    String? value,
-    required List<String> items,
-    required String validatorMessage,
-    required void Function(String?) onChanged,
-    IconData? icon,
-  }) {
-    final audioManager = Provider.of<AudioManager>(context, listen: false);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 1.0),
-      child: DropdownButtonFormField<String>(
-        value: items.contains(value) ? value : null,
-        dropdownColor: Colors.deepOrange.shade400.withOpacity(0.5),
-        onTap: () {
-          audioManager.playEventSound('toggleButton');
-        },
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(color: Colors.white70, fontSize: 14),
-          prefixIcon: icon != null ? Icon(icon, color: Colors.white70, size: 20) : null,
-          enabledBorder: OutlineInputBorder(
-            gapPadding: 1,
-            borderRadius: BorderRadius.circular(25),
-            borderSide: BorderSide(color: Colors.white70.withOpacity(0.6), width: 1.8),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: Colors.white, width: 2),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(16),
-            borderSide: const BorderSide(color: Colors.redAccent, width: 2),
-          ),
-        ),
-        style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-        items: items
-            .map((e) => DropdownMenuItem<String>(
-          value: e,
-          child: Text(
-             _getLocalizedValue(id, e),
-            style: const TextStyle(color: Colors.white),
-          ),
-        ))
-            .toList(),
-        onChanged: (val) {
-          onChanged(val);
-          _validateForm();
-        },
-        validator: (val) {
-          if (val == null || val.isEmpty) {
-            return validatorMessage;
-          }
-          return null;
-        },
-      ),
-    );
+  void _continue() {
+    if (!_isValid) return;
+    Provider.of<AudioManager>(context, listen: false).playEventSound('clickButton');
+    FocusScope.of(context).unfocus();
+    _save();
+    widget.onNext?.call();
+  }
+
+  void _skip() {
+    Provider.of<AudioManager>(context, listen: false).playEventSound('clickButton');
+    FocusScope.of(context).unfocus();
+    widget.onNext?.call();
   }
 
   @override
   Widget build(BuildContext context) {
-    final nextIndex = (currentGradientIndex + 1) % gradientSets.length;
     final audioManager = Provider.of<AudioManager>(context, listen: false);
+    final mq = MediaQuery.of(context);
+    final size = mq.size;
+    final pad = mq.padding;
+    final g = KidSceneGeometry(size);
+    final headerShift = max(0.0, pad.top + 6 - g.y(48));
+    final isRtl = Directionality.of(context) == TextDirection.rtl;
 
-    final colors = List<Color>.generate(
-      2,
-          (i) => Color.lerp(
-        gradientSets[currentGradientIndex][i],
-        gradientSets[nextIndex][i],
-        _gradientController.value,
-      )!,
-    );
+    final buttonH = g.lc(130, 50, 70);
+    final buttonTop = min(g.y(1458), size.height - pad.bottom - buttonH - 46);
+    final linkH = g.lc(50, 30, 38);
+    final panelTop = g.y(415) + headerShift * 0.5;
+    final panelBottom = buttonTop - linkH - 4;
+    final panelW = g.contentWidth(810, pad: 14);
+    final fieldH = g.lc(88, 44, 54);
+    final labelSize = g.lc(31, 14, 17);
+    final keyboard = mq.viewInsets.bottom;
 
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: colors,
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: SafeArea(
-          child: Stack(
+    Widget gap([double v = 18]) => SizedBox(height: g.l(v));
+
+    final panel = Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFFFFCF6),
+        borderRadius: BorderRadius.circular(g.lc(44, 22, 30)),
+        border: Border.all(color: const Color(0xFFD9CCF7), width: 3),
+        boxShadow: [
+          BoxShadow(color: KidColors.purpleDeep.withOpacity(0.16), blurRadius: 24, offset: const Offset(0, 10)),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(g.lc(44, 22, 30)),
+        child: SingleChildScrollView(
+          padding: EdgeInsets.fromLTRB(g.l(40), g.l(34), g.l(40), g.l(30) + keyboard * 0.6),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (_isStudent == null)
-                _buildStudentSelection(audioManager)
-              else
-                _buildFormContent(audioManager),
+              KidFieldLabel(tr(context).schoolName, tag: tr(context).optionalTag, size: labelSize),
+              _NameField(
+                controller: _schoolNameController,
+                focusNode: _nameFocus,
+                height: fieldH,
+                hint: tr(context).enterSchoolName,
+                enabled: !_preferNotToSaySchool,
+                onTap: () => audioManager.playEventSound('PopButton'),
+              ),
+              gap(12),
+              _CheckRow(
+                label: tr(context).preferNotToSay,
+                value: _preferNotToSaySchool,
+                size: labelSize,
+                onChanged: (v) {
+                  audioManager.playEventSound('clickButton2');
+                  FocusScope.of(context).unfocus();
+                  setState(() => _preferNotToSaySchool = v);
+                },
+              ),
+              gap(22),
+              KidFieldLabel(tr(context).schoolType, size: labelSize),
+              Row(
+                children: [
+                  for (int i = 0; i < schoolTypes.length; i++) ...[
+                    if (i > 0) SizedBox(width: g.l(12)),
+                    Expanded(
+                      child: _Segment(
+                        label: _type(schoolTypes[i]),
+                        selected: _selectedSchoolType == schoolTypes[i],
+                        height: fieldH,
+                        onTap: () {
+                          audioManager.playEventSound('clickButton2');
+                          FocusScope.of(context).unfocus();
+                          setState(() => _selectedSchoolType = schoolTypes[i]);
+                        },
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+              gap(22),
+              KidFieldLabel(tr(context).schoolLevel, size: labelSize),
+              KidSelectField(
+                height: fieldH,
+                value: _selectedSchoolLevel == null ? null : _level(_selectedSchoolLevel!),
+                hint: tr(context).chooseSchoolLevel,
+                onTap: _pickLevel,
+              ),
+              gap(22),
+              KidFieldLabel(tr(context).grade, size: labelSize),
+              KidSelectField(
+                height: fieldH,
+                value: _selectedGrade == null ? null : _grade(_selectedGrade!),
+                hint: tr(context).chooseGrade,
+                onTap: _selectedSchoolLevel == null ? null : _pickGrade,
+              ),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOutCubic,
+                alignment: Alignment.topCenter,
+                child: _isHigh
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          gap(22),
+                          KidFieldLabel(tr(context).highSchoolTrack, size: labelSize),
+                          KidSelectField(
+                            height: fieldH,
+                            value: _selectedLyceeTrack == null ? null : _track(_selectedLyceeTrack!),
+                            hint: tr(context).chooseTrack,
+                            onTap: _pickTrack,
+                          ),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.only(start: 10, top: 6),
+                            child: Text(tr(context).trackHighSchoolOnly,
+                                style: kidBodyStyle(labelSize * 0.75, color: KidColors.muted)),
+                          ),
+                        ],
+                      )
+                    : const SizedBox(width: double.infinity),
+              ),
             ],
           ),
         ),
       ),
     );
+
+    return Scaffold(
+      backgroundColor: KidColors.sky,
+      resizeToAvoidBottomInset: false,
+      body: GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Stack(
+          children: [
+            KidSceneBackground(asset: KidAssets.valleyBg, g: g),
+
+            Positioned(
+              left: 0,
+              right: 0,
+              top: headerShift,
+              height: g.y(200),
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: Stack(children: [
+                  SceneSprite(
+                    g: g, asset: KidAssets.wordmark, left: 272, top: 62, width: 398, aspect: 0.2289,
+                    idle: _idle, intro: _intro, introFrom: 0, introTo: 0.45, bob: 4,
+                  ),
+                ]),
+              ),
+            ),
+
+            // Title (left of the peeking mascot)
+            Positioned(
+              left: g.fitLeft(140, 600, bleed: 0, margin: 12),
+              width: min(g.l(600), size.width * 0.72),
+              top: g.y(170) + headerShift * 0.5,
+              height: g.l(220),
+              child: KidIntro(
+                intro: _intro,
+                from: 0.15,
+                to: 0.6,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text(
+                          tr(context).schoolTitle.replaceFirst(' ', '\n', _mid(tr(context).schoolTitle)),
+                          textAlign: TextAlign.center,
+                          style: kidTitleStyle(g.lc(82, 24, 44)),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: g.l(6)),
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(tr(context).schoolSubtitle,
+                          style: kidBodyStyle(g.lc(32, 13, 18), color: KidColors.ink, weight: FontWeight.w600)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            // Form panel
+            Positioned(
+              left: (size.width - panelW) / 2,
+              width: panelW,
+              top: panelTop,
+              height: max(160.0, panelBottom - panelTop),
+              child: KidIntro(intro: _intro, from: 0.3, to: 0.8, rise: 40, child: panel),
+            ),
+
+            // Mascot peeking over the panel
+            Positioned.fill(
+              child: Directionality(
+                textDirection: TextDirection.ltr,
+                child: IgnorePointer(
+                  child: Stack(children: [
+                    SceneSprite(
+                      g: g, asset: KidAssets.mascotPeek,
+                      left: 688, top: (panelTop / g.s) - 245 * 1.0914 + 8, width: 245, aspect: 1.0914,
+                      idle: _idle, intro: _intro, introFrom: 0.45, introTo: 0.9,
+                      pop: false, bob: 3, rot: 0.02, phase: 0.3, speed: 2,
+                    ),
+                    SceneSprite(
+                      g: g, asset: KidAssets.exclaim,
+                      left: 866, top: (panelTop / g.s) - 262, width: 64, aspect: 1.0157,
+                      idle: _idle, intro: _intro, introFrom: 0.6, introTo: 1.0,
+                      bob: 4, rot: 0.1, phase: 0.6, speed: 2,
+                    ),
+                  ]),
+                ),
+              ),
+            ),
+
+            // Skip + Continue
+            Positioned(
+              left: 0,
+              right: 0,
+              top: buttonTop - linkH,
+              child: KidIntro(
+                intro: _intro,
+                from: 0.6,
+                to: 1.0,
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: linkH,
+                      child: Center(
+                        child: KidLink(text: tr(context).skipForNow, onTap: _skip, size: g.lc(28, 12, 15)),
+                      ),
+                    ),
+                    KidButton(
+                      label: tr(context).continueLabel,
+                      width: g.contentWidth(722, pad: 24),
+                      height: buttonH,
+                      onPressed: _isValid ? _continue : null,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            if (widget.onBack != null)
+              Positioned(
+                top: g.y(46) + headerShift,
+                left: isRtl ? null : g.fitLeft(42, 88, bleed: 0),
+                right: isRtl ? g.fitLeft(42, 88, bleed: 0) : null,
+                child: KidIntro(
+                  intro: _intro,
+                  from: 0.1,
+                  to: 0.5,
+                  rise: -10,
+                  child: KidBackButton(
+                    size: g.lc(88, 40, 52),
+                    onTap: () {
+                      audioManager.playEventSound('cancelButton');
+                      FocusScope.of(context).unfocus();
+                      widget.onBack!.call();
+                    },
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
   }
 
-  // Student / Not Student Selection
-  Widget _buildStudentSelection(AudioManager audioManager) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+  static int _mid(String s) {
+    final spaces = <int>[];
+    for (int i = 0; i < s.length; i++) {
+      if (s[i] == ' ') spaces.add(i);
+    }
+    if (spaces.isEmpty) return s.length;
+    final mid = s.length / 2;
+    spaces.sort((a, b) => (a - mid).abs().compareTo((b - mid).abs()));
+    return spaces.first;
+  }
+}
+
+class _NameField extends StatelessWidget {
+  final TextEditingController controller;
+  final FocusNode focusNode;
+  final double height;
+  final String hint;
+  final bool enabled;
+  final VoidCallback onTap;
+
+  const _NameField({
+    required this.controller,
+    required this.focusNode,
+    required this.height,
+    required this.hint,
+    required this.enabled,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final h = height;
+    final focused = focusNode.hasFocus;
+    return AnimatedOpacity(
+      duration: const Duration(milliseconds: 200),
+      opacity: enabled ? 1 : 0.45,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        height: h,
+        padding: EdgeInsets.symmetric(horizontal: h * 0.32),
+        alignment: AlignmentDirectional.centerStart,
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(h * 0.42),
+          border: Border.all(
+              color: focused ? KidColors.purple : const Color(0xFFC7B2F6), width: focused ? 3 : 2.5),
+        ),
+        child: TextField(
+          controller: controller,
+          focusNode: focusNode,
+          enabled: enabled,
+          onTap: onTap,
+          maxLength: 60,
+          textCapitalization: TextCapitalization.words,
+          textInputAction: TextInputAction.done,
+          cursorColor: KidColors.purple,
+          style: kidBodyStyle(h * 0.33, color: KidColors.ink, weight: FontWeight.w600),
+          decoration: InputDecoration(
+            counterText: '',
+            isDense: true,
+            border: InputBorder.none,
+            hintText: hint,
+            hintStyle: kidBodyStyle(h * 0.33, color: const Color(0xFFA996D6), weight: FontWeight.w600),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CheckRow extends StatelessWidget {
+  final String label;
+  final bool value;
+  final double size;
+  final ValueChanged<bool> onChanged;
+
+  const _CheckRow({required this.label, required this.value, required this.size, required this.onChanged});
+
+  @override
+  Widget build(BuildContext context) {
+    final box = size * 1.55;
+    return KidPressable(
+      onTap: () => onChanged(!value),
+      pressedScale: 0.97,
+      child: Row(
         children: [
-          SizedBox(
-            height: 220,
-            child: Lottie.asset(
-              'assets/animations/FirstTouchAnimations/School.json',
-              fit: BoxFit.contain,
+          const SizedBox(width: 6),
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: box,
+            height: box,
+            decoration: BoxDecoration(
+              color: value ? KidColors.purple : Colors.white,
+              borderRadius: BorderRadius.circular(box * 0.28),
+              border: Border.all(color: value ? KidColors.purple : const Color(0xFFC7B2F6), width: 2.5),
+            ),
+            child: AnimatedScale(
+              scale: value ? 1 : 0,
+              duration: const Duration(milliseconds: 220),
+              curve: Curves.easeOutBack,
+              child: Icon(Icons.check_rounded, color: Colors.white, size: box * 0.75),
             ),
           ),
-          const SizedBox(height: 20),
-           Text(
-            tr(context).areYouAStudent,
-            style: TextStyle(
-                fontSize: 26,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                shadows: [Shadow(blurRadius: 8, color: Colors.black54, offset: Offset(0, 3))]),
-          ),
-          const SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  audioManager.playEventSound('clickButton');
-                  setState(() {
-                    _isStudent = true;
-                  });
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20))),
-                child:  Text(tr(context).yes, style: TextStyle(fontSize: 18, color: Colors.white)),
-              ),
-              const SizedBox(width: 20),
-              ElevatedButton(
-                onPressed: () {
-                  audioManager.playEventSound('clickButton');
-                  setState(() {
-                    _isStudent = false;
-                  });
-                  widget.onNext?.call(); // Skip form
-                },
-                style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20))),
-                child:  Text(tr(context).no, style: TextStyle(fontSize: 18, color: Colors.white)),
-              ),
-            ],
-          )
+          const SizedBox(width: 12),
+          Flexible(child: Text(label, style: kidBodyStyle(size, color: KidColors.ink))),
         ],
       ),
     );
   }
+}
 
-  // Form Content for Students
-  Widget _buildFormContent(AudioManager audioManager) {
-    return Stack(
-      children: [
-        Stack(
-          fit: StackFit.expand,
-          children: [
-            ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
-              physics: const BouncingScrollPhysics(),
-              children: [
-                SizedBox(
-                  height: 220,
-                  child: Center(
-                    child: Lottie.asset(
-                      'assets/animations/FirstTouchAnimations/School.json',
-                      fit: BoxFit.contain,
-                    ),
-                  ),
-                ),
-                 Text(
-                  tr(context).schoolInformation,
-                  style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      shadows: [Shadow(blurRadius: 8, color: Colors.black54, offset: Offset(0, 3))]),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 10),
-                _buildInputCard(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildInputField(
-                        controller: _schoolNameController,
-                        label: tr(context).schoolName,
-                        validatorMessage: tr(context).pleaseEnterSchoolName,
-                        icon: Icons.school_outlined,
-                        enabled: !_preferNotToSaySchool, // disable if prefer not to say
-                      ),
-                      Row(
-                        children: [
-                          Checkbox(
-                            value: _preferNotToSaySchool,
-                            onChanged: (val) {
-                              setState(() {
-                                _preferNotToSaySchool = val ?? false;
-                                if (_preferNotToSaySchool) {
-                                  _schoolNameController.text = "Prefer not to say";
-                                } else {
-                                  _schoolNameController.clear();
-                                }
-                                _validateForm();
-                              });
-                            },
-                            activeColor: Colors.white,
-                            checkColor: Colors.deepOrange,
-                          ),
-                          Text(
-                            tr(context).preferNotToSay,
-                            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-                _buildInputCard(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 5,
-                        child:_buildDropdownField(
-                          id: 'schoolType',
-                          label: tr(context).schoolType,
-                          value: _selectedSchoolType,
-                          items: schoolTypes,
-                          validatorMessage: tr(context).selectSchoolType,
-                          onChanged: (val) => setState(() => _selectedSchoolType = val),
-                          icon: Icons.apartment_outlined,
-                        )
-                      ),
-                      const SizedBox(width: 6),
-                      Expanded(
-                        flex: 6,
-                        child: _buildDropdownField(
-                          id: 'schoolLevel',
-                          label: tr(context).schoolLevel,
-                          value: _selectedSchoolLevel,
-                          items: schoolLevels,
-                          validatorMessage: tr(context).selectSchoolLevel,
-                          onChanged: (val) {
-                            setState(() {
-                              _selectedSchoolLevel = val;
-                              _selectedGrade = null;
-                              _selectedLyceeTrack = null;
-                            });
-                            _validateForm();
-                          },
-                          icon: Icons.account_tree_outlined,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+class _Segment extends StatelessWidget {
+  final String label;
+  final bool selected;
+  final double height;
+  final VoidCallback onTap;
 
+  const _Segment({required this.label, required this.selected, required this.height, required this.onTap});
 
-                if (_selectedSchoolLevel != null)
-                  _buildInputCard(
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 7,
-                          child: _buildDropdownField(
-                            id: 'grade',
-                            label: tr(context).grade,
-                            value: _selectedGrade,
-                            items: gradesByLevel[_selectedSchoolLevel!] ?? [],
-                            validatorMessage:tr(context).selectGrade,
-                            onChanged: (val) {
-                              setState(() {
-                                _selectedGrade = val;
-                              });
-                              _validateForm();
-                            },
-                            icon: Icons.grade_outlined,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                _buildInputCard(child: Row(children: [
-                  if (_selectedSchoolLevel == 'High School') ...[
-                    const SizedBox(width: 2),
-                    Expanded(
-                      flex: 4,
-                      child: _buildDropdownField(
-                        id: 'track',
-                        label: tr(context).highSchoolTrack,
-                        value: _selectedLyceeTrack,
-                        items: lyceeTracks,
-                        validatorMessage: tr(context).selectHighSchoolTrack,
-                        onChanged: (val) {
-                          setState(() {
-                            _selectedLyceeTrack = val;
-                          });
-                          _validateForm();
-                        },
-                      ),
-                    ),
-                  ]
-                ],
-                )),
-
-                if (_errorMessage != null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Text(
-                      _errorMessage!,
-                      style: const TextStyle(color: Colors.redAccent, fontWeight: FontWeight.w700),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                const SizedBox(height: 80), // space for FAB
-              ],
-            ),
-          ],
-        ),
-        if (_isFormValid)
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: FloatingActionButton(
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.deepOrange,
-              elevation: 12,
-              onPressed: _isSaving
-                  ? null
-                  : () async {
-                final success = await saveData();
-                if (success) {
-                  audioManager.playEventSound('clickButton');
-                  widget.onNext?.call();
-                }
-              },
-              child: _isSaving
-                  ? const CircularProgressIndicator(color: Colors.deepOrange)
-                  : const Icon(Icons.arrow_forward, size: 32),
-            ),
+  @override
+  Widget build(BuildContext context) {
+    final h = height;
+    return KidPressable(
+      onTap: onTap,
+      pressedScale: 0.95,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        height: h,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.symmetric(horizontal: 6),
+        decoration: BoxDecoration(
+          color: selected ? const Color(0xFFDCCBFF) : Colors.white,
+          borderRadius: BorderRadius.circular(h * 0.32),
+          border: Border.all(
+            color: selected ? KidColors.purple : const Color(0xFFC7B2F6),
+            width: selected ? 3.5 : 2.5,
           ),
-      ],
+          boxShadow: selected
+              ? [BoxShadow(color: KidColors.purple.withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 4))]
+              : null,
+        ),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Text(label,
+              style: kidBodyStyle(h * 0.33, color: KidColors.purpleDeep, weight: FontWeight.w700)),
+        ),
+      ),
     );
   }
 }

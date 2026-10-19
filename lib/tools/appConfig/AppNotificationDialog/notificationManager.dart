@@ -16,6 +16,8 @@ class NotificationManager {
   /// Show dynamic notification dialog if Firestore or local settings allow it
   Future<void> showNotificationIfAllowed(BuildContext context, String locale) async {
     final prefs = await SharedPreferences.getInstance();
+    // Turned off in Settings → More → Notifications
+    if (prefs.getBool('app_notifications_enabled') == false) return;
 
     try {
       final doc = await firestore.collection(collectionName).doc(documentName).get();

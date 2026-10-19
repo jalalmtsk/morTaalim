@@ -149,7 +149,7 @@ class UpdateChecker {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset('assets/images/UI/BackGrounds/ForcedUpdate2Bg.png', fit: BoxFit.cover),
+          Image.asset('assets/images/UI/BackGrounds/ForcedUpdate2Bg.jpg', fit: BoxFit.cover),
           Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -258,7 +258,7 @@ class UpdateChecker {
   }
 
   Widget _buildSocialButton({
-    required FaIconData icon,
+    required IconData icon,
     required Color color,
     required VoidCallback onTap,
   }) {
@@ -448,7 +448,7 @@ class _OptionalUpdateDialog extends StatelessWidget {
   }
 
   Widget _buildSocialButton({
-    required FaIconData icon,
+    required IconData icon,
     required Color color,
     required VoidCallback onTap,
   }) {

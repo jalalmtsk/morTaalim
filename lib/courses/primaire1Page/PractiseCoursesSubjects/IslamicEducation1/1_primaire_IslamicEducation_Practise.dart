@@ -1,3 +1,4 @@
+import 'package:mortaalim/Manager/lesson_progress.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -195,7 +196,7 @@ class _IndexIslamicEducation1PractiseState
                       accent: _T.cardAccents[i % _T.cardAccents.length],
                       emoji:  _T.cardEmojis[i % _T.cardEmojis.length],
                       index:  i,
-                      onTap:  () => _go(ctx, exercises[i]['page'] as Widget),
+                      onTap:  () { LessonProgress.record('islamicEducation', i); _go(ctx, exercises[i]['page'] as Widget); },
                     ),
                   ),
                 ),

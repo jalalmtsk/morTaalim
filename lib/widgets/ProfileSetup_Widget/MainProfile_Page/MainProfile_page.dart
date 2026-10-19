@@ -1,3 +1,4 @@
+import 'package:mortaalim/Manager/models/banner_catalog.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/Inside_Course_Logic/HomeCourse_Tools/Widgets/MascotBubble.dart';
@@ -49,15 +50,7 @@ class _MainProfilePageState extends State<MainProfilePage> with SingleTickerProv
     return Center(child: Text(avatar, style: const TextStyle(fontSize: 64)));
   }
 
-  String _getAvatarFrameImage(int level) {
-    if (level >= 50) return 'assets/images/Banners/Islamic/Islamic7.png';
-    if (level >= 35) return 'assets/images/Banners/Islamic/Islamic6.png';
-    if (level >= 25) return 'assets/images/Banners/Islamic/Islamic5.png';
-    if (level >= 15) return 'assets/images/Banners/Islamic/Islamic4.png';
-    if (level >= 7) return 'assets/images/Banners/Islamic/Islamic3.png';
-    if (level >= 5) return 'assets/images/Banners/Islamic/Islamic2.png';
-    return 'assets/images/Banners/Islamic/Islamic1.png';
-  }
+  String _getAvatarFrameImage(int level) => BannerCatalog.forLevel(level);
 
   Future<void> _confirmResetXP() async {
     final confirmed = await showDialog<bool>(

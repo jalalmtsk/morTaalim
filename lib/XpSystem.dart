@@ -1,3 +1,4 @@
+import 'package:mortaalim/Manager/models/avatar_catalog.dart';
 import 'dart:async';
 import 'dart:math';
 import 'dart:ui';
@@ -494,7 +495,13 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   // ---------------- Reward & Banner methods -------------------
 
   void addTokenBanner(BuildContext context, int amount) {
-    if (_tokenBannerVisible) return;
+    if (_tokenBannerVisible) {
+      // A banner is already showing: still give the reward, just skip a second banner.
+      Tolims += amount;
+      notifyListeners();
+      _saveData();
+      return;
+    }
 
     Tolims += amount;
     _recentlyAddedTokens = amount;
@@ -708,8 +715,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
     _xp = 0;
     _stars = 0;
     Tolims = 20;
-    customization.unlockedAvatars = ["🐱", "🐻"];
-    customization.selectedAvatar = 'assets/images/AvatarImage/OnlyAvatar/Avatar1.png';
+    customization.unlockedAvatars = List<String>.from(AvatarCatalog.starter);
+    customization.selectedAvatar = AvatarCatalog.defaultAvatar;
     _unlockedCourses = [];
     _unlockedLanguages = ['arabic', 'french'];
     _saveData();

@@ -89,7 +89,7 @@ class _BannerPage extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Image.asset(
-            'assets/images/UI/BackGrounds/bannedBg.png',
+            'assets/images/UI/BackGrounds/bannedBg.jpg',
             fit: BoxFit.cover,
           ),
           Container(

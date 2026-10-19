@@ -276,6 +276,12 @@ class AudioManager extends ChangeNotifier with WidgetsBindingObserver{
     }
   }
 
+  Future<void> stopAlert() async {
+    try {
+      await _alertPlayer.stop();
+    } catch (_) {}
+  }
+
   Future<void> toggleAlertMute() async {
     _isAlertMuted = !_isAlertMuted;
     await _saveSetting(_prefIsAlertMutedKey, _isAlertMuted);

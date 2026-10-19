@@ -8,7 +8,7 @@ import 'package:mortaalim/Authentification/Auth.dart';
 import 'package:mortaalim/Manager/models/LearningPrefrences.dart';
 
 import 'package:mortaalim/games/AnimalSound/AnimalSound_Index.dart';
-import 'package:mortaalim/games/MemoryFlipGame/MemoryFlip_index.dart';
+import 'package:mortaalim/games/MemoryMatch/memory_match_page.dart';
 import 'package:mortaalim/games/PianoTiles_game/piano_tiles.dart';
 import 'package:mortaalim/screens/main_home_screen/Settings/setting_Page.dart';
 import 'package:mortaalim/screens/main_home_screen/indexPage_tools/IT_index_tool/IT_exercices/computerPart.dart';
@@ -249,7 +249,7 @@ class _MyAppState extends State<MyApp> {
             'FavoriteWords':   (context) => const FavoriteWordsPage(),
             'SugarSmash':      (context) => const Sugrasmash(),
             'BreakingWalls':   (context) => BreakingWalls(),
-            'MemoryFlip':      (context) => MFIndexPage(),
+            'MemoryFlip':      (context) => const MemoryMatchPage(),
 
             // ── IT courses — Tier 1 (Grade 1–2, free) ─────────────────
             'IT_WhatIsComputer': (context) => WhatIsComputerExercise(),

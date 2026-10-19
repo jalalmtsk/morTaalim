@@ -1712,4 +1712,784 @@ class AppLocalizationsDe extends AppLocalizations {
 
   @override
   String get totalXp => 'Gesamt-XP';
+
+  @override
+  String get loginWorldOfDiscovery => "Eine Welt voller Entdeckungen!";
+
+  @override
+  String get loginLearnPlayGrow => "Lerne, spiele und wachse jeden Tag.";
+
+  @override
+  String get loginLetsExplore => "Los geht's";
+
+  @override
+  String get loginForParents => "Für Eltern";
+
+  @override
+  String get parentGateTitle => "Frag einen Erwachsenen";
+
+  @override
+  String get parentsInfoGoogle => "Sie können jederzeit in den Einstellungen ein Google-Konto verknüpfen, um den Fortschritt Ihres Kindes zu sichern.";
+
+  @override
+  String get langChooseTitle => "Wähle deine Sprache";
+
+  @override
+  String get langLearnTogether => "Lass uns zusammen lernen!";
+
+  @override
+  String get continueLabel => "Weiter";
+
+  @override
+  String get nameTitle => "Wie heißt du?";
+
+  @override
+  String get nameSubtitle => "Mach dieses Abenteuer zu deinem!";
+
+  @override
+  String get nameLabel => "Dein Name";
+
+  @override
+  String get nameHint => "Dein Vorname";
+
+  @override
+  String get nameHelper => "Dein Abenteuer beginnt hier.";
+
+  @override
+  String parentGateQuestion(int a, int b) {
+    return "Wie viel ist $a × $b?";
+  }
+
+  @override
+  String get whereFromTitle => "Woher kommst du?";
+
+  @override
+  String get whereFromSubtitle => "Lass uns deine Welt entdecken!";
+
+  @override
+  String get chooseCountry => "Wähle dein Land";
+
+  @override
+  String get chooseCity => "Wähle deine Stadt";
+
+  @override
+  String get skipForNow => "Vorerst überspringen";
+
+  @override
+  String get searchCity => "Suche deine Stadt…";
+
+  @override
+  String get typeYourCity => "Gib deine Stadt ein";
+
+  @override
+  String get popularCities => "Beliebte Städte";
+
+  @override
+  String get noCityFound => "Keine Stadt gefunden – Eingabe verwenden";
+
+  @override
+  String get studentTitle => "Gehst du zur Schule?";
+
+  @override
+  String get studentSubtitle => "Wähle deinen Lernweg!";
+
+  @override
+  String get studentYes => "Ja";
+
+  @override
+  String get studentYesSub => "Ich gehe zur Schule";
+
+  @override
+  String get studentNo => "Nein";
+
+  @override
+  String get studentNoSub => "Ich lerne auf meine Art";
+
+  @override
+  String get schoolTitle => "Erzähl uns von deiner Schule";
+
+  @override
+  String get schoolSubtitle => "Lernen, das zu dir passt.";
+
+  @override
+  String get optionalTag => "(optional)";
+
+  @override
+  String get enterSchoolName => "Name deiner Schule";
+
+  @override
+  String get chooseSchoolLevel => "Wähle deine Stufe";
+
+  @override
+  String get chooseGrade => "Wähle deine Klasse";
+
+  @override
+  String get chooseTrack => "Wähle deinen Zweig";
+
+  @override
+  String get trackHighSchoolOnly => "Nur für die Oberstufe";
+
+  @override
+  String get bannerSubtitle => "Gib deinem Profil deinen eigenen Stil!";
+
+  @override
+  String get yourProfile => "Dein Profil";
+
+  @override
+  String get pickYourFavorite => "Wähle deinen Favoriten";
+
+  @override
+  String get useThisBanner => "Dieses Banner nehmen";
+
+  @override
+  String get ageTitle => "Wie alt bist du?";
+
+  @override
+  String get ageSubtitle => "Ein Abenteuer nur für dich!";
+
+  @override
+  String get yearsOld => "Jahre alt";
+
+  @override
+  String get avatarTitle => "Mach es zu deinem!";
+
+  @override
+  String get avatarSubtitle => "Wähle dein Geschlecht und deinen Avatar";
+
+  @override
+  String get genderLabel => "Geschlecht";
+
+  @override
+  String get genderBoy => "Junge";
+
+  @override
+  String get genderGirl => "Mädchen";
+
+  @override
+  String get chooseAvatar => "Wähle deinen Avatar";
+
+  @override
+  String get loadTitle => "Dein Abenteuer entsteht...";
+
+  @override
+  String get loadSubtitle => "Ein bisschen Magie, nur für dich!";
+
+  @override
+  String get loadAlmost => "Fast bereit zum Entdecken!";
+
+  @override
+  String get loadPhase1 => "Deine Lernwelt wird vorbereitet";
+
+  @override
+  String get loadPhase2 => "Dein Rucksack wird gepackt";
+
+  @override
+  String get loadPhase3 => "Deine ersten Lektionen werden freigeschaltet";
+
+  @override
+  String get loadPhase4 => "Ein paar Sterne kommen dazu";
+
+  @override
+  String get homeHi => "Hallo,";
+
+  @override
+  String get homeHiNoName => "Hallo!";
+
+  @override
+  String get homeReady => "Bereit für ein neues Abenteuer?";
+
+  @override
+  String get verseOfTheDay => "Vers des Tages";
+
+  @override
+  String get tapToListen => "Tippen zum Hören";
+
+  @override
+  String get homeIT => "IT";
+
+  @override
+  String get homeReligion => "Religion";
+
+  @override
+  String get dailyAdventure => "Tagesabenteuer";
+
+  @override
+  String get dailyDoneMsg => "Für heute geschafft — komm morgen wieder!";
+
+  @override
+  String get magicShop => "Zauberladen";
+
+  @override
+  String get magicShopSub => "Avatare, Banner & mehr!";
+
+  @override
+  String get exploreLabel => "Entdecken";
+
+  @override
+  String get goldLabel => "Gold";
+
+  @override
+  String get gemsLabel => "Edelsteine";
+
+  @override
+  String get getAGem => "Edelstein holen";
+
+  @override
+  String get navHome => "Start";
+
+  @override
+  String get navQuests => "Aufgaben";
+
+  @override
+  String get navCollections => "Sammlung";
+
+  @override
+  String get navShop => "Laden";
+
+  @override
+  String get navProfile => "Profil";
+
+  @override
+  String levelN(int n) {
+    return "Level $n";
+  }
+
+  @override
+  String dailyGoalMsg(int n) {
+    return "Besuche heute $n verschiedene Bereiche";
+  }
+
+  @override
+  String tradeGoldForGem(int n) {
+    return "$n Gold gegen 1 Edelstein tauschen?";
+  }
+
+  @override
+  String get wordExplorer => "Wortentdecker";
+
+  @override
+  String get playLabel => "Spielen";
+
+  @override
+  String get heroPlay => "Spielen.";
+
+  @override
+  String get heroLearn => "Lernen.";
+
+  @override
+  String get heroShine => "Strahlen!";
+
+  @override
+  String get gamesHeroSub => "Jedes Spiel ist eine neue Entdeckung.";
+
+  @override
+  String get filterAll => "Alle";
+
+  @override
+  String get filterWords => "Wörter";
+
+  @override
+  String get filterLogic => "Logik";
+
+  @override
+  String get filterCreative => "Kreativ";
+
+  @override
+  String get todaysChallenge => "Heutige Aufgabe";
+
+  @override
+  String get challengeDone => "Geschafft — bis morgen!";
+
+  @override
+  String get unlockGameFree => "Dieses Spiel kostenlos freischalten?";
+
+  @override
+  String get notEnoughGems => "Noch nicht genug Edelsteine — spiel weiter!";
+
+  @override
+  String get geography => "Geografie";
+
+  @override
+  String get coursesHeroTop => "Bleib neugierig und";
+
+  @override
+  String get coursesHeroBottom => "wachse!";
+
+  @override
+  String get startLabel => "Start";
+
+  @override
+  String get yourSubjects => "Deine Fächer";
+
+  @override
+  String get soonBadge => "Bald";
+
+  @override
+  String get gradeSoonTitle => "Neue Lektionen sind unterwegs!";
+
+  @override
+  String get gradeSoonBody => "Die Lektionen für diese Klasse kommen bald. Probier solange die 1. Klasse!";
+
+  @override
+  String get learningGoal => "Lernziel";
+
+  @override
+  String get learningGoalMsg => "Mach heute eine Lektion";
+
+  @override
+  String get learningGoalDone => "Ziel erreicht — super!";
+
+  @override
+  String challengeGoal(int n) {
+    return "Spiele $n verschiedene Spiele";
+  }
+
+  @override
+  String unlockGameFor(int n) {
+    return "Dieses Spiel für $n Edelsteine freischalten?";
+  }
+
+  @override
+  String lessonsCount(int a, int b) {
+    return "$a / $b Lektionen";
+  }
+
+  @override
+  String get itHeroTop => "Kleine Köpfe.";
+
+  @override
+  String get itHeroBottom => "Große Ideen!";
+
+  @override
+  String get itHeroSub => "Entdecke die Magie der Technik";
+
+  @override
+  String get levelBeginner => "Anfänger";
+
+  @override
+  String get levelExplorer => "Entdecker";
+
+  @override
+  String get levelCreator => "Erfinder";
+
+  @override
+  String get itBasics => "Computer-Grundlagen";
+
+  @override
+  String get itCoding => "Programmieren";
+
+  @override
+  String get itTyping => "Tippen";
+
+  @override
+  String get itSafety => "Sicher im Internet";
+
+  @override
+  String get itRobotics => "Robotik";
+
+  @override
+  String get itCreativity => "Digitale Kreativität";
+
+  @override
+  String get lessonWhatIsComputer => "Was ist ein Computer?";
+
+  @override
+  String get lessonComputerParts => "Teile des Computers";
+
+  @override
+  String get lessonMousePractice => "Maus-Training";
+
+  @override
+  String get lessonInputOutput => "Eingabe & Ausgabe";
+
+  @override
+  String get lessonBinary => "Binärzahlen";
+
+  @override
+  String get techChallenge => "Technik-Aufgabe";
+
+  @override
+  String get techChallengeMsg => "Mach heute eine IT-Lektion";
+
+  @override
+  String lessonN(int n) {
+    return "Lektion $n";
+  }
+
+  @override
+  String get religionHeroSub => "Hören, lernen und mit deinem Glauben strahlen";
+
+  @override
+  String get listenReadAlong => "Hören & mitlesen";
+
+  @override
+  String get duaaMorning => "Morgen-Dua";
+
+  @override
+  String get duaaAfternoon => "Mittags-Dua";
+
+  @override
+  String get duaaNight => "Abend-Dua";
+
+  @override
+  String get practiseTitle => "Üben";
+
+  @override
+  String get dailyLight => "Licht des Tages";
+
+  @override
+  String get dailyLightMsg => "Hör heute einen Vers oder übe";
+
+  @override
+  String get relQuran => "Koran";
+
+  @override
+  String get relQuranSub => "Hören & auswendig lernen";
+
+  @override
+  String get relPrayer => "Gebet";
+
+  @override
+  String get relPrayerSub => "Schritt für Schritt";
+
+  @override
+  String get relDuas => "Tägliche Duas";
+
+  @override
+  String get relDuasSub => "Für jeden Moment";
+
+  @override
+  String get relStories => "Geschichten";
+
+  @override
+  String get relStoriesSub => "Geschichten, die inspirieren";
+
+  @override
+  String get relManners => "Gutes Benehmen";
+
+  @override
+  String get relMannersSub => "Jeden Tag freundlich";
+
+  @override
+  String get relBasics => "Grundlagen des Islam";
+
+  @override
+  String get relBasicsSub => "Entdecke das Wichtigste";
+
+  @override
+  String get relHeroTop => "Lerne mit";
+
+  @override
+  String get relHeroBottom => "Herz";
+
+  @override
+  String get relHeroSub => "Entdecken, hören, wachsen";
+
+  @override
+  String get continueListening => "Weiter hören";
+
+  @override
+  String get startListening => "Jetzt hören";
+
+  @override
+  String get surahFatiha => "Sure Al-Fatiha";
+
+  @override
+  String get relListen => "Hören";
+
+  @override
+  String get relLearn => "Lernen";
+
+  @override
+  String get kindnessTitle => "Ein bisschen Freundlichkeit heute";
+
+  @override
+  String get kindnessMsg => "Hilf jemandem und lächle — tippe, wenn erledigt";
+
+  @override
+  String get kindnessDone => "Wunderbar! Allah liebt die Gütigen";
+
+  @override
+  String get relDone => "erledigt";
+
+  @override
+  String get nowLabel => "Jetzt";
+
+  @override
+  String get ameen => "Amin";
+
+  @override
+  String get wuduFirstStep => "Die Waschung ist der erste Schritt zum Gebet";
+
+  @override
+  String get questHeroTop => "Kleine Schritte.";
+
+  @override
+  String get questHeroBottom => "Große Entdeckungen!";
+
+  @override
+  String get questHeroSub => "Lerne jeden Tag etwas Neues";
+
+  @override
+  String get questDaily => "Täglich";
+
+  @override
+  String get questMilestones => "Meilensteine";
+
+  @override
+  String get newQuestsIn => "Neue Aufgaben in";
+
+  @override
+  String get questReader => "Neugieriger Leser";
+
+  @override
+  String get questReaderSub => "Mach 1 Lektion";
+
+  @override
+  String get questPlayer => "Spielen & entdecken";
+
+  @override
+  String get questTech => "Technik-Entdecker";
+
+  @override
+  String get questTechSub => "Mach 1 IT-Lektion";
+
+  @override
+  String get claimLabel => "Abholen";
+
+  @override
+  String get goLabel => "Los";
+
+  @override
+  String get doneLabel => "Fertig";
+
+  @override
+  String get dailyTreasure => "Tagesschatz";
+
+  @override
+  String get dailyTreasureSub => "Hol alle 3 Aufgaben ab";
+
+  @override
+  String get treasureOpened => "Geöffnet — bis morgen!";
+
+  @override
+  String get nextMilestone => "Dein nächster Meilenstein";
+
+  @override
+  String get allMilestonesDone => "Alle Meilensteine geschafft! 🎉";
+
+  @override
+  String milestoneLessons(int n) {
+    return "Mach $n Lektionen";
+  }
+
+  @override
+  String milestoneGames(int n) {
+    return "Spiele $n Runden";
+  }
+
+  @override
+  String get editProfile => "Profil bearbeiten";
+
+  @override
+  String get customizeLabel => "Anpassen";
+
+  @override
+  String get myLearningJourney => "Meine Lernreise";
+
+  @override
+  String get statLessons => "Lektionen";
+
+  @override
+  String get statGames => "Spiele";
+
+  @override
+  String get statStreak => "Lern-Serie";
+
+  @override
+  String get myBadges => "Meine Abzeichen";
+
+  @override
+  String get viewAll => "Alle ansehen";
+
+  @override
+  String get badgeFirstSteps => "Erste Schritte";
+
+  @override
+  String get badgeFirstStepsHow => "Schaffe deine erste Lektion oder dein erstes Spiel.";
+
+  @override
+  String get badgeBookLover => "Bücherfreund";
+
+  @override
+  String get badgeBookLoverHow => "Mach 10 Kurslektionen.";
+
+  @override
+  String get badgeCodeStarter => "Code-Starter";
+
+  @override
+  String get badgeCodeStarterHow => "Schaffe deine erste IT-Lektion.";
+
+  @override
+  String get badgeEarned => "Du hast dieses Abzeichen! 🎉";
+
+  @override
+  String get titleLittleLearner => "Kleiner Lerner";
+
+  @override
+  String get titleCuriousExplorer => "Neugieriger Entdecker";
+
+  @override
+  String get titleBrightThinker => "Kluger Kopf";
+
+  @override
+  String get titleStarScholar => "Sternschüler";
+
+  @override
+  String get titleKnowledgeHero => "Wissensheld";
+
+  @override
+  String get myCollections => "Meine Sammlung";
+
+  @override
+  String get myCollectionsSub => "Avatare, Banner & Abzeichen";
+
+  @override
+  String daysN(int n) {
+    return "$n Tage";
+  }
+
+  @override
+  String lessonsN(int n) {
+    return "$n Lektionen";
+  }
+
+  @override
+  String playedN(int n) {
+    return "$n gespielt";
+  }
+
+  @override
+  String get secAudio => "Audio";
+
+  @override
+  String get secLanguageHome => "Sprache & Start";
+
+  @override
+  String get secSaveProgress => "Fortschritt sichern";
+
+  @override
+  String get secMore => "Mehr";
+
+  @override
+  String get showVerseOfDay => "Vers des Tages zeigen";
+
+  @override
+  String get showDailyDuaa => "Tägliches Dua zeigen";
+
+  @override
+  String get backupAccount => "Sicherungskonto";
+
+  @override
+  String get backupSub => "Dein Lernen sicher auf allen Geräten";
+
+  @override
+  String get parentsOnly => "Nur für Eltern";
+
+  @override
+  String get parentalArea => "Elternbereich";
+
+  @override
+  String get helpSupport => "Hilfe & Support";
+
+  @override
+  String get aboutMoorTaalim => "Über MoorTaalim";
+
+  @override
+  String get toggleOn => "AN";
+
+  @override
+  String get toggleOff => "AUS";
+
+  @override
+  String get zghNotice => "Tamazight ist noch nicht vollständig — Team Jalnix arbeitet daran!";
+
+  @override
+  String get quranHeroTop => "Ich höre zu";
+
+  @override
+  String get quranHeroBottom => "und lerne";
+
+  @override
+  String get quranHeroSub => "In meinem Tempo, Vers für Vers";
+
+  @override
+  String get resumeListening => "Weiter hören";
+
+  @override
+  String get tabSurahs => "Suren";
+
+  @override
+  String get tabFavorites => "Favoriten";
+
+  @override
+  String get searchSurah => "Sure suchen";
+
+  @override
+  String get modeListen => "Hören";
+
+  @override
+  String get modeRepeat => "Wiederholen";
+
+  @override
+  String get modeMemorize => "Auswendig";
+
+  @override
+  String get audioSoon => "Audio kommt bald";
+
+  @override
+  String get versesTitle => "Verse";
+
+  @override
+  String get noFavorites => "Tippe ♡, um eine Sure zu merken";
+
+  @override
+  String get noResults => "Nichts gefunden";
+
+  @override
+  String get tapToReveal => "Tippen zum Zeigen";
+
+  @override
+  String get hideAll => "Alle verbergen";
+
+  @override
+  String get mmWellDone => "Super gemacht!";
+
+  @override
+  String get mmReplay => "Nochmal";
+
+  @override
+  String get mmNextLevel => "Nächstes Level";
+
+  @override
+  String get mmFindPairs => "Finde die Paare!";
+
+  @override
+  String get mmTagline => "Schauen, merken, finden!";
+
+  @override
+  String get mmRestart => "Neustart";
+
+  @override
+  String get mmHint => "Tipp";
+
+  @override
+  String mmMovesN(int n) {
+    return "Züge: $n";
+  }
+
+  @override
+  String mmPairs(int a, int b) {
+    return "Paare: $a / $b";
+  }
 }

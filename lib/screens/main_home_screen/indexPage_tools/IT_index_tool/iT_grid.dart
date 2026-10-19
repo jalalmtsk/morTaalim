@@ -1,3 +1,4 @@
+import 'package:mortaalim/Manager/models/avatar_catalog.dart';
 import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
@@ -157,7 +158,7 @@ class _ITGridState extends State<ITGrid>
                   height: 140,
                   width: double.infinity,
                   child: Image.asset(
-                    course['image'] ?? 'assets/images/AvatarImage/Avatar2.png',
+                    course['image'] ?? AvatarCatalog.boyCurly,
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -464,7 +465,7 @@ class _ITGridState extends State<ITGrid>
             // ── Background image ──────────────────────────────────────
             Positioned.fill(
               child: Image.asset(
-                course['image'] ?? 'assets/images/AvatarImage/Avatar2.png',
+                course['image'] ?? AvatarCatalog.boyCurly,
                 fit: BoxFit.cover,
                 color: isLocked ? Colors.black.withOpacity(0.45) : null,
                 colorBlendMode: isLocked ? BlendMode.darken : null,

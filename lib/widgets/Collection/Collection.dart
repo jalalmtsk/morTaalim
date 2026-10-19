@@ -10,7 +10,9 @@ import 'Widgets/CollectionTab.dart';
 
 
 class CollectionPagePremium extends StatefulWidget {
-  const CollectionPagePremium({Key? key}) : super(key: key);
+  /// True when shown as a tab of the home screen (no back button).
+  final bool embedded;
+  const CollectionPagePremium({Key? key, this.embedded = false}) : super(key: key);
 
   @override
   State<CollectionPagePremium> createState() => _CollectionPagePremiumState();
@@ -105,9 +107,12 @@ class _CollectionPagePremiumState extends State<CollectionPagePremium>
           const SizedBox(height: 12),
           Row(
             children: [
-              IconButton(onPressed:(){
-                audioManager.playEventSound("cancelButton");
-                Navigator.of(context).pop();}, icon: const Icon(Icons.arrow_circle_left, size: 45, color: Colors.purpleAccent,)),
+              if (!widget.embedded)
+                IconButton(onPressed:(){
+                  audioManager.playEventSound("cancelButton");
+                  Navigator.of(context).pop();}, icon: const Icon(Icons.arrow_circle_left, size: 45, color: Colors.purpleAccent,))
+              else
+                const SizedBox(width: 12),
               const Icon(Icons.collections, color: Colors.white, size: 28),
               const SizedBox(width: 12),
                Text(tr(context).myCollection,

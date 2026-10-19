@@ -1,3 +1,4 @@
+import 'package:mortaalim/Manager/lesson_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mortaalim/PractiseGames/HeavyLight/HeavyLight.dart';
@@ -168,7 +169,7 @@ class _IndexScience1PractiseState extends State<IndexScience1Practise>
                       glow:   _T.cardGlows[i % _T.cardGlows.length],
                       emoji:  _T.cardEmojis[i % _T.cardEmojis.length],
                       index:  i,
-                      onTap:  () => _go(ctx, exercises[i]['page'] as Widget),
+                      onTap:  () { LessonProgress.record('science', i); _go(ctx, exercises[i]['page'] as Widget); },
                     ),
                   ),
                 ),

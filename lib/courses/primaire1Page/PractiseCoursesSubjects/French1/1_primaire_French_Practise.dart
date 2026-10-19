@@ -1,3 +1,4 @@
+import 'package:mortaalim/Manager/lesson_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mortaalim/PractiseGames/MatchTheImage/MatchTheImage.dart';
@@ -190,7 +191,7 @@ class _IndexFrench1PractiseState extends State<IndexFrench1Practise>
                       accent: _T.cardAccents[i % _T.cardAccents.length],
                       emoji:  _T.cardEmojis[i % _T.cardEmojis.length],
                       index:  i,
-                      onTap:  () => _go(ctx, exercises[i]['page'] as Widget),
+                      onTap:  () { LessonProgress.record('french', i); _go(ctx, exercises[i]['page'] as Widget); },
                     ),
                   ),
                 ),

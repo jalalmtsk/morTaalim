@@ -251,10 +251,10 @@ class _PetHomePageState extends State<PetHomePage>
   }
 
   String get petImage {
-    if (_level < 6) return 'assets/images/PetImages/17.png';
-    if (_level < 11) return 'assets/images/PetImages/18.png';
-    if (_level < 16) return 'assets/images/PetImages/19.png';
-    return 'assets/images/PetImages/20.png';
+    if (_level < 6) return 'assets/images/PetImages/DragonPet/17.png';
+    if (_level < 11) return 'assets/images/PetImages/DragonPet/18.png';
+    if (_level < 16) return 'assets/images/PetImages/DragonPet/19.png';
+    return 'assets/images/PetImages/DragonPet/20.png';
   }
 
   String formatDuration(int seconds) {

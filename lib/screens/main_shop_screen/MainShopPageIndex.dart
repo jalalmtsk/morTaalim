@@ -13,7 +13,9 @@ import 'GiftsTabs/IndexGiftTabs.dart';
 import 'StarsTab/IndexStars.dart';
 
 class MainShopPageIndex extends StatefulWidget {
-  const MainShopPageIndex({super.key});
+  /// True when shown as a tab of the home screen (no back button).
+  final bool embedded;
+  const MainShopPageIndex({super.key, this.embedded = false});
 
   @override
   State<MainShopPageIndex> createState() => _MainShopPageIndexState();
@@ -68,15 +70,17 @@ class _MainShopPageIndexState extends State<MainShopPageIndex>
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: Row(
                 children: [
-                  _circularButton(
-                    icon: Icons.arrow_back,
-                    onTap: () {
-                     audioManager.playEventSound("cancelButton");
-                      Navigator.pop(context);
-                    },
-                    color: colorScheme.primary,
-                  ),
-                  const SizedBox(width: 8),
+                  if (!widget.embedded) ...[
+                    _circularButton(
+                      icon: Icons.arrow_back,
+                      onTap: () {
+                       audioManager.playEventSound("cancelButton");
+                        Navigator.pop(context);
+                      },
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                  ],
                   const Expanded(child: Userstatutbar()),
                 ],
               ),

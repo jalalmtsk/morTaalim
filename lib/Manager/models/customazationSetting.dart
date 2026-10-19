@@ -1,5 +1,8 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'avatar_catalog.dart';
+import 'banner_catalog.dart';
+
 class CustomizationSettings {
   // Avatars
   List<String> unlockedAvatars;
@@ -20,46 +23,21 @@ class CustomizationSettings {
     String? selectedBannerImage,
     List<String>? unlockedAvatarFrames,
     String? selectedAvatarFrame,
-  })  : unlockedAvatars = unlockedAvatars ??
-      [
-        "🐱",
-        "🐻",
-        'assets/images/AvatarImage/OnlyAvatar/Avatar1.png',
-        'assets/images/AvatarImage/OnlyAvatar/Avatar2.png',
-        'assets/images/AvatarImage/OnlyAvatar/Avatar3.png',
-        'assets/images/AvatarImage/OnlyAvatar/Avatar4.png',
-      ],
-        selectedAvatar = selectedAvatar ??
-            'assets/images/AvatarImage/OnlyAvatar/Avatar1.png',
-        unlockedBanners = unlockedBanners ??
-            [
-              'assets/images/Banners/CuteBr/Banner1.png',
-              'assets/images/Banners/CuteBr/Banner2.png',
-              'assets/images/Banners/CuteBr/Banner3.png',
-            ],
-        selectedBannerImage = selectedBannerImage ??
-            'assets/images/Banners/CuteBr/Banner3.png',
+  })  : unlockedAvatars = AvatarCatalog.sanitizeUnlocked(unlockedAvatars),
+        selectedAvatar = AvatarCatalog.resolve(selectedAvatar),
+        unlockedBanners = BannerCatalog.sanitizeUnlocked(unlockedBanners),
+        selectedBannerImage = BannerCatalog.resolve(selectedBannerImage),
         unlockedAvatarFrames = unlockedAvatarFrames ?? [],
         selectedAvatarFrame = selectedAvatarFrame ?? '';
 
   factory CustomizationSettings.fromPrefs(SharedPreferences prefs) {
     return CustomizationSettings(
-      unlockedAvatars: prefs.getStringList('unlockedAvatars') ??
-          ["🐱", "🐻",
-        'assets/images/AvatarImage/OnlyAvatar/Avatar1.png',
-        'assets/images/AvatarImage/OnlyAvatar/Avatar2.png',
-        'assets/images/AvatarImage/OnlyAvatar/Avatar3.png',
-        'assets/images/AvatarImage/OnlyAvatar/Avatar4.png',],
+      unlockedAvatars: prefs.getStringList('unlockedAvatars'),
       selectedAvatar:
-      prefs.getString('selectedAvatar') ?? 'assets/images/AvatarImage/OnlyAvatar/Avatar1.png',
-      unlockedBanners: prefs.getStringList('unlockedBanners') ??
-          [
-            'assets/images/Banners/CuteBr/Banner1.png',
-            'assets/images/Banners/CuteBr/Banner2.png',
-            'assets/images/Banners/CuteBr/Banner3.png',
-          ],
+      prefs.getString('selectedAvatar'),
+      unlockedBanners: prefs.getStringList('unlockedBanners'),
       selectedBannerImage:
-      prefs.getString('selectedBannerImage') ?? 'assets/images/Banners/CuteBr/Banner3.png',
+      prefs.getString('selectedBannerImage'),
       unlockedAvatarFrames:
       prefs.getStringList('unlockedAvatarFrames') ?? [],
       selectedAvatarFrame: prefs.getString('selectedAvatarFrame') ?? '',
@@ -85,10 +63,12 @@ class CustomizationSettings {
   };
 
   void loadFromMap(Map<String, dynamic> data) {
-    unlockedAvatars = List<String>.from(data["unlockedAvatars"] ?? unlockedAvatars);
-    selectedAvatar = data["selectedAvatar"] ?? selectedAvatar;
-    unlockedBanners = List<String>.from(data["unlockedBanners"] ?? unlockedBanners);
-    selectedBannerImage = data["selectedBannerImage"] ?? selectedBannerImage;
+    unlockedAvatars = AvatarCatalog.sanitizeUnlocked(
+        List<String>.from(data["unlockedAvatars"] ?? unlockedAvatars));
+    selectedAvatar = AvatarCatalog.resolve(data["selectedAvatar"] ?? selectedAvatar);
+    unlockedBanners = BannerCatalog.sanitizeUnlocked(
+        List<String>.from(data["unlockedBanners"] ?? unlockedBanners));
+    selectedBannerImage = BannerCatalog.resolve(data["selectedBannerImage"] ?? selectedBannerImage);
     unlockedAvatarFrames = List<String>.from(data["unlockedAvatarFrames"] ?? unlockedAvatarFrames);
     selectedAvatarFrame = data["selectedAvatarFrame"] ?? selectedAvatarFrame;
   }

@@ -28,7 +28,7 @@ class IndexFrench1Practise extends StatelessWidget {
     PractiseWords(
       word: 'Maison',
       emoji: '🏠',
-      imagePath: 'assets/images/PractiseImage/house.jpg',
+      imagePath: 'assets/images/PractiseImage/maison.jpg',
       audioPath: 'assets/audios/tts_female/maison_female.mp3',
     ),
     PractiseWords(

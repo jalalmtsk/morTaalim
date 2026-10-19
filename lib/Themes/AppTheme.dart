@@ -42,7 +42,7 @@ final List<AppTheme> appThemes = [
     textColor: Colors.blueGrey.shade900,
     accentColor: Colors.cyanAccent,
     gradient: LinearGradient(colors: [Colors.blue.shade400, Colors.cyan.shade200]),
-    bannerImage: "assets/banners/ocean.png",
+    bannerImage: "assets/images/Banners/Kids/ocean.webp",
     backgroundImage: "assets/images/UI/BackGrounds/bg6.jpg", // ✅
     borderRadius: 20,
     boxShadow: BoxShadow(color: Colors.blue.shade200, blurRadius: 12, spreadRadius: 2),
@@ -63,7 +63,7 @@ final List<AppTheme> appThemes = [
     textColor: Colors.brown.shade800,
     accentColor: Colors.amber,
     gradient: LinearGradient(colors: [Colors.deepOrange.shade400, Colors.pink.shade200]),
-    bannerImage: "assets/banners/sunset.png",
+    bannerImage: "assets/images/Banners/Kids/mountains.webp",
     backgroundImage: "assets/images/UI/BackGrounds/bg6.jpg", // ✅
     borderRadius: 18,
     boxShadow: BoxShadow(color: Colors.orange.shade200, blurRadius: 10, spreadRadius: 2),
@@ -84,7 +84,7 @@ final List<AppTheme> appThemes = [
     textColor: Colors.green.shade900,
     accentColor: Colors.tealAccent,
     gradient: LinearGradient(colors: [Colors.green.shade600, Colors.teal.shade200]),
-    bannerImage: "assets/banners/forest.png",
+    bannerImage: "assets/images/Banners/Kids/jungle.webp",
     backgroundImage: "assets/images/UI/BackGrounds/bg8.jpg", // ✅
     borderRadius: 22,
     boxShadow: BoxShadow(color: Colors.green.shade200, blurRadius: 12, spreadRadius: 2),
@@ -105,7 +105,7 @@ final List<AppTheme> appThemes = [
     textColor: Colors.deepPurple.shade900,
     accentColor: Colors.purpleAccent,
     gradient: LinearGradient(colors: [Colors.deepPurple.shade400, Colors.purple.shade200]),
-    bannerImage: "assets/banners/purple.png",
+    bannerImage: "assets/images/Banners/Kids/rainbow.webp",
     backgroundImage: "assets/images/UI/BackGrounds/bg9.jpg", // ✅
     borderRadius: 20,
     boxShadow: BoxShadow(color: Colors.purple.shade200, blurRadius: 14, spreadRadius: 2),
@@ -126,7 +126,7 @@ final List<AppTheme> appThemes = [
     textColor: Colors.white,
     accentColor: Colors.blueAccent,
     gradient: LinearGradient(colors: [Colors.black87, Colors.grey.shade800]),
-    bannerImage: "assets/banners/dark.png",
+    bannerImage: "assets/images/Banners/Kids/space.webp",
     backgroundImage: "assets/images/UI/BackGrounds/bg10.jpg", // ✅
     borderRadius: 16,
     boxShadow: BoxShadow(color: Colors.black45, blurRadius: 20, spreadRadius: 3),

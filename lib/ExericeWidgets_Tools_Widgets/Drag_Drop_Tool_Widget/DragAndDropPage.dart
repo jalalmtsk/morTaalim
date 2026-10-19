@@ -24,9 +24,9 @@ class ExercisePage extends StatelessWidget {
             'evening': 'المساء',
           },
           imagePaths: {
-            'morning': 'assets/images/logo_black.png',
-            'noon': 'assets/images/logo_white.png',
-            'evening': 'assets/images/red.jpg',
+            'morning': 'assets/images/morning.png',
+            'noon': 'assets/images/noon.png',
+            'evening': 'assets/images/evening.png',
           },
         ),
       ),
