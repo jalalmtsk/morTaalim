@@ -17,6 +17,8 @@ import 'package:mortaalim/games/BrainBuilder/bb_common.dart';
 import 'package:mortaalim/games/PuzzleLand/pz_common.dart' show pzTitleFor;
 
 import 'game_data.dart';
+import 'package:mortaalim/screens/parents/content_lock.dart';
+import 'package:mortaalim/screens/parents/parent_data.dart';
 
 /// Sprites sliced from the games design sheet.
 class GamesAssets {
@@ -133,6 +135,7 @@ class GameProgress {
   static Future<bool> recordPlay(String title) async {
     final p = await SharedPreferences.getInstance();
     await p.setInt(_plays(title), (p.getInt(_plays(title)) ?? 0) + 1);
+    await ActivityFeed.add('game', title);
     await ActivityLog.markToday();
     final today = _today();
     if (p.getString(_kDate) != today) {
@@ -220,6 +223,13 @@ class _GamesPageState extends State<GamesPage> with TickerProviderStateMixin {
     final xp = Provider.of<ExperienceManager>(context, listen: false);
     if (!_isUnlocked(xp, g)) return _askUnlock(g);
     if (_launching) return;
+    final section = switch (g['title'] as String) {
+      'appStories' => 'stories',
+      'MagicPainting' || 'drawingAlphabet' => 'creativity',
+      _ => null,
+    };
+    if (section != null && !await sectionAllowed(context, section)) return;
+    if (!mounted) return;
     _launching = true;
     _audio.playEventSound('PopButton');
     final completed = await GameProgress.recordPlay(g['title']);

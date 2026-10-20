@@ -33,6 +33,8 @@ import 'Manager/models/banner_catalog.dart';
 import 'screens/main_home_screen/Profile/Customize/profile_look.dart';
 import 'XpSystem.dart';
 import 'main.dart';
+import 'screens/parents/content_lock.dart';
+import 'screens/parents/screen_time_guard.dart';
 
 /// Kept for files that subscribe to it (the app-level navigator observer
 /// in main.dart is a music observer, not a RouteObserver).
@@ -139,6 +141,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
   void initState() {
     super.initState();
     _loadBannerAd();
+    ScreenTimeGuard.I.start();
     WidgetsBinding.instance.addObserver(this);
 
     final audioManager = Provider.of<AudioManager>(context, listen: false);
@@ -207,7 +210,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
 
   void _showDuaaDialog() {
     if (!context.read<CardVisibilityManager>().showDuaaDialog) return;
-    showDialog(context: context, builder: (_) => const DuaaDialog());
+    showDuaaDialog(context);
   }
 
   Route _fade(Widget page) => PageRouteBuilder(
@@ -237,6 +240,8 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
 
   Future<void> _openSection(String key, String title, Widget child, Color accent, {bool fullPage = false}) async {
     _audio.playEventSound('clickButton');
+    if ((key == 'games' || key == 'religion') && !await sectionAllowed(context, key)) return;
+    if (!mounted) return;
     final completed = await DailyAdventure.mark(key);
     if (!mounted) return;
     if (completed) {

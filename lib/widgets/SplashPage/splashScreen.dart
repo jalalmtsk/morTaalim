@@ -13,6 +13,8 @@ import '../../Authentification/LogIn.dart';
 import '../../tools/Ads_Manager.dart';
 import 'CompanyLogoScreen.dart';
 import 'LoadingScreen.dart';
+import 'package:mortaalim/screens/profiles/profile_picker_page.dart';
+import 'package:mortaalim/screens/profiles/profile_store.dart';
 
 // ─── NOTE : AgeCheckPage et setChildMode supprimés ───────────────────────────
 // MoorTaalim est une appli 100% enfants. La config COPPA est appliquée une
@@ -88,7 +90,8 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     final prefs = await SharedPreferences.getInstance();
     final bool onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
 
-    if (!onboardingCompleted) {
+    // "Who's playing?" every time the app opens (as soon as one child exists).
+    if (!onboardingCompleted && ProfileStore.count(prefs) <= 1) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (_) => const UserInfoForm()),
@@ -96,7 +99,7 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
     } else {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const Index()),
+        MaterialPageRoute(builder: (_) => const ProfilePickerPage()),
       );
     }
   }

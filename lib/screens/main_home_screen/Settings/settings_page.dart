@@ -15,6 +15,10 @@ import 'package:mortaalim/widgets/ProfileSetup_Widget/MainProfile_Page/Widgets/U
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:mortaalim/screens/parents/parent_gate.dart';
+import 'package:mortaalim/screens/parents/parent_strings.dart';
+import 'package:mortaalim/screens/parents/parents_space.dart';
+import 'package:mortaalim/screens/profiles/profile_picker_page.dart';
 
 class SettingsAssets {
   SettingsAssets._();
@@ -48,44 +52,8 @@ const _languages = <(String, String)>[
   ('zgh', 'ⵜⴰⵎⴰⵣⵉⵖⵜ'),
 ];
 
-/// Simple multiplication question so only grown-ups get through.
-Future<bool> kidParentGate(BuildContext context) async {
-  final rnd = Random();
-  final a = 3 + rnd.nextInt(7), b = 3 + rnd.nextInt(7);
-  final answer = a * b;
-  final options = <int>{answer};
-  while (options.length < 3) {
-    final delta = (rnd.nextInt(3) + 1) * (rnd.nextBool() ? a : b);
-    final v = rnd.nextBool() ? answer + delta : answer - delta;
-    if (v > 0) options.add(v);
-  }
-  final shuffled = options.toList()..shuffle(rnd);
-  return await showDialog<bool>(
-        context: context,
-        barrierColor: KidColors.purpleDeep.withOpacity(0.35),
-        builder: (ctx) => KidDialog(
-          title: tr(ctx).parentGateTitle,
-          message: tr(ctx).parentGateQuestion(a, b),
-          content: Row(children: [
-            for (int i = 0; i < shuffled.length; i++) ...[
-              if (i > 0) const SizedBox(width: 10),
-              Expanded(
-                child: KidOutlineButton(
-                  label: '${shuffled[i]}',
-                  height: 56,
-                  onTap: () {
-                    final am = Provider.of<AudioManager>(ctx, listen: false);
-                    am.playEventSound(shuffled[i] == answer ? 'clickButton' : 'invalid');
-                    Navigator.of(ctx).pop(shuffled[i] == answer);
-                  },
-                ),
-              ),
-            ],
-          ]),
-        ),
-      ) ??
-      false;
-}
+/// Adult check (hold 3 s + multiplication) used before purchases, links and settings.
+Future<bool> kidParentGate(BuildContext context) => ParentGate.check(context);
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -170,57 +138,15 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
         }
       });
 
-  Future<void> _openParental() => _behindGate(() async {
-        await showModalBottomSheet(
-          context: context,
-          isScrollControlled: true,
-          backgroundColor: Colors.transparent,
-          builder: (ctx) => KidSheetFrame(
-            title: tr(ctx).parentalArea,
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              _SheetRow(
-                icon: SettingsAssets.book,
-                label: tr(ctx).editProfile,
-                onTap: () {
-                  Navigator.pop(ctx);
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const UserAndSchoolInfoPage()));
-                },
-              ),
-              _SheetRow(
-                icon: SettingsAssets.cloud,
-                label: tr(ctx).manageBackup,
-                onTap: () {
-                  Navigator.pop(ctx);
-                  final xp = Provider.of<ExperienceManager>(context, listen: false);
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => BackupPage(experienceManager: xp)));
-                },
-              ),
-              _SheetRow(
-                icon: SettingsAssets.speaker,
-                label: tr(ctx).resetAudioSettings,
-                onTap: () {
-                  Navigator.pop(ctx);
-                  _audio.resetAudioSettings();
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: KidColors.purpleDeep,
-                    content: Text(tr(context).resetAudioSettings,
-                        style: kidBodyStyle(14, color: Colors.white, weight: FontWeight.w600)),
-                  ));
-                },
-              ),
-              _SheetRow(
-                icon: SettingsAssets.help,
-                label: tr(ctx).contactSupport,
-                onTap: () async {
-                  Navigator.pop(ctx);
-                  await launchUrl(Uri(scheme: 'mailto', path: _supportEmail), mode: LaunchMode.externalApplication);
-                },
-              ),
-            ]),
-          ),
-        );
-      });
+  Future<void> _openParental() async {
+    _audio.playEventSound('clickButton');
+    await openParentsSpace(context);
+  }
+
+  Future<void> _switchPlayer() async {
+    _audio.playEventSound('clickButton');
+    await openProfilePicker(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -431,6 +357,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                               },
                             ),
                           ),
+                          _Row(scale: s, icon: 'assets/images/UI/Profiles/pp_boy.webp', label: pT(context, 'switchPlayer'), onTap: _switchPlayer,
+                              trailing: _chevron(context, s)),
                           _Row(scale: s, icon: SettingsAssets.lock, label: t.parentalArea, onTap: _openParental,
                               trailing: _chevron(context, s)),
                           _Row(scale: s, icon: SettingsAssets.help, label: t.helpSupport, onTap: _openHelp,

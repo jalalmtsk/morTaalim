@@ -27,6 +27,12 @@ class BBAssets {
   static const String coin = 'assets/images/UI/KidScene/home_coin.webp';
   static String btn(BBDir d) => '${dir}bb_btn_${d.name}.webp';
 
+  // v2: map menu + world tiles
+  static const String v2 = '${dir}v2/';
+  static String a(String name) => '$v2$name.webp';
+  static const String mapBg = '${v2}map_bg.webp'; // 941 × 1672
+  static String worldThumb(int w) => '${v2}world_${const ['bridges', 'portal', 'ice', 'gear', 'moon', 'buddy'][w]}.webp';
+
   static List<String> get all => [
         back, sound, board, robot, robotPoint, glow, goal, star, reset, bulb, plate, cover, bg, coin,
         for (final d in BBDir.values) btn(d),
@@ -37,6 +43,30 @@ class BBAssets {
 
 const Map<String, Map<String, String>> _bbStrings = {
   'en': {
+    'w0': 'Rainbow Bridges',
+    'w1': 'Portal Garden',
+    'w2': 'Ice Slide',
+    'w3': 'Gear Factory',
+    'w4': 'Moonlight Memory',
+    'w5': 'Buddy Rescue',
+    'worldN': 'World {n}',
+    'completedN': '{n} / {t} completed',
+    'playNext': 'Play next',
+    'worldLocked': 'Finish the world before to open this one!',
+    'goal_bridge': 'Open the bridges!',
+    'sub_bridge': 'Step on a button to open gates of its colour',
+    'goal_portal': 'Use the magic portals!',
+    'sub_portal': 'Step in a portal to jump to its twin',
+    'goal_gear': 'Turn the gear!',
+    'sub_gear': 'The gear swaps which doors are open',
+    'goal_moon': 'Find the star in the dark!',
+    'sub_moon': 'Your lantern lights the way. Remember the path!',
+    'goal_buddy': 'Bring both robots home!',
+    'sub_buddy': 'They move together, each to its own picture',
+    'gateOpen': 'A bridge opened!',
+    'whoosh': 'Whoosh!',
+    'gearTurn': 'Click! The doors moved',
+    'allDone': 'You finished every world!',
     'title': 'Brain Builder',
     'play': 'Play',
     'levelN': 'Level {n}',
@@ -73,6 +103,30 @@ const Map<String, Map<String, String>> _bbStrings = {
     'lockedMsg': 'Finish the level before to unlock this one!',
   },
   'fr': {
+    'w0': 'Ponts arc-en-ciel',
+    'w1': 'Jardin des portails',
+    'w2': 'Glissade glacée',
+    'w3': 'Usine à engrenages',
+    'w4': 'Mémoire au clair de lune',
+    'w5': 'Sauvetage d\'ami',
+    'worldN': 'Monde {n}',
+    'completedN': '{n} / {t} terminés',
+    'playNext': 'À jouer',
+    'worldLocked': 'Termine le monde précédent pour ouvrir celui-ci !',
+    'goal_bridge': 'Ouvre les ponts !',
+    'sub_bridge': 'Marche sur un bouton pour ouvrir les portes de sa couleur',
+    'goal_portal': 'Utilise les portails magiques !',
+    'sub_portal': 'Entre dans un portail pour sauter vers son jumeau',
+    'goal_gear': 'Tourne l\'engrenage !',
+    'sub_gear': 'L\'engrenage change les portes ouvertes',
+    'goal_moon': 'Trouve l\'étoile dans le noir !',
+    'sub_moon': 'Ta lanterne éclaire le chemin. Retiens-le !',
+    'goal_buddy': 'Ramène les deux robots !',
+    'sub_buddy': 'Ils bougent ensemble, chacun vers son image',
+    'gateOpen': 'Un pont s\'est ouvert !',
+    'whoosh': 'Hop !',
+    'gearTurn': 'Clic ! Les portes ont bougé',
+    'allDone': 'Tu as fini tous les mondes !',
     'title': 'Brain Builder',
     'play': 'Jouer',
     'levelN': 'Niveau {n}',
@@ -109,6 +163,30 @@ const Map<String, Map<String, String>> _bbStrings = {
     'lockedMsg': 'Termine le niveau précédent pour débloquer celui-ci !',
   },
   'ar': {
+    'w0': 'جسور قوس قزح',
+    'w1': 'حديقة البوابات',
+    'w2': 'انزلاق الجليد',
+    'w3': 'مصنع التروس',
+    'w4': 'ذاكرة ضوء القمر',
+    'w5': 'إنقاذ الصديق',
+    'worldN': 'العالم {n}',
+    'completedN': '{n} / {t} مكتمل',
+    'playNext': 'العب الآن',
+    'worldLocked': 'أكمل العالم السابق لفتح هذا العالم!',
+    'goal_bridge': 'افتح الجسور!',
+    'sub_bridge': 'قف على زر لتفتح البوابات بنفس لونه',
+    'goal_portal': 'استعمل البوابات السحرية!',
+    'sub_portal': 'ادخل البوابة لتقفز إلى توأمها',
+    'goal_gear': 'أدر الترس!',
+    'sub_gear': 'الترس يبدّل الأبواب المفتوحة',
+    'goal_moon': 'جد النجمة في الظلام!',
+    'sub_moon': 'فانوسك يضيء الطريق. تذكّره!',
+    'goal_buddy': 'أوصل الروبوتين!',
+    'sub_buddy': 'يتحركان معاً، كل واحد إلى صورته',
+    'gateOpen': 'انفتح جسر!',
+    'whoosh': 'ووش!',
+    'gearTurn': 'طق! تحركت الأبواب',
+    'allDone': 'أنهيت كل العوالم!',
     'title': 'باني الذكاء',
     'play': 'العب',
     'levelN': 'المستوى {n}',
@@ -145,6 +223,30 @@ const Map<String, Map<String, String>> _bbStrings = {
     'lockedMsg': 'أكمل المستوى السابق لفتح هذا المستوى!',
   },
   'de': {
+    'w0': 'Regenbogenbrücken',
+    'w1': 'Portalgarten',
+    'w2': 'Eisrutsche',
+    'w3': 'Zahnradfabrik',
+    'w4': 'Mondlicht-Gedächtnis',
+    'w5': 'Freunde retten',
+    'worldN': 'Welt {n}',
+    'completedN': '{n} / {t} geschafft',
+    'playNext': 'Als Nächstes',
+    'worldLocked': 'Schaffe zuerst die Welt davor!',
+    'goal_bridge': 'Öffne die Brücken!',
+    'sub_bridge': 'Tritt auf einen Knopf, um Tore seiner Farbe zu öffnen',
+    'goal_portal': 'Nutze die Zauberportale!',
+    'sub_portal': 'Tritt in ein Portal, um zu seinem Zwilling zu springen',
+    'goal_gear': 'Dreh das Zahnrad!',
+    'sub_gear': 'Das Zahnrad tauscht die offenen Türen',
+    'goal_moon': 'Finde den Stern im Dunkeln!',
+    'sub_moon': 'Deine Laterne leuchtet. Merk dir den Weg!',
+    'goal_buddy': 'Bring beide Roboter nach Hause!',
+    'sub_buddy': 'Sie laufen zusammen, jeder zu seinem Bild',
+    'gateOpen': 'Eine Brücke ist offen!',
+    'whoosh': 'Wusch!',
+    'gearTurn': 'Klick! Die Türen haben sich bewegt',
+    'allDone': 'Du hast alle Welten geschafft!',
     'title': 'Brain Builder',
     'play': 'Spielen',
     'levelN': 'Level {n}',
@@ -206,8 +308,8 @@ String bbTitleFor(String localeName) {
 
 class BBProgress {
   BBProgress._();
-  static String _stars(int n) => 'bb_stars_$n';
-  static String _best(int n) => 'bb_best_$n';
+  static String _stars(int n) => 'bb2_stars_$n';
+  static String _best(int n) => 'bb2_best_$n';
 
   static Future<List<int>> allStars() async {
     final p = await SharedPreferences.getInstance();

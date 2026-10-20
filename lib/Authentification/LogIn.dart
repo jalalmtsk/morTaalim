@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:mortaalim/screens/profiles/profile_picker_page.dart';
+import 'package:mortaalim/screens/profiles/profile_store.dart';
 import 'dart:math';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -128,12 +130,13 @@ class _LoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     }
     final prefs = await SharedPreferences.getInstance();
     final onboardingCompleted = prefs.getBool('onboarding_completed') ?? false;
+    final showPicker = onboardingCompleted || ProfileStore.count(prefs) > 1;
     if (!mounted) return;
     Navigator.of(context).pushAndRemoveUntil(
       PageRouteBuilder(
         transitionDuration: const Duration(milliseconds: 600),
         pageBuilder: (_, __, ___) =>
-            onboardingCompleted ? const Index() : const UserInfoForm(),
+            showPicker ? const ProfilePickerPage() : const UserInfoForm(),
         transitionsBuilder: (_, a, __, child) =>
             FadeTransition(opacity: CurvedAnimation(parent: a, curve: Curves.easeOut), child: child),
       ),

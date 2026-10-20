@@ -1,5 +1,6 @@
 import 'package:mortaalim/widgets/KidScene/kid_toast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mortaalim/screens/parents/parent_data.dart' show ActivityFeed;
 
 /// Remembers which lessons a child has opened in each subject, the last
 /// subject they worked on, and a daily goal (open one lesson today → reward,
@@ -30,6 +31,7 @@ class LessonTracker {
     // School courses record when a lesson is opened; the other trackers on completion.
     if (scope.isNotEmpty && !before.contains('$lessonIndex')) KidToast.show(KidToastKind.lesson);
     await p.setString(_kLast, subject);
+    await ActivityFeed.add('lesson', scope.isEmpty ? subject : scope);
     await p.setString(_kToday, _today());
     await ActivityLog.markToday();
   }

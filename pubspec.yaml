@@ -73,6 +73,7 @@ flutter:
     - assets/icons/
     - assets/images/GameGridImages/
     - assets/images/Games/BrainBuilder/
+    - assets/images/Games/BrainBuilder/v2/
     - assets/images/Games/PuzzleLand/
     - assets/images/PractiseImage/
     - assets/images/PractiseImage/HeavyLightImages/
@@ -90,7 +91,13 @@ flutter:
     - assets/images/UI/Bars/
     - assets/images/UI/Collection/
     - assets/images/UI/Loading/
+    - assets/images/UI/Loading/chars/
+    - assets/images/UI/Loading/lib/
+    - assets/images/UI/Loading/adv/
     - assets/images/UI/Toasts/
+    - assets/images/UI/Duaa/
+    - assets/images/UI/Parents/
+    - assets/images/UI/Profiles/
     - assets/images/quiz/
     - assets/images/magic_paint/
     - assets/images/UI/Buttons/

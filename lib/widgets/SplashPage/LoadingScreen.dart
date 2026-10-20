@@ -51,6 +51,8 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
   Timer? _tipTimer;
   late final AnimationController _idle = AnimationController(vsync: this, duration: const Duration(seconds: 6))..repeat();
   late final AnimationController _intro = AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))..forward();
+  // Faster clock for the characters (breathing, bobbing, floating icons).
+  late final AnimationController _life = AnimationController(vsync: this, duration: const Duration(seconds: 12))..repeat();
 
   @override
   void initState() {
@@ -79,6 +81,7 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
     _tipTimer?.cancel();
     _idle.dispose();
     _intro.dispose();
+    _life.dispose();
     super.dispose();
   }
 
@@ -115,7 +118,7 @@ class _LoadingScreenState extends State<LoadingScreen> with TickerProviderStateM
                   child: AnimatedBuilder(
                     animation: _idle,
                     builder: (_, child) => Transform.scale(scale: 1.04 + 0.02 * sin(_idle.value * 2 * pi), child: child),
-                    child: Image.asset(lib ? _LD.bgB : _LD.bgA, fit: BoxFit.cover),
+                    child: _LiveScene(library: lib, t: _idle, life: _life),
                   ),
                 ),
                 Positioned.fill(child: IgnorePointer(child: _Sparkles(anim: _idle, warm: lib))),
@@ -493,3 +496,596 @@ const Map<String, Map<String, String>> _txt = {
     'tip4': 'Probier heute ein Puzzle in Puzzle Land!',
   },
 };
+
+// ─── Living characters ───────────────────────────────────────────────────────
+
+enum _Act { bob, breathe, sleep, float, wag }
+
+class _Part {
+  final String id;
+  final double x, y, h, aspect; // in the 941 × 1672 artwork
+  final _Act act;
+  final double phase;
+  const _Part(this.id, this.x, this.y, this.h, this.aspect, this.act, [this.phase = 0]);
+}
+
+const List<_Part> _advParts = [
+  _Part('robot', 30, 640, 430, 0.6714, _Act.bob, 0.0),
+  _Part('fox', 510, 750, 345, 0.8095, _Act.wag, 0.3),
+  _Part('boy', 290, 500, 590, 0.6238, _Act.breathe, 0.6),
+  _Part('puzzle', 40, 370, 150, 1.0, _Act.float, 0.1),
+  _Part('abc', 215, 330, 135, 1.0978, _Act.float, 0.35),
+  _Part('globe', 395, 355, 105, 1.0549, _Act.float, 0.6),
+  _Part('brush', 490, 390, 170, 1.2595, _Act.float, 0.85),
+];
+
+const List<_Part> _libParts = [
+  _Part('robot', 290, 505, 500, 0.683, _Act.bob, 0.0),
+  _Part('book', 250, 930, 290, 1.5607, _Act.breathe, 0.2),
+  _Part('island', 395, 800, 250, 1.0641, _Act.float, 0.0),
+  _Part('globe', 735, 745, 85, 1.0662, _Act.float, 0.2),
+  _Part('palette', 715, 840, 75, 1.1187, _Act.float, 0.45),
+  _Part('abc', 575, 860, 95, 0.9064, _Act.float, 0.7),
+  _Part('puzzle', 740, 910, 55, 0.9739, _Act.float, 0.9),
+  _Part('boy', 10, 735, 365, 0.7699, _Act.breathe, 0.1),
+  _Part('girl', 635, 760, 360, 0.7971, _Act.breathe, 0.55),
+  _Part('fox', 0, 1000, 270, 1.1471, _Act.sleep, 0.0),
+];
+
+/// Background + characters that bob, breathe, float and snooze.
+class _LiveScene extends StatelessWidget {
+  final bool library;
+  final Animation<double> t, life;
+  const _LiveScene({required this.library, required this.t, required this.life});
+
+  static const double _w = 941, _h = 1672;
+
+  @override
+  Widget build(BuildContext context) {
+    final parts = library ? _libParts : _advParts;
+    final pre = library ? 'lib' : 'adv';
+    return FittedBox(
+      fit: BoxFit.cover,
+      child: SizedBox(
+        width: _w,
+        height: _h,
+        child: AnimatedBuilder(
+          animation: life,
+          builder: (_, __) {
+            final v = life.value * 2 * pi; // 12 s loop
+            return Stack(clipBehavior: Clip.none, children: [
+              Positioned.fill(child: Image.asset(library ? _LD.bgB : _LD.bgA, fit: BoxFit.cover)),
+              for (final p in parts) _part(p, pre, v),
+              if (library) ..._zzz(v),
+            ]);
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _part(_Part p, String pre, double v) {
+    final w = p.h * p.aspect;
+    final ph = p.phase * 2 * pi;
+    Offset off = Offset.zero;
+    double rot = 0, sx = 1, sy = 1;
+    Alignment anchor = Alignment.bottomCenter;
+    switch (p.act) {
+      case _Act.bob: // robots hover and tilt
+        off = Offset(0, sin(v * 4 + ph) * 9);
+        rot = sin(v * 2 + ph) * 0.025;
+      case _Act.breathe: // kids breathe and sway
+        sy = 1 + sin(v * 5 + ph) * 0.012;
+        sx = 1 - sin(v * 5 + ph) * 0.006;
+        rot = sin(v * 2 + ph) * 0.018;
+      case _Act.sleep: // sleeping fox: slow deep breaths
+        sy = 1 + (sin(v * 3 + ph) + 1) * 0.018;
+        sx = 1 + (sin(v * 3 + ph) + 1) * 0.006;
+      case _Act.wag: // fox bounces and tilts its head
+        off = Offset(0, -max(0, sin(v * 6 + ph)) * 7);
+        rot = sin(v * 3 + ph) * 0.03;
+        anchor = const Alignment(-0.2, 1);
+      case _Act.float: // icons drift and spin a little
+        off = Offset(sin(v * 3 + ph) * 6, sin(v * 4 + ph) * 12);
+        rot = sin(v * 2 + ph) * 0.12;
+        anchor = Alignment.center;
+    }
+    return Positioned(
+      left: p.x,
+      top: p.y,
+      width: w,
+      height: p.h,
+      child: Transform.translate(
+        offset: off,
+        child: Transform(
+          alignment: anchor,
+          transform: Matrix4.identity()
+            ..rotateZ(rot)
+            ..scale(sx, sy),
+          child: Image.asset('${_LD.dir}chars/${pre}_${p.id}.webp', fit: BoxFit.contain, filterQuality: FilterQuality.medium),
+        ),
+      ),
+    );
+  }
+
+  /// Little "z" bubbles rising from the sleeping fox.
+  List<Widget> _zzz(double v) => [
+        for (var i = 0; i < 3; i++)
+          Builder(builder: (_) {
+            final k = ((v / (2 * pi) * 3) + i / 3) % 1.0;
+            return Positioned(
+              left: 300 + k * 40 + i * 6,
+              top: 1010 - k * 110,
+              child: Opacity(
+                opacity: (1 - k) * (k < 0.1 ? k * 10 : 1),
+                child: Text('z',
+                    style: TextStyle(
+                      fontFamily: 'Fredoka',
+                      fontWeight: FontWeight.w700,
+                      fontSize: 34 + k * 22,
+                      color: const Color(0xFFFFF4D6),
+                      decoration: TextDecoration.none,
+                      shadows: const [Shadow(color: Color(0xFF8A4B12), blurRadius: 6)],
+                    )),
+              ),
+            );
+          }),
+      ];
+}
+
+// ─── Library scene as a puppet: every body part moves on its own ────────────
+
+class _P {
+  final double cx, cy, w, aspect; // centre + width in the 941 × 1672 artwork
+  const _P(this.cx, this.cy, this.w, this.aspect);
+  double get h => w * aspect;
+}
+
+const Map<String, _P> _lp = {
+  'lantern_a': _P(150, 190, 95, 3.2838),
+  'lantern_b': _P(800, 170, 80, 3.6752),
+  'vines': _P(470, 70, 520, 0.4641),
+  'cloud': _P(820, 520, 170, 0.614),
+  'isle_a': _P(150, 560, 120, 1.0733),
+  'isle_b': _P(820, 640, 95, 1.1271),
+  'glow': _P(610, 1000, 420, 0.919),
+  'castle': _P(630, 915, 230, 1.2751),
+  'ring': _P(610, 1040, 300, 0.6959),
+  'book_open': _P(610, 1110, 360, 0.3057),
+  'robot_robe': _P(395, 855, 250, 0.7437),
+  'robot_hand': _P(560, 830, 190, 0.4684),
+  'robot_book': _P(265, 900, 95, 1.2222),
+  'robot_head': _P(390, 700, 245, 0.7407),
+  'robot_eyes_open': _P(400, 712, 150, 0.4733),
+  'robot_eyes_happy': _P(400, 712, 150, 0.4609),
+  'robot_glasses': _P(395, 612, 130, 0.3475),
+  'globe': _P(800, 770, 90, 1.2478),
+  'palette': _P(770, 880, 95, 0.8792),
+  'blk_a': _P(560, 940, 52, 1.0),
+  'blk_b': _P(612, 948, 52, 1.0071),
+  'blk_c': _P(664, 940, 52, 1.0),
+  'puzzle': _P(790, 960, 60, 0.9886),
+  'cushion': _P(190, 1205, 330, 0.4734),
+  'fox_tail': _P(300, 1150, 150, 0.8394),
+  'fox_body': _P(180, 1135, 280, 0.6183),
+  'fox_head': _P(95, 1110, 170, 0.7282),
+  'fox_ear_l': _P(45, 1050, 45, 1.1143),
+  'fox_ear_r': _P(125, 1048, 45, 1.1038),
+  'boy_hoodie': _P(165, 1000, 300, 0.7177),
+  'boy_head': _P(150, 875, 235, 0.9398),
+  'boy_hands': _P(190, 975, 170, 1.0439),
+  'boy_lid_l': _P(160.6, 901.2, 60.9, 0.6933),
+  'boy_lid_r': _P(216.5, 890.6, 46.7, 0.7571),
+  'girl': _P(790, 935, 320, 1.0992),
+  'girl_lid_l': _P(707.1, 943.2, 59.8, 0.6627),
+  'girl_lid_r': _P(775.9, 959.5, 68.9, 0.7),
+  'sparkles': _P(600, 780, 200, 1.1145),
+  'page_r': _P(700, 1095, 190, 0.6046),
+  'trail': _P(520, 960, 200, 0.8741),
+  'sparkle_big': _P(700, 840, 70, 1.047),
+};
+
+class _PuppetLibrary extends StatefulWidget {
+  final Animation<double> life; // 12 s loop
+  const _PuppetLibrary({required this.life});
+
+  @override
+  State<_PuppetLibrary> createState() => _PuppetLibraryState();
+}
+
+class _PuppetLibraryState extends State<_PuppetLibrary> with SingleTickerProviderStateMixin {
+  // the castle island rises out of the book once, then floats
+  late final AnimationController _rise = AnimationController(vsync: this, duration: const Duration(milliseconds: 2600))..forward();
+
+  @override
+  void dispose() {
+    _rise.dispose();
+    super.dispose();
+  }
+
+  static const double _w = 941, _h = 1672;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (_, c) => FittedBox(
+        fit: BoxFit.cover,
+        child: SizedBox(
+          width: _w,
+          height: _h,
+          child: AnimatedBuilder(
+            animation: Listenable.merge([widget.life, _rise]),
+            builder: (_, __) => Stack(clipBehavior: Clip.none, children: [
+              Positioned.fill(child: Image.asset(_LD.bgB, fit: BoxFit.cover)),
+              _fitLayer(c, _w, _h, const Offset(470, 1150), _parts()),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+
+  /// Seconds into the 12 s loop.
+  double get _sec => widget.life.value * 12;
+
+  /// 0→1→0 pulse lasting [len] seconds that starts at [at] (looping).
+  double _pulse(double at, double len) {
+    final d = (_sec - at) % 12;
+    if (d < 0 || d > len) return 0;
+    return sin(d / len * pi);
+  }
+
+  bool _within(double at, double len) {
+    final d = (_sec - at) % 12;
+    return d >= 0 && d <= len;
+  }
+
+  Widget _img(String n, {double dx = 0, double dy = 0, double rot = 0, double sx = 1, double sy = 1, double opacity = 1,
+      Alignment anchor = Alignment.center, double scale = 1, Offset? pivot}) {
+    final p = _lp[n]!;
+    final w = p.w * scale, h = p.h * scale;
+    if (pivot != null) {
+      // rotate around a shared scene point (e.g. a neck) so face parts stay glued to the head
+      anchor = Alignment((pivot.dx - (p.cx - w / 2)) / w * 2 - 1, (pivot.dy - (p.cy - h / 2)) / h * 2 - 1);
+    }
+    return Positioned(
+      left: p.cx - w / 2 + dx,
+      top: p.cy - h / 2 + dy,
+      width: w,
+      height: h,
+      child: IgnorePointer(
+        child: Opacity(
+          opacity: opacity.clamp(0.0, 1.0).toDouble(),
+          child: Transform(
+            alignment: anchor,
+            transform: Matrix4.identity()
+              ..rotateZ(rot)
+              ..scale(sx, sy),
+            child: Image.asset('${_LD.dir}lib/$n.webp', fit: BoxFit.fill, filterQuality: FilterQuality.medium),
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<Widget> _parts() {
+    final v = widget.life.value * 2 * pi; // one turn per 12 s
+    final rise = Curves.easeOutBack.transform(_rise.value);
+
+    // robot: whole body bobs; head tilts; hand waves; happy eyes now and then
+    final rBob = sin(v * 4) * 7;
+    final headTilt = sin(v * 2) * 0.05 + _pulse(5.0, 1.4) * 0.08;
+    final happy = _within(5.0, 1.4) || _within(10.6, 0.2);
+    final wave = sin(v * 6) * 0.12 - 0.05;
+
+    // boy: head sways; blinks
+    final boyTilt = sin(v * 2 + 1) * 0.045;
+    final boyBlink = _within(2.1, 0.16) || _within(7.4, 0.16) || _within(7.7, 0.14);
+    // girl: gentle sway; blinks
+    final girlTilt = sin(v * 2 + 2.4) * 0.03;
+    final girlBlink = _within(3.6, 0.16) || _within(9.1, 0.16);
+
+    // fox: breathing body, nodding head, ear twitches, swishing tail
+    final breath = (sin(v * 3) + 1) / 2;
+    final earL = _pulse(4.0, 0.35) * 0.35 + _pulse(10.2, 0.3) * 0.3;
+    final earR = _pulse(4.2, 0.35) * -0.35;
+    final tail = sin(v * 2) * 0.08 + _pulse(8.0, 0.8) * 0.18;
+
+    // book page flips every 4 s
+    final flipT = ((_sec % 4) - 2.6) / 1.0; // flips during 2.6–3.6 s of each 4 s
+    final flipping = flipT >= 0 && flipT <= 1;
+    final flip = flipping ? cos(Curves.easeInOut.transform(flipT) * pi) : 1.0;
+
+    // castle island: rises from the book, then floats
+    final castleDy = (1 - rise) * 170 + sin(v * 3) * 9;
+
+    // hanging-head pivot helper: rotate around the neck (bottom centre)
+    Widget head(String n, double rot, Offset neck, {double dy = 0}) => _img(n, rot: rot, dy: dy, pivot: neck);
+    const robotNeck = Offset(392, 790), boyNeck = Offset(160, 975), girlNeck = Offset(800, 1080);
+
+    return [
+      // decor
+      _img('lantern_a', rot: sin(v * 2) * 0.05, anchor: Alignment.topCenter),
+      _img('lantern_b', rot: sin(v * 2 + 1.3) * 0.06, anchor: Alignment.topCenter),
+      _img('vines', dy: sin(v * 2) * 3),
+      _img('cloud', dx: sin(v) * 26),
+      _img('isle_a', dy: sin(v * 3) * 10),
+      _img('isle_b', dy: sin(v * 3 + 2) * 8),
+      // magic above the book
+      _img('glow', opacity: 0.55 + 0.25 * sin(v * 4) + 0.2 * rise, scale: 0.9 + 0.08 * sin(v * 4)),
+      _img('castle', dy: castleDy, opacity: rise, scale: 0.6 + 0.4 * rise),
+      _img('ring', rot: v, opacity: 0.85 * rise, sx: 1, sy: 1),
+      _img('trail', opacity: (0.5 + 0.5 * sin(v * 3)) * rise, dy: -sin(v * 2) * 10),
+      _img('book_open'),
+      _img('page_r', sx: flip, anchor: Alignment.centerLeft, dy: -6 * (1 - flip.abs())),
+      // floating little things
+      _img('globe', dy: sin(v * 4) * 8, rot: sin(v * 2) * 0.08),
+      _img('palette', dy: sin(v * 4 + 1) * 9, rot: sin(v * 3) * 0.12),
+      _img('blk_a', dy: sin(v * 5) * 7 - 18 * rise, rot: sin(v * 3) * 0.2),
+      _img('blk_b', dy: sin(v * 5 + 1) * 7 - 26 * rise, rot: sin(v * 3 + 1) * 0.2),
+      _img('blk_c', dy: sin(v * 5 + 2) * 7 - 18 * rise, rot: sin(v * 3 + 2) * 0.2),
+      _img('puzzle', dy: sin(v * 4 + 2) * 8, rot: v),
+      // robot
+      _img('robot_book', dy: rBob, rot: sin(v * 2) * 0.04),
+      _img('robot_robe', dy: rBob),
+      _img('robot_hand', dy: rBob, rot: wave, anchor: Alignment.centerLeft),
+      head('robot_head', headTilt, robotNeck, dy: rBob),
+      head(happy ? 'robot_eyes_happy' : 'robot_eyes_open', headTilt, robotNeck, dy: rBob),
+      head('robot_glasses', headTilt, robotNeck, dy: rBob),
+      // fox on its cushion
+      _img('cushion'),
+      _img('fox_tail', rot: tail, anchor: Alignment.centerLeft),
+      _img('fox_body', sy: 1 + breath * 0.035, sx: 1 + breath * 0.012, anchor: Alignment.bottomCenter),
+      _img('fox_ear_l', rot: -earL, anchor: Alignment.bottomCenter, dy: -breath * 4),
+      _img('fox_ear_r', rot: -earR, anchor: Alignment.bottomCenter, dy: -breath * 4),
+      _img('fox_head', dy: -breath * 4, rot: sin(v * 2) * 0.03, anchor: Alignment.bottomCenter),
+      // boy
+      _img('boy_hoodie', sy: 1 + sin(v * 5) * 0.01, anchor: Alignment.bottomCenter),
+      head('boy_head', boyTilt, boyNeck),
+      if (boyBlink) head('boy_lid_l', boyTilt, boyNeck),
+      if (boyBlink) head('boy_lid_r', boyTilt, boyNeck),
+      _img('boy_hands', dy: sin(v * 5) * 2),
+      // girl
+      head('girl', girlTilt, girlNeck),
+      if (girlBlink) head('girl_lid_l', girlTilt, girlNeck),
+      if (girlBlink) head('girl_lid_r', girlTilt, girlNeck),
+      // sparkles
+      _img('sparkles', opacity: 0.4 + 0.6 * ((sin(v * 6) + 1) / 2), scale: 0.9 + 0.1 * sin(v * 6)),
+      _img('sparkle_big', opacity: _pulse(1.0, 1.2) + _pulse(6.5, 1.2), rot: v * 2, scale: 0.6 + 0.6 * (_pulse(1.0, 1.2) + _pulse(6.5, 1.2))),
+    ];
+  }
+}
+
+// ─── Adventure scene as a puppet ───────────────────────────────────────────
+
+const Map<String, _P> _ap = {
+  'boy_arm_r_up': _P(535.1, 816.2, 89.6, 1.3233),
+  'boy_arm_r_lo': _P(584.1, 889.0, 139.3, 0.6763),
+  'boy_leg_l': _P(432.9, 1026.2, 135.1, 0.9303),
+  'boy_leg_r': _P(507.1, 1022.0, 136.5, 1.0255),
+  'boy_torso': _P(460.9, 858.2, 177.8, 1.3716),
+  'boy_arm_l_up': _P(375.5, 816.2, 85.4, 1.3231),
+  'boy_arm_l_lo': _P(367.1, 891.8, 107.8, 0.6442),
+  'compass': _P(348.9, 947.8, 63.0, 1.5253),
+  'boy_head': _P(453.9, 634.2, 265.3, 0.8513),
+  'boy_lid_l': _P(454.6, 648.2, 50.4, 1.1212),
+  'boy_lid_r': _P(520.4, 648.2, 47.6, 1.2135),
+  'backpack': _P(104.0, 890.0, 151.8, 0.928),
+  'robot_leg_l': _P(144.9, 1012.1, 96.4, 1.3677),
+  'robot_leg_r': _P(199.7, 1010.1, 80.5, 1.6591),
+  'robot_arm_l': _P(85.5, 939.5, 87.1, 1.7801),
+  'robot_body': _P(170.0, 901.9, 145.2, 0.8996),
+  'robot_arm_r': _P(257.1, 934.9, 130.0, 1.1122),
+  'robot_head': _P(166.7, 771.2, 227.0, 0.7147),
+  'robot_eyes': _P(174.0, 768.6, 135.3, 0.6213),
+  'robot_eyes_happy': _P(174.0, 768.6, 135.3, 0.6128),
+  'fox_tail': _P(721.0, 944.3, 113.3, 1.2315),
+  'fox_leg1': _P(623.6, 1021.3, 50.6, 1.8198),
+  'fox_leg3': _P(691.9, 1019.1, 50.6, 1.8447),
+  'fox_leg0': _P(638.0, 1043.3, 55.0, 1.7727),
+  'fox_leg2': _P(674.2, 1043.3, 55.0, 1.8447),
+  'fox_body': _P(655.0, 936.0, 111.7, 1.0419),
+  'fox_head': _P(646.8, 804.0, 160.1, 1.053),
+  'fox_lid_l': _P(631.9, 814.5, 39.6, 1.1829),
+  'fox_lid_r': _P(685.2, 814.5, 38.5, 1.2436),
+  'cloud': _P(140, 300, 230, 0.5725),
+  'isle': _P(820, 560, 150, 1.0035),
+  'pz_r': _P(70, 420, 70, 1.0307),
+  'pz_b': _P(140, 470, 62, 1.1184),
+  'pz_g': _P(95, 520, 58, 1.0881),
+  'pz_y': _P(165, 400, 52, 1.0613),
+  'blk_a': _P(245, 400, 62, 0.9464),
+  'blk_b': _P(300, 420, 62, 0.9294),
+  'blk_c': _P(355, 400, 62, 0.9314),
+  'globe': _P(455, 400, 95, 0.9621),
+  'brush': _P(575, 450, 130, 0.9167),
+  'rainbow': _P(665, 440, 170, 0.7082),
+  'note1': _P(620, 560, 52, 1.2803),
+  'note2': _P(680, 590, 58, 1.1274),
+  'star_big': _P(760, 700, 70, 0.9493),
+  'sparkles': _P(540, 330, 170, 0.8735),
+  'glow': _P(455, 400, 200, 0.9838),
+  'ring': _P(455, 405, 160, 0.5968),
+  'cloud_b': _P(800, 250, 200, 0.5725),
+};
+
+const Offset _boyNeck = Offset(460.9, 741.3);
+const Offset _boyShL = Offset(375.5, 776.3);
+const Offset _boyShR = Offset(547.0, 776.3);
+const Offset _boyElR = Offset(550.5, 877.8);
+const Offset _boyElL = Offset(347.5, 867.3);
+const Offset _compassTop = Offset(348.9, 919.8);
+const Offset _robotNeck = Offset(170.0, 837.2);
+const Offset _robotShL = Offset(110.6, 876.8);
+const Offset _robotShR = Offset(229.4, 876.8);
+const Offset _foxNeck = Offset(652.2, 875.5);
+const Offset _foxTail = Offset(685.2, 982.8);
+
+/// Characters layer, shrunk around the floor point [floor] so nobody is cut off
+/// on phones narrower than the artwork (the background stays full-bleed).
+Widget _fitLayer(BoxConstraints c, double w, double h, Offset floor, List<Widget> parts) {
+  final cover = max(c.maxWidth / w, c.maxHeight / h);
+  final visible = c.maxWidth / cover; // scene width actually on screen
+  final k = min(1.0, (visible - 30) / 960);
+  return Positioned.fill(
+    child: Transform(
+      alignment: Alignment(floor.dx / w * 2 - 1, floor.dy / h * 2 - 1),
+      transform: Matrix4.identity()..scale(k, k),
+      child: Stack(clipBehavior: Clip.none, children: parts),
+    ),
+  );
+}
+
+/// Places one puppet part from [map] (scene coords), optionally rotating around a shared [pivot].
+Widget _puppet(Map<String, _P> map, String folder, String n,
+    {double dx = 0, double dy = 0, double rot = 0, double sx = 1, double sy = 1, double opacity = 1, double scale = 1,
+    Alignment anchor = Alignment.center, Offset? pivot}) {
+  final p = map[n]!;
+  final w = p.w * scale, h = p.h * scale;
+  if (pivot != null) {
+    anchor = Alignment((pivot.dx - (p.cx - w / 2)) / w * 2 - 1, (pivot.dy - (p.cy - h / 2)) / h * 2 - 1);
+  }
+  final file = n == 'cloud_b' ? 'cloud' : n;
+  return Positioned(
+    left: p.cx - w / 2 + dx,
+    top: p.cy - h / 2 + dy,
+    width: w,
+    height: h,
+    child: IgnorePointer(
+      child: Opacity(
+        opacity: opacity.clamp(0.0, 1.0).toDouble(),
+        child: Transform(
+          alignment: anchor,
+          transform: Matrix4.identity()
+            ..rotateZ(rot)
+            ..scale(sx, sy),
+          child: Image.asset('${_LD.dir}$folder/$file.webp', fit: BoxFit.fill, filterQuality: FilterQuality.medium),
+        ),
+      ),
+    ),
+  );
+}
+
+class _PuppetAdventure extends StatelessWidget {
+  final Animation<double> life; // 12 s loop
+  const _PuppetAdventure({required this.life});
+
+  static const double _w = 941, _h = 1672;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (_, c) => FittedBox(
+        fit: BoxFit.cover,
+        child: SizedBox(
+          width: _w,
+          height: _h,
+          child: AnimatedBuilder(
+            animation: life,
+            builder: (_, __) => Stack(clipBehavior: Clip.none, children: [
+              Positioned.fill(child: Image.asset(_LD.bgA, fit: BoxFit.cover)),
+              _fitLayer(c, _w, _h, const Offset(470, 1095), _parts()),
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
+
+  double get _sec => life.value * 12;
+  double _pulse(double at, double len) {
+    final d = (_sec - at) % 12;
+    if (d < 0 || d > len) return 0;
+    return sin(d / len * pi);
+  }
+
+  bool _within(double at, double len) {
+    final d = (_sec - at) % 12;
+    return d >= 0 && d <= len;
+  }
+
+  Widget _i(String n, {double dx = 0, double dy = 0, double rot = 0, double sx = 1, double sy = 1, double opacity = 1, double scale = 1,
+          Alignment anchor = Alignment.center, Offset? pivot}) =>
+      _puppet(_ap, 'adv', n, dx: dx, dy: dy, rot: rot, sx: sx, sy: sy, opacity: opacity, scale: scale, anchor: anchor, pivot: pivot);
+
+  List<Widget> _parts() {
+    final v = life.value * 2 * pi; // one turn per 12 s
+    final step = v * 12; // 6 steps per loop
+
+    // boy: marches in place, points, looks around, blinks
+    final legL = max(0.0, sin(step)), legR = max(0.0, -sin(step));
+    final bBob = -(legL + legR) * 6;
+    final bHead = sin(v * 2) * 0.05 + _pulse(6.0, 1.2) * 0.08;
+    final bBlink = _within(1.8, 0.15) || _within(6.9, 0.15) || _within(7.2, 0.13);
+    final point = sin(v * 4) * 0.06 + _pulse(3.0, 1.0) * -0.18;
+    final swingL = sin(step) * 0.12;
+
+    // robot: hovers, swings arms, happy face now and then
+    final rBob = sin(v * 4) * 8;
+    final rHead = sin(v * 2 + 1) * 0.06;
+    final happy = _within(4.5, 1.3) || _within(9.8, 0.25);
+    final armL = sin(step + pi) * 0.14, armR = sin(step) * 0.14 - _pulse(8.0, 1.5) * 0.5;
+    final rLegL = max(0.0, sin(step + 0.6)) * 5, rLegR = max(0.0, -sin(step + 0.6)) * 5;
+
+    // fox: wags, cocks its head, blinks, taps a paw
+    final wag = sin(v * 10) * 0.22;
+    final fHead = sin(v * 2 + 2) * 0.05 + _pulse(5.0, 1.0) * 0.14;
+    final fBlink = _within(2.9, 0.15) || _within(8.6, 0.15);
+    final fBreath = (sin(v * 4) + 1) / 2;
+    final paw = _pulse(10.0, 0.5) * 12 + _pulse(10.6, 0.5) * 12;
+
+    return [
+      // sky
+      _i('cloud', dx: sin(v) * 30),
+      _i('cloud_b', dx: -sin(v + 1) * 36),
+      _i('isle', dy: sin(v * 3) * 12),
+      _i('sparkles', opacity: 0.35 + 0.65 * ((sin(v * 6) + 1) / 2), scale: 0.9 + 0.12 * sin(v * 6)),
+      _i('glow', opacity: 0.45 + 0.3 * sin(v * 4), scale: 1 + 0.1 * sin(v * 4)),
+      _i('ring', rot: v * 2, dy: sin(v * 4) * 8),
+      _i('globe', dy: sin(v * 4) * 8, rot: v * 0.5),
+      _i('rainbow', opacity: 0.55 + 0.45 * ((sin(v * 3) + 1) / 2), scale: 0.92 + 0.08 * sin(v * 3)),
+      _i('brush', rot: sin(v * 6) * 0.25, anchor: Alignment.topRight, dy: sin(v * 4) * 5),
+      _i('note1', dy: sin(v * 6) * 12, rot: sin(v * 3) * 0.2, opacity: 0.6 + 0.4 * sin(v * 6).abs()),
+      _i('note2', dy: sin(v * 6 + 1.5) * 12, rot: sin(v * 3 + 1) * 0.2, opacity: 0.6 + 0.4 * sin(v * 6 + 1.5).abs()),
+      _i('pz_r', dy: sin(v * 4) * 10, rot: sin(v * 2) * 0.4),
+      _i('pz_b', dy: sin(v * 4 + 1) * 10, rot: sin(v * 2 + 1) * 0.4),
+      _i('pz_g', dy: sin(v * 4 + 2) * 10, rot: sin(v * 2 + 2) * 0.4),
+      _i('pz_y', dy: sin(v * 4 + 3) * 10, rot: sin(v * 2 + 3) * 0.4),
+      _i('blk_a', dy: sin(v * 5) * 9 - _pulse(2.0, 0.6) * 20, rot: sin(v * 3) * 0.15),
+      _i('blk_b', dy: sin(v * 5 + 1) * 9 - _pulse(2.3, 0.6) * 20, rot: sin(v * 3 + 1) * 0.15),
+      _i('blk_c', dy: sin(v * 5 + 2) * 9 - _pulse(2.6, 0.6) * 20, rot: sin(v * 3 + 2) * 0.15),
+      _i('star_big', rot: v, scale: 0.8 + 0.3 * ((sin(v * 6) + 1) / 2)),
+      // robot
+      _i('backpack', dy: rBob, rot: sin(v * 4) * 0.03),
+      _i('robot_leg_l', dy: rBob * 0.4 - rLegL),
+      _i('robot_leg_r', dy: rBob * 0.4 - rLegR),
+      _i('robot_arm_l', dy: rBob, rot: armL, pivot: _robotShL),
+      _i('robot_body', dy: rBob),
+      _i('robot_arm_r', dy: rBob, rot: armR, pivot: _robotShR),
+      _i('robot_head', dy: rBob, rot: rHead, pivot: _robotNeck),
+      _i(happy ? 'robot_eyes_happy' : 'robot_eyes', dy: rBob, rot: rHead, pivot: _robotNeck),
+      // fox
+      _i('fox_tail', rot: wag, pivot: _foxTail),
+      _i('fox_leg1'),
+      _i('fox_leg3'),
+      _i('fox_leg0', dy: -paw),
+      _i('fox_leg2'),
+      _i('fox_body', sy: 1 + fBreath * 0.025, anchor: Alignment.bottomCenter),
+      _i('fox_head', rot: fHead, pivot: _foxNeck, dy: -fBreath * 3),
+      if (fBlink) _i('fox_lid_l', rot: fHead, pivot: _foxNeck, dy: -fBreath * 3),
+      if (fBlink) _i('fox_lid_r', rot: fHead, pivot: _foxNeck, dy: -fBreath * 3),
+      // boy
+      _i('boy_arm_r_up', dy: bBob, rot: point * 0.5, pivot: _boyShR),
+      _i('boy_arm_r_lo', dy: bBob, rot: point, pivot: _boyShR),
+      _i('boy_leg_l', dy: -legL * 14, rot: -legL * 0.06),
+      _i('boy_leg_r', dy: -legR * 14, rot: legR * 0.06),
+      _i('boy_torso', dy: bBob),
+      _i('boy_arm_l_up', dy: bBob, rot: swingL, pivot: _boyShL),
+      _i('boy_arm_l_lo', dy: bBob, rot: swingL, pivot: _boyShL),
+      _i('compass', dy: bBob, rot: swingL + sin(v * 8) * 0.25, pivot: _compassTop),
+      _i('boy_head', dy: bBob, rot: bHead, pivot: _boyNeck),
+      if (bBlink) _i('boy_lid_l', dy: bBob, rot: bHead, pivot: _boyNeck),
+      if (bBlink) _i('boy_lid_r', dy: bBob, rot: bHead, pivot: _boyNeck),
+    ];
+  }
+}

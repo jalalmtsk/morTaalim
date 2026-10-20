@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:mortaalim/screens/parents/parent_data.dart' show ActivityFeed;
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -66,6 +67,7 @@ class _DrawingAppState extends State<DrawingApp> {
   }
 
   Future<void> _saveDrawingToDisk(SavedDrawing d) async {
+    ActivityFeed.add('drawing', '');
     final dir = await _dir;
     final fname = 'drawing_${d.savedAt.millisecondsSinceEpoch}.png';
     await File('${dir.path}/$fname').writeAsBytes(d.imageData);

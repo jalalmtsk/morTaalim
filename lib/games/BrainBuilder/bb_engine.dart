@@ -3,9 +3,9 @@ import 'dart:math';
 
 /// Brain Builder — puzzle engine (pure Dart, no Flutter).
 ///
-/// Every level is generated from a fixed seed, so level N is always the same
-/// puzzle on every device. Each level is solved with a BFS, which gives the
-/// fewest-moves solution (used for the star rating and for hints).
+/// 6 worlds × 12 levels. Every level is generated from a fixed seed (same
+/// puzzle on every device) and checked with a BFS solver: it must be solvable,
+/// need its world's mechanic, and sit in the move range of its difficulty.
 
 enum BBDir { up, right, down, left }
 
@@ -18,98 +18,191 @@ extension BBDirX on BBDir {
   BBDir get opposite => BBDir.values[(index + 2) % 4];
 }
 
-/// World 1 = walk the maze, World 2 = collect stars first, World 3 = ice (slide until a wall).
-enum BBMode { walk, collect, slide }
+/// One mechanic per world, in map order.
+enum BBMode { bridge, portal, ice, gear, moon, buddy }
 
-const int bbLevelCount = 30;
-const int bbLevelsPerWorld = 10;
+const int bbWorldCount = 6;
+const int bbLevelsPerWorld = 12;
+const int bbLevelCount = bbWorldCount * bbLevelsPerWorld;
 
 int bbWorldOf(int level) => (level - 1) ~/ bbLevelsPerWorld;
-BBMode bbModeOf(int level) => BBMode.values[bbWorldOf(level)];
+int bbIndexInWorld(int level) => (level - 1) % bbLevelsPerWorld;
+BBMode bbModeOf(int level) => BBMode.values[bbWorldOf(level).clamp(0, bbWorldCount - 1)];
 
-class BBStep {
-  final int to;
-  final int mask;
-  final List<int> path; // every cell entered, in order (last == to)
-  const BBStep(this.to, this.mask, this.path);
+/// Flag bits: bit 0 = red buttons pressed, bit 1 = blue buttons pressed, bit 2 = gear turned.
+const int bbGearBit = 4;
+
+class BBState {
+  final int p1, p2, mask, flags;
+  const BBState(this.p1, this.p2, this.mask, this.flags);
+}
+
+class BBStep1 {
+  final int to, mask, flags;
+  final List<int> path; // every cell entered (a portal jump adds the destination)
+  final bool teleported;
+  const BBStep1(this.to, this.mask, this.flags, this.path, this.teleported);
+}
+
+class BBMove {
+  final BBState to;
+  final BBStep1? r1, r2; // null = that robot did not move
+  const BBMove(this.to, this.r1, this.r2);
 }
 
 class BBLevel {
   final int number;
+  final BBMode mode;
   final int cols, rows;
   final List<int> walls; // per-cell wall bits
   final int start, goal;
+  final int start2, goal2; // second robot (buddy), -1 when unused
   final List<int> gems; // little stars to collect before the goal counts
-  final BBMode mode;
+  final Map<int, int> gates; // cell → colour (0 red, 1 blue): blocked until its button is pressed
+  final Map<int, int> buttons; // cell → colour
+  final Map<int, int> portals; // cell → twin cell
+  final Set<int> switches; // gear switch cells (toggle the gear bit when entered)
+  final Set<int> doorsA; // closed until the gear is turned
+  final Set<int> doorsB; // open until the gear is turned
 
   BBLevel({
     required this.number,
+    required this.mode,
     required this.cols,
     required this.rows,
     required this.walls,
     required this.start,
     required this.goal,
-    required this.gems,
-    required this.mode,
+    this.start2 = -1,
+    this.goal2 = -1,
+    this.gems = const [],
+    this.gates = const {},
+    this.buttons = const {},
+    this.portals = const {},
+    this.switches = const {},
+    this.doorsA = const {},
+    this.doorsB = const {},
   });
 
-  /// Fewest moves to win from the start (0 = unsolvable).
-  late final int optimal = solve(start, 0)?.length ?? 0;
+  BBLevel copyWith({Map<int, int>? buttons, Map<int, int>? portals, Set<int>? switches}) => BBLevel(
+        number: number,
+        mode: mode,
+        cols: cols,
+        rows: rows,
+        walls: walls,
+        start: start,
+        goal: goal,
+        start2: start2,
+        goal2: goal2,
+        gems: gems,
+        gates: gates,
+        buttons: buttons ?? this.buttons,
+        portals: portals ?? this.portals,
+        switches: switches ?? this.switches,
+        doorsA: doorsA,
+        doorsB: doorsB,
+      );
 
-  bool get slides => mode == BBMode.slide;
+  /// Fewest moves to win from the start (0 = unsolvable).
+  late final int optimal = solve(initial)?.length ?? 0;
+
+  bool get slides => mode == BBMode.ice;
+  bool get dark => mode == BBMode.moon;
+  bool get buddy => start2 >= 0;
+  int get cells => cols * rows;
   int get fullMask => (1 << gems.length) - 1;
+  BBState get initial => BBState(start, buddy ? start2 : 0, 0, 0);
   int col(int i) => i % cols;
   int row(int i) => i ~/ cols;
   bool blocked(int i, BBDir d) => walls[i] & d.bit != 0;
 
-  /// Moves one step (walk) or slides until a wall / the goal (ice).
-  /// Returns null when a wall is right there.
-  BBStep? step(int pos, int mask, BBDir d) {
+  bool closed(int cell, int flags) {
+    final c = gates[cell];
+    if (c != null && flags & (1 << c) == 0) return true;
+    if (doorsA.contains(cell) && flags & bbGearBit == 0) return true;
+    if (doorsB.contains(cell) && flags & bbGearBit != 0) return true;
+    return false;
+  }
+
+  /// Moves one robot one step (or slides on ice). [other] = cell it can't enter.
+  BBStep1? step1(int pos, int mask, int flags, BBDir d, {int other = -1}) {
     if (blocked(pos, d)) return null;
     final path = <int>[];
-    var p = pos, m = mask;
+    var p = pos, m = mask, fl = flags;
+    var tele = false;
     while (true) {
-      p += d.dy * cols + d.dx;
+      final n = p + d.dy * cols + d.dx;
+      if (closed(n, fl) || n == other) break;
+      p = n;
       path.add(p);
       final g = gems.indexOf(p);
       if (g >= 0) m |= 1 << g;
+      final b = buttons[p];
+      if (b != null) fl |= 1 << b;
+      if (switches.contains(p)) fl ^= bbGearBit;
+      final twin = portals[p];
+      if (twin != null) {
+        p = twin;
+        path.add(p);
+        tele = true;
+        break;
+      }
       if (!slides || p == goal || blocked(p, d)) break;
     }
-    return BBStep(p, m, path);
+    if (path.isEmpty) return null;
+    return BBStep1(p, m, fl, path, tele);
   }
 
-  bool isWin(int pos, int mask) => pos == goal && mask == fullMask;
+  /// One input: every robot moves the same way. Null = nothing can move.
+  BBMove? move(BBState s, BBDir d) {
+    if (!buddy) {
+      final r = step1(s.p1, s.mask, s.flags, d);
+      return r == null ? null : BBMove(BBState(r.to, 0, r.mask, r.flags), r, null);
+    }
+    final r1 = step1(s.p1, s.mask, s.flags, d);
+    final q1 = r1?.to ?? s.p1;
+    final m1 = r1?.mask ?? s.mask, f1 = r1?.flags ?? s.flags;
+    final r2 = step1(s.p2, m1, f1, d, other: q1);
+    final q2 = r2?.to ?? s.p2;
+    if (q1 == q2) return null;
+    if (q1 == s.p1 && q2 == s.p2) return null;
+    return BBMove(BBState(q1, q2, r2?.mask ?? m1, r2?.flags ?? f1), r1, r2);
+  }
 
-  /// Shortest list of moves from (pos, mask) to a win, or null if impossible.
-  List<BBDir>? solve(int pos, int mask) {
-    if (isWin(pos, mask)) return const [];
-    final w = 1 << gems.length;
-    final n = cols * rows * w;
-    final prev = List<int>.filled(n, -1);
-    final how = List<int>.filled(n, -1);
-    final s0 = pos * w + mask;
-    prev[s0] = s0;
-    final q = Queue<int>()..add(s0);
+  bool isWin(BBState s) => s.p1 == goal && s.mask == fullMask && (!buddy || s.p2 == goal2);
+
+  int _key(BBState s) => ((s.p1 * cells + s.p2) * (fullMask + 1) + s.mask) * 8 + s.flags;
+
+  /// Shortest list of moves from [s] to a win, or null if impossible.
+  List<BBDir>? solve(BBState s) {
+    if (isWin(s)) return const [];
+    final size = cells * cells * (fullMask + 1) * 8;
+    final prev = List<int>.filled(size, -1);
+    final how = List<int>.filled(size, 0);
+    final k0 = _key(s);
+    prev[k0] = k0;
+    final q = Queue<BBState>()..add(s);
     while (q.isNotEmpty) {
-      final s = q.removeFirst();
-      final p = s ~/ w, m = s % w;
+      final x = q.removeFirst();
+      final kx = _key(x);
       for (final d in BBDir.values) {
-        final st = step(p, m, d);
-        if (st == null) continue;
-        final ns = st.to * w + st.mask;
-        if (prev[ns] != -1) continue;
-        prev[ns] = s;
-        how[ns] = d.index;
-        if (isWin(st.to, st.mask)) {
+        final mv = move(x, d);
+        if (mv == null) continue;
+        final y = mv.to;
+        final ky = _key(y);
+        if (prev[ky] != -1) continue;
+        prev[ky] = kx;
+        how[ky] = d.index;
+        if (isWin(y)) {
           final out = <BBDir>[];
-          var c = ns;
-          while (c != s0) {
+          var c = ky;
+          while (c != k0) {
             out.add(BBDir.values[how[c]]);
             c = prev[c];
           }
           return out.reversed.toList();
         }
-        q.add(ns);
+        q.add(y);
       }
     }
     return null;
@@ -120,66 +213,84 @@ class BBLevel {
 
 class _Spec {
   final int cols, rows;
-  final double density; // walk/collect: share of extra openings (loops); slide: share of walls
-  final int gems, minMoves, maxMoves;
-  const _Spec(this.cols, this.rows, this.density, this.gems, this.minMoves, this.maxMoves);
+  final double density; // maze: share of extra openings; ice/buddy field: share of walls / openings
+  final int gems, extra, minMoves;
+  const _Spec(this.cols, this.rows, this.density, this.gems, this.extra, this.minMoves);
+  int get maxMoves => minMoves + max(8, minMoves ~/ 2);
 }
 
-const List<_Spec> _specs = [
-  // World 1 — Maze Meadow (walk)
-  _Spec(4, 4, 0.00, 0, 6, 12),
-  _Spec(4, 4, 0.10, 0, 6, 12),
-  _Spec(5, 5, 0.05, 0, 8, 16),
-  _Spec(5, 5, 0.10, 0, 9, 18),
-  _Spec(5, 6, 0.08, 0, 10, 20),
-  _Spec(6, 6, 0.08, 0, 12, 22),
-  _Spec(6, 6, 0.12, 0, 13, 24),
-  _Spec(6, 7, 0.10, 0, 14, 26),
-  _Spec(7, 7, 0.10, 0, 16, 28),
-  _Spec(7, 7, 0.05, 0, 18, 30),
-  // World 2 — Star Garden (collect)
-  _Spec(5, 5, 0.15, 1, 8, 20),
-  _Spec(5, 5, 0.15, 1, 9, 22),
-  _Spec(5, 6, 0.15, 2, 10, 24),
-  _Spec(6, 6, 0.15, 2, 12, 26),
-  _Spec(6, 6, 0.18, 2, 13, 28),
-  _Spec(6, 7, 0.15, 2, 14, 30),
-  _Spec(6, 7, 0.18, 3, 15, 32),
-  _Spec(7, 7, 0.15, 3, 16, 34),
-  _Spec(7, 7, 0.18, 3, 18, 36),
-  _Spec(7, 8, 0.15, 3, 20, 40),
-  // World 3 — Ice Islands (slide)
-  _Spec(4, 4, 0.22, 0, 3, 5),
-  _Spec(5, 5, 0.22, 0, 3, 6),
-  _Spec(5, 5, 0.25, 0, 4, 7),
-  _Spec(5, 6, 0.25, 0, 5, 8),
-  _Spec(6, 6, 0.25, 0, 5, 9),
-  _Spec(6, 6, 0.25, 1, 5, 10),
-  _Spec(6, 6, 0.28, 1, 6, 11),
-  _Spec(6, 7, 0.25, 2, 6, 12),
-  _Spec(7, 7, 0.25, 2, 7, 13),
-  _Spec(7, 7, 0.28, 2, 8, 14),
-];
+const Map<BBMode, List<_Spec>> _specs = {
+  BBMode.bridge: [
+    _Spec(4, 4, .0, 0, 0, 6), _Spec(4, 4, .1, 0, 0, 6), _Spec(5, 5, .05, 0, 1, 8), _Spec(5, 5, .1, 0, 1, 9),
+    _Spec(5, 5, .1, 1, 1, 10), _Spec(5, 6, .08, 0, 1, 11), _Spec(6, 6, .08, 0, 2, 12), _Spec(6, 6, .1, 1, 1, 13),
+    _Spec(6, 6, .08, 0, 2, 14), _Spec(6, 7, .1, 1, 2, 15), _Spec(7, 7, .08, 0, 2, 16), _Spec(7, 7, .1, 1, 2, 18),
+  ],
+  BBMode.portal: [
+    _Spec(5, 5, .05, 0, 1, 6), _Spec(5, 5, .08, 0, 1, 7), _Spec(5, 5, .1, 0, 1, 8), _Spec(5, 6, .08, 0, 1, 9),
+    _Spec(6, 6, .08, 0, 1, 10), _Spec(6, 6, .1, 1, 1, 11), _Spec(6, 6, .08, 0, 2, 12), _Spec(6, 7, .1, 1, 1, 13),
+    _Spec(6, 7, .08, 0, 2, 14), _Spec(7, 7, .1, 1, 2, 15), _Spec(7, 7, .08, 1, 2, 16), _Spec(7, 7, .1, 1, 2, 18),
+  ],
+  BBMode.ice: [
+    _Spec(4, 4, .22, 0, 0, 3), _Spec(4, 4, .25, 0, 0, 4), _Spec(5, 5, .22, 0, 0, 4), _Spec(5, 5, .25, 0, 0, 5),
+    _Spec(5, 5, .25, 1, 0, 5), _Spec(5, 6, .25, 0, 0, 6), _Spec(6, 6, .25, 0, 0, 6), _Spec(6, 6, .25, 1, 0, 7),
+    _Spec(6, 6, .28, 1, 0, 7), _Spec(6, 7, .25, 1, 0, 8), _Spec(7, 7, .25, 2, 0, 8), _Spec(7, 7, .28, 2, 0, 9),
+  ],
+  BBMode.gear: [
+    _Spec(5, 5, .05, 0, 1, 7), _Spec(5, 5, .08, 0, 1, 8), _Spec(5, 5, .1, 0, 1, 9), _Spec(5, 6, .08, 0, 1, 10),
+    _Spec(6, 6, .08, 0, 1, 11), _Spec(6, 6, .1, 0, 2, 12), _Spec(6, 6, .1, 1, 1, 12), _Spec(6, 7, .08, 0, 2, 13),
+    _Spec(6, 7, .1, 1, 2, 14), _Spec(7, 7, .08, 0, 2, 15), _Spec(7, 7, .1, 1, 2, 16), _Spec(7, 7, .1, 1, 2, 18),
+  ],
+  BBMode.moon: [
+    _Spec(4, 4, .05, 0, 0, 6), _Spec(4, 5, .05, 0, 0, 7), _Spec(5, 5, .05, 0, 0, 8), _Spec(5, 5, .08, 0, 0, 9),
+    _Spec(5, 6, .05, 1, 0, 10), _Spec(6, 6, .05, 0, 0, 12), _Spec(6, 6, .08, 1, 0, 13), _Spec(6, 6, .05, 1, 0, 14),
+    _Spec(6, 7, .08, 1, 0, 15), _Spec(7, 7, .05, 1, 0, 16), _Spec(7, 7, .08, 2, 0, 18), _Spec(7, 7, .05, 2, 0, 20),
+  ],
+  BBMode.buddy: [
+    _Spec(4, 4, .35, 0, 0, 4), _Spec(4, 4, .3, 0, 0, 5), _Spec(5, 5, .35, 0, 0, 5), _Spec(5, 5, .3, 0, 0, 6),
+    _Spec(5, 5, .3, 0, 1, 7), _Spec(5, 6, .3, 0, 0, 7), _Spec(6, 6, .3, 0, 1, 8), _Spec(6, 6, .3, 0, 1, 9),
+    _Spec(6, 6, .25, 0, 1, 10), _Spec(6, 7, .3, 0, 1, 10), _Spec(7, 7, .3, 0, 1, 11), _Spec(7, 7, .25, 0, 1, 12),
+  ],
+};
 
 final Map<int, BBLevel> _cache = {};
 
 /// The puzzle for level [n] (1-based). Deterministic and cached.
-BBLevel bbLevel(int n) => _cache.putIfAbsent(n, () => _build(n));
+BBLevel bbLevel(int n) => _cache.putIfAbsent(n, () => _build(n.clamp(1, bbLevelCount)));
 
 BBLevel _build(int n) {
-  final sp = _specs[max(0, min(n - 1, _specs.length - 1))];
-  final mode = bbModeOf(max(1, min(n, bbLevelCount)));
+  final mode = bbModeOf(n);
+  final sp = _specs[mode]![bbIndexInWorld(n)];
   BBLevel? best;
-  int score(BBLevel l) => l.optimal < sp.minMoves ? sp.minMoves - l.optimal : (l.optimal > sp.maxMoves ? l.optimal - sp.maxMoves : 0);
-  for (var attempt = 0; attempt < 400; attempt++) {
-    final rnd = Random(n * 10007 + attempt * 131 + 7);
-    final l = mode == BBMode.slide ? _slide(n, sp, rnd) : _maze(n, sp, rnd, mode);
-    if (l == null || l.optimal == 0) continue;
-    if (score(l) == 0) return l;
-    if (best == null || score(l) < score(best)) best = l;
+  var bestScore = 1 << 30;
+  int score(int o) => o < sp.minMoves ? sp.minMoves - o : (o > sp.maxMoves ? o - sp.maxMoves : 0);
+  for (var attempt = 0; attempt < 300; attempt++) {
+    final r = Random(n * 7919 + attempt * 131 + 7);
+    final l = _gen(n, mode, sp, r);
+    if (l == null || l.optimal == 0 || !_needsMechanic(l)) continue;
+    final sc = score(l.optimal);
+    if (sc == 0) return l;
+    if (sc < bestScore) {
+      best = l;
+      bestScore = sc;
+    }
   }
-  return best ?? _maze(n, sp, Random(n), BBMode.walk);
+  return best ?? _gen(n, BBMode.moon, _specs[BBMode.moon]!.first, Random(n))!;
 }
+
+bool _needsMechanic(BBLevel l) {
+  if ((l.mode == BBMode.bridge || l.mode == BBMode.buddy) && l.gates.isNotEmpty) {
+    return l.copyWith(buttons: const {}).solve(l.initial) == null;
+  }
+  if (l.mode == BBMode.portal && l.portals.isNotEmpty) {
+    return l.copyWith(portals: const {}).solve(l.initial) == null;
+  }
+  if (l.mode == BBMode.gear && l.doorsA.isNotEmpty) {
+    return l.copyWith(switches: const {}).solve(l.initial) == null;
+  }
+  return true;
+}
+
+// ─── Generators ────────────────────────────────────────────────────────────
 
 bool _inside(int cols, int rows, int i, BBDir d) {
   final c = i % cols + d.dx, r = i ~/ cols + d.dy;
@@ -199,25 +310,8 @@ void _setWall(List<int> w, int cols, int i, BBDir d, bool on) {
 
 int _bits(int v) => (v & 1) + (v >> 1 & 1) + (v >> 2 & 1) + (v >> 3 & 1);
 
-List<int> _distances(List<int> w, int cols, int rows, int from) {
-  final dist = List<int>.filled(cols * rows, -1)..[from] = 0;
-  final q = Queue<int>()..add(from);
-  while (q.isNotEmpty) {
-    final p = q.removeFirst();
-    for (final d in BBDir.values) {
-      if (w[p] & d.bit != 0) continue;
-      final nx = p + d.dy * cols + d.dx;
-      if (dist[nx] != -1) continue;
-      dist[nx] = dist[p] + 1;
-      q.add(nx);
-    }
-  }
-  return dist;
-}
-
-/// Perfect maze (recursive backtracker) + a few extra openings for loops.
-BBLevel _maze(int n, _Spec sp, Random r, BBMode mode) {
-  final c = sp.cols, rw = sp.rows, total = c * rw;
+List<int> _maze(int c, int rw, double dens, Random r) {
+  final total = c * rw;
   final w = List<int>.filled(total, 15);
   final seen = List<bool>.filled(total, false);
   final stack = <int>[r.nextInt(total)];
@@ -240,31 +334,14 @@ BBLevel _maze(int n, _Spec sp, Random r, BBMode mode) {
   }
   for (var i = 0; i < total; i++) {
     for (final d in const [BBDir.right, BBDir.down]) {
-      if (_inside(c, rw, i, d) && w[i] & d.bit != 0 && r.nextDouble() < sp.density) _setWall(w, c, i, d, false);
+      if (_inside(c, rw, i, d) && w[i] & d.bit != 0 && r.nextDouble() < dens) _setWall(w, c, i, d, false);
     }
   }
-  final start = (rw - 1) * c; // bottom-left
-  final goal = c - 1; // top-right
-  final gems = <int>[];
-  if (sp.gems > 0) {
-    final dist = _distances(w, c, rw, start);
-    final score = <int, int>{
-      for (var i = 0; i < total; i++)
-        if (i != start && i != goal && dist[i] >= 2) i: dist[i] + (_bits(w[i]) == 3 ? 6 : 0) + r.nextInt(6)
-    };
-    final cands = score.keys.toList()..sort((a, b) => score[b]!.compareTo(score[a]!));
-    for (final i in cands) {
-      if (gems.length == sp.gems) break;
-      final far = gems.every((g) => (g % c - i % c).abs() + (g ~/ c - i ~/ c).abs() >= 2);
-      if (far) gems.add(i);
-    }
-  }
-  return BBLevel(number: n, cols: c, rows: rw, walls: w, start: start, goal: goal, gems: gems, mode: mode);
+  return w;
 }
 
-/// Ice level: open field with scattered walls; goal chosen to need many slides.
-BBLevel? _slide(int n, _Spec sp, Random r) {
-  final c = sp.cols, rw = sp.rows, total = c * rw;
+List<int> _openField(int c, int rw, double dens, Random r) {
+  final total = c * rw;
   final w = List<int>.filled(total, 0);
   for (var i = 0; i < total; i++) {
     if (i ~/ c == 0) w[i] |= BBDir.up.bit;
@@ -274,44 +351,203 @@ BBLevel? _slide(int n, _Spec sp, Random r) {
   }
   for (var i = 0; i < total; i++) {
     for (final d in const [BBDir.right, BBDir.down]) {
-      if (_inside(c, rw, i, d) && r.nextDouble() < sp.density) _setWall(w, c, i, d, true);
+      if (_inside(c, rw, i, d) && r.nextDouble() < dens) _setWall(w, c, i, d, true);
     }
   }
-  final start = (rw - 1) * c + r.nextInt(c);
+  return w;
+}
 
-  BBLevel make(int goal, List<int> gems) =>
-      BBLevel(number: n, cols: c, rows: rw, walls: w, start: start, goal: goal, gems: gems, mode: BBMode.slide);
-
-  BBLevel? best;
-  for (var g = 0; g < total; g++) {
-    if (g == start) continue;
-    final l = make(g, const []);
-    final o = l.optimal;
-    if (o == 0 || o > sp.maxMoves) continue;
-    if (best == null || o > best.optimal) best = l;
-  }
-  if (best == null) return null;
-  if (sp.gems == 0) return best;
-
-  // Cells Robo can actually pass through → candidate star spots.
-  final touched = <int>{};
-  final seen = <int>{start};
-  final q = Queue<int>()..add(start);
+/// BFS over open edges. Returns (distance map, previous-cell map).
+(Map<int, int>, Map<int, int>) _bfs(List<int> w, int c, int src, [Set<int> blockedCells = const {}]) {
+  final dist = <int, int>{src: 0};
+  final prev = <int, int>{src: -1};
+  final q = Queue<int>()..add(src);
   while (q.isNotEmpty) {
     final p = q.removeFirst();
     for (final d in BBDir.values) {
-      final st = best.step(p, 0, d);
-      if (st == null) continue;
-      touched.addAll(st.path);
-      if (seen.add(st.to)) q.add(st.to);
+      if (w[p] & d.bit != 0) continue;
+      final n = p + d.dy * c + d.dx;
+      if (dist.containsKey(n) || blockedCells.contains(n)) continue;
+      dist[n] = dist[p]! + 1;
+      prev[n] = p;
+      q.add(n);
     }
   }
-  final pool = touched.where((x) => x != start && x != best!.goal).toList();
-  if (pool.length < sp.gems) return null;
-  for (var t = 0; t < 40; t++) {
-    pool.shuffle(r);
-    final l = make(best.goal, pool.take(sp.gems).toList());
-    if (l.optimal > best.optimal) return l;
+  return (dist, prev);
+}
+
+List<int> _path(Map<int, int> prev, int t) {
+  final out = <int>[];
+  int? c = t;
+  while (c != null && c != -1) {
+    out.add(c);
+    c = prev[c];
   }
-  return null;
+  return out.reversed.toList();
+}
+
+List<int> _sample(int n, int k, Random r) {
+  final idx = List<int>.generate(n, (i) => i)..shuffle(r);
+  return (idx.take(k).toList())..sort();
+}
+
+List<int> _placeGems(List<int> w, int c, int rw, int start, int goal, int count, Random r, [Set<int> avoid = const {}]) {
+  if (count == 0) return const [];
+  final (dist, _) = _bfs(w, c, start);
+  final score = <int, int>{};
+  for (var i = 0; i < c * rw; i++) {
+    if (i == start || i == goal || avoid.contains(i) || (dist[i] ?? -1) < 2) continue;
+    score[i] = dist[i]! + (_bits(w[i]) == 3 ? 6 : 0) + r.nextInt(6);
+  }
+  final cands = score.keys.toList()..sort((a, b) => score[b]!.compareTo(score[a]!));
+  final gems = <int>[];
+  for (final i in cands) {
+    if (gems.length == count) break;
+    if (gems.every((g) => (g % c - i % c).abs() + (g ~/ c - i ~/ c).abs() >= 2)) gems.add(i);
+  }
+  return gems;
+}
+
+BBLevel? _gen(int n, BBMode mode, _Spec sp, Random r) {
+  final c = sp.cols, rw = sp.rows, total = c * rw;
+
+  if (mode == BBMode.ice) {
+    final w = _openField(c, rw, sp.density, r);
+    final start = (rw - 1) * c + r.nextInt(c);
+    BBLevel? best;
+    for (var g = 0; g < total; g++) {
+      if (g == start) continue;
+      final l = BBLevel(number: n, mode: mode, cols: c, rows: rw, walls: w, start: start, goal: g);
+      final o = l.optimal;
+      if (o == 0 || o > sp.maxMoves) continue;
+      if (best == null || o > best.optimal) best = l;
+    }
+    if (best == null) return null;
+    if (sp.gems == 0) return best;
+    final touched = <int>{};
+    final seen = <int>{start};
+    final q = Queue<int>()..add(start);
+    while (q.isNotEmpty) {
+      final p = q.removeFirst();
+      for (final d in BBDir.values) {
+        final st = best.step1(p, 0, 0, d);
+        if (st == null) continue;
+        touched.addAll(st.path);
+        if (seen.add(st.to)) q.add(st.to);
+      }
+    }
+    final pool = touched.where((x) => x != start && x != best!.goal).toList();
+    if (pool.length < sp.gems) return null;
+    pool.shuffle(r);
+    return BBLevel(number: n, mode: mode, cols: c, rows: rw, walls: w, start: start, goal: best.goal, gems: pool.take(sp.gems).toList());
+  }
+
+  final w = _maze(c, rw, sp.density, r);
+
+  if (mode == BBMode.buddy) {
+    final cells = List<int>.generate(total, (i) => i)..shuffle(r);
+    final s1 = cells[0], g1 = cells[1], s2 = cells[2], g2 = cells[3];
+    if (sp.extra == 0) {
+      return BBLevel(number: n, mode: mode, cols: c, rows: rw, walls: w, start: s1, goal: g1, start2: s2, goal2: g2);
+    }
+    final colour = r.nextInt(2);
+    return BBLevel(
+      number: n, mode: mode, cols: c, rows: rw, walls: w, start: s1, goal: g1, start2: s2, goal2: g2,
+      gates: {cells[4]: colour}, buttons: {cells[5]: colour},
+    );
+  }
+
+  var start = (rw - 1) * c, goal = c - 1;
+  if (r.nextDouble() < .5) {
+    start = total - 1;
+    goal = 0;
+  }
+  final (_, prev0) = _bfs(w, c, start);
+  final p = _path(prev0, goal);
+
+  if (mode == BBMode.moon || sp.extra == 0) {
+    return BBLevel(number: n, mode: mode, cols: c, rows: rw, walls: w, start: start, goal: goal,
+        gems: _placeGems(w, c, rw, start, goal, sp.gems, r));
+  }
+
+  if (p.length < 5) return null;
+  final mid = p.sublist(2, p.length - 2);
+  if (mid.length < sp.extra + 1) return null;
+
+  if (mode == BBMode.bridge) {
+    final gates = <int, int>{};
+    final buttons = <int, int>{};
+    final picks = _sample(mid.length, sp.extra, r);
+    for (var k = 0; k < picks.length; k++) {
+      gates[mid[picks[k]]] = k;
+    }
+    var blocked = gates.keys.toSet();
+    for (var colour = 0; colour < sp.extra; colour++) {
+      final (d2, _) = _bfs(w, c, start, blocked);
+      var cand = d2.keys.where((x) => !p.contains(x) && x != start && !buttons.containsKey(x)).toList();
+      if (cand.isEmpty) {
+        cand = d2.keys.where((x) => x != start && !buttons.containsKey(x) && !gates.containsKey(x)).toList();
+      }
+      if (cand.isEmpty) return null;
+      cand.sort((a, b) => d2[b]!.compareTo(d2[a]!));
+      buttons[cand[min(cand.length - 1, r.nextInt(3))]] = colour;
+      blocked = {for (final e in gates.entries) if (e.value > colour) e.key};
+    }
+    final gems = _placeGems(w, c, rw, start, goal, sp.gems, r, {...gates.keys, ...buttons.keys});
+    return BBLevel(number: n, mode: mode, cols: c, rows: rw, walls: w, start: start, goal: goal, gems: gems, gates: gates, buttons: buttons);
+  }
+
+  if (mode == BBMode.portal) {
+    final wc = [...w];
+    for (final k in _sample(p.length - 1, sp.extra, r)) {
+      final a = p[k], b = p[k + 1];
+      for (final d in BBDir.values) {
+        if (_inside(c, rw, a, d) && a + d.dy * c + d.dx == b) _setWall(wc, c, a, d, true);
+      }
+    }
+    final (d1, _) = _bfs(wc, c, start);
+    if (d1.containsKey(goal)) return null;
+    final portals = <int, int>{};
+    final used = <int>{};
+    var from = start;
+    for (var i = 0; i < sp.extra; i++) {
+      final (ds, _) = _bfs(wc, c, from);
+      if (ds.containsKey(goal)) break;
+      final next = p.where((x) => !ds.containsKey(x)).toList();
+      if (next.isEmpty) break;
+      final (dn, _) = _bfs(wc, c, next.first);
+      final a = ds.keys.where((x) => !used.contains(x) && x != start && !p.contains(x)).toList();
+      final b = dn.keys.where((x) => !used.contains(x) && x != goal).toList();
+      if (a.isEmpty || b.isEmpty) return null;
+      a.sort((x, y) => ds[y]!.compareTo(ds[x]!));
+      final pa = a[min(a.length - 1, r.nextInt(2))];
+      final pb = b[r.nextInt(b.length)];
+      portals[pa] = pb;
+      portals[pb] = pa;
+      used.addAll([pa, pb]);
+      from = next.first;
+    }
+    final gems = _placeGems(wc, c, rw, start, goal, sp.gems, r, portals.keys.toSet());
+    return BBLevel(number: n, mode: mode, cols: c, rows: rw, walls: wc, start: start, goal: goal, gems: gems, portals: portals);
+  }
+
+  // Gear factory
+  final doorsA = [for (final i in _sample(mid.length, sp.extra, r)) mid[i]];
+  final (dA, _) = _bfs(w, c, start, doorsA.toSet());
+  final cand = dA.keys.where((x) => !p.contains(x) && x != start).toList();
+  if (cand.isEmpty) return null;
+  cand.sort((a, b) => dA[b]!.compareTo(dA[a]!));
+  final sw = cand[min(cand.length - 1, r.nextInt(3))];
+  final (_, prevS) = _bfs(w, c, start);
+  final swPath = _path(prevS, sw);
+  final doorsB = <int>[];
+  if (sp.extra > 1) {
+    final opts = p.skip(1).where((x) => !doorsA.contains(x) && !swPath.contains(x) && x != goal).toList();
+    if (opts.isNotEmpty) doorsB.add(opts[r.nextInt(opts.length)]);
+  }
+  final gems = _placeGems(w, c, rw, start, goal, sp.gems, r, {...doorsA, ...doorsB, sw});
+  return BBLevel(
+    number: n, mode: mode, cols: c, rows: rw, walls: w, start: start, goal: goal, gems: gems,
+    switches: {sw}, doorsA: doorsA.toSet(), doorsB: doorsB.toSet(),
+  );
 }

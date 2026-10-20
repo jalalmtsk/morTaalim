@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:mortaalim/screens/parents/parent_data.dart' show ActivityFeed;
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -47,7 +48,7 @@ class BadgeStats {
         lessons['$scope/$subject'] = (lessons['$scope/$subject'] ?? 0) + n;
       } else if (k.startsWith('games_plays_')) {
         plays[k.substring('games_plays_'.length)] = p.getInt(k) ?? 0;
-      } else if (k.startsWith('bb_stars_')) {
+      } else if (k.startsWith('bb2_stars_')) {
         final s = p.getInt(k) ?? 0;
         bbStars += s;
         if (s > 0) bbCleared++;
@@ -113,7 +114,7 @@ final List<AppBadge> appBadges = [
       (s) => s.lesson('religion', 'quran') + s.lesson('religion', 'duas') + s.lesson('religion', 'prayer')),
   AppBadge('star_gazer', 'telescope', 45, (s) => s.bbStars),
   AppBadge('graduate', 'cap', 18, (s) => s.courseLessons),
-  AppBadge('brain_master', 'crane', 30, (s) => s.bbCleared),
+  AppBadge('brain_master', 'crane', 72, (s) => s.bbCleared),
 ];
 
 /// The locked badge the child is closest to (null when all are earned).
@@ -142,7 +143,11 @@ Future<List<AppBadge>> takeNewBadges(BadgeStats s) async {
   final seen = p.getStringList(key);
   await p.setStringList(key, earned);
   if (seen == null) return const [];
-  return appBadges.where((b) => earned.contains(b.id) && !seen.contains(b.id)).toList();
+  final fresh = appBadges.where((b) => earned.contains(b.id) && !seen.contains(b.id)).toList();
+  for (final b in fresh) {
+    await ActivityFeed.add('badge', b.id);
+  }
+  return fresh;
 }
 
 // ─── Text ──────────────────────────────────────────────────────────────────

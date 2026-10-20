@@ -1,4 +1,5 @@
 import 'package:mortaalim/widgets/KidScene/kid_toast.dart';
+import 'package:mortaalim/screens/parents/family_quests.dart';
 import 'package:mortaalim/widgets/KidScene/glossy_bar.dart';
 import 'dart:async';
 import 'dart:math';
@@ -388,6 +389,7 @@ class _QuestsPageState extends State<QuestsPage> with TickerProviderStateMixin {
                           ),
                         ),
                       SizedBox(height: 10 * s),
+                      if (!_milestonesTab) FamilyQuestsSection(scale: s),
                       AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
                         transitionBuilder: (c, a) => FadeTransition(

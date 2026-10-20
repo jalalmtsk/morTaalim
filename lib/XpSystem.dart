@@ -34,6 +34,7 @@ import 'package:mortaalim/ManagerTools/LevelUpOverlayHelper.dart';
 
 import 'ManagerTools/StarDeductionOverlay.dart';
 import 'main.dart';
+import 'screens/profiles/profile_store.dart';
 
 class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   // User progress & rewards
@@ -782,6 +783,9 @@ KidToast.reward(gems: amount);
   }
 
 
+  /// Writes everything to SharedPreferences now (used before switching child).
+  Future<void> saveNow() => _saveData();
+
   Future<void> _saveData() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setInt('xp', _xp);
@@ -810,7 +814,7 @@ KidToast.reward(gems: amount);
     if (connectivityResult == ConnectivityResult.none) return;
     if (_userId == null || _userId == 'offline_user') return;
 
-    final userDoc = _firestore.collection('users').doc(_userId);
+    final userDoc = _firestore.collection('users').doc(ProfileStore.cloudDocId(_userId!));
 
     try {
       // Save locally before syncing
@@ -967,7 +971,7 @@ KidToast.reward(gems: amount);
   Future<void> onAppClose() async {
     _lastLogout = DateTime.now();
     if (_userId != null) {
-      await _firestore.collection('users').doc(_userId).set({
+      await _firestore.collection('users').doc(ProfileStore.cloudDocId(_userId!)).set({
         "lastLogout": _lastLogout?.toIso8601String(),
       }, SetOptions(merge: true));
     }
