@@ -28,7 +28,10 @@ class CustomizationSettings {
         unlockedBanners = BannerCatalog.sanitizeUnlocked(unlockedBanners),
         selectedBannerImage = BannerCatalog.resolve(selectedBannerImage),
         unlockedAvatarFrames = unlockedAvatarFrames ?? [],
-        selectedAvatarFrame = selectedAvatarFrame ?? '';
+        selectedAvatarFrame = selectedAvatarFrame ?? '' {
+    // the avatar in use always stays unlocked
+    if (!this.unlockedAvatars.contains(this.selectedAvatar)) this.unlockedAvatars.add(this.selectedAvatar);
+  }
 
   factory CustomizationSettings.fromPrefs(SharedPreferences prefs) {
     return CustomizationSettings(
@@ -66,6 +69,7 @@ class CustomizationSettings {
     unlockedAvatars = AvatarCatalog.sanitizeUnlocked(
         List<String>.from(data["unlockedAvatars"] ?? unlockedAvatars));
     selectedAvatar = AvatarCatalog.resolve(data["selectedAvatar"] ?? selectedAvatar);
+    if (!unlockedAvatars.contains(selectedAvatar)) unlockedAvatars.add(selectedAvatar);
     unlockedBanners = BannerCatalog.sanitizeUnlocked(
         List<String>.from(data["unlockedBanners"] ?? unlockedBanners));
     selectedBannerImage = BannerCatalog.resolve(data["selectedBannerImage"] ?? selectedBannerImage);

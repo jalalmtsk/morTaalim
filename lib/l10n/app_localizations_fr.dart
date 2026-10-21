@@ -1905,6 +1905,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tapToListen => "Touche pour écouter";
 
   @override
+  String get listenShort => "Écouter";
+
+  @override
   String get homeIT => "Info";
 
   @override

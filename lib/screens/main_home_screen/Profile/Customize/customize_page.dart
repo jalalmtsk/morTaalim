@@ -153,6 +153,45 @@ class _CustomizePageState extends State<CustomizePage> with SingleTickerProvider
     setState(() => _banner = path);
   }
 
+  Future<void> _buyAvatar(String path, int cost) async {
+    _audio.playEventSound('clickButton2');
+    final ok = await showDialog<bool>(
+      context: context,
+      barrierColor: KidColors.purpleDeep.withOpacity(0.35),
+      builder: (ctx) => KidDialog(
+        title: _t('unlockTitle'),
+        content: Column(mainAxisSize: MainAxisSize.min, children: [
+          ClipOval(child: Image.asset(path, height: 96, width: 96, fit: BoxFit.cover)),
+          const SizedBox(height: 12),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Image.asset(_CustAssets.gem, width: 26, height: 26),
+            const SizedBox(width: 6),
+            Text('$cost', style: kidBodyStyle(22, color: _ink, weight: FontWeight.w700)),
+          ]),
+        ]),
+        actions: [
+          KidOutlineButton(label: tr(ctx).cancel, onTap: () => Navigator.pop(ctx, false)),
+          const SizedBox(height: 10),
+          KidButton(
+            label: tr(ctx).unlock,
+            width: double.infinity,
+            height: 54,
+            showArrow: false,
+            onPressed: () => Navigator.pop(ctx, true),
+          ),
+        ],
+      ),
+    );
+    if (ok != true || !mounted) return;
+    final xp = _xp;
+    if (xp.gems < cost) return _snack(_t('notEnoughGems'));
+    xp.spendGems(context, cost);
+    xp.unlockAvatar(path);
+    KidToast.show(KidToastKind.avatar);
+    _audio.playSfx('assets/audios/UI_Audio/SFX_Audio/PurchaseSound.mp3');
+    setState(() => _avatar = path);
+  }
+
   Future<void> _buyFrame(AvatarFrame f) async {
     _audio.playEventSound('clickButton2');
     final ok = await showDialog<bool>(
@@ -487,11 +526,13 @@ class _CustomizePageState extends State<CustomizePage> with SingleTickerProvider
   ];
 
   Widget _avatarPanel(double s, ExperienceManager xp) {
+    bool owned(String a) => xp.unlockedAvatars.contains(a) || AvatarCatalog.isStarter(a);
     final list = AvatarCatalog.all.where((a) {
       if (_avatarFilter == 1) return !_animals.contains(a);
       if (_avatarFilter == 2) return _animals.contains(a);
       return true;
-    }).toList();
+    }).toList()
+      ..sort((a, b) => (owned(b) ? 1 : 0).compareTo(owned(a) ? 1 : 0));
     Widget chip(int i, String label) {
       final on = _avatarFilter == i;
       return Padding(
@@ -527,8 +568,9 @@ class _CustomizePageState extends State<CustomizePage> with SingleTickerProvider
         itemBuilder: (_, i) {
           final a = list[i];
           final on = a == _avatar;
+          final open = owned(a);
           return KidPressable(
-            onTap: () => _pick(() => _avatar = a),
+            onTap: () => open ? _pick(() => _avatar = a) : _buyAvatar(a, AvatarCatalog.costOf(a)),
             semanticLabel: _t('chooseAvatar'),
             child: _SelectableCard(
               color: _pastels[AvatarCatalog.all.indexOf(a) % _pastels.length],
@@ -543,7 +585,35 @@ class _CustomizePageState extends State<CustomizePage> with SingleTickerProvider
                     border: Border.all(color: on ? _cyan : Colors.white, width: on ? 4 : 3),
                     boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 6, offset: const Offset(0, 3))],
                   ),
-                  child: ClipOval(child: Image.asset(a, fit: BoxFit.cover)),
+                  child: ClipOval(
+                    child: Stack(fit: StackFit.expand, children: [
+                      open
+                          ? Image.asset(a, fit: BoxFit.cover)
+                          : ColorFiltered(
+                              colorFilter: const ColorFilter.matrix(<double>[
+                                0.3, 0.5, 0.1, 0, 20, //
+                                0.3, 0.5, 0.1, 0, 20,
+                                0.3, 0.5, 0.1, 0, 20,
+                                0, 0, 0, 1, 0,
+                              ]),
+                              child: Image.asset(a, fit: BoxFit.cover),
+                            ),
+                      if (!open)
+                        Align(
+                          alignment: const Alignment(0, 0.75),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 7 * s, vertical: 2 * s),
+                            decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
+                            child: Row(mainAxisSize: MainAxisSize.min, children: [
+                              Icon(Icons.lock_rounded, color: KidColors.purple, size: 14 * s),
+                              SizedBox(width: 2 * s),
+                              Image.asset(_CustAssets.gem, width: 14 * s, height: 14 * s),
+                              Text('${AvatarCatalog.costOf(a)}', style: kidBodyStyle(12 * s, color: _ink, weight: FontWeight.w700)),
+                            ]),
+                          ),
+                        ),
+                    ]),
+                  ),
                 ),
               ),
             ),

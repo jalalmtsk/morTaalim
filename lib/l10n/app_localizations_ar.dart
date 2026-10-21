@@ -1905,6 +1905,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tapToListen => "اضغط للاستماع";
 
   @override
+  String get listenShort => "استمع";
+
+  @override
   String get homeIT => "المعلوميات";
 
   @override

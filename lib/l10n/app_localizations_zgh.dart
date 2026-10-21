@@ -1905,6 +1905,9 @@ class AppLocalizationsZgh extends AppLocalizations {
   String get tapToListen => "ⴷⴷⵓⵇⵇⵙ ⴰⴷ ⵜⵙⴼⵍⴷⴷ";
 
   @override
+  String get listenShort => "ⵙⴼⵍⴷ";
+
+  @override
   String get homeIT => "ⵜⵉⵏⴼⵓⵔⵎⴰⵜⵉⴽ";
 
   @override

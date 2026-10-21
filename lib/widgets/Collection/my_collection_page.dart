@@ -4,35 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:mortaalim/Manager/models/avatar_catalog.dart';
 import 'package:mortaalim/Manager/models/banner_catalog.dart';
 import 'package:mortaalim/XpSystem.dart';
-import 'package:mortaalim/games/PuzzleLand/pz_common.dart';
 import 'package:mortaalim/screens/main_home_screen/Profile/Badges/badge_catalog.dart';
-import 'package:mortaalim/screens/main_home_screen/Profile/Badges/my_badges_page.dart';
-import 'package:mortaalim/screens/main_home_screen/Profile/Customize/customize_page.dart';
 import 'package:mortaalim/screens/main_home_screen/Profile/Customize/profile_look.dart';
-import 'package:mortaalim/screens/main_shop_screen/MainShopPageIndex.dart';
-import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
-import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
 import 'package:provider/provider.dart';
 
-const Color _ink = Color(0xFF2A1366);
-const Color _cream = Color(0xFFFFFCF4);
-const Color _lavender = Color(0xFFEDE6FF);
+import 'world/cw_avatars.dart';
+import 'world/cw_badges.dart';
+import 'world/cw_banners.dart';
+import 'world/cw_common.dart';
+import 'world/cw_frames.dart';
+import 'world/cw_treasures.dart';
 
-class _ColAssets {
-  static const String dir = 'assets/images/UI/Collection/';
-  static const String hero = '${dir}col_hero.webp';
-  static const String icAvatar = '${dir}col_ic_avatar.webp';
-  static const String icBanner = '${dir}col_ic_banner.webp';
-  static const String icFrame = '${dir}col_ic_frame.webp';
-  static const String icTreasure = '${dir}col_ic_treasure.webp';
-  static const String icBadge = '${dir}col_ic_badge.webp';
-  static const String crystal = '${dir}col_crystal.webp';
-  static const String rocket = '${dir}col_rocket.webp';
-  static const String key = '${dir}col_key.webp';
-  static const String shop = '${dir}col_shop.webp';
-}
-
-/// "My Collection": everything the child owns, grouped, with a peek at each.
+/// "My wonderful world": the collection hub, a map of five floating islands.
 class MyCollectionPage extends StatefulWidget {
   final bool embedded; // shown as a bottom-bar tab: no back button
   const MyCollectionPage({super.key, this.embedded = false});
@@ -41,13 +24,26 @@ class MyCollectionPage extends StatefulWidget {
   State<MyCollectionPage> createState() => _MyCollectionPageState();
 }
 
-class _MyCollectionPageState extends State<MyCollectionPage> with TickerProviderStateMixin {
-  BadgeStats _badges = BadgeStats.empty;
-  Map<String, List<int>> _puzzles = {};
-  late final AnimationController _idle = AnimationController(vsync: this, duration: const Duration(seconds: 4))..repeat();
-  late final AnimationController _intro = AnimationController(vsync: this, duration: const Duration(milliseconds: 1100))..forward();
+class _Island {
+  final String key, asset;
+  final double x, y, w; // in map-width units
+  final double aspect; // sprite height / width
+  final bool labelStart; // label on the start side
+  const _Island(this.key, this.asset, this.x, this.y, this.w, this.aspect, {this.labelStart = false});
+}
 
-  AudioManager get _audio => Provider.of<AudioManager>(context, listen: false);
+const List<_Island> _islands = [
+  _Island('avatars', 'col_isl_avatars', 0.0, 0.0, 0.56, 1.0477),
+  _Island('banners', 'col_isl_banners', 0.44, 0.33, 0.56, 0.9727),
+  _Island('frames', 'col_isl_frames', 0.0, 0.76, 0.56, 0.9476),
+  _Island('treasures', 'col_isl_treasures', 0.44, 1.09, 0.56, 0.8262),
+  _Island('badges', 'col_isl_badges', 0.24, 1.45, 0.56, 1.0249),
+];
+
+class _MyCollectionPageState extends State<MyCollectionPage> with TickerProviderStateMixin {
+  late final AnimationController _idle = AnimationController(vsync: this, duration: const Duration(seconds: 8))..repeat();
+  late final AnimationController _intro = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600))..forward();
+  CwProgress _p = CwProgress.empty;
 
   @override
   void initState() {
@@ -63,186 +59,122 @@ class _MyCollectionPageState extends State<MyCollectionPage> with TickerProvider
   }
 
   Future<void> _load() async {
-    final level = Provider.of<ExperienceManager>(context, listen: false).level;
-    final b = await BadgeStats.load(level: level);
-    final p = await PZProgress.load();
-    if (mounted) {
-      setState(() {
-        _badges = b;
-        _puzzles = p;
-      });
-    }
+    final p = await CwProgress.load(context);
+    if (mounted) setState(() => _p = p);
   }
 
-  Future<void> _open(Widget page) async {
-    _audio.playEventSound('clickButton');
-    await Navigator.push(context, MaterialPageRoute(builder: (_) => page));
+  Future<void> _open(String key) async {
+    final Widget page = switch (key) {
+      'avatars' => const CwAvatarsPage(),
+      'banners' => const CwBannersPage(),
+      'frames' => const CwFramesPage(),
+      'treasures' => const CwTreasuresPage(),
+      _ => const CwBadgesPage(),
+    };
+    await cwOpen(context, page);
     if (mounted) _load();
   }
 
-  List<String> get _completedPuzzles =>
-      [for (final p in pzPictures) if ((_puzzles[p] ?? const [0]).any((v) => v > 0)) p];
+  int _count(String key, ExperienceManager xp) => switch (key) {
+        'avatars' => AvatarCatalog.sanitizeUnlocked(xp.unlockedAvatars).length,
+        'banners' => BannerCatalog.sanitizeUnlocked(xp.unlockedBanners).length,
+        'frames' => AvatarFrames.all.where((f) => AvatarFrames.owned(f, xp.level, xp.unlockedAvatarFrames)).length,
+        'treasures' => _p.treasuresFound,
+        _ => appBadges.where((b) => b.earned(_p.stats)).length,
+      };
 
   @override
   Widget build(BuildContext context) {
-    final xp = Provider.of<ExperienceManager>(context);
+    final xp = context.watch<ExperienceManager>();
     final size = MediaQuery.sizeOf(context);
-    final w = min(size.width, 600.0) - 28;
-    final s = (w / 380).clamp(0.82, 1.4).toDouble();
-
-    // Avatars (selected first)
-    final avatars = AvatarCatalog.sanitizeUnlocked(xp.unlockedAvatars);
-    final selAvatar = AvatarCatalog.resolve(xp.selectedAvatar);
-    final avatarPeek = [selAvatar, ...avatars.where((a) => a != selAvatar)].take(3).toList();
-    // Banners
-    final banners = BannerCatalog.sanitizeUnlocked(xp.unlockedBanners);
-    final selBanner = BannerCatalog.resolve(xp.selectedBannerImage);
-    final bannerPeek = [selBanner, ...banners.where((b) => b != selBanner)].take(3).toList();
-    // Frames
-    final frames = AvatarFrames.all.where((f) => AvatarFrames.owned(f, xp.level, xp.unlockedAvatarFrames)).toList();
-    final selFrame = AvatarFrames.of(xp.selectedAvatarFrame);
-    final framePeek = [if (selFrame != null) selFrame, ...frames.where((f) => f != selFrame)].take(3).toList();
-    // Badges
-    final earned = appBadges.where((b) => b.earned(_badges)).toList();
-    final badgePeek = (earned.isEmpty ? appBadges.take(3) : earned.reversed.take(3)).toList();
-    // Treasures = finished Puzzle Land pictures
-    final treasures = _completedPuzzles;
-
-    Widget step(int i, Widget child) =>
-        KidIntro(intro: _intro, from: 0.07 * i, to: min(1.0, 0.42 + 0.07 * i), rise: 22, child: child);
+    final pad = MediaQuery.paddingOf(context);
+    final s = cwScale(context);
+    final mapW = min(size.width, 560.0);
+    final name = xp.userProfile.fullName.trim();
+    final hasName = name.isNotEmpty && name != 'Player';
 
     return Scaffold(
-      backgroundColor: KidColors.sky,
+      backgroundColor: const Color(0xFFBFE6FF),
       body: Stack(children: [
-        Positioned.fill(child: Image.asset(KidAssets.valleyBg, fit: BoxFit.cover)),
-        SafeArea(
-          bottom: false,
-          child: Center(
-            child: SizedBox(
-              width: w + 28,
-              child: Column(children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(14, 6 * s, 14, 4 * s),
-                  child: Row(children: [
-                    if (!widget.embedded) ...[
-                      KidBackButton(size: 52 * s, onTap: () {
-                        _audio.playEventSound('cancelButton');
-                        Navigator.maybePop(context);
-                      }),
-                      SizedBox(width: 12 * s),
-                    ],
-                    Expanded(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(colT(context, 'title'), style: kidTitleStyle(36 * s, color: _ink)),
-                      ),
-                    ),
-                  ]),
-                ),
-                Expanded(
-                  child: ListView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: EdgeInsets.fromLTRB(14, 4, 14, widget.embedded ? 110 : 24),
-                    children: [
-                      step(0, _hero(s)),
-                      SizedBox(height: 12 * s),
-                      step(
-                        1,
-                        _row(s,
-                            icon: _ColAssets.icAvatar,
-                            title: colT(context, 'avatars'),
-                            count: colT(context, 'owned', {'n': avatars.length}),
-                            onTap: () => _open(const CustomizePage(initialTab: 0)),
-                            peek: [
-                              for (final a in avatarPeek)
-                                _check(
-                                  a == selAvatar,
-                                  s,
-                                  FramedAvatar(
-                                    avatar: a,
-                                    frame: a == selAvatar ? xp.selectedAvatarFrame : '',
-                                    size: 62 * s,
-                                  ),
-                                ),
-                            ]),
-                      ),
-                      step(
-                        2,
-                        _row(s,
-                            icon: _ColAssets.icBanner,
-                            title: colT(context, 'banners'),
-                            count: colT(context, 'owned', {'n': banners.length}),
-                            onTap: () => _open(const CustomizePage(initialTab: 1)),
-                            peek: [
-                              for (final b in bannerPeek)
-                                _check(
-                                  b == selBanner,
-                                  s,
-                                  Container(
-                                    width: 66 * s,
-                                    height: 52 * s,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12 * s),
-                                      border: Border.all(color: Colors.white, width: 2),
-                                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 5, offset: const Offset(0, 2))],
-                                      image: DecorationImage(image: AssetImage(b), fit: BoxFit.cover),
-                                    ),
-                                  ),
-                                ),
-                            ]),
-                      ),
-                      step(
-                        3,
-                        _row(s,
-                            icon: _ColAssets.icFrame,
-                            title: colT(context, 'frames'),
-                            count: colT(context, 'owned', {'n': frames.length}),
-                            onTap: () => _open(const CustomizePage(initialTab: 2)),
-                            peek: [
-                              for (final f in framePeek)
-                                SizedBox(
-                                  width: 66 * s,
-                                  height: 62 * s,
-                                  child: Image.asset(f.asset, fit: BoxFit.contain),
-                                ),
-                            ]),
-                      ),
-                      step(
-                        4,
-                        _row(s,
-                            icon: _ColAssets.icTreasure,
-                            title: colT(context, 'treasures'),
-                            count: colT(context, 'collected', {'n': treasures.length}),
-                            onTap: () => _open(_TreasuresPage(completed: treasures.toSet())),
-                            peek: [
-                              for (final (i, a) in [_ColAssets.crystal, _ColAssets.rocket, _ColAssets.key].indexed)
-                                AnimatedBuilder(
-                                  animation: _idle,
-                                  builder: (_, c) =>
-                                      Transform.translate(offset: Offset(0, sin(_idle.value * 2 * pi + i * 1.3) * 3 * s), child: c),
-                                  child: SizedBox(width: 62 * s, height: 62 * s, child: Image.asset(a, fit: BoxFit.contain)),
-                                ),
-                            ]),
-                      ),
-                      step(
-                        5,
-                        _row(s,
-                            icon: _ColAssets.icBadge,
-                            title: colT(context, 'badges'),
-                            count: colT(context, 'unlocked', {'n': earned.length}),
-                            onTap: () => _open(const MyBadgesPage()),
-                            peek: [
-                              for (final b in badgePeek)
-                                Opacity(
-                                  opacity: b.earned(_badges) ? 1 : 0.55,
-                                  child: SizedBox(width: 64 * s, height: 58 * s, child: Image.asset(b.asset, fit: BoxFit.contain)),
-                                ),
-                            ]),
-                      ),
-                      step(6, _shopRow(s)),
-                    ],
-                  ),
+        const Positioned.fill(child: CwWorldBg()),
+        Positioned.fill(child: CwSparkles(idle: _idle, count: 22, seed: 11, color: Colors.white)),
+        Column(children: [
+          SizedBox(height: pad.top + 4 * s),
+          // header
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 12 * s),
+            child: Row(children: [
+              if (!widget.embedded) CwBack(size: 50 * s) else SizedBox(width: 50 * s),
+              Expanded(
+                child: _pop(0.0, 0.3, CwTitlePill(title: cwT(context, 'worldTitle'), subtitle: cwT(context, 'worldSub'), s: s)),
+              ),
+              SizedBox(width: 50 * s),
+            ]),
+          ),
+          SizedBox(height: 6 * s),
+          _pop(
+            0.1,
+            0.4,
+            CwChip(
+              s: s,
+              text: hasName ? cwT(context, 'worldOf', {'name': name}) : cwT(context, 'worldOfNoName'),
+              leading: FramedAvatar(avatar: xp.selectedAvatar, frame: '', size: 30 * s),
+            ),
+          ),
+          // the map
+          Expanded(
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              padding: EdgeInsets.only(bottom: widget.embedded ? 110 : pad.bottom + 16),
+              child: Center(child: _map(mapW, s, xp)),
+            ),
+          ),
+        ]),
+      ]),
+    );
+  }
+
+  Widget _pop(double a, double b, Widget child) {
+    final c = CurvedAnimation(parent: _intro, curve: Interval(a, b, curve: Curves.easeOutBack));
+    return FadeTransition(
+      opacity: CurvedAnimation(parent: _intro, curve: Interval(a, min(1.0, b), curve: Curves.easeOut)),
+      child: ScaleTransition(scale: Tween(begin: 0.6, end: 1.0).animate(c), child: child),
+    );
+  }
+
+  Widget _map(double w, double s, ExperienceManager xp) {
+    final h = w * 2.12;
+    Offset anchor(_Island i) => Offset((i.x + i.w / 2) * w, (i.y + i.w * i.aspect * 0.72) * w);
+    return SizedBox(
+      width: w,
+      height: h,
+      child: Stack(clipBehavior: Clip.none, children: [
+        // stepping-stone bridges between islands
+        Positioned.fill(
+          child: _pop(
+            0.25,
+            0.7,
+            CustomPaint(painter: _BridgePainter([for (final i in _islands) anchor(i)], s)),
+          ),
+        ),
+        for (var k = 0; k < _islands.length; k++) _island(_islands[k], k, w, s, xp),
+        // guide robot
+        Positioned(
+          left: 4 * s,
+          top: w * 1.62,
+          child: IgnorePointer(
+            child: _pop(
+              0.65,
+              1.0,
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                CwFloat(idle: _idle, amp: 3, speed: 2, child: CwBubble(text: cwT(context, 'ask'), width: w * 0.42)),
+                CwFloat(
+                  idle: _idle,
+                  amp: 5,
+                  speed: 1.5,
+                  phase: 0.3,
+                  tilt: 0.04,
+                  child: Image.asset(cw('col_robot_wave'), width: w * 0.26),
                 ),
               ]),
             ),
@@ -252,109 +184,55 @@ class _MyCollectionPageState extends State<MyCollectionPage> with TickerProvider
     );
   }
 
-  BoxDecoration _card() => BoxDecoration(
-        color: _cream,
-        borderRadius: BorderRadius.circular(26),
-        border: Border.all(color: Colors.white, width: 3),
-        boxShadow: [BoxShadow(color: KidColors.purpleDeep.withOpacity(0.15), blurRadius: 14, offset: const Offset(0, 6))],
-      );
-
-  Widget _hero(double s) {
-    return AspectRatio(
-      aspectRatio: 851 / 278,
-      child: Stack(children: [
-        Positioned.fill(child: Image.asset(_ColAssets.hero, fit: BoxFit.fill)),
-        PositionedDirectional(
-          start: 0,
-          top: 0,
-          bottom: 0,
-          width: (MediaQuery.sizeOf(context).width - 28) * 0.46,
-          child: Padding(
-            padding: EdgeInsetsDirectional.only(start: 18 * s),
-            child: Center(
-              child: FittedBox(
-                fit: BoxFit.scaleDown,
-                child: _OutlinedText(colT(context, 'hero'), size: 26 * s),
+  Widget _island(_Island i, int k, double w, double s, ExperienceManager xp) {
+    final iw = i.w * w;
+    final ih = iw * i.aspect;
+    final label = cwT(context, i.key);
+    final n = _count(i.key, xp);
+    return Positioned(
+      left: i.x * w,
+      top: i.y * w,
+      width: iw,
+      height: ih + 30 * s,
+      child: _pop(
+        0.15 + k * 0.1,
+        0.55 + k * 0.1,
+        CwPress(
+          onTap: () => _open(i.key),
+          scale: 0.95,
+          label: label,
+          child: Stack(clipBehavior: Clip.none, children: [
+            // soft glow under the island
+            Positioned(
+              left: iw * 0.1,
+              right: iw * 0.1,
+              top: ih * 0.55,
+              height: ih * 0.4,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  boxShadow: [BoxShadow(color: Colors.white.withOpacity(0.55), blurRadius: 40 * s, spreadRadius: 4 * s)],
+                ),
               ),
             ),
-          ),
-        ),
-      ]),
-    );
-  }
-
-  Widget _check(bool on, double s, Widget child) {
-    if (!on) return child;
-    return Stack(clipBehavior: Clip.none, children: [
-      child,
-      PositionedDirectional(
-        end: -4 * s,
-        bottom: -4 * s,
-        child: Container(
-          width: 22 * s,
-          height: 22 * s,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: const Color(0xFF22B573),
-            border: Border.all(color: Colors.white, width: 2),
-          ),
-          child: Icon(Icons.check_rounded, color: Colors.white, size: 14 * s),
-        ),
-      ),
-    ]);
-  }
-
-  Widget _row(double s,
-      {required String icon, required String title, required String count, required VoidCallback onTap, required List<Widget> peek}) {
-    return Padding(
-      padding: EdgeInsets.only(bottom: 10 * s),
-      child: KidPressable(
-        onTap: onTap,
-        pressedScale: 0.97,
-        semanticLabel: title,
-        child: Container(
-          height: 96 * s,
-          padding: EdgeInsetsDirectional.fromSTEB(10 * s, 8 * s, 8 * s, 8 * s),
-          decoration: _card(),
-          child: Row(children: [
-            Image.asset(icon, width: 52 * s, height: 52 * s),
-            SizedBox(width: 8 * s),
-            SizedBox(
-              width: 98 * s,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Text(title, maxLines: 1, style: kidBodyStyle(20 * s, color: _ink, weight: FontWeight.w700)),
-                  ),
-                  SizedBox(height: 4 * s),
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 10 * s, vertical: 3 * s),
-                    decoration: BoxDecoration(color: _lavender, borderRadius: BorderRadius.circular(20)),
-                    child: FittedBox(
-                      fit: BoxFit.scaleDown,
-                      child: Text(count, style: kidBodyStyle(13 * s, color: KidColors.purpleDeep, weight: FontWeight.w700)),
-                    ),
-                  ),
-                ],
+            Positioned(
+              left: 0,
+              top: 0,
+              width: iw,
+              height: ih,
+              child: CwFloat(
+                idle: _idle,
+                amp: 5 * s,
+                speed: 1,
+                phase: k * 0.21,
+                child: Image.asset(cw(i.asset), width: iw, height: ih, fit: BoxFit.contain),
               ),
             ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [for (final p in peek) Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: p))],
-              ),
-            ),
-            Container(
-              width: 34 * s,
-              height: 34 * s,
-              decoration: const BoxDecoration(shape: BoxShape.circle, color: _lavender),
-              child: Transform.flip(
-                flipX: Directionality.of(context) == TextDirection.rtl,
-                child: Icon(Icons.chevron_right_rounded, color: KidColors.purple, size: 26 * s),
-              ),
+            Positioned(
+              left: 0,
+              right: 0,
+              top: ih * 0.78,
+              child: Center(child: _label(s, label, n)),
             ),
           ]),
         ),
@@ -362,246 +240,75 @@ class _MyCollectionPageState extends State<MyCollectionPage> with TickerProvider
     );
   }
 
-  Widget _shopRow(double s) {
-    return KidPressable(
-      onTap: () => _open(const MainShopPageIndex()),
-      pressedScale: 0.97,
-      child: Container(
-        height: 84 * s,
-        padding: EdgeInsetsDirectional.fromSTEB(6 * s, 4 * s, 12 * s, 4 * s),
-        decoration: _card(),
-        child: Row(children: [
-          AnimatedBuilder(
-            animation: _idle,
-            builder: (_, c) => Transform.rotate(angle: sin(_idle.value * 2 * pi * 2) * 0.06, child: c),
-            child: Image.asset(_ColAssets.shop, width: 72 * s, height: 72 * s),
+  Widget _label(double s, String text, int n) => Container(
+        padding: EdgeInsetsDirectional.fromSTEB(16 * s, 6 * s, 8 * s, 6 * s),
+        decoration: BoxDecoration(
+          color: cwCream,
+          borderRadius: BorderRadius.circular(30 * s),
+          border: Border.all(color: Colors.white, width: 2 * s),
+          boxShadow: [BoxShadow(color: const Color(0xFF3B2A8A).withOpacity(0.25), blurRadius: 10 * s, offset: Offset(0, 4 * s))],
+        ),
+        child: Row(mainAxisSize: MainAxisSize.min, children: [
+          Text(text, style: cwText(18 * s)),
+          SizedBox(width: 8 * s),
+          Container(
+            constraints: BoxConstraints(minWidth: 26 * s),
+            height: 26 * s,
+            padding: EdgeInsets.symmetric(horizontal: 6 * s),
+            alignment: Alignment.center,
+            decoration: BoxDecoration(color: cwPurple, borderRadius: BorderRadius.circular(20 * s)),
+            child: Text('$n', style: cwText(14 * s, color: Colors.white)),
           ),
-          SizedBox(width: 12 * s),
-          Expanded(
-            child: Text(colT(context, 'shop'), style: kidBodyStyle(22 * s, color: _ink, weight: FontWeight.w700)),
-          ),
+          SizedBox(width: 2 * s),
           Transform.flip(
-            flipX: Directionality.of(context) == TextDirection.rtl,
-            child: Icon(Icons.chevron_right_rounded, color: KidColors.purple, size: 32 * s),
+            flipX: cwRtl(context),
+            child: Icon(Icons.chevron_right_rounded, color: cwPurple, size: 24 * s),
           ),
         ]),
-      ),
-    );
-  }
+      );
 }
 
-class _OutlinedText extends StatelessWidget {
-  final String text;
-  final double size;
-  const _OutlinedText(this.text, {required this.size});
+/// Pastel stepping stones winding from island to island.
+class _BridgePainter extends CustomPainter {
+  final List<Offset> pts;
+  final double s;
+  _BridgePainter(this.pts, this.s);
+
+  static const _colors = [Color(0xFFFFC7E3), Color(0xFFB9ECFF), Color(0xFFFFF0A8), Color(0xFFDCCBFF)];
 
   @override
-  Widget build(BuildContext context) {
-    final base = TextStyle(fontFamily: 'Fredoka', fontWeight: FontWeight.w700, fontSize: size, height: 1.05);
-    return Stack(children: [
-      Text(text,
-          style: base.copyWith(
-            foreground: Paint()
+  void paint(Canvas canvas, Size size) {
+    for (var i = 0; i + 1 < pts.length; i++) {
+      final a = pts[i], b = pts[i + 1];
+      final mid = Offset((a.dx + b.dx) / 2, (a.dy + b.dy) / 2 + 26 * s);
+      final path = Path()
+        ..moveTo(a.dx, a.dy)
+        ..quadraticBezierTo(mid.dx, mid.dy + 20 * s, b.dx, b.dy);
+      for (final m in path.computeMetrics()) {
+        var k = 0;
+        for (double d = 40 * s; d < m.length - 40 * s; d += 17 * s) {
+          final t = m.getTangentForOffset(d);
+          if (t == null) continue;
+          canvas.save();
+          canvas.translate(t.position.dx, t.position.dy);
+          canvas.rotate(t.angle);
+          final r = RRect.fromRectAndRadius(Rect.fromCenter(center: Offset.zero, width: 13 * s, height: 9 * s), Radius.circular(4 * s));
+          canvas.drawRRect(r.shift(Offset(0, 2 * s)), Paint()..color = Colors.black.withOpacity(0.12));
+          canvas.drawRRect(r, Paint()..color = _colors[k % _colors.length]);
+          canvas.drawRRect(
+            r,
+            Paint()
               ..style = PaintingStyle.stroke
-              ..strokeWidth = size * 0.22
-              ..strokeJoin = StrokeJoin.round
-              ..color = const Color(0xFF4A1FB8),
-          )),
-      Text(text, style: base.copyWith(color: Colors.white)),
-    ]);
+              ..strokeWidth = 1.4 * s
+              ..color = Colors.white,
+          );
+          canvas.restore();
+          k++;
+        }
+      }
+    }
   }
-}
-
-/// Treasures: the Puzzle Land pictures the child has completed.
-class _TreasuresPage extends StatelessWidget {
-  final Set<String> completed;
-  const _TreasuresPage({required this.completed});
 
   @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
-    final w = min(size.width, 600.0) - 28;
-    final s = (w / 380).clamp(0.82, 1.4).toDouble();
-    return Scaffold(
-      backgroundColor: KidColors.sky,
-      body: Stack(children: [
-        Positioned.fill(child: Image.asset(KidAssets.valleyBg, fit: BoxFit.cover)),
-        SafeArea(
-          child: Center(
-            child: SizedBox(
-              width: w + 28,
-              child: Column(children: [
-                Padding(
-                  padding: EdgeInsets.fromLTRB(14, 6 * s, 14, 4 * s),
-                  child: Row(children: [
-                    KidBackButton(size: 52 * s, onTap: () => Navigator.maybePop(context)),
-                    SizedBox(width: 12 * s),
-                    Expanded(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: AlignmentDirectional.centerStart,
-                        child: Text(colT(context, 'treasures'), style: kidTitleStyle(34 * s, color: _ink)),
-                      ),
-                    ),
-                  ]),
-                ),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 14, vertical: 4 * s),
-                  padding: EdgeInsets.symmetric(horizontal: 14 * s, vertical: 6 * s),
-                  decoration: BoxDecoration(color: _lavender.withOpacity(0.95), borderRadius: BorderRadius.circular(20)),
-                  child: Text(colT(context, 'treasureHint'),
-                      textAlign: TextAlign.center,
-                      style: kidBodyStyle(14 * s, color: KidColors.purpleDeep, weight: FontWeight.w700)),
-                ),
-                Expanded(
-                  child: GridView.builder(
-                    padding: const EdgeInsets.fromLTRB(14, 8, 14, 24),
-                    physics: const BouncingScrollPhysics(),
-                    itemCount: pzPictures.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 12 * s,
-                      crossAxisSpacing: 12 * s,
-                      childAspectRatio: 0.86,
-                    ),
-                    itemBuilder: (ctx, i) {
-                      final p = pzPictures[i];
-                      final got = completed.contains(p);
-                      return KidPressable(
-                        onTap: got
-                            ? () => showDialog(
-                                  context: ctx,
-                                  barrierColor: Colors.black.withOpacity(0.6),
-                                  builder: (d) => GestureDetector(
-                                    onTap: () => Navigator.pop(d),
-                                    child: Center(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(20),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(26),
-                                          child: Image.asset(PZAssets.picture(p), fit: BoxFit.contain),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                            : null,
-                        child: Container(
-                          padding: EdgeInsets.all(7 * s),
-                          decoration: BoxDecoration(
-                            color: _cream,
-                            borderRadius: BorderRadius.circular(22 * s),
-                            border: Border.all(color: got ? const Color(0xFFFFC21A) : Colors.white, width: 3),
-                            boxShadow: [BoxShadow(color: KidColors.purpleDeep.withOpacity(0.14), blurRadius: 10, offset: const Offset(0, 5))],
-                          ),
-                          child: Column(children: [
-                            Expanded(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(16 * s),
-                                child: Stack(fit: StackFit.expand, children: [
-                                  got
-                                      ? Image.asset(PZAssets.picture(p), fit: BoxFit.cover)
-                                      : ColorFiltered(
-                                          colorFilter: const ColorFilter.matrix([
-                                            0.2, 0.2, 0.2, 0, 150, 0.2, 0.2, 0.2, 0, 140, 0.2, 0.2, 0.2, 0, 190, 0, 0, 0, 1, 0, //
-                                          ]),
-                                          child: Image.asset(PZAssets.picture(p), fit: BoxFit.cover),
-                                        ),
-                                  if (!got)
-                                    Center(
-                                      child: Container(
-                                        padding: EdgeInsets.all(8 * s),
-                                        decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.white),
-                                        child: Icon(Icons.extension_rounded, color: KidColors.purple, size: 24 * s),
-                                      ),
-                                    ),
-                                ]),
-                              ),
-                            ),
-                            SizedBox(height: 6 * s),
-                            FittedBox(
-                              fit: BoxFit.scaleDown,
-                              child: Text(pzT(ctx, 'pic_$p'),
-                                  style: kidBodyStyle(14 * s, color: got ? _ink : KidColors.muted, weight: FontWeight.w700)),
-                            ),
-                          ]),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ]),
-            ),
-          ),
-        ),
-      ]),
-    );
-  }
+  bool shouldRepaint(_BridgePainter o) => o.pts != pts || o.s != s;
 }
-
-String colT(BuildContext context, String key, [Map<String, Object>? args]) {
-  final code = Localizations.localeOf(context).languageCode;
-  final lang = _col.containsKey(code) ? code : (code == 'zgh' ? 'fr' : 'en');
-  var s = _col[lang]![key] ?? _col['en']![key] ?? key;
-  args?.forEach((k, v) => s = s.replaceAll('{$k}', '$v'));
-  return s;
-}
-
-const Map<String, Map<String, String>> _col = {
-  'en': {
-    'title': 'My Collection',
-    'hero': 'Your little\nworld of\nwonders',
-    'avatars': 'Avatars',
-    'banners': 'Banners',
-    'frames': 'Frames',
-    'treasures': 'Treasures',
-    'badges': 'Badges',
-    'owned': '{n} owned',
-    'collected': '{n} collected',
-    'unlocked': '{n} unlocked',
-    'shop': 'Discover the shop',
-    'treasureHint': 'Finish a Puzzle Land picture to add it to your treasures!',
-  },
-  'fr': {
-    'title': 'Ma collection',
-    'hero': 'Ton petit\nmonde de\nmerveilles',
-    'avatars': 'Avatars',
-    'banners': 'Bannières',
-    'frames': 'Cadres',
-    'treasures': 'Trésors',
-    'badges': 'Badges',
-    'owned': '{n} à moi',
-    'collected': '{n} trouvés',
-    'unlocked': '{n} gagnés',
-    'shop': 'Découvre la boutique',
-    'treasureHint': 'Termine une image de Puzzle Land pour l\'ajouter à tes trésors !',
-  },
-  'ar': {
-    'title': 'مجموعتي',
-    'hero': 'عالمك\nالصغير\nالمليء بالعجائب',
-    'avatars': 'الشخصيات',
-    'banners': 'الخلفيات',
-    'frames': 'الإطارات',
-    'treasures': 'الكنوز',
-    'badges': 'الأوسمة',
-    'owned': '{n} أملكها',
-    'collected': '{n} مجموعة',
-    'unlocked': '{n} مفتوحة',
-    'shop': 'اكتشف المتجر',
-    'treasureHint': 'أكمل صورة في أرض الألغاز لتضيفها إلى كنوزك!',
-  },
-  'de': {
-    'title': 'Meine Sammlung',
-    'hero': 'Deine kleine\nWunderwelt',
-    'avatars': 'Avatare',
-    'banners': 'Banner',
-    'frames': 'Rahmen',
-    'treasures': 'Schätze',
-    'badges': 'Abzeichen',
-    'owned': '{n} gehören dir',
-    'collected': '{n} gesammelt',
-    'unlocked': '{n} offen',
-    'shop': 'Entdecke den Shop',
-    'treasureHint': 'Schaffe ein Puzzle-Land-Bild, um es zu deinen Schätzen zu legen!',
-  },
-};

@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
+import 'package:mortaalim/tools/appConfig/UpdateChecker/update_Checker.dart';
 import 'package:mortaalim/Authentification/BackUp/BackUpPage.dart';
 import 'package:mortaalim/Manager/Services/CardVisibiltyManager.dart';
 import 'package:mortaalim/XpSystem.dart';
@@ -373,6 +375,14 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                             },
                             trailing: _chevron(context, s),
                           ),
+                          if (kDebugMode)
+                            _Row(
+                              scale: s,
+                              icon: SettingsAssets.gear,
+                              label: '🛠 Test Update screen',
+                              onTap: () => _debugUpdatePreview(context),
+                              trailing: _chevron(context, s),
+                            ),
                         ]),
                       ),
                       SizedBox(height: 16 * s),
@@ -713,4 +723,36 @@ class _SheetRow extends StatelessWidget {
           ),
         ),
       );
+}
+
+/// DEBUG ONLY: preview the update screen (optional or forced).
+void _debugUpdatePreview(BuildContext context) {
+  showModalBottomSheet<void>(
+    context: context,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+    builder: (sheet) => SafeArea(
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        const SizedBox(height: 12),
+        const Text('Update screen preview', style: TextStyle(fontFamily: 'Fredoka', fontSize: 18, fontWeight: FontWeight.w700)),
+        ListTile(
+          leading: const Icon(Icons.system_update_alt_rounded, color: Colors.orange),
+          title: const Text('Optional update (with "Later")'),
+          onTap: () {
+            Navigator.pop(sheet);
+            UpdateChecker.preview(context, force: false);
+          },
+        ),
+        ListTile(
+          leading: const Icon(Icons.lock_clock_rounded, color: Colors.red),
+          title: const Text('Forced update (no way out)'),
+          onTap: () {
+            Navigator.pop(sheet);
+            UpdateChecker.preview(context, force: true);
+          },
+        ),
+        const SizedBox(height: 8),
+      ]),
+    ),
+  );
 }

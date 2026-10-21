@@ -15,6 +15,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:mortaalim/games/BrainBuilder/bb_common.dart';
 import 'package:mortaalim/games/PuzzleLand/pz_common.dart' show pzTitleFor;
+import 'package:mortaalim/games/MysteryQuest/mq_data.dart' show mqTitleFor;
+import 'package:mortaalim/games/Market/mk_data.dart' show mkTitleFor;
+import 'package:mortaalim/games/Garden/jd_data.dart' show jdTitleFor;
+import 'package:mortaalim/games/Passport/pp_strings.dart' show ppTitleFor;
 
 import 'game_data.dart';
 import 'package:mortaalim/screens/parents/content_lock.dart';
@@ -62,6 +66,10 @@ class _GameStyle {
 
 const Map<String, _GameStyle> _styles = {
   'BrainBuilder': _GameStyle(GameCategory.logic, BBAssets.tile, 'blue', []),
+  'LittleMarket': _GameStyle(GameCategory.logic, '${GamesAssets.dir}games_tile_market.webp', 'yellow', []),
+  'MagicPassport': _GameStyle(GameCategory.logic, '${GamesAssets.dir}games_tile_passport.webp', 'purple', []),
+  'MonJardin': _GameStyle(GameCategory.logic, '${GamesAssets.dir}games_tile_garden.webp', 'green', []),
+  'MysteryQuest': _GameStyle(GameCategory.logic, '${GamesAssets.dir}games_tile_mystery.webp', 'blue', []),
   'PuzzleLand': _GameStyle(GameCategory.logic, '${GamesAssets.dir}games_tile_puzzleland.webp', 'purple', []),
   'quizGame': _GameStyle(GameCategory.logic, GamesAssets.tileBrain, 'yellow', []),
   'WordExplorer': _GameStyle(GameCategory.words, GamesAssets.tileWords, 'green', []),
@@ -82,6 +90,14 @@ String gameTitle(AppLocalizations t, String key) {
   switch (key) {
     case 'BrainBuilder':
       return bbTitleFor(t.localeName);
+    case 'LittleMarket':
+      return mkTitleFor(t.localeName);
+    case 'MonJardin':
+      return jdTitleFor(t.localeName);
+    case 'MagicPassport':
+      return ppTitleFor(t.localeName);
+    case 'MysteryQuest':
+      return mqTitleFor(t.localeName);
     case 'PuzzleLand':
       return pzTitleFor(t.localeName);
     case 'drawingAlphabet':

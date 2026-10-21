@@ -332,8 +332,6 @@ class _DuaaDialogState extends State<DuaaDialog> with TickerProviderStateMixin {
                       textStart: _p == _Period.morning ? 0.3 : (_p == _Period.night ? 0.36 : 0.26), big: true),
                 ),
                 SizedBox(height: 10 * s),
-                _pillButton(s),
-                SizedBox(height: 6 * s),
                 GestureDetector(
                   onTap: () => setState(() => _hideNext = !_hideNext),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
@@ -408,18 +406,6 @@ class _DuaaDialogState extends State<DuaaDialog> with TickerProviderStateMixin {
                   ]),
           ),
         ),
-        // close
-        Positioned(
-          right: 10 * s,
-          top: top + 12 * s,
-          child: GestureDetector(
-            onTap: () {
-              _audio.playEventSound('cancelButton');
-              _close();
-            },
-            child: Image.asset('${_dir}close.webp', width: 40 * s),
-          ),
-        ),
       ]),
     );
   }
@@ -486,21 +472,6 @@ class _DuaaDialogState extends State<DuaaDialog> with TickerProviderStateMixin {
       ),
     );
   }
-
-  Widget _pillButton(double s) => _Press(
-        onTap: () {
-          _audio.playEventSound('cancelButton');
-          _close();
-        },
-        child: SizedBox(
-          width: 150 * s,
-          height: 150 * s * 86 / 263,
-          child: Stack(alignment: Alignment.center, children: [
-            Positioned.fill(child: Image.asset('${_dir}pill.webp', fit: BoxFit.fill)),
-            Text(_t('close'), style: TextStyle(fontFamily: 'Fredoka', fontWeight: FontWeight.w700, fontSize: 17 * s, color: const Color(0xFF6B3A12))),
-          ]),
-        ),
-      );
 }
 
 const Map<String, List<int>> _sizes = {

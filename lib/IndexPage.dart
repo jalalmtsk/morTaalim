@@ -800,7 +800,7 @@ class _VerseCard extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 4 * s),
-                    Text(tr(context).tapToListen, style: kidBodyStyle(10 * s, color: const Color(0xFF14532D), weight: FontWeight.w600)),
+                    Text(tr(context).listenShort, style: kidBodyStyle(10 * s, color: const Color(0xFF14532D), weight: FontWeight.w600)),
                   ],
                 ),
               ),

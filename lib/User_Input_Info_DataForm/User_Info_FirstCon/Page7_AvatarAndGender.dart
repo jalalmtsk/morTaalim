@@ -58,7 +58,7 @@ class _UserInfoAvatarAndGenderState extends State<UserInfoAvatarAndGender>
         KidAssets.valleyBg,
         KidAssets.wordmark,
         KidAssets.backBtn,
-        ...AvatarCatalog.all,
+        ...AvatarCatalog.starter,
       ]);
       _intro.forward();
     }
@@ -415,12 +415,12 @@ class _Panel extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   for (int col = 0; col < 3; col++)
-                    if (row * 3 + col < AvatarCatalog.all.length)
+                    if (row * 3 + col < AvatarCatalog.starter.length)
                       _AvatarCell(
-                        path: AvatarCatalog.all[row * 3 + col],
-                        selected: AvatarCatalog.all[row * 3 + col] == avatar,
+                        path: AvatarCatalog.starter[row * 3 + col],
+                        selected: AvatarCatalog.starter[row * 3 + col] == avatar,
                         size: cell,
-                        onTap: () => onAvatar(AvatarCatalog.all[row * 3 + col]),
+                        onTap: () => onAvatar(AvatarCatalog.starter[row * 3 + col]),
                       ),
                 ],
               ),

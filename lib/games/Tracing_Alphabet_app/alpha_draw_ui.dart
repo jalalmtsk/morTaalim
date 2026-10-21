@@ -16,6 +16,9 @@ const adCream = Color(0xFFFFFAF0);
 const adCyan = Color(0xFF34C6F2);
 const adGreen = Color(0xFF16A34A);
 
+/// Sprites of the Alpha Draw menu / tools.
+const String adMenuDir = 'assets/images/UI/AlphaDraw/';
+
 enum AdMode { trace, practice, free }
 
 String adLang(BuildContext c) {
@@ -63,6 +66,12 @@ const Map<String, Map<String, String>> _ui = {
   'later': {'fr': 'Plus tard', 'en': 'Later', 'ar': 'لاحقاً', 'de': 'Später'},
   'ok': {'fr': 'D’accord', 'en': 'OK', 'ar': 'حسناً', 'de': 'OK'},
   'lettersDone': {'fr': '{D}/{T} lettres', 'en': '{D}/{T} letters', 'ar': '{D}/{T} حروف', 'de': '{D}/{T} Buchstaben'},
+  'pickLetters': {'fr': 'Choisis tes lettres !', 'en': 'Pick your letters!', 'ar': 'اختر حروفك!', 'de': 'Wähle deine Buchstaben!'},
+  'letsPlay': {'fr': 'On joue avec\nles lettres !', 'en': 'Let’s play\nwith letters!', 'ar': 'هيا نلعب\nبالحروف!', 'de': 'Spielen wir\nmit Buchstaben!'},
+  'mTrace': {'fr': 'Tracer', 'en': 'Trace', 'ar': 'تتبّع', 'de': 'Nachfahren'},
+  'mTry': {'fr': 'Essaie', 'en': 'Try it', 'ar': 'جرّب', 'de': 'Probier’s'},
+  'mDoodle': {'fr': 'Gribouille', 'en': 'Doodle', 'ar': 'خربش', 'de': 'Kritzeln'},
+  'letsGo': {'fr': 'C’est parti !', 'en': 'Let’s go!', 'ar': 'هيا بنا!', 'de': 'Los geht’s!'},
   'isFor': {'fr': 'comme', 'en': 'is for', 'ar': 'مثل', 'de': 'wie'},
 };
 

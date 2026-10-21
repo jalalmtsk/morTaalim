@@ -108,6 +108,13 @@ class _AlphaDrawPageState extends State<AlphaDrawPage> with TickerProviderStateM
   bool _checking = false;
   int? _pointer; // finger currently drawing
 
+  // the pencil / brush that follows the finger (board-local pixels)
+  bool _penOn = false;
+  Offset _penAt = Offset.zero;
+  double _penTilt = 0;
+  final List<_Spark> _sparks = [];
+  final Random _rng = Random();
+
   BannerAd? _banner;
   bool _bannerLoaded = false;
 
@@ -770,16 +777,29 @@ class _AlphaDrawPageState extends State<AlphaDrawPage> with TickerProviderStateM
                 onPointerDown: (e) {
                   if (_pointer != null) return;
                   _pointer = e.pointer;
+                  _penOn = true;
+                  _penAt = e.localPosition;
+                  _penTilt = 0;
+                  _addSpark(e.localPosition, burst: 5);
                   _penDown(box.toBox(e.localPosition));
                 },
                 onPointerMove: (e) {
-                  if (e.pointer == _pointer) _penMove(box.toBox(e.localPosition));
+                  if (e.pointer == _pointer) {
+                    _followPen(e.localPosition);
+                    _penMove(box.toBox(e.localPosition));
+                  }
                 },
                 onPointerUp: (e) {
-                  if (e.pointer == _pointer) _pointer = null;
+                  if (e.pointer == _pointer) {
+                    _pointer = null;
+                    setState(() => _penOn = false);
+                  }
                 },
                 onPointerCancel: (e) {
-                  if (e.pointer == _pointer) _pointer = null;
+                  if (e.pointer == _pointer) {
+                    _pointer = null;
+                    setState(() => _penOn = false);
+                  }
                 },
                 child: AnimatedBuilder(
                   animation: Listenable.merge([_demo, _bump]),
@@ -814,18 +834,20 @@ class _AlphaDrawPageState extends State<AlphaDrawPage> with TickerProviderStateM
                   final g = _guides;
                   if (g == null || !(_demo.value > 0 && _demo.value < 1)) return const SizedBox.expand();
                   final p = box.toScreen(_demoPoint(g, _demo.value));
-                  final ph = 70 * s, pw = ph * 0.734;
+                  final ph = 74 * s, pw = ph * 0.859;
                   return Stack(clipBehavior: Clip.none, children: [
                     Positioned(
-                      left: p.dx - pw * 0.06,
-                      top: p.dy - ph * 0.96,
-                      child: Image.asset('${adDir}ad_pencil.webp', width: pw, height: ph),
+                      left: p.dx - pw * 0.03,
+                      top: p.dy - ph * 0.98,
+                      child: Image.asset('${adMenuDir}ad_pencil_big.webp', width: pw, height: ph),
                     ),
                   ]);
                 },
               ),
             ),
           ),
+          // pencil (or brush in free mode) glued to the finger + sparkle trail
+          Positioned.fill(child: IgnorePointer(child: _fingerTool(s))),
           // word card
           if (cardFits)
             PositionedDirectional(
@@ -858,6 +880,72 @@ class _AlphaDrawPageState extends State<AlphaDrawPage> with TickerProviderStateM
             ),
         ]);
       });
+
+  // ── finger tool ───────────────────────────────────────────────────────────
+
+  static const List<Color> _sparkColors = [
+    Color(0xFFFF5FA8), Color(0xFFFFC93C), Color(0xFF34C6F2), Color(0xFF7A3CF0), Color(0xFF22C55E),
+  ];
+
+  void _addSpark(Offset p, {int burst = 1}) {
+    final now = DateTime.now().millisecondsSinceEpoch;
+    for (var i = 0; i < burst; i++) {
+      final c = _mode == AdMode.free ? _sparkColors[_rng.nextInt(_sparkColors.length)] : _inks[_ink % _inks.length];
+      _sparks.add(_Spark(
+        p + Offset((_rng.nextDouble() - 0.5) * 16, (_rng.nextDouble() - 0.5) * 16),
+        Offset((_rng.nextDouble() - 0.5) * 60, -20 - _rng.nextDouble() * 50),
+        now,
+        i == 0 ? c : Color.lerp(c, Colors.white, 0.35)!,
+        5 + _rng.nextDouble() * 5,
+      ));
+    }
+    _sparks.removeWhere((k) => now - k.born > 700);
+    if (_sparks.length > 60) _sparks.removeRange(0, _sparks.length - 60);
+  }
+
+  void _followPen(Offset p) {
+    final d = p - _penAt;
+    // lean a little in the direction the finger moves
+    _penTilt = (_penTilt * 0.8 + (d.dx * 0.012).clamp(-0.3, 0.3) * 0.2).toDouble();
+    if (d.distance > 9) _addSpark(p);
+    setState(() => _penAt = p);
+  }
+
+  Widget _fingerTool(double s) {
+    final brush = _mode == AdMode.free;
+    final h = brush ? 56 * s : 78 * s;
+    final w = brush ? h / 0.6223 : h * 0.859;
+    final tip = brush ? const Offset(0.88, 0.98) : const Offset(0.03, 0.98);
+    return AnimatedBuilder(
+      animation: _idle, // ticks every frame so sparkles can fade
+      builder: (_, __) {
+        final now = DateTime.now().millisecondsSinceEpoch;
+        return Stack(clipBehavior: Clip.none, children: [
+          Positioned.fill(child: CustomPaint(painter: _SparkPainter(_sparks, now))),
+          Positioned(
+            left: _penAt.dx - w * tip.dx,
+            top: _penAt.dy - h * tip.dy,
+            child: AnimatedOpacity(
+              opacity: _penOn ? 1 : 0,
+              duration: Duration(milliseconds: _penOn ? 90 : 260),
+              child: AnimatedScale(
+                scale: _penOn ? 1 : 0.7,
+                duration: const Duration(milliseconds: 160),
+                curve: Curves.easeOutBack,
+                alignment: Alignment(tip.dx * 2 - 1, tip.dy * 2 - 1),
+                child: Transform.rotate(
+                  angle: _penTilt,
+                  alignment: Alignment(tip.dx * 2 - 1, tip.dy * 2 - 1),
+                  child: Image.asset(brush ? '${adMenuDir}ad_brush.webp' : '${adMenuDir}ad_pencil_big.webp',
+                      width: w, height: h),
+                ),
+              ),
+            ),
+          ),
+        ]);
+      },
+    );
+  }
 
   Offset _demoPoint(List<List<Offset>> g, double t) {
     final total = g.fold<double>(0, (a, s) => a + _length(s));
@@ -1400,4 +1488,42 @@ class _BoardPainter extends CustomPainter {
       o.box.side != box.side ||
       o.box.origin != box.origin ||
       !identical(o.strokeInk, strokeInk);
+}
+
+/// One sparkle of the finger trail.
+class _Spark {
+  final Offset p, v;
+  final int born;
+  final Color color;
+  final double size;
+  const _Spark(this.p, this.v, this.born, this.color, this.size);
+}
+
+class _SparkPainter extends CustomPainter {
+  final List<_Spark> sparks;
+  final int now;
+  _SparkPainter(this.sparks, this.now);
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (final k in sparks) {
+      final age = (now - k.born) / 700.0;
+      if (age < 0 || age >= 1) continue;
+      final pos = k.p + k.v * age;
+      final r = k.size * (1 - age * 0.6);
+      final paint = Paint()..color = k.color.withOpacity((1 - age).clamp(0.0, 1.0).toDouble());
+      // four-point star
+      final path = Path()
+        ..moveTo(pos.dx, pos.dy - r)
+        ..quadraticBezierTo(pos.dx, pos.dy, pos.dx + r, pos.dy)
+        ..quadraticBezierTo(pos.dx, pos.dy, pos.dx, pos.dy + r)
+        ..quadraticBezierTo(pos.dx, pos.dy, pos.dx - r, pos.dy)
+        ..quadraticBezierTo(pos.dx, pos.dy, pos.dx, pos.dy - r)
+        ..close();
+      canvas.drawPath(path, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_SparkPainter o) => true;
 }

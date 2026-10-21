@@ -11,46 +11,74 @@ rules_version = '2';
 // pour un utilisateur legitime de l'app. Ces regles s'appuient sur cette
 // authentification pour restreindre l'acces aux seules donnees possedees
 // par l'utilisateur qui fait la requete.
+//
+// Le panneau d'administration (projet moortaalim_admin) se connecte avec un
+// compte Google ; seuls les emails listes dans isAdmin() y ont acces.
+// Pour ajouter un admin : ajouter son email ici ET dans
+// moortaalim_admin/lib/config.dart.
 
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // ── users/{uid} ──────────────────────────────────────────────────────
-    // Chaque utilisateur ne peut lire/ecrire QUE son propre document.
+    function isAdmin() {
+      return request.auth != null
+        && request.auth.token.email_verified == true
+        && request.auth.token.email in [
+          'jalalmtsk@gmail.com',
+          'mtsacedoce@gmail.com'
+        ];
+    }
+
+    // Le 1er profil enfant utilise le document "<uid>", les suivants
+    // "<uid>_p2", "<uid>_p3"... (ProfileStore.cloudDocId).
+    function ownsUserDoc(docId) {
+      return request.auth != null
+        && (docId == request.auth.uid
+            || docId.matches(request.auth.uid + '_.+'));
+    }
+
+    // ── users/{docId} ────────────────────────────────────────────────────
+    // Chaque utilisateur ne peut lire/ecrire QUE ses propres documents.
     // "isLocked" et "adsEnabled" sont des champs controles par l'admin
     // (banissement, activation des pubs) : un client ne doit jamais pouvoir
     // les modifier lui-meme, meme en ecrivant son propre document.
-    match /users/{uid} {
-      allow read: if request.auth != null && request.auth.uid == uid;
+    match /users/{docId} {
+      allow read: if ownsUserDoc(docId) || isAdmin();
 
-      allow create: if request.auth != null && request.auth.uid == uid
+      allow create: if isAdmin() || (ownsUserDoc(docId)
         && !('isLocked' in request.resource.data)
-        && !('adsEnabled' in request.resource.data);
+        && !('adsEnabled' in request.resource.data));
 
-      allow update: if request.auth != null && request.auth.uid == uid
+      allow update: if isAdmin() || (ownsUserDoc(docId)
         // Interdit toute tentative de modifier isLocked/adsEnabled depuis
         // le client, meme si ces champs existent deja sur le document.
         && !request.resource.data.diff(resource.data)
-              .affectedKeys().hasAny(['isLocked', 'adsEnabled']);
+              .affectedKeys().hasAny(['isLocked', 'adsEnabled']));
 
-      allow delete: if false;
+      allow delete: if isAdmin();
+    }
+
+    // ── app_settings/{doc} ───────────────────────────────────────────────
+    // notification + version : lus par l'app (NotificationManager,
+    // UpdateChecker), ecrits uniquement depuis le panneau admin.
+    match /app_settings/{doc} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
 
     // ── backups/{code} ───────────────────────────────────────────────────
     // Le code de sauvegarde EST le secret (10 caracteres aleatoires,
-    // ~3x10^17 combinaisons). On exige simplement d'etre authentifie
-    // (anonyme ou non) pour lire/creer/supprimer -- cela bloque tout appel
-    // direct hors de l'app (ex: script qui appelle l'API REST Firestore
-    // sans passer par le SDK/l'auth) et, combine a l'entropie du code et a
-    // sa duree de vie de 7 jours + suppression apres utilisation cote
-    // client, rend la fuite de donnees par devinette du code impraticable.
+    // ~3x10^17 combinaisons). On exige d'etre authentifie (anonyme ou non)
+    // pour lire un code precis / le supprimer. Le LISTAGE de la collection
+    // est reserve a l'admin : sinon n'importe quel utilisateur pourrait
+    // enumerer tous les codes et restaurer les donnees d'un autre enfant.
     //
     // Pour un niveau de securite supplementaire, activez App Check sur ce
     // projet Firebase : cela bloque les appels qui ne viennent pas d'une
-    // build authentique de l'app (protege aussi contre le brute-force
-    // automatise, meme avec un token d'auth anonyme valide).
+    // build authentique de l'app.
     match /backups/{code} {
-      allow read, delete: if request.auth != null;
+      allow get, delete: if request.auth != null;
+      allow list: if isAdmin();
       allow create: if request.auth != null
         && request.resource.data.ownerUid == request.auth.uid;
       allow update: if false; // un backup est cree puis supprime, jamais modifie

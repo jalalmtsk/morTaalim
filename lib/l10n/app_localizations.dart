@@ -3680,6 +3680,9 @@ abstract class AppLocalizations {
   /// Tap to listen
   String get tapToListen;
 
+  /// Listen
+  String get listenShort;
+
   /// IT
   String get homeIT;
 

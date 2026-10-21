@@ -83,6 +83,7 @@ flutter:
     - assets/images/SugarSmash/
     - assets/images/FlagImagesForTracingLetters/
     - assets/images/AvatarImage/Kids/
+    - assets/images/AvatarImage/KidsFull/
     - assets/images/badges/
     - assets/images/Banners/Kids/
     - assets/images/UI/KidScene/
@@ -96,6 +97,14 @@ flutter:
     - assets/images/UI/Loading/adv/
     - assets/images/UI/Toasts/
     - assets/images/UI/Duaa/
+    - assets/images/UI/Update/
+    - assets/images/UI/AlphaDraw/
+    - assets/images/UI/EditProfile/
+    - assets/images/UI/CollectionWorld/
+    - assets/images/Games/MysteryQuest/
+    - assets/images/Games/Market/
+    - assets/images/Games/Garden/
+    - assets/images/Games/Passport/
     - assets/images/UI/Parents/
     - assets/images/UI/Profiles/
     - assets/images/quiz/

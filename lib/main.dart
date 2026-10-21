@@ -64,6 +64,10 @@ import 'XpSystem.dart';
 import 'games/JumpingBoard/JumpingBoard.dart';
 import 'games/BrainBuilder/brain_builder_menu.dart';
 import 'games/PuzzleLand/puzzle_land_menu.dart';
+import 'games/MysteryQuest/mq_menu.dart';
+import 'games/Market/mk_menu.dart';
+import 'games/Garden/jd_menu.dart';
+import 'games/Passport/pp_menu.dart';
 import 'l10n/amazigh_localizations.dart';
 
 final String appVersion = "1.0.0 (Build 1)";
@@ -239,6 +243,10 @@ class _MyAppState extends State<MyApp> {
             'DrawingAlphabet': (context) => const AlphaDrawMenuPage(),
             'BrainBuilder':    (context) => const BrainBuilderMenu(),
             'PuzzleLand':      (context) => const PuzzleLandMenu(),
+            'MysteryQuest':    (context) => const MysteryQuestMenu(),
+            'LittleMarket':    (context) => const MarketMenu(),
+            'MonJardin':       (context) => const GardenMenu(),
+            'MagicPassport':   (context) => const PassportMenu(),
             'QuizGameApp':     (context) => const QuizGameApp(),
             'AppStories':      (context) => StoriesGridPage(stories: stories),
             'AnimalSounds':    (context) => AnimalsoundIndex(),
