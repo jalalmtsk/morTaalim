@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -550,7 +551,7 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise>
       if (_lives == 0) {
         audio.playSfx("assets/audios/UI_Audio/SFX_Audio/FailMeme_SFX.mp3");
         setState(() {
-          _showGameOver = true; _isAnswerCorrect = null; _isProcessing = false;
+          _showGameOver = true; Provider.of<ExperienceManager>(context, listen: false).grant(context, Rewards.practiceEnd(_score)); _isAnswerCorrect = null; _isProcessing = false;
         });
       } else {
         setState(() { _isAnswerCorrect = null; _isProcessing = false; });
@@ -569,24 +570,11 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise>
     _generateNewQuestion();
   }
 
-  Future<void> _withLoader({
-    required String message,
-    required Future<void> Function() action,
-  }) async {
-    setState(() { _showLoader = true; _loaderMsg = message; });
-    await Future.delayed(const Duration(milliseconds: 300));
-    await action();
-    if (mounted) setState(() => _showLoader = false);
-  }
-
   void _onReplayPressed() {
     final audio = Provider.of<AudioManager>(context, listen: false);
     audio.playEventSound('cancelButton');
-    _withLoader(
-      message: '🎉 Getting ready...',
-      action: () => AdHelper.showInterstitialAd(
-          onDismissed: _resetGame, context: context),
-    );
+    AdHelper.showInterstitialAd(
+          onDismissed: _resetGame, context: context);
   }
 
   Future<bool> _confirmQuit() async {
@@ -641,15 +629,7 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise>
         ),
       ),
     );
-    if (shouldQuit ?? false) {
-      await _withLoader(
-        message: '👋 See you soon!',
-        action: () => AdHelper.showInterstitialAd(
-            onDismissed: () { if (mounted) Navigator.pop(context, true); },
-            context: context),
-      );
-      return true;
-    }
+    if (shouldQuit ?? false) return true; // pas de pub en quittant un jeu
     return false;
   }
 
@@ -668,7 +648,7 @@ class _MissingNumberExerciseState extends State<MissingNumberExercise>
       },
       child: Scaffold(
         // ── Banner ad bar ───────────────────────────────────
-        bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
+        bottomNavigationBar: _showGameOver && context.watch<ExperienceManager>().adsEnabled
             ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
             : null,
 

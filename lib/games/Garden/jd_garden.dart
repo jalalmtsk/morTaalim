@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -105,8 +104,8 @@ class _MyGardenPageState extends State<MyGardenPage> with TickerProviderStateMix
                           offset: Offset(0, -8 * s),
                           child: jdOnSprite(
                             'jd_pill_leafy',
-                            min(w * 0.6, 240 * s),
-                            0.15,
+                            min(w * 0.62, 250 * s),
+                            0.1773,
                             Text(jdT(context, 'gardenCount', {'n': _found.length}), style: jdText(14 * s)),
                             area: const EdgeInsets.fromLTRB(0.13, 0.1, 0.13, 0.1),
                           ),
@@ -121,10 +120,10 @@ class _MyGardenPageState extends State<MyGardenPage> with TickerProviderStateMix
                 _info(s, min(w - 20 * s, 400 * s), plant, known),
                 SizedBox(height: 6 * s),
                 JdSpriteButton(
-                  sprite: 'jd_btn_newseed',
-                  ratio: 0.2021,
-                  start: 0.22,
-                  end: 0.16,
+                  sprite: 'jd_btn_plant',
+                  ratio: 0.2812,
+                  start: 0.2,
+                  end: 0.14,
                   label: jdT(context, 'plantNew'),
                   onTap: _plantNew,
                   width: min(w * 0.9, 360 * s),
@@ -141,11 +140,11 @@ class _MyGardenPageState extends State<MyGardenPage> with TickerProviderStateMix
 
   Widget _shelf(double s, double w) => LayoutBuilder(builder: (_, c) {
         final h = c.maxHeight;
-        final shelfW = min(w * 0.74, h / 0.8548 * 1.0);
-        final shelfH = shelfW * 0.8548;
-        final potH = shelfH * 0.29;
+        final shelfW = min(w * 0.6, h / 1.3795);
+        final shelfH = shelfW * 1.3795;
+        final potH = shelfH * 0.205;
         // the three boards of the shelf sprite (fraction of its height)
-        const boards = [0.355, 0.64, 0.86];
+        const boards = [0.385, 0.645, 0.905];
         return Stack(clipBehavior: Clip.none, children: [
           // kid + robot cheering on the side
           PositionedDirectional(
@@ -154,21 +153,29 @@ class _MyGardenPageState extends State<MyGardenPage> with TickerProviderStateMix
             child: Column(mainAxisSize: MainAxisSize.min, children: [
               AnimatedBuilder(
                 animation: _idle,
-                builder: (_, ch) => Transform.translate(offset: Offset(0, -sin(_idle.value * 2 * pi * 2).abs() * 5 * s), child: ch),
-                child: Image.asset(jd('jd_kid_robot'), height: min(h * 0.62, 170 * s)),
+                builder: (_, ch) => Transform.translate(
+                  offset: Offset(0, -sin(_idle.value * 2 * pi * 2).abs() * 8 * s),
+                  child: Transform.rotate(angle: sin(_idle.value * 2 * pi * 2) * 0.06, child: ch),
+                ),
+                child: Image.asset(jd('jd_robot_wave'), height: min(h * 0.3, 100 * s)),
+              ),
+              AnimatedBuilder(
+                animation: _idle,
+                builder: (_, ch) => Transform.translate(offset: Offset(0, -sin(_idle.value * 2 * pi * 2 + 1.2).abs() * 8 * s), child: ch),
+                child: Image.asset(jd('jd_kid_cheer'), height: min(h * 0.3, 100 * s)),
               ),
             ]),
           ),
           PositionedDirectional(
             end: 0,
             top: 0,
-            width: min(w * 0.3, 120 * s),
+            width: min(w * 0.34, 130 * s),
             child: jdOnSprite(
               'jd_plank_flower',
-              min(w * 0.3, 120 * s),
-              0.42,
+              min(w * 0.34, 130 * s),
+              0.6059,
               Text(jdT(context, 'gardenGrows'), textAlign: TextAlign.center, style: jdText(12 * s, height: 1.1)),
-              area: const EdgeInsets.fromLTRB(0.15, 0.22, 0.15, 0.18),
+              area: const EdgeInsets.fromLTRB(0.17, 0.24, 0.17, 0.22),
             ),
           ),
           PositionedDirectional(
@@ -179,7 +186,7 @@ class _MyGardenPageState extends State<MyGardenPage> with TickerProviderStateMix
             child: Stack(clipBehavior: Clip.none, children: [
               Positioned.fill(child: Image.asset(jd('jd_shelf_tall'), fit: BoxFit.fill)),
               for (var r = 0; r < 3; r++)
-                for (var k = 0; k < 2; k++) _slot(jdPlants[r * 2 + k], r * 2 + k, Offset(shelfW * (k == 0 ? 0.3 : 0.7), shelfH * boards[r]), potH, s),
+                for (var k = 0; k < 2; k++) _slot(jdPlants[r * 2 + k], r * 2 + k, Offset(shelfW * (k == 0 ? 0.33 : 0.67), shelfH * boards[r]), potH, s),
             ]),
           ),
         ]);
@@ -251,8 +258,13 @@ class _MyGardenPageState extends State<MyGardenPage> with TickerProviderStateMix
                 top: potH * 0.02,
                 child: Transform.rotate(
                   angle: -0.15,
-                  child: jdOnSprite('jd_ribbon', potH * 0.62, 0.6467, Text(jdT(context, 'new'), style: jdText(11 * s, color: Colors.white)),
-                      area: const EdgeInsets.fromLTRB(0.18, 0.1, 0.06, 0.38)),
+                  child: JdFloat(
+                    amp: 0,
+                    scale: 0.06,
+                    period: const Duration(milliseconds: 900),
+                    child: jdOnSprite('jd_ribbon', potH * 0.8, 0.4192, Text(jdT(context, 'new'), style: jdText(11 * s, color: const Color(0xFF8A3B00))),
+                        area: const EdgeInsets.fromLTRB(0.2, 0.15, 0.2, 0.35)),
+                  ),
                 ),
               ),
           ]),
@@ -262,76 +274,74 @@ class _MyGardenPageState extends State<MyGardenPage> with TickerProviderStateMix
   }
 
   Widget _info(double s, double width, JdPlant p, bool known) {
-    final h = width * 0.4537;
+    final h = width * 0.5192;
     return SizedBox(
       width: width,
       height: h,
-      child: Stack(children: [
-        Positioned.fill(child: Image.asset(jd('jd_info_big'), fit: BoxFit.fill)),
-        // round picture: cover the painted sprout with the selected plant
+      child: Stack(clipBehavior: Clip.none, children: [
+        Positioned.fill(child: Image.asset(jd('jd_level_card'), fit: BoxFit.fill)),
+        // round picture: covers the painted sprout with the selected plant
         Positioned(
-          left: width * 0.085,
-          top: h * 0.19,
-          width: width * 0.31,
-          height: width * 0.31,
-          child: Container(
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: RadialGradient(colors: [Color(0xFFF4FFE6), Color(0xFFCDEFA9)]),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(width * 0.03),
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 300),
-                transitionBuilder: (c, a) => ScaleTransition(scale: a, child: c),
-                child: JdPot(key: ValueKey('${p.id}$known'), plant: p, height: width * 0.25, locked: !known),
+          left: width * 0.075,
+          top: h * 0.17,
+          width: width * 0.3,
+          height: width * 0.3,
+          child: ClipOval(
+            child: DecoratedBox(
+              decoration: const BoxDecoration(gradient: RadialGradient(colors: [Color(0xFFF4FFE6), Color(0xFFBDE89A)])),
+              child: Padding(
+                padding: EdgeInsets.all(width * 0.025),
+                child: AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 400),
+                  transitionBuilder: (c, a) => ScaleTransition(scale: CurvedAnimation(parent: a, curve: Curves.elasticOut), child: c),
+                  child: JdFloat(
+                    key: ValueKey('${p.id}$known'),
+                    amp: 2 * s,
+                    tilt: known ? 0.04 : 0,
+                    child: JdPot(plant: p, height: width * 0.25, locked: !known),
+                  ),
+                ),
               ),
             ),
           ),
         ),
         Positioned(
-          left: width * 0.42,
-          right: width * 0.22,
-          top: h * 0.14,
-          height: h * 0.24,
+          left: width * 0.44,
+          right: width * 0.16,
+          top: h * 0.12,
+          height: h * 0.22,
           child: Align(
             alignment: AlignmentDirectional.centerStart,
-            child: FittedBox(fit: BoxFit.scaleDown, child: Text(known ? p.my(context) : '?', style: jdText(24 * s, color: jdInk, weight: FontWeight.w800))),
-          ),
-        ),
-        // speaker painted on the card
-        Positioned(
-          left: width * 0.78,
-          width: width * 0.15,
-          top: h * 0.14,
-          height: h * 0.3,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () => JdVoice.say(context, known ? '${p.my(context)}. ${p.fact(context)}' : jdT(context, 'lockedPlant')),
+            child: FittedBox(fit: BoxFit.scaleDown, child: Text(known ? p.my(context) : '?', style: jdText(22 * s, color: jdInk, weight: FontWeight.w800))),
           ),
         ),
         Positioned(
-          left: width * 0.42,
-          right: width * 0.08,
-          top: h * 0.4,
-          height: h * 0.22,
+          right: width * 0.04,
+          top: h * 0.08,
+          child: jdRound(context, 'jd_sound', 32 * s, () => JdVoice.say(context, known ? '${p.my(context)}. ${p.fact(context)}' : jdT(context, 'lockedPlant'))),
+        ),
+        Positioned(
+          left: width * 0.44,
+          right: width * 0.06,
+          top: h * 0.34,
+          height: h * 0.26,
           child: Center(
             child: FittedBox(
               fit: BoxFit.scaleDown,
               child: ConstrainedBox(
                 constraints: BoxConstraints(maxWidth: width * 0.5),
                 child: Text(known ? p.fact(context) : jdT(context, 'lockedPlant'),
-                    textAlign: TextAlign.center, maxLines: 2, style: jdText(13 * s, height: 1.15)),
+                    textAlign: TextAlign.center, maxLines: 2, style: jdText(12.5 * s, height: 1.15)),
               ),
             ),
           ),
         ),
-        // "watch it grow again" pill painted on the card
+        // "watch it grow again" on the cream pill of the card
         Positioned(
-          left: width * 0.42,
-          right: width * 0.1,
-          top: h * 0.62,
-          height: h * 0.24,
+          left: width * 0.5,
+          right: width * 0.08,
+          top: h * 0.63,
+          height: h * 0.23,
           child: JdPress(
             onTap: known
                 ? () {
@@ -343,11 +353,11 @@ class _MyGardenPageState extends State<MyGardenPage> with TickerProviderStateMix
             child: Opacity(
               opacity: known ? 1 : 0.5,
               child: Row(children: [
-                SizedBox(width: width * 0.1),
+                Image.asset(jd('jd_play_round'), height: h * 0.18),
+                SizedBox(width: 4 * s),
                 Expanded(
-                  child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'replayGrow'), style: jdText(13.5 * s, color: const Color(0xFF7A3E12)))),
+                  child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'replayGrow'), style: jdText(13 * s, color: const Color(0xFF7A3E12)))),
                 ),
-                SizedBox(width: width * 0.07),
               ]),
             ),
           ),
@@ -365,24 +375,30 @@ class GrowReplay extends StatefulWidget {
   State<GrowReplay> createState() => _GrowReplayState();
 }
 
-class _GrowReplayState extends State<GrowReplay> {
-  int _i = 0;
-  Timer? _t;
+class _GrowReplayState extends State<GrowReplay> with SingleTickerProviderStateMixin {
+  // one loop: the plant grows for 80 % of the time, then stays grown a moment
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 8000));
+  static const _growPart = 0.8;
+  int _i = -1;
+
+  int get _stageNow => _c.value >= _growPart ? 4 : (_c.value / _growPart * 4).floor().clamp(0, 3);
 
   @override
   void initState() {
     super.initState();
-    _t = Timer.periodic(const Duration(milliseconds: 1100), (_) {
-      if (!mounted) return;
-      setState(() => _i = (_i + 1) % 6);
-      if (_i < 4) JdVoice.say(context, jdT(context, 'st$_i'));
-      if (_i == 4) JdVoice.say(context, widget.plant.my(context));
+    _c.addListener(() {
+      final st = _stageNow;
+      if (st == _i || !mounted) return;
+      setState(() => _i = st);
+      if (st < 4) JdVoice.say(context, jdT(context, 'st$st'));
+      if (st == 4) JdVoice.say(context, widget.plant.my(context));
     });
+    _c.repeat();
   }
 
   @override
   void dispose() {
-    _t?.cancel();
+    _c.dispose();
     JdVoice.stop();
     super.dispose();
   }
@@ -392,18 +408,24 @@ class _GrowReplayState extends State<GrowReplay> {
 
   Widget _page(BuildContext context) {
     final s = jdScale(context);
-    final stage = min(_i, 4);
+    final stage = max(0, _i);
     return JdDialogFrame(
       title: jdT(context, 'replayGrow'),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         SizedBox(
           height: 170 * s,
-          child: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 450),
-            transitionBuilder: (c, a) => FadeTransition(opacity: a, child: ScaleTransition(scale: Tween(begin: 0.85, end: 1.0).animate(a), child: c)),
-            child: stage < 4
-                ? Image.asset(jd('jd_stage$stage'), key: ValueKey(stage), height: 160 * s)
-                : JdPot(key: const ValueKey('pot'), plant: widget.plant, height: 165 * s),
+          child: AnimatedBuilder(
+            animation: _c,
+            builder: (_, __) {
+              final t = (_c.value / _growPart).clamp(0.0, 1.0);
+              // a small happy bounce when it is fully grown
+              final pop = _c.value >= _growPart ? 1 + 0.04 * sin(((_c.value - _growPart) / (1 - _growPart)) * pi) : 1.0;
+              return Transform.scale(
+                scale: pop,
+                alignment: Alignment.bottomCenter,
+                child: JdGrowFlip(plant: widget.plant, t: t, height: 165 * s),
+              );
+            },
           ),
         ),
         SizedBox(height: 8 * s),

@@ -249,7 +249,7 @@ class _MPState extends State<MousePracticeExercise> with TickerProviderStateMixi
     _totStars+=s; _totXp+=x;
     final xpMgr = Provider.of<ExperienceManager>(context, listen:false);
     final audio  = Provider.of<AudioManager>(context, listen:false);
-    xpMgr.addGems(context, s);
+    xpMgr.addGold(context, s * 4); // stars → gold (gems stay rare)
     xpMgr.addXP(x, context:context);
     if (accuracy>.7) { _confetti.play(); audio.playSfx('assets/audios/UI_Audio/SFX_Audio/victory1_SFX.mp3'); }
   }
@@ -503,7 +503,7 @@ class _MPState extends State<MousePracticeExercise> with TickerProviderStateMixi
       Container(padding:const EdgeInsets.all(16),
           decoration:BoxDecoration(color:Colors.white.withOpacity(.06),borderRadius:BorderRadius.circular(16)),
           child:Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children:[
-            Column(children:[const Icon(Icons.diamond_rounded,color:Colors.lightBlueAccent,size:28),Text('$_totStars',style:const TextStyle(color:Colors.lightBlueAccent,fontWeight:FontWeight.bold,fontSize:20)),const Text('💎',style:TextStyle(color:Colors.white54,fontSize:12))]),
+            Column(children:[const Icon(Icons.star_rounded,color:Colors.amber,size:28),Text('$_totStars',style:const TextStyle(color:Colors.amber,fontWeight:FontWeight.bold,fontSize:20)),const Text('⭐',style:TextStyle(color:Colors.white54,fontSize:12))]),
             Column(children:[const Icon(Icons.bolt,color:Colors.cyanAccent,size:28),Text('$_totXp',style:const TextStyle(color:Colors.cyanAccent,fontWeight:FontWeight.bold,fontSize:20)),const Text('XP',style:TextStyle(color:Colors.white54,fontSize:12))]),
           ])),
       const SizedBox(height:20),

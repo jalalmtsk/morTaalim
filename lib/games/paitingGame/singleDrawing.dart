@@ -6,14 +6,12 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart' hide useWhiteForeground;
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 
 import '../../XpSystem.dart';
 import '../../main.dart';
-import '../../tools/Ads_Manager.dart';
 import 'model_logic_page.dart';
 
 // ─────────────────────────────────────────────────────────
@@ -88,8 +86,6 @@ class SingleDrawingPage extends StatefulWidget {
 }
 
 class _SingleDrawingPageState extends State<SingleDrawingPage> {
-  BannerAd? _bannerAd;
-  bool _adLoaded = false;
 
   late CanvasController _canvas;
   late Color _color;
@@ -116,18 +112,11 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
     _isErasing = widget.initialIsErasing;
     _elapsed = widget.initialElapsed;
     _confetti = ConfettiController(duration: const Duration(seconds: 2));
-    _loadBannerAd();
   }
 
-  void _loadBannerAd() {
-    _bannerAd?.dispose();
-    _adLoaded = false;
-    _bannerAd = AdHelper.getBannerAd(() => setState(() => _adLoaded = true));
-  }
 
   @override
   void dispose() {
-    _bannerAd?.dispose();
     _timer?.cancel();
     _confetti.dispose();
     _canvas.dispose();
@@ -297,16 +286,6 @@ class _SingleDrawingPageState extends State<SingleDrawingPage> {
           child: _buildBottomBar(),
         ),
 
-        // ── Banner ad ───────────────────────────────────
-        if (context.watch<ExperienceManager>().adsEnabled && _bannerAd != null && _adLoaded)
-          SafeArea(child: Align(
-            alignment: Alignment.bottomCenter,
-            child: SizedBox(
-              width: _bannerAd!.size.width.toDouble(),
-              height: _bannerAd!.size.height.toDouble(),
-              child: FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _adLoaded),
-            ),
-          )),
       ]),
     );
   }

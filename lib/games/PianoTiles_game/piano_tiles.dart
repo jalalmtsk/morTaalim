@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -520,7 +521,7 @@ class _PianoTilesGameState extends State<_PianoTilesGame>
       onWillPop: _confirmQuit,
       child: Scaffold(
         backgroundColor:Pal.bg,
-        bottomNavigationBar:adsOn
+        bottomNavigationBar:_state.gameOver && adsOn
             ?FamilyAdBanner(bannerAd:_bannerAd,isLoaded:_bannerLoaded)
             :null,
         body:SafeArea(
@@ -579,7 +580,7 @@ class _PianoTilesGameState extends State<_PianoTilesGame>
         // Award XP based on score at end
         if(_state.gameOver&&_state.score>0){
           Provider.of<ExperienceManager>(context,listen:false)
-              .addXP((_state.score~/5).clamp(1,50),context:context);
+              .grant(context, Rewards.arcade(_state.score));
         }
         _state.startGame();
       },

@@ -1,14 +1,12 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import '../../XpSystem.dart';
-import '../../tools/Ads_Manager.dart';
 import '../practiseWords.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -165,8 +163,6 @@ class _MatchWordToImageState extends State<MatchWordToImage>
   late AnimationController _feedbackCtrl;
   late Animation<double>   _feedbackScale;
 
-  BannerAd? _bannerAd;
-  bool _isBannerAdLoaded = false;
 
   @override
   void initState() {
@@ -186,29 +182,19 @@ class _MatchWordToImageState extends State<MatchWordToImage>
         curve: Curves.easeOut));
 
     _generateNewRound();
-    _loadBannerAd();
   }
 
   @override void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _player.dispose(); _bgMusic.dispose();
     _feedbackCtrl.dispose();
-    _bannerAd?.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _loadBannerAd();
   }
 
-  void _loadBannerAd() {
-    _bannerAd?.dispose(); _isBannerAdLoaded = false;
-    if (!mounted) return;
-    if (!Provider.of<ExperienceManager>(context, listen: false).adsEnabled) return;
-    _bannerAd = AdHelper.getBannerAd(
-            () { if (mounted) setState(() => _isBannerAdLoaded = true); });
-  }
 
   Future<void> _generateNewRound() async {
     final pool = [...widget.words]..shuffle(_rng);
@@ -259,9 +245,6 @@ class _MatchWordToImageState extends State<MatchWordToImage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _G.wall,
-      bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
-          ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
-          : null,
       body: Stack(children: [
         // Gallery wall texture
         Positioned.fill(child: CustomPaint(painter: _WallTexturePainter())),

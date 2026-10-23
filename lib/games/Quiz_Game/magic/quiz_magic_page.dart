@@ -4,11 +4,8 @@ import 'dart:math';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
-import '../../../XpSystem.dart';
-import '../../../tools/Ads_Manager.dart';
 import '../../../tools/audio_tool/Audio_Manager.dart';
 import '../../../widgets/KidScene/kid_page_parts.dart';
 import '../../../widgets/KidScene/kid_scene.dart';
@@ -47,8 +44,6 @@ class _QuizMagicPageState extends State<QuizMagicPage> with TickerProviderStateM
   bool _voice = true;
   bool _precached = false;
 
-  BannerAd? _banner;
-  bool _bannerLoaded = false;
 
   String get _ui => qmUiLang(widget.language);
   bool get _isAr => widget.language == QuizLanguage.arabic;
@@ -60,9 +55,6 @@ class _QuizMagicPageState extends State<QuizMagicPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _banner = AdHelper.getBannerAd(() {
-      if (mounted) setState(() => _bannerLoaded = true);
-    });
     _start();
   }
 
@@ -110,7 +102,6 @@ class _QuizMagicPageState extends State<QuizMagicPage> with TickerProviderStateM
     _shake.dispose();
     _pop.dispose();
     _confetti.dispose();
-    _banner?.dispose();
     super.dispose();
   }
 
@@ -220,8 +211,6 @@ class _QuizMagicPageState extends State<QuizMagicPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final xp = context.watch<ExperienceManager>();
-    final showAd = xp.adsEnabled && _banner != null && _bannerLoaded;
     return Directionality(
       textDirection: _isAr ? TextDirection.rtl : TextDirection.ltr,
       child: Scaffold(
@@ -229,7 +218,7 @@ class _QuizMagicPageState extends State<QuizMagicPage> with TickerProviderStateM
         body: Stack(children: [
           const Positioned.fill(child: KidPageBackground(asset: qmImgBg, wash: 0)),
           SafeArea(
-            bottom: !showAd,
+            bottom: true,
             child: !_ready
                 ? const Center(child: CircularProgressIndicator(color: Colors.white))
                 : LayoutBuilder(builder: (context, c) => _layout(c)),
@@ -248,15 +237,6 @@ class _QuizMagicPageState extends State<QuizMagicPage> with TickerProviderStateM
             ),
           ),
         ]),
-        bottomNavigationBar: showAd
-            ? SafeArea(
-                child: SizedBox(
-                  height: _banner!.size.height.toDouble(),
-                  width: _banner!.size.width.toDouble(),
-                  child: FamilyAdBanner(bannerAd: _banner, isLoaded: _bannerLoaded),
-                ),
-              )
-            : null,
       ),
     );
   }

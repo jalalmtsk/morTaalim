@@ -4,11 +4,9 @@ import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 import '../../XpSystem.dart';
-import '../../tools/Ads_Manager.dart';
 import '../../tools/audio_tool/Audio_Manager.dart';
 import '../../widgets/KidScene/kid_page_parts.dart';
 import '../../widgets/KidScene/kid_scene.dart';
@@ -34,7 +32,7 @@ const String _imgStarOn = '${wlDir}games_star_on.webp';
 const String _imgStarOff = '${wlDir}games_star_off.webp';
 
 const int _hintCost = 10; // gold per revealed letter
-const int _winGold = 3; // gold for finishing a level
+const int _winGold = 8; // gold for finishing a level
 
 const Color _ink = Color(0xFF2D0B57);
 const Color _okGreen = Color(0xFF2FB344);
@@ -87,8 +85,6 @@ class _WordBoardGameState extends State<WordBoardGame> with TickerProviderStateM
   String? _flashWord;
   Color _flashColor = _ink;
 
-  BannerAd? _banner;
-  bool _bannerLoaded = false;
 
   AudioManager get _audio => Provider.of<AudioManager>(context, listen: false);
   ExperienceManager get _xp => Provider.of<ExperienceManager>(context, listen: false);
@@ -96,9 +92,6 @@ class _WordBoardGameState extends State<WordBoardGame> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _banner = AdHelper.getBannerAd(() {
-      if (mounted) setState(() => _bannerLoaded = true);
-    });
     _load();
   }
 
@@ -121,7 +114,6 @@ class _WordBoardGameState extends State<WordBoardGame> with TickerProviderStateM
     _shake.dispose();
     _spin.dispose();
     _confetti.dispose();
-    _banner?.dispose();
     super.dispose();
   }
 
@@ -376,7 +368,7 @@ class _WordBoardGameState extends State<WordBoardGame> with TickerProviderStateM
     _confetti.play();
     _audio.playSfx('assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3');
     _xp.addGold(context, _winGold);
-    _xp.addXP(10, context: context);
+    _xp.addXP(14, context: context);
     await showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -489,13 +481,12 @@ class _WordBoardGameState extends State<WordBoardGame> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     final xp = context.watch<ExperienceManager>();
-    final showAd = xp.adsEnabled && _banner != null && _bannerLoaded;
     return Scaffold(
       backgroundColor: KidColors.sky,
       body: Stack(children: [
         const Positioned.fill(child: KidPageBackground(asset: _imgBg, wash: 0)),
         SafeArea(
-          bottom: !showAd,
+          bottom: true,
           child: !_ready
               ? const Center(child: CircularProgressIndicator(color: Colors.white))
               : LayoutBuilder(builder: (context, c) => _layout(c, xp)),
@@ -512,15 +503,6 @@ class _WordBoardGameState extends State<WordBoardGame> with TickerProviderStateM
           ),
         ),
       ]),
-      bottomNavigationBar: showAd
-          ? SafeArea(
-              child: SizedBox(
-                height: _banner!.size.height.toDouble(),
-                width: _banner!.size.width.toDouble(),
-                child: FamilyAdBanner(bannerAd: _banner, isLoaded: _bannerLoaded),
-              ),
-            )
-          : null,
     );
   }
 

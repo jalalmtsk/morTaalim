@@ -1,4 +1,5 @@
 import 'package:mortaalim/widgets/KidScene/kid_toast.dart';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'package:mortaalim/Manager/models/avatar_catalog.dart';
 import 'dart:async';
 import 'dart:math';
@@ -92,7 +93,8 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
 
   // -------------- XP System -------------------
 
-  int getXPForLevel(int level) => level * level * 50;
+  /// Total XP needed to pass [level] (see Rewards: 50, 75, 100 … XP per level).
+  int getXPForLevel(int level) => Rewards.totalXpFor(level + 1);
 
   int get level {
     int lvl = 1;
@@ -369,8 +371,9 @@ class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
 
   bool buySaveTokens({int amount = 3}) {
     if (Tolims >= amount && amount > 0) {
-      int starsToAdd = amount ~/ 3; // 3 Tolims per star
-      Tolims -= starsToAdd * 3;
+      int starsToAdd = amount ~/ Rewards.goldPerGem;
+      if (starsToAdd <= 0) return false;
+      Tolims -= starsToAdd * Rewards.goldPerGem;
       _stars += starsToAdd;
       _saveData();
       notifyListeners();
@@ -681,8 +684,12 @@ KidToast.reward(gems: amount);
     _xp += amount;
     final int newLevel = level;
 
-    if (newLevel > oldLevel) {
-      addStarBanner(context!, newLevel - oldLevel);
+    if (newLevel > oldLevel && context != null && context.mounted) {
+      var gems = 0;
+      for (var l = oldLevel + 1; l <= newLevel; l++) {
+        gems += Rewards.gemsForLevel(l);
+      }
+      addStarBanner(context, min(gems, 15));
     }
     _saveData();
     notifyListeners();

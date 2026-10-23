@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:mortaalim/XpSystem.dart';
 import 'package:provider/provider.dart';
 
 import 'mq_data.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
 
 /// One round of Mystery Quest in a room: find every hidden thing on the list.
 class MqGamePage extends StatefulWidget {
@@ -285,12 +287,11 @@ class _MqGamePageState extends State<MqGamePage> with TickerProviderStateMixin {
               ? 2
               : 1;
       final fresh = await MqStore.record(widget.place.id, widget.room.id, widget.level, stars);
-      gold = 2 + widget.level * 2 + fresh * 3;
+      final rw = Rewards.levelFromGain(tier: widget.level + 1, stars: stars, gained: fresh);
+      gold = rw.gold;
       mqSfx(context, 'MarimbaWin_SFX.mp3');
       if (!mounted) return;
-      final xp = Provider.of<ExperienceManager>(context, listen: false);
-      xp.addGold(context, gold);
-      xp.addXP(3 + stars * 2, context: context);
+      Provider.of<ExperienceManager>(context, listen: false).grant(context, rw);
     } else {
       mqSfx(context, 'FailMeme_SFX.mp3');
     }
@@ -321,6 +322,9 @@ class _MqGamePageState extends State<MqGamePage> with TickerProviderStateMixin {
       ),
       transitionBuilder: (_, a, __, c) => ScaleTransition(scale: CurvedAnimation(parent: a, curve: Curves.easeOutBack), child: c),
     );
+    if (!mounted) return;
+    // Fin de niveau = pause naturelle (AdHelper applique fréquence + écran « Publicité »).
+    await AdHelper.showInterstitialAd(context: context);
     if (!mounted) return;
     switch (choice) {
       case 'again':

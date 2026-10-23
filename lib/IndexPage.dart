@@ -1,4 +1,5 @@
 import 'widgets/KidScene/glossy_bar.dart';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'widgets/Collection/my_collection_page.dart';
 import 'dart:async';
 import 'dart:math';
@@ -262,7 +263,7 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
         headerAsset: HomeAssets.gem,
         headerAspect: 0.9196,
         title: tr(ctx).getAGem,
-        message: tr(ctx).tradeGoldForGem(3),
+        message: tr(ctx).tradeGoldForGem(Rewards.goldPerGem),
         actions: [
           KidOutlineButton(label: tr(ctx).cancel, onTap: () => Navigator.pop(ctx, false)),
           KidButton(
@@ -270,13 +271,13 @@ class _IndexState extends State<Index> with TickerProviderStateMixin, WidgetsBin
             width: double.infinity,
             height: 50,
             showArrow: false,
-            onPressed: xp.gold >= 3 ? () => Navigator.pop(ctx, true) : null,
+            onPressed: xp.gold >= Rewards.goldPerGem ? () => Navigator.pop(ctx, true) : null,
           ),
         ],
       ),
     );
     if (ok == true && mounted) {
-      if (xp.buySaveTokens(amount: 3)) {
+      if (xp.buySaveTokens(amount: Rewards.goldPerGem)) {
         _audio.playEventSound('clickButton2');
       }
     }

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:mortaalim/tools/Ads_Manager.dart';
@@ -126,9 +125,6 @@ class _LanguageSelectState extends State<_LanguageSelectPage>
   // Fixed star positions
   late final List<_Star> _stars;
 
-  // ── Ads ─────────────────────────────────────────────────────
-  BannerAd? _bannerAd;
-  bool      _bannerLoaded = false;
 
   @override
   void initState() {
@@ -350,9 +346,6 @@ class _WordGamePageState extends State<_WordGamePage>
 
   late final List<_Star> _stars;
 
-  // ── Ads ─────────────────────────────────────────────────────
-  BannerAd? _bannerAd;
-  bool      _bannerLoaded = false;
 
   @override
   void initState() {
@@ -389,7 +382,6 @@ class _WordGamePageState extends State<_WordGamePage>
         duration: const Duration(milliseconds: 500))..repeat(reverse: true);
 
     _wordPool = List.of(_kWords[widget.language]!)..shuffle(_rng);
-    _loadBannerAd();
     _loadWord();
   }
 
@@ -398,22 +390,13 @@ class _WordGamePageState extends State<_WordGamePage>
     _timer?.cancel();
     _bgCtrl.dispose(); _rocketCtrl.dispose(); _shakeCtrl.dispose();
     _correctCtrl.dispose(); _streakCtrl.dispose();
-    _bannerAd?.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _loadBannerAd();
   }
 
-  void _loadBannerAd() {
-    _bannerAd?.dispose(); _bannerLoaded = false;
-    if (!mounted) return;
-    if (!Provider.of<ExperienceManager>(context, listen: false).adsEnabled) return;
-    _bannerAd = AdHelper.getBannerAd(
-            () { if (mounted) setState(() => _bannerLoaded = true); });
-  }
 
   // ── Load next word ────────────────────────────────────────────
   void _loadWord() {
@@ -488,7 +471,7 @@ class _WordGamePageState extends State<_WordGamePage>
     _score += _level * 10 + bonus;
     // Award XP
     Provider.of<ExperienceManager>(context, listen: false)
-        .addXP(_level, context: context);
+        .addXP(_level.clamp(1, 5), context: context);
     _correctCtrl.reset(); _correctCtrl.forward();
     setState(() { _showCorrect = true; });
 
@@ -681,14 +664,10 @@ class _WordGamePageState extends State<_WordGamePage>
     final isRtl  = meta['rtl'] as bool;
     final size   = MediaQuery.of(context).size;
 
-    final adsOn = context.watch<ExperienceManager>().adsEnabled;
     return WillPopScope(
         onWillPop: _confirmQuit,
         child: Scaffold(
           backgroundColor: _C.bg0,
-          bottomNavigationBar: adsOn
-              ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _bannerLoaded)
-              : null,
           body: Stack(children: [
             // Star field BG
             AnimatedBuilder(animation: _bgCtrl,

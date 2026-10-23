@@ -1,15 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
-import '../../XpSystem.dart';
-import '../../tools/AD_Tools/adLabel.dart';
-import '../../tools/Ads_Manager.dart';
 import '../practiseWords.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -369,8 +364,6 @@ class PlayTheWord extends StatefulWidget {
 class _PlayTheWordState extends State<PlayTheWord>
     with TickerProviderStateMixin, WidgetsBindingObserver {
 
-  BannerAd? _bannerAd;
-  bool _isBannerAdLoaded = false;
 
   final MusicPlayer _player = MusicPlayer();
   final Set<String> learnedWords = {};
@@ -398,7 +391,6 @@ class _PlayTheWordState extends State<PlayTheWord>
         duration: const Duration(milliseconds: 600))..forward();
     _entryFade = CurvedAnimation(parent: _entryCtrl, curve: Curves.easeOut);
 
-    _loadBannerAd();
     _initPrefs();
   }
 
@@ -406,22 +398,13 @@ class _PlayTheWordState extends State<PlayTheWord>
     WidgetsBinding.instance.removeObserver(this);
     _bgCtrl.dispose(); _entryCtrl.dispose();
     _player.dispose();
-    _bannerAd?.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _loadBannerAd();
   }
 
-  void _loadBannerAd() {
-    _bannerAd?.dispose(); _isBannerAdLoaded = false;
-    if (!mounted) return;
-    if (!Provider.of<ExperienceManager>(context, listen: false).adsEnabled) return;
-    _bannerAd = AdHelper.getBannerAd(
-            () { if (mounted) setState(() => _isBannerAdLoaded = true); });
-  }
 
   // FIX: nullable prefs, only save/read after ready
   Future<void> _initPrefs() async {
@@ -459,9 +442,6 @@ class _PlayTheWordState extends State<PlayTheWord>
     final words = widget.words;
     return Scaffold(
       backgroundColor: _P.cream,
-      bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
-          ? _FrenchBannerBar(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
-          : null,
       body: Stack(children: [
         // Animated BG
         AnimatedBuilder(animation: _bgAnim,
@@ -652,51 +632,3 @@ class _PlayTheWordState extends State<PlayTheWord>
   }
 }
 
-// ── Banner bar ─────────────────────────────────────────────────
-
-class _FrenchBannerBar extends StatelessWidget {
-  final BannerAd? bannerAd;
-  final bool isLoaded;
-  const _FrenchBannerBar({required this.bannerAd, required this.isLoaded});
-
-  @override
-  Widget build(BuildContext context) {
-    final adH = (bannerAd?.size.height ?? 50).toDouble();
-    return SafeArea(
-      top: false,
-      child: Container(
-        height: adH + 20,
-        color: const Color(0xFFF5F5F5),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              color: const Color(0xFFEEEEEE),
-              child: const Text(
-                'Ad',
-                style: TextStyle(
-                  fontSize: 10,
-                  color: Color(0xFF757575),
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            Expanded(
-              child: isLoaded && bannerAd != null
-                  ? Center(
-                child: SizedBox(
-                  height: adH,
-                  width: bannerAd!.size.width.toDouble(),
-                  child: FamilyAdBanner(bannerAd: bannerAd, isLoaded: isLoaded),
-                ),
-              )
-                  : const NeutralAdPlaceholder(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}

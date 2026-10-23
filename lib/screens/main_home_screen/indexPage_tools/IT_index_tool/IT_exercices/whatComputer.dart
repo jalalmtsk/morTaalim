@@ -235,7 +235,7 @@ class _WICState extends State<WhatIsComputerExercise>
     _totStars+=s; _totXp+=x;
     final xpMgr = Provider.of<ExperienceManager>(context, listen:false);
     final audio  = Provider.of<AudioManager>(context, listen:false);
-    xpMgr.addGems(context, s);
+    xpMgr.addGold(context, s * 4); // stars → gold (gems stay rare)
     xpMgr.addXP(x, context:context);
 
     if (_ri < _rounds.length-1) {
@@ -551,7 +551,7 @@ class _WICState extends State<WhatIsComputerExercise>
       Container(padding:const EdgeInsets.all(16),
           decoration:BoxDecoration(color:Colors.white.withOpacity(.06),borderRadius:BorderRadius.circular(16)),
           child:Row(mainAxisAlignment:MainAxisAlignment.spaceAround,children:[
-            _wStat(Icons.diamond_rounded,Colors.lightBlueAccent,'$_totStars 💎'),
+            _wStat(Icons.star_rounded,Colors.amber,'$_totStars ⭐'),
             _wStat(Icons.bolt,Colors.cyanAccent,'$_totXp XP'),
           ])),
       const SizedBox(height:20),

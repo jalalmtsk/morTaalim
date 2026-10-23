@@ -7,6 +7,8 @@ import 'package:mortaalim/courses/primaire1Page/PractiseCoursesSubjects/French1/
 import 'package:mortaalim/courses/primaire1Page/PractiseCoursesSubjects/IslamicEducation1/1_primaire_IslamicEducation_Practise.dart';
 import 'package:mortaalim/courses/primaire1Page/PractiseCoursesSubjects/Math1/1_primaire_Math_Practise.dart';
 import 'package:mortaalim/courses/primaire1Page/PractiseCoursesSubjects/Science1/1_primaire_Science_Practise.dart';
+import 'package:mortaalim/courses/primaire1Page/PractiseCoursesSubjects/Arabic1/1_primaire_Arabic_Practise.dart';
+import 'package:mortaalim/courses/primaire1Page/PractiseCoursesSubjects/Art1/1_primaire_Art_Practise.dart';
 import 'package:mortaalim/l10n/app_localizations.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/ConnectivityManager/Connectivity_Manager.dart';
@@ -58,15 +60,15 @@ class _Subject {
 
 /// Lesson counts match the exercises listed in each subject page.
 final List<_Subject> _grade1 = [
-  _Subject('math', (t) => t.math, CoursesAssets.tileMath, 'orange', 8, () => const IndexMath1Practise()),
-  _Subject('french', (t) => t.french, CoursesAssets.tileLanguages, 'green', 3, () => const IndexFrench1Practise()),
-  _Subject('science', (t) => t.science, CoursesAssets.tileScience, 'blue', 4, () => const IndexScience1Practise()),
+  _Subject('math', (t) => t.math, CoursesAssets.tileMath, 'orange', 5, () => const IndexMath1Practise()),
+  _Subject('french', (t) => t.french, CoursesAssets.tileLanguages, 'green', 5, () => const IndexFrench1Practise()),
+  _Subject('science', (t) => t.science, CoursesAssets.tileScience, 'blue', 5, () => const IndexScience1Practise()),
   _Subject('islamicEducation', (t) => t.islamicEducation, null, 'pink', 3, () => const IndexIslamicEducation1Practise(),
       iconArt: 'assets/images/UI/BackGrounds/Course_BG/islamCourse_bg.png',
       iconColors: const [Color(0xFFD4F7D9), Color(0xFF6FD08A)]),
-  _Subject('arabic', (t) => t.arabic, CoursesAssets.tileReading, 'purple', 0, null),
+  _Subject('arabic', (t) => t.arabic, CoursesAssets.tileReading, 'purple', 5, () => const IndexArabic1Practise()),
   _Subject('geography', (t) => t.geography, CoursesAssets.tileGeography, 'green', 0, null),
-  _Subject('artEducation', (t) => t.artEducation, CoursesAssets.tileArt, 'purple', 0, null),
+  _Subject('artEducation', (t) => t.artEducation, CoursesAssets.tileArt, 'purple', 5, () => const IndexArt1Practise()),
 ];
 
 /// Full-screen Courses page (no bottom bar).

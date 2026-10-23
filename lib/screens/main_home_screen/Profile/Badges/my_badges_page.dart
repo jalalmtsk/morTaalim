@@ -1,4 +1,5 @@
 import 'package:mortaalim/widgets/KidScene/kid_toast.dart';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'package:mortaalim/widgets/KidScene/glossy_bar.dart';
 import 'dart:math';
 
@@ -127,7 +128,7 @@ class _MyBadgesPageState extends State<MyBadgesPage> with TickerProviderStateMix
     _confetti.play();
     _audio.playSfx('assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3');
     final done = KidToast.show(KidToastKind.badge, subtitle: b.name(context), onTap: () => showBadgeStory(context, b, _s));
-    Provider.of<ExperienceManager>(context, listen: false).addGold(context, _newBadgeGold);
+    Provider.of<ExperienceManager>(context, listen: false).grant(context, Rewards.newBadge);
     await done;
   }
 

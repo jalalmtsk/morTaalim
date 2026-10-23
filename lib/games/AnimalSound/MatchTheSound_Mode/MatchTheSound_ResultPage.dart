@@ -63,19 +63,8 @@ class _MatchResultPageState extends State<MatchResultPage> {
     },    context: context);
   }
 
-  Future<bool> _onWillPop() async {
-    if (_isAdLoading) return false;
-
-    setState(() => _isAdLoading = true);
-
-    await AdHelper.showInterstitialAd(onDismissed: () {
-      setState(() => _isAdLoading = false);
-      Navigator.of(context).pop();
-    }, context: context,
-    );
-
-    return false; // prevent default back action
-  }
+  // Retour arrière : pas de pub en quittant.
+  Future<bool> _onWillPop() async => !_isAdLoading;
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:mortaalim/Manager/rewards.dart';
 import 'package:flutter/material.dart';
 import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -327,8 +328,16 @@ class BBProgress {
 }
 
 /// Gold paid for reaching [stars] on a level where [prev] stars were already earned.
-int bbReward(int level, int stars, int prev) =>
-    max(0, min(3, stars - prev)) * (3 + bbWorldOf(level) * 2) + (prev == 0 && stars > 0 ? 5 : 0);
+int bbReward(int level, int stars, int prev) => bbRewardFull(level, stars, prev).gold;
+
+/// Full reward of a Brain Builder level (gold, XP, gems) — see Rewards.level.
+/// Finishing the last level of a world for the first time gives +3 gems.
+Reward bbRewardFull(int level, int stars, int prev) => Rewards.level(
+      tier: bbWorldOf(level) + 1,
+      stars: stars,
+      prevStars: prev,
+      bonusGems: prev == 0 && bbIndexInWorld(level) == bbLevelsPerWorld - 1 ? 3 : 0,
+    );
 
 // ─── Shared look ───────────────────────────────────────────────────────────
 

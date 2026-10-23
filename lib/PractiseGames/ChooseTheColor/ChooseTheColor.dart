@@ -244,17 +244,10 @@ class _ColorMatchingGameExerciseState extends State<ColorMatchingGameExercise> {
             ),
         ],
       ),
-      bottomNavigationBar: Provider.of<ExperienceManager>(context).adsEnabled &&
+      bottomNavigationBar: showGameOver && Provider.of<ExperienceManager>(context).adsEnabled &&
           _bannerAd != null &&
           _isBannerAdLoaded
-          ? SafeArea(
-        child: Container(
-          height: _bannerAd!.size.height.toDouble(),
-          width: _bannerAd!.size.width.toDouble(),
-          child: FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded),
-
-        ),
-      )
+          ? SafeArea(child: FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded))
           : null,
     );
   }

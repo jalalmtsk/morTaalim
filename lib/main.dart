@@ -93,6 +93,9 @@ void main() async {
 
   prefs = await SharedPreferences.getInstance();
 
+  // Config pub enfants (COPPA / G-rated / non personnalisée) — AVANT toute pub.
+  await AdHelper.initializeAds();
+
   final xpManager = ExperienceManager();
   await xpManager.loadData();
 

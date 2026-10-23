@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 
 import 'package:confetti/confetti.dart';
@@ -11,6 +12,8 @@ import 'package:provider/provider.dart';
 
 import 'bb_common.dart';
 import 'bb_engine.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
+import 'package:mortaalim/tools/AD_Tools/double_reward_button.dart';
 
 /// Look of each world: tiles, controls, wall colours and decorations.
 class _Theme {
@@ -391,9 +394,14 @@ class _BrainBuilderGameState extends State<BrainBuilderGame> with TickerProvider
     _audio.playSfx('assets/audios/UI_Audio/SFX_Audio/${stars == 3 ? 'VictoryOrchestral_SFX' : 'victory2_SFX'}.mp3');
     await Future.delayed(const Duration(milliseconds: 750));
     if (!mounted) return;
-    final xp = Provider.of<ExperienceManager>(context, listen: false);
-    if (gold > 0) xp.addGold(context, gold);
-    if (newStars > 0) xp.addXP(4 + newStars * 3, context: context);
+    final rw = Rewards.level(
+      tier: bbWorldOf(widget.level) + 1,
+      stars: stars,
+      prevStars: _prevStars,
+      bonusGems: _prevStars == 0 && bbIndexInWorld(widget.level) == bbLevelsPerWorld - 1 ? 3 : 0,
+    );
+    Provider.of<ExperienceManager>(context, listen: false).grant(context, rw);
+    if (newStars < 0) return;
     final last = widget.level >= bbLevelCount;
     final result = await showGeneralDialog<String>(
       context: context,
@@ -406,6 +414,9 @@ class _BrainBuilderGameState extends State<BrainBuilderGame> with TickerProvider
         child: ScaleTransition(scale: CurvedAnimation(parent: a, curve: Curves.easeOutBack), child: child),
       ),
     );
+    if (!mounted) return;
+    // Fin de niveau = pause naturelle (AdHelper applique fréquence + écran « Publicité »).
+    await AdHelper.showInterstitialAd(context: context);
     if (!mounted) return;
     _prevStars = max(_prevStars, stars);
     switch (result) {
@@ -1244,6 +1255,9 @@ class _WinCardState extends State<_WinCard> with SingleTickerProviderStateMixin 
                           Text('+${widget.gold}', style: kidBodyStyle(22, color: bbInk, weight: FontWeight.w700)),
                         ]),
                       ),
+                      const SizedBox(height: 10),
+                      // Optionnel : pub choisie par l'enfant pour doubler ses pièces
+                      DoubleRewardButton(gold: widget.gold, height: 40),
                     ],
                     const SizedBox(height: 18),
                     Row(

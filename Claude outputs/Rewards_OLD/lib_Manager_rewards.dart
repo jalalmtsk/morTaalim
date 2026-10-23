@@ -1,0 +1,119 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+import 'package:mortaalim/XpSystem.dart';
+
+// ═══════════════════════════════════════════════════════════════════════════
+// MoorTaalim reward rules — one place for every XP / gold / gem amount.
+//
+//  XP    = effort & learning. Every activity gives some, better play gives
+//          more. It fills the level bar (avatar frames, titles, level gems).
+//  Gold  = the everyday coin. Earned for finishing things, mostly the FIRST
+//          time. Spent on unlocking games, courses, languages and hints.
+//  Gems  = rare. Only for mastery (first 3 stars), finishing a whole world,
+//          levelling up, daily treasure / quests and milestones. Spent on
+//          avatars, banners and frames.
+//
+// Rough targets for a child playing ~20 min a day:
+//   ≈ 120 XP, ≈ 80–120 gold, ≈ 5–8 gems per day.
+// ═══════════════════════════════════════════════════════════════════════════
+
+class Reward {
+  final int xp, gold, gems;
+  const Reward({this.xp = 0, this.gold = 0, this.gems = 0});
+  static const none = Reward();
+  Reward operator +(Reward o) => Reward(xp: xp + o.xp, gold: gold + o.gold, gems: gems + o.gems);
+  bool get isEmpty => xp == 0 && gold == 0 && gems == 0;
+  @override
+  String toString() => 'Reward(xp: $xp, gold: $gold, gems: $gems)';
+}
+
+class Rewards {
+  Rewards._();
+
+  // ── level curve ────────────────────────────────────────────────────────
+  /// XP needed to go from [level] to [level] + 1: 50, 75, 100, 125 …
+  static int xpToNext(int level) => 50 + 25 * (max(1, level) - 1);
+
+  /// Total XP needed to reach [level] (level 1 = 0 XP).
+  static int totalXpFor(int level) {
+    if (level <= 1) return 0;
+    final n = level - 1; // steps from level 1
+    return 50 * n + 25 * n * (n - 1) ~/ 2;
+  }
+
+  /// Gems given when the child reaches [level]: 2, and 5 on every 5th level.
+  static int gemsForLevel(int level) => level % 5 == 0 ? 5 : 2;
+
+  // ── level-based games (stars 1–3) ──────────────────────────────────────
+  /// Market, Garden, Passport, Mystery Quest, Brain Builder, Puzzle Land …
+  ///  [tier]      1 (easy) … 4 (hard) — usually the world / difficulty.
+  ///  [stars]     stars just earned (1–3).
+  ///  [prevStars] best stars before this play (0 = first time).
+  ///  [bonusGems] for finishing a whole world / country / new plant …
+  static Reward level({required int tier, required int stars, required int prevStars, int bonusGems = 0}) {
+    final t = tier.clamp(1, 4);
+    final s = stars.clamp(0, 3);
+    if (s == 0) return const Reward(xp: 2);
+    final first = prevStars <= 0;
+    final gained = max(0, s - prevStars);
+    final xp = (first || gained > 0) ? 8 + 4 * t + 3 * s : 4 + 2 * t;
+    final gold = first ? 10 + 5 * t + 2 * s : (gained > 0 ? 4 * gained : 2);
+    final gems = (s == 3 && prevStars < 3 ? 1 : 0) + bonusGems;
+    return Reward(xp: xp, gold: gold, gems: gems);
+  }
+
+  /// Same, when the store only tells how many stars were newly won.
+  static Reward levelFromGain({required int tier, required int stars, required int gained, int bonusGems = 0}) =>
+      level(tier: tier, stars: stars, prevStars: gained >= stars ? 0 : (gained > 0 ? stars - gained : stars), bonusGems: bonusGems);
+
+  // ── quiz / exercise / arcade sessions ──────────────────────────────────
+  /// One finished round: [correct] good answers out of [total].
+  ///  XP   2 per good answer + 5 for finishing (max 40)
+  ///  gold 1 per 2 good answers + 3 for a perfect round (max 15)
+  ///  gems 1 for a perfect round of 10+ questions [perfectGem]
+  static Reward session({required int correct, required int total, bool finished = true, bool perfectGem = false}) {
+    final c = max(0, correct);
+    final perfect = finished && total > 0 && c >= total;
+    final xp = min(40, 2 * c + (finished ? 5 : 0));
+    final gold = min(15, c ~/ 2 + (perfect ? 3 : 0));
+    final gems = (perfect && perfectGem && total >= 10) ? 1 : 0;
+    return Reward(xp: xp, gold: gold, gems: gems);
+  }
+
+  /// Score-based arcade games (piano tiles, jumping board …): XP grows slowly with the score.
+  static Reward arcade(int score, {int perXp = 5, int perGold = 25}) =>
+      Reward(xp: min(30, 2 + score ~/ perXp), gold: min(10, score ~/ perGold));
+
+  // ── learning content ───────────────────────────────────────────────────
+  /// A lesson / story / course chapter read to the end.
+  static Reward lesson({bool first = true}) => first ? const Reward(xp: 12, gold: 8) : const Reward(xp: 4);
+
+  /// A video watched to the end.
+  static const video = Reward(xp: 4, gold: 2);
+
+  /// Creative play (drawing, free piano …): a little XP, no farming.
+  static const creative = Reward(xp: 5, gold: 2);
+
+  // ── daily & meta ───────────────────────────────────────────────────────
+  static const duaa = Reward(gold: 5, xp: 2);
+  static const newBadge = Reward(gold: 10, gems: 1);
+  static const unlockSomething = Reward(xp: 10);
+
+  // ── shop ───────────────────────────────────────────────────────────────
+  /// Gold needed to buy one gem in the trade dialog (gems stay rare).
+  static const goldPerGem = 50;
+
+  /// Hint price in level games.
+  static const hintGold = 10;
+}
+
+extension RewardGrant on ExperienceManager {
+  /// Gives a whole [Reward] at once (gold → gems → XP, so banners queue nicely).
+  void grant(BuildContext context, Reward r) {
+    if (!context.mounted || r.isEmpty) return;
+    if (r.gold > 0) addGold(context, r.gold);
+    if (r.gems > 0) addGems(context, r.gems);
+    if (r.xp > 0) addXP(r.xp, context: context);
+  }
+}

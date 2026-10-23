@@ -116,13 +116,13 @@ class _BoardGamePageState extends State<BoardGamePage>
           gameRunning = false;
 
           if (lives == 0) {
-            int starsEarned = (score / 20).floor();
+            int starsEarned = min(10, (score / 20).floor() * 2);
             if (starsEarned > 0) {
-              xpManager.addGems(context, starsEarned);
+              xpManager.addGold(context, starsEarned);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                     content:
-                    Text('You earned $starsEarned gem(s)! Total gems: ${xpManager.gems}')),
+                    Text('You earned $starsEarned gold!')),
               );
             }
             _showGameOverDialog(xpManager);
@@ -331,9 +331,7 @@ class _BoardGamePageState extends State<BoardGamePage>
               ],
             ),
 
-            ElevatedButton(onPressed: (){
-                xpManager.addGems(context, 20);
-            }, child: Text("LOL")),
+
             const SizedBox(height: 30),
             Text(
               "${tr.tapStepOrJumpToMoveForward} ${tr.avoidTheHolesBoardScrollsOnlyWhenYouStart}",

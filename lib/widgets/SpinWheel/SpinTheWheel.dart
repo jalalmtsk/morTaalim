@@ -34,10 +34,10 @@ class _SpinWheelPopupState extends State<SpinWheelPopup> with TickerProviderStat
   final List<String> _rewards = [
     'Gem +1',
     'Nothing',
-    'Gem +2',
+    'Gold +10',
     'XP +10',
     'XP +20',
-    'Gold +2',
+    'Gold +5',
     'XP +5',
     'Try Again',
   ];

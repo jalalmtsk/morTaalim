@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -81,7 +82,7 @@ class _MemoryMatchPageState extends State<MemoryMatchPage> with TickerProviderSt
 
   _LevelSpec get _spec => _LevelSpec.of(_level);
   int get _found => _cards.where((c) => c.matched).length ~/ 2;
-  int get _reward => min(40, 10 + _level * 5);
+  int get _reward => Rewards.endlessLevel(level: _level, stars: 3).gold;
   AudioManager get _audio => Provider.of<AudioManager>(context, listen: false);
 
   @override
@@ -210,13 +211,13 @@ class _MemoryMatchPageState extends State<MemoryMatchPage> with TickerProviderSt
 
   Future<void> _win() async {
     final stars = _stars;
-    final reward = _reward;
+    final reward = Rewards.endlessLevel(level: _level, stars: stars).gold;
     final xp = Provider.of<ExperienceManager>(context, listen: false);
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) return;
     _audio.playSfx('assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3');
-    xp.addTokenBanner(context, reward);
-    xp.addXP(10, context: context);
+    xp.grant(context, Rewards.endlessLevel(level: _level, stars: stars));
+    if (reward < 0) return;
     final p = await SharedPreferences.getInstance();
     await p.setInt(_kLevel, _level + 1);
     if (!mounted) return;

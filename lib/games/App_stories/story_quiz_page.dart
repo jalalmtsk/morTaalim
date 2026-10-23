@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:mortaalim/Manager/rewards.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'Stories.dart';
@@ -202,7 +203,7 @@ class _StoryQuizPageState extends State<StoryQuizPage> with TickerProviderStateM
       // Award XP
       if (mounted) {
         final xp = Provider.of<ExperienceManager>(context, listen: false);
-        xp.addXP(_correctCount * 5, context: context);
+        xp.grant(context, Rewards.session(correct: _correctCount, total: _questions.length));
       }
       setState(() => _showResult = true);
       _resultCtrl.forward(from: 0);

@@ -1,20 +1,21 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 
 import '../../XpSystem.dart';
-import '../../tools/Ads_Manager.dart';
 import '../../tools/audio_tool/Audio_Manager.dart';
 import '../../widgets/KidScene/kid_page_parts.dart';
 import '../../widgets/KidScene/kid_scene.dart';
 import 'piano_forte_data.dart';
 import 'piano_forte_sheets.dart';
 import 'piano_forte_widgets.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
+import 'package:mortaalim/tools/AD_Tools/double_reward_button.dart';
 
 /// Piano Forte — learn songs by following the glowing keys, or play freely
 /// with piano / xylophone / bells, record melodies and listen back.
@@ -73,8 +74,6 @@ class _PianoFortePageState extends State<PianoFortePage> with TickerProviderStat
   String _bubbleKey = 'yourTurn';
   int _bubbleTick = 0;
 
-  BannerAd? _banner;
-  bool _bannerLoaded = false;
 
   // the app's background music is paused while the piano is open
   AudioManager? _audioRef;
@@ -85,9 +84,6 @@ class _PianoFortePageState extends State<PianoFortePage> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-    _banner = AdHelper.getBannerAd(() {
-      if (mounted) setState(() => _bannerLoaded = true);
-    });
     _load();
   }
 
@@ -120,7 +116,6 @@ class _PianoFortePageState extends State<PianoFortePage> with TickerProviderStat
     _idle.dispose();
     _beat.dispose();
     _confetti.dispose();
-    _banner?.dispose();
     super.dispose();
   }
 
@@ -343,14 +338,14 @@ class _PianoFortePageState extends State<PianoFortePage> with TickerProviderStat
     final stars = _mistakes <= 1 ? 3 : _mistakes <= 4 ? 2 : 1;
     final first = await PfStore.markDone(_song.id);
     if (!mounted) return;
-    final gold = first ? 5 : 2;
+    final rw = Rewards.level(tier: 2, stars: stars, prevStars: first ? 0 : stars);
+    final gold = rw.gold;
     await Future.delayed(const Duration(milliseconds: 500));
     if (!mounted) return;
     _confetti.play();
     _audio.playSfx('assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3');
     final xp = Provider.of<ExperienceManager>(context, listen: false);
-    xp.addGold(context, gold);
-    xp.addXP(10, context: context);
+    xp.grant(context, rw);
     final choice = await showDialog<String>(
       context: context,
       barrierDismissible: false,
@@ -383,6 +378,11 @@ class _PianoFortePageState extends State<PianoFortePage> with TickerProviderStat
             const SizedBox(width: 6),
             Text('+$gold', style: kidBodyStyle(20, color: pfInk, weight: FontWeight.w700)),
           ]),
+          if (gold > 0) ...[
+            const SizedBox(height: 12),
+            // Optionnel : pub choisie par l'enfant pour doubler ses pièces
+            DoubleRewardButton(gold: gold, height: 40),
+          ],
         ]),
         actions: [
           KidOutlineButton(label: pfText(ctx, 'changeSong'), onTap: () => Navigator.pop(ctx, 'change')),
@@ -396,6 +396,9 @@ class _PianoFortePageState extends State<PianoFortePage> with TickerProviderStat
         ],
       ),
     );
+    if (!mounted) return;
+    // Fin de niveau = pause naturelle (AdHelper applique fréquence + écran « Publicité »).
+    await AdHelper.showInterstitialAd(context: context);
     if (!mounted) return;
     setState(() {
       _pos = 0;
@@ -615,14 +618,12 @@ class _PianoFortePageState extends State<PianoFortePage> with TickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    final xp = context.watch<ExperienceManager>();
-    final showAd = xp.adsEnabled && _banner != null && _bannerLoaded;
     return Scaffold(
       backgroundColor: KidColors.sky,
       body: Stack(children: [
         const Positioned.fill(child: KidPageBackground(asset: pfImgBg, wash: 0)),
         SafeArea(
-          bottom: !showAd,
+          bottom: true,
           child: !_ready
               ? const Center(child: CircularProgressIndicator(color: Colors.white))
               : LayoutBuilder(builder: (context, c) => _layout(c)),
@@ -639,15 +640,6 @@ class _PianoFortePageState extends State<PianoFortePage> with TickerProviderStat
           ),
         ),
       ]),
-      bottomNavigationBar: showAd
-          ? SafeArea(
-              child: SizedBox(
-                height: _banner!.size.height.toDouble(),
-                width: _banner!.size.width.toDouble(),
-                child: FamilyAdBanner(bannerAd: _banner, isLoaded: _bannerLoaded),
-              ),
-            )
-          : null,
     );
   }
 

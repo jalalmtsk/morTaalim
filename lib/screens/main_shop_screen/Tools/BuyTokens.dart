@@ -15,7 +15,7 @@ class BuyTokenWidget extends StatefulWidget {
 class _BuyTokenWidgetState extends State<BuyTokenWidget>
     with TickerProviderStateMixin {
   int selectedTolims = 3; // default
-  static const int tolimsPerStar = 3;
+  static const int tolimsPerStar = 50;
 
   late AnimationController _buttonController;
   late Animation<double> _buttonScale;

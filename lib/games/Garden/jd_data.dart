@@ -238,6 +238,7 @@ class JdBg extends StatelessWidget {
             ),
           ),
         ),
+             const JdAmbientLeaves(),
       ]);
 }
 
@@ -352,7 +353,7 @@ class JdSpriteButton extends StatelessWidget {
 
 /// The big orange "▶ Jouer" button.
 Widget jdPlay(String label, VoidCallback? onTap, double width, {Animation<double>? pulse, String? sub}) =>
-    JdSpriteButton(sprite: 'jd_btn_play', ratio: 0.2674, start: 0.3, end: 0.1, label: label, onTap: onTap, width: width, pulse: pulse, sub: sub);
+    JdSpriteButton(sprite: onTap == null ? 'jd_btn_dim' : 'jd_btn_go', ratio: 0.2432, start: 0.27, end: 0.12, label: label, onTap: onTap, width: width, pulse: pulse, sub: sub);
 
 /// Orange / teal flat buttons used in dialogs.
 class JdFlatButton extends StatelessWidget {
@@ -363,7 +364,7 @@ class JdFlatButton extends StatelessWidget {
   const JdFlatButton({super.key, required this.label, required this.onTap, required this.width, this.teal = false});
   @override
   Widget build(BuildContext context) {
-    final h = width * 0.23;
+    final h = width * 0.3354;
     return Opacity(
       opacity: onTap == null ? 0.5 : 1,
       child: JdPress(
@@ -446,17 +447,17 @@ class JdTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final withSub = sub != null;
-    final h = width * (withSub ? 0.5696 : 0.4022);
+    final h = width * (withSub ? 0.428 : 0.3404);
     return SizedBox(
       width: width,
       height: h,
       child: Stack(children: [
         Positioned.fill(child: Image.asset(jd(withSub ? 'jd_title_sub' : 'jd_title_leafy'), fit: BoxFit.fill)),
         Positioned(
-          left: width * 0.14,
-          right: width * 0.14,
-          top: h * (withSub ? 0.14 : 0.2),
-          bottom: h * (withSub ? 0.4 : 0.2),
+          left: width * 0.12,
+          right: width * 0.12,
+          top: h * (withSub ? 0.1 : 0.14),
+          bottom: h * (withSub ? 0.36 : 0.16),
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Column(mainAxisSize: MainAxisSize.min, children: [
@@ -467,8 +468,8 @@ class JdTitle extends StatelessWidget {
         ),
         if (withSub)
           Positioned(
-            left: width * 0.33,
-            right: width * 0.33,
+            left: width * 0.3,
+            right: width * 0.3,
             bottom: h * 0.08,
             height: h * 0.2,
             child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(sub!, style: jdText(width * 0.055)))),
@@ -486,15 +487,15 @@ class JdBubble extends StatelessWidget {
   const JdBubble({super.key, required this.text, required this.width, this.white = false});
   @override
   Widget build(BuildContext context) {
-    final ratio = white ? 0.4967 : 0.5781;
+    final ratio = white ? 0.5333 : 0.6094;
     return SizedBox(
       width: width,
       height: width * ratio,
       child: Stack(children: [
-        Positioned.fill(child: Transform.flip(flipX: jdRtl(context), child: Image.asset(jd(white ? 'jd_bubble_w' : 'jd_bubble'), fit: BoxFit.fill))),
+        Positioned.fill(child: Transform.flip(flipX: jdRtl(context), child: Image.asset(jd(white ? 'jd_bubble_blue' : 'jd_bubble'), fit: BoxFit.fill))),
         Positioned.fill(
           child: Padding(
-            padding: EdgeInsets.fromLTRB(width * 0.08, width * ratio * 0.1, width * 0.07, width * ratio * 0.3),
+            padding: EdgeInsets.fromLTRB(width * 0.09, width * ratio * 0.12, width * 0.07, width * ratio * 0.3),
             child: Center(
               child: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 250),
@@ -507,7 +508,8 @@ class JdBubble extends StatelessWidget {
                     child: Text(text,
                         textAlign: TextAlign.center,
                         maxLines: 3,
-                        style: jdText(width * 0.08, color: white ? jdBlue : Colors.white, weight: FontWeight.w700)),
+                        style: jdText(width * 0.08, color: Colors.white, weight: FontWeight.w700)
+                            .copyWith(shadows: const [Shadow(color: Color(0x66002A80), offset: Offset(0, 1.5))])),
                   ),
                 ),
               ),
@@ -527,54 +529,41 @@ class JdSayPill extends StatelessWidget {
   const JdSayPill({super.key, required this.text, required this.width, this.trailing});
   @override
   Widget build(BuildContext context) {
-    final h = width * 0.3;
-    return SizedBox(
-      width: width,
-      height: h,
-      child: Stack(clipBehavior: Clip.none, children: [
-        Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              color: jdCream,
-              borderRadius: BorderRadius.circular(h * 0.32),
-              border: Border.all(color: const Color(0xFFF0DDB5), width: 2),
-              boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.14), blurRadius: 8, offset: const Offset(0, 3))],
-            ),
-          ),
-        ),
-        PositionedDirectional(
-          start: h * 0.12,
-          top: h * 0.15,
-          bottom: h * 0.15,
-          child: JdPress(
-            onTap: () => JdVoice.say(context, text),
-            label: text,
-            child: AspectRatio(aspectRatio: 1, child: Image.asset(jd('jd_sound'), fit: BoxFit.contain)),
-          ),
-        ),
-        PositionedDirectional(
-          start: h * 0.95,
-          end: trailing == null ? h * 0.2 : h * 1.05,
-          top: h * 0.08,
-          bottom: h * 0.08,
-          child: Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 250),
-              child: FittedBox(
-                key: ValueKey(text),
-                fit: BoxFit.scaleDown,
-                alignment: AlignmentDirectional.centerStart,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: width * 0.62),
-                  child: Text(text, maxLines: 2, style: jdText(h * 0.26, height: 1.15)),
+    final h = width * 0.3238;
+    return JdPress(
+      onTap: () => JdVoice.say(context, text),
+      scale: 0.97,
+      label: text,
+      child: SizedBox(
+        width: width,
+        height: h,
+        child: Stack(clipBehavior: Clip.none, children: [
+          Positioned.fill(child: Transform.flip(flipX: jdRtl(context), child: Image.asset(jd('jd_say'), fit: BoxFit.fill))),
+          PositionedDirectional(
+            start: width * 0.2,
+            end: trailing == null ? width * 0.05 : h * 1.05,
+            top: h * 0.08,
+            bottom: h * 0.28,
+            child: Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                transitionBuilder: (c, a) => FadeTransition(opacity: a, child: SlideTransition(position: Tween(begin: const Offset(0, 0.3), end: Offset.zero).animate(a), child: c)),
+                child: FittedBox(
+                  key: ValueKey(text),
+                  fit: BoxFit.scaleDown,
+                  alignment: AlignmentDirectional.centerStart,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: width * 0.7),
+                    child: Text(text, maxLines: 2, style: jdText(h * 0.24, height: 1.15)),
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-        if (trailing != null) PositionedDirectional(end: h * 0.12, top: h * 0.1, bottom: h * 0.1, width: h * 0.9, child: trailing!),
-      ]),
+          if (trailing != null) PositionedDirectional(end: h * 0.15, top: h * 0.06, bottom: h * 0.3, width: h * 0.8, child: trailing!),
+        ]),
+      ),
     );
   }
 }
@@ -707,6 +696,69 @@ class JdBurst extends CustomPainter {
 
   @override
   bool shouldRepaint(JdBurst o) => o.t != t;
+}
+
+// ── growth flipbook ─────────────────────────────────────────────────────────
+// 12 frames per plant (jd_gr_<id>_0 … _11), all cut on the same canvas with the
+// pot at the same size, centre and bottom, so blending two neighbours makes the
+// plant grow smoothly without the pot ever moving.
+
+const int jdGrowFrames = 12;
+
+/// height / width of each plant's growth frames.
+const Map<String, double> jdGrowRatio = {
+  'bean': 1.0878, 'sunflower': 1.5120, 'radish': 0.9271,
+  'basil': 1.0885, 'tomato': 1.1582, 'carrot': 1.2750,
+};
+
+/// Where things are on the last frame (fractions of the picture):
+/// the top of the pot, and a point on the leaves.
+const Map<String, (double potTop, Offset leaf)> jdGrowMarks = {
+  'bean': (0.608, Offset(0.62, 0.27)),
+  'sunflower': (0.606, Offset(0.74, 0.45)),
+  'radish': (0.469, Offset(0.74, 0.19)),
+  'basil': (0.561, Offset(0.72, 0.24)),
+  'tomato': (0.584, Offset(0.81, 0.22)),
+  'carrot': (0.543, Offset(0.72, 0.24)),
+};
+
+String jdGrowFrame(String id, int i) => jd('jd_gr_${id}_$i');
+
+/// Growth picture at [t] (0 = seed in the pot, 1 = fully grown).
+/// Between two frames the next one fades in over the previous one.
+class JdGrowFlip extends StatelessWidget {
+  final JdPlant plant;
+  final double t;
+  final double height;
+  const JdGrowFlip({super.key, required this.plant, required this.t, required this.height});
+
+  static final Set<String> _cached = {};
+
+  static void precache(BuildContext context, JdPlant p) {
+    if (!_cached.add(p.id)) return;
+    for (var i = 0; i < jdGrowFrames; i++) {
+      precacheImage(AssetImage(jdGrowFrame(p.id, i)), context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    precache(context, plant);
+    final f = t.clamp(0.0, 1.0) * (jdGrowFrames - 1);
+    final a = f.floor().clamp(0, jdGrowFrames - 1);
+    final b = min(jdGrowFrames - 1, a + 1);
+    final k = Curves.easeInOut.transform((f - a).clamp(0.0, 1.0));
+    final w = height / (jdGrowRatio[plant.id] ?? 1.0);
+    Widget img(int i) => Image.asset(jdGrowFrame(plant.id, i), width: w, height: height, fit: BoxFit.contain, alignment: Alignment.bottomCenter, gaplessPlayback: true);
+    return SizedBox(
+      width: w,
+      height: height,
+      child: Stack(fit: StackFit.expand, children: [
+        img(a),
+        if (b != a && k > 0.01) Opacity(opacity: k, child: img(b)),
+      ]),
+    );
+  }
 }
 
 /// Shows a plant pot: coloured when discovered, grey with a lock otherwise.
@@ -1001,3 +1053,176 @@ const Map<String, Map<String, String>> _s = {
     'carrot_fact': 'Die Karotte ist eine Wurzel, die unter der Erde wächst.',
   },
 };
+
+
+// ── fun: self-animating helpers ────────────────────────────────────────────
+
+/// Gently floats (and optionally tilts) its child forever.
+class JdFloat extends StatefulWidget {
+  final Widget child;
+  final double amp, tilt, scale;
+  final Duration period;
+  final double phase;
+  const JdFloat({super.key, required this.child, this.amp = 4, this.tilt = 0, this.scale = 0, this.period = const Duration(milliseconds: 2400), this.phase = 0});
+  @override
+  State<JdFloat> createState() => _JdFloatState();
+}
+
+class _JdFloatState extends State<JdFloat> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: widget.period)..repeat();
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+        animation: _c,
+        builder: (_, ch) {
+          final v = sin((_c.value + widget.phase) * 2 * pi);
+          return Transform.translate(
+            offset: Offset(0, v * widget.amp),
+            child: Transform.rotate(angle: v * widget.tilt, child: Transform.scale(scale: 1 + v * widget.scale, child: ch)),
+          );
+        },
+        child: widget.child,
+      );
+}
+
+/// Pops its child in with a springy bounce the first time it is built.
+class JdPopIn extends StatelessWidget {
+  final Widget child;
+  final int delayMs;
+  const JdPopIn({super.key, required this.child, this.delayMs = 0});
+  @override
+  Widget build(BuildContext context) => TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0, end: 1),
+        duration: Duration(milliseconds: 650 + delayMs),
+        curve: Interval(delayMs / (650 + delayMs), 1, curve: Curves.elasticOut),
+        builder: (_, v, c) => Transform.scale(scale: v, child: Opacity(opacity: v.clamp(0.0, 1.0), child: c)),
+        child: child,
+      );
+}
+
+/// Slow drifting leaves in the background of every screen.
+class JdAmbientLeaves extends StatefulWidget {
+  final int count;
+  const JdAmbientLeaves({super.key, this.count = 10});
+  @override
+  State<JdAmbientLeaves> createState() => _JdAmbientLeavesState();
+}
+
+class _JdAmbientLeavesState extends State<JdAmbientLeaves> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(seconds: 18))..repeat();
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => IgnorePointer(
+        child: AnimatedBuilder(animation: _c, builder: (_, __) => CustomPaint(painter: _AmbientPainter(_c.value, widget.count), size: Size.infinite)),
+      );
+}
+
+class _AmbientPainter extends CustomPainter {
+  final double t;
+  final int n;
+  _AmbientPainter(this.t, this.n);
+  static const _c = [Color(0xFF7BCB3C), Color(0xFF4FB84A), Color(0xFFFFD34D), Color(0xFFFFFFFF)];
+  @override
+  void paint(Canvas canvas, Size size) {
+    final r = Random(5);
+    for (var i = 0; i < n; i++) {
+      final speed = 0.5 + r.nextDouble() * 0.7;
+      final y = ((t * speed + r.nextDouble()) % 1.0) * (size.height + 40) - 20;
+      final x = r.nextDouble() * size.width + sin((t * 6 + i) * pi) * 22;
+      final w = 6 + r.nextDouble() * 7;
+      canvas.save();
+      canvas.translate(x, y);
+      canvas.rotate(t * 2 * pi * 3 * (i.isEven ? 1 : -1) + i);
+      final col = _c[i % _c.length];
+      if (col == const Color(0xFFFFFFFF)) {
+        // little sparkle
+        canvas.drawCircle(Offset.zero, w * 0.35, Paint()..color = Colors.white.withOpacity(0.7));
+      } else {
+        final p = Path()
+          ..moveTo(0, -w)
+          ..quadraticBezierTo(w * 0.7, 0, 0, w)
+          ..quadraticBezierTo(-w * 0.7, 0, 0, -w)
+          ..close();
+        canvas.drawPath(p, Paint()..color = col.withOpacity(0.55));
+      }
+      canvas.restore();
+    }
+  }
+
+  @override
+  bool shouldRepaint(_AmbientPainter o) => o.t != t;
+}
+
+/// "Bravo !" moment: Waki pops up with a thumbs-up and a burst of leaves.
+Future<void> jdCheer(BuildContext context, String text, {String robot = 'jd_rb_thumb'}) async {
+  final overlay = Overlay.maybeOf(context);
+  if (overlay == null) return;
+  late OverlayEntry e;
+  e = OverlayEntry(builder: (_) => _CheerOverlay(text: text, robot: robot, onDone: () => e.remove()));
+  overlay.insert(e);
+}
+
+class _CheerOverlay extends StatefulWidget {
+  final String text, robot;
+  final VoidCallback onDone;
+  const _CheerOverlay({required this.text, required this.robot, required this.onDone});
+  @override
+  State<_CheerOverlay> createState() => _CheerOverlayState();
+}
+
+class _CheerOverlayState extends State<_CheerOverlay> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 1700))
+    ..forward().whenComplete(() => widget.onDone());
+  @override
+  void dispose() {
+    _c.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
+    final w = min(size.width, 420.0);
+    return IgnorePointer(
+      child: AnimatedBuilder(
+        animation: _c,
+        builder: (_, __) {
+          final t = _c.value;
+          final inT = Curves.elasticOut.transform((t / 0.45).clamp(0.0, 1.0));
+          final out = t > 0.8 ? (1 - (t - 0.8) / 0.2) : 1.0;
+          return Opacity(
+            opacity: out.clamp(0.0, 1.0),
+            child: Stack(children: [
+              Positioned.fill(child: CustomPaint(painter: JdBurst(t, seed: 11))),
+              Positioned(
+                left: (size.width - w * 0.62) / 2,
+                top: size.height * 0.3,
+                width: w * 0.62,
+                child: Transform.scale(
+                  scale: inT,
+                  child: Column(mainAxisSize: MainAxisSize.min, children: [
+                    Material(
+                      type: MaterialType.transparency,
+                      child: jdOutlined(widget.text, const Color(0xFF2E9E3E), w * 0.11, outline: Colors.white, stroke: 0.2),
+                    ),
+                    Image.asset(jd(widget.robot), width: w * 0.42),
+                  ]),
+                ),
+              ),
+            ]),
+          );
+        },
+      ),
+    );
+  }
+}

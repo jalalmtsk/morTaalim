@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:provider/provider.dart';
 
 import 'jd_data.dart';
 import 'jd_menu.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
+import 'package:mortaalim/tools/AD_Tools/double_reward_button.dart';
 
 enum _Phase { intro, seed, plant, care, grow }
 
@@ -25,7 +28,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
   late final AnimationController _act = AnimationController(vsync: this, duration: const Duration(milliseconds: 750));
   late final AnimationController _burst = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
   late final AnimationController _day = AnimationController(vsync: this, duration: const Duration(milliseconds: 2200));
-  late final AnimationController _growAnim = AnimationController(vsync: this, duration: const Duration(milliseconds: 5200));
+  late final AnimationController _growAnim = AnimationController(vsync: this, duration: const Duration(milliseconds: 7200));
   final Random _rng = Random();
 
   JdLevel get _lv => widget.level;
@@ -185,6 +188,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
       _mistake(jdT(context, 'seedWrong', {'seed': _plant.seedOf(context)}), jdPlants.indexWhere((p) => p.id == _pick));
       return;
     }
+    jdCheer(context, jdT(context, 'stepDone'));
     _goto(_Phase.plant);
   }
 
@@ -212,6 +216,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
           _hintGlow = false;
         });
         _speak(jdT(context, 'stepDone'));
+        jdCheer(context, jdT(context, 'stepDone'), robot: ['jd_rb_thumb', 'jd_rb_wave', 'jd_rb_idea'][_pstep]);
       } else if (_pstep == 0) {
         _speak(jdT(context, 'dig'), voice: _pcount == 1);
       }
@@ -327,6 +332,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
     switch (_lv.grow) {
       case JdGrow.watch:
         setState(() => _growDone = true);
+        jdCheer(context, jdT(context, 'wellDone'), robot: 'jd_rb_wave');
         _speak(_plant.grown(context));
       case JdGrow.parts:
         if (_quiz.isEmpty) {
@@ -365,6 +371,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
     _qi++;
     if (_qi >= _quiz.length) {
       setState(() => _growDone = true);
+        jdCheer(context, jdT(context, 'wellDone'), robot: 'jd_rb_wave');
       _speak('${jdT(context, 'goodPart', {'part': jdT(context, part)})} ${_plant.grown(context)}');
     } else {
       _speak(info, voice: false);
@@ -396,6 +403,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
       jdSfx(context, 'CorrectAnwser_SFX.mp3');
       _burst.forward(from: 0);
       setState(() => _growDone = true);
+        jdCheer(context, jdT(context, 'wellDone'), robot: 'jd_rb_wave');
       _speak(jdT(context, 'orderDone'));
     }
   }
@@ -408,15 +416,11 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
     final stars = (_mistakes == 0 && _hints == 0) ? 3 : (_mistakes + _hints <= 2 ? 2 : 1);
     final (fresh, first, newPlant) = await JdStore.record(_lv.n, stars);
     if (!mounted) return;
-    final gold = first ? 10 + _lv.n * 2 : 3 + fresh * 2;
-    var gems = (stars == 3 && fresh > 0) ? 1 : 0;
-    if (newPlant) gems += 2;
+    final rw = Rewards.levelFromGain(tier: _lv.world + 1, stars: stars, gained: first ? stars : fresh, bonusGems: newPlant ? 2 : 0);
+    final gold = rw.gold, gems = rw.gems;
     jdSfx(context, 'MarimbaWin_SFX.mp3');
     try {
-      final xp = Provider.of<ExperienceManager>(context, listen: false);
-      xp.addGold(context, gold);
-      if (gems > 0) xp.addGems(context, gems);
-      xp.addXP(4 + stars * 3, context: context);
+      Provider.of<ExperienceManager>(context, listen: false).grant(context, rw);
     } catch (_) {}
     JdVoice.say(context, '${jdT(context, 'bravo1')} ${jdT(context, 'bravo2')} ${_plant.grown(context)}');
     final r = await Navigator.of(context).push<String>(PageRouteBuilder<String>(
@@ -432,6 +436,9 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
       ),
       transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
     ));
+    if (!mounted) return;
+    // Fin de niveau = pause naturelle (AdHelper applique fréquence + écran « Publicité »).
+    await AdHelper.showInterstitialAd(context: context);
     if (!mounted) return;
     switch (r) {
       case 'next':
@@ -572,8 +579,8 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
 
   Widget _introView(double s, double w) => LayoutBuilder(builder: (_, c) {
         final h = c.maxHeight;
-        final clipW = min(w * 0.44, (h - 190 * s) * 0.56 / 1.581);
-        final clipH = clipW * 1.581;
+        final clipW = min(w * 0.44, (h - 170 * s) * 0.62 / 1.4765);
+        final clipH = clipW * 1.4765;
         return Column(children: [
           Expanded(
             child: Stack(clipBehavior: Clip.none, children: [
@@ -581,8 +588,14 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
               PositionedDirectional(
                 start: 8 * s,
                 top: 0,
-                child: jdOnSprite('jd_purple_sign', 110 * s, 0.4077, Text(jdT(context, 'level', {'n': _lv.n}), style: jdText(15 * s, color: Colors.white)),
-                    area: const EdgeInsets.fromLTRB(0.14, 0.32, 0.12, 0.14)),
+                child: JdPopIn(
+                  child: JdFloat(
+                    amp: 0,
+                    tilt: 0.04,
+                    child: jdOnSprite('jd_tag', 112 * s, 0.525, Text(jdT(context, 'level', {'n': _lv.n}), style: jdText(16 * s, color: const Color(0xFF4A2408))),
+                        area: const EdgeInsets.fromLTRB(0.14, 0.22, 0.2, 0.28)),
+                  ),
+                ),
               ),
               // robot + bubble
               PositionedDirectional(
@@ -601,31 +614,40 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
                 top: 4 * s,
                 width: clipW,
                 height: clipH,
-                child: Stack(children: [
-                  Positioned.fill(child: Image.asset(jd('jd_clipboard'), fit: BoxFit.fill)),
-                  for (var i = 0; i < 3; i++) ...[
-                    Positioned(
-                      left: clipW * 0.1,
-                      top: clipH * (0.165 + i * 0.252),
-                      width: clipW * 0.13,
-                      height: clipW * 0.13,
-                      child: Center(child: Text('${i + 1}', style: jdText(clipW * 0.085, color: Colors.white, weight: FontWeight.w800))),
-                    ),
-                    Positioned(
-                      left: clipW * 0.53,
-                      right: clipW * 0.09,
-                      top: clipH * (0.235 + i * 0.252),
-                      height: clipH * 0.115,
-                      child: Center(
-                        child: FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(jdT(context, 'introStep${i + 1}').replaceFirst(' ', '\n'),
-                              textAlign: TextAlign.center, style: jdText(clipW * 0.075, height: 1.05)),
+                child: JdPopIn(
+                  delayMs: 150,
+                  child: Stack(children: [
+                    Positioned.fill(child: Image.asset(jd('jd_clipboard'), fit: BoxFit.fill)),
+                    for (var i = 0; i < 3; i++)
+                      Positioned(
+                        left: clipW * 0.1,
+                        right: clipW * 0.08,
+                        top: clipH * (0.15 + i * 0.26),
+                        height: clipH * 0.24,
+                        child: JdPopIn(
+                          delayMs: 400 + i * 250,
+                          child: Row(children: [
+                            Stack(clipBehavior: Clip.none, children: [
+                              JdFloat(amp: 1.5 * s, phase: i * 0.3, child: Image.asset(jd('jd_pic$i'), width: clipW * 0.36)),
+                              Positioned(
+                                left: -6 * s,
+                                top: -6 * s,
+                                child: CircleAvatar(radius: 10 * s, backgroundColor: jdOrange, child: Text('${i + 1}', style: jdText(12 * s, color: Colors.white))),
+                              ),
+                            ]),
+                            SizedBox(width: 4 * s),
+                            Expanded(
+                              child: FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(jdT(context, 'introStep${i + 1}').replaceFirst(' ', '\n'),
+                                    textAlign: TextAlign.center, style: jdText(clipW * 0.085, height: 1.05)),
+                              ),
+                            ),
+                          ]),
                         ),
                       ),
-                    ),
-                  ],
-                ]),
+                  ]),
+                ),
               ),
               // pot with the sprouting seed, bag and can
               Positioned(
@@ -633,9 +655,9 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
                 right: 0,
                 bottom: 0,
                 child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.end, children: [
-                  Image.asset(jd('jd_bean_bag'), width: w * 0.22),
-                  _bob(Image.asset(jd('jd_pot_root'), width: w * 0.46), amp: 2, speed: 1),
-                  Image.asset(jd('jd_can_blue'), width: w * 0.24),
+                  JdFloat(amp: 0, tilt: 0.04, phase: 0.2, child: Image.asset(jd('jd_bean_bag'), width: w * 0.26)),
+                  JdFloat(amp: 3 * s, scale: 0.02, child: Image.asset(jd('jd_pot_root'), width: w * 0.4)),
+                  JdFloat(amp: 0, tilt: 0.1, period: const Duration(milliseconds: 1800), child: Image.asset(jd('jd_can_blue'), width: w * 0.26)),
                 ]),
               ),
             ]),
@@ -643,17 +665,17 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
           SizedBox(height: 6 * s),
           jdOnSprite(
             'jd_pill_time',
-            min(w * 0.8, 270 * s),
-            0.2778,
+            min(w * 0.86, 320 * s),
+            0.2275,
             Text(jdT(context, 'fast'), style: jdText(13.5 * s, weight: FontWeight.w600)),
-            area: const EdgeInsets.fromLTRB(0.27, 0.2, 0.06, 0.24),
+            area: const EdgeInsets.fromLTRB(0.2, 0.18, 0.1, 0.22),
           ),
           SizedBox(height: 6 * s),
           JdSpriteButton(
             sprite: 'jd_btn_play2',
-            ratio: 0.3139,
-            start: 0.33,
-            end: 0.13,
+            ratio: 0.265,
+            start: 0.14,
+            end: 0.14,
             label: jdT(context, 'toGarden'),
             onTap: _afterIntro,
             width: min(w * 0.76, 300 * s),
@@ -673,7 +695,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
       final h = c.maxHeight;
       final bottomH = min(150 * s, h * 0.3);
       final gridH = h - bottomH - 74 * s;
-      final cellW = min((w - 36 * s) / 2, gridH / 3 / 0.74);
+      final cellW = min((w - 36 * s) / 2, gridH / 3 / 0.94);
       return Column(children: [
         SizedBox(
           height: gridH,
@@ -683,12 +705,23 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
               child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                 for (var r = 0; r < 3; r++)
                   Stack(clipBehavior: Clip.none, alignment: Alignment.bottomCenter, children: [
+                    // wooden shelf board
                     Positioned(
                       left: -14 * s,
                       right: -14 * s,
-                      bottom: -6 * s,
-                      height: cellW * 0.3,
-                      child: Image.asset(jd('jd_shelf'), fit: BoxFit.fill),
+                      bottom: -2 * s,
+                      height: 12 * s,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Color(0xFFE2A66A), Color(0xFFB4743A), Color(0xFF8A5226)],
+                          ),
+                          borderRadius: BorderRadius.circular(6 * s),
+                          boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 4 * s, offset: Offset(0, 3 * s))],
+                        ),
+                      ),
                     ),
                     Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                       for (var k = 0; k < 2; k++) _packet(jdPlants[r * 2 + k], r * 2 + k, cellW, s),
@@ -732,16 +765,16 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
             // info panel
             Expanded(
               child: AspectRatio(
-                aspectRatio: 1 / 0.531,
+                aspectRatio: 1 / 0.5477,
                 child: LayoutBuilder(builder: (_, b) {
                   final bw = b.maxWidth, bh = b.maxHeight;
                   return Stack(children: [
                     Positioned.fill(child: Image.asset(jd('jd_info_panel'), fit: BoxFit.fill)),
                     Positioned(
-                      left: bw * 0.24,
-                      right: bw * 0.24,
-                      top: bh * 0.1,
-                      height: bh * 0.2,
+                      left: bw * 0.26,
+                      right: bw * 0.26,
+                      bottom: bh * 0.1,
+                      height: bh * 0.18,
                       child: Center(
                         child: FittedBox(
                           fit: BoxFit.scaleDown,
@@ -750,22 +783,22 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
                       ),
                     ),
                     Positioned(
-                      left: bw * 0.08,
-                      right: bw * 0.08,
-                      top: bh * 0.34,
-                      bottom: bh * 0.12,
+                      left: bw * 0.1,
+                      right: bw * 0.1,
+                      top: bh * 0.12,
+                      bottom: bh * 0.32,
                       child: picked == null
                           ? Center(child: FittedBox(child: Text(jdT(context, 'seedPick'), style: jdText(13 * s, color: jdInkSoft))))
                           : Row(children: [
                               Expanded(flex: 3, child: JdSeed(plant: picked, size: bh * 0.4)),
-                              Expanded(flex: 2, child: Image.asset(jd('jd_arrow'), height: bh * 0.22)),
-                              Expanded(flex: 4, child: Image.asset(jd('jd_sprout_soil'), height: bh * 0.44)),
+                              Expanded(flex: 2, child: JdFloat(amp: 0, scale: 0.12, period: const Duration(milliseconds: 900), child: Image.asset(jd('jd_chev'), height: bh * 0.24))),
+                              Expanded(flex: 4, child: JdFloat(amp: 2, tilt: 0.05, child: Image.asset(jd('jd_seed_sprout'), height: bh * 0.48))),
                               Expanded(
                                 flex: 2,
                                 child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-                                  Image.asset(jd('jd_drop'), height: bh * 0.18),
+                                  JdFloat(amp: 2, child: Image.asset(jd('jd_ic_drop'), height: bh * 0.2)),
                                   SizedBox(height: 2 * s),
-                                  Image.asset(jd('jd_sun'), height: bh * 0.18),
+                                  JdFloat(amp: 0, tilt: 0.3, period: const Duration(seconds: 3), child: Image.asset(jd('jd_ic_sun'), height: bh * 0.2)),
                                 ]),
                               ),
                             ]),
@@ -780,9 +813,9 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
         SizedBox(height: 4 * s),
         JdSpriteButton(
           sprite: 'jd_btn_plant',
-          ratio: 0.2646,
-          start: 0.27,
-          end: 0.1,
+          ratio: 0.2812,
+          start: 0.2,
+          end: 0.14,
           label: jdT(context, 'plantThis'),
           onTap: _pick == null ? null : _plantSeed,
           width: min(w * 0.86, 340 * s),
@@ -796,7 +829,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
   Widget _packet(JdPlant p, int i, double cw, double s) {
     final sel = _pick == p.id;
     final glow = sel || (_hintGlow && p.id == _plant.id);
-    final ph = cw * 0.7;
+    final ph = cw * 0.89;
     return _shaking(
       i,
       JdPress(
@@ -822,12 +855,22 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
                     child: Image.asset(jd('jd_glow'), fit: BoxFit.fill),
                   ),
                 ),
-              Positioned.fill(child: Image.asset(p.packet, fit: BoxFit.fill)),
+              Positioned.fill(
+                child: AnimatedBuilder(
+                  animation: _idle,
+                  builder: (_, c) => Transform.rotate(
+                    alignment: Alignment.bottomCenter,
+                    angle: sel ? sin(_idle.value * 2 * pi * 6) * 0.04 : sin((_idle.value * 2 + i * 0.17) * 2 * pi) * 0.015,
+                    child: c,
+                  ),
+                  child: Image.asset(p.packet, fit: BoxFit.fill),
+                ),
+              ),
               Positioned(
-                left: cw * 0.26,
-                right: cw * 0.26,
-                bottom: ph * 0.07,
-                height: ph * 0.17,
+                left: cw * 0.24,
+                right: cw * 0.24,
+                bottom: ph * 0.065,
+                height: ph * 0.11,
                 child: Center(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
@@ -850,7 +893,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
   Widget _plantView(double s, double w) => LayoutBuilder(builder: (_, c) {
         final h = c.maxHeight;
         final trayW = min(w - 24 * s, 380 * s);
-        final trayH = trayW * 0.28125;
+        final trayH = trayW * 0.2885;
         return Column(children: [
           _stepBar(s, min(w - 24 * s, 370 * s)),
           SizedBox(height: 6 * s),
@@ -927,10 +970,10 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
 
   Widget _plantScene(double s, double w) => LayoutBuilder(builder: (_, c) {
         final h = c.maxHeight;
-        final potW = min(w * 0.64, h * 0.95 / 0.7524);
-        final potH = potW * 0.7524;
+        final potW = min(w * 0.64, h * 0.95 / 0.7881);
+        final potH = potW * 0.7881;
         // hole of the pot sprite
-        final hx = potW * 0.49, hy = potH * 0.31;
+        final hx = potW * 0.52, hy = potH * 0.3;
         // soil mound: full at start, dug away, then back on top of the seed
         final mound = switch (_pstep) {
           0 => 1.0 - (_pcount / 3) * 0.95,
@@ -1036,11 +1079,11 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
           Positioned.fill(child: Image.asset(jd('jd_tray3'), fit: BoxFit.fill)),
           for (var slot = 0; slot < 3; slot++)
             Positioned(
-              left: tw * [0.06, 0.36, 0.665][slot],
-              width: tw * 0.275,
-              top: th * 0.13,
-              bottom: th * 0.13,
-              child: _tool(_tray[slot], tw * 0.275, th * 0.74, s),
+              left: tw * [0.05, 0.365, 0.675][slot],
+              width: tw * 0.28,
+              top: th * 0.12,
+              bottom: th * 0.14,
+              child: _tool(_tray[slot], tw * 0.28, th * 0.74, s),
             ),
         ]),
       );
@@ -1067,7 +1110,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
             ),
           _ => Image.asset(jd('jd_scoop'), height: size * 0.8),
         };
-    final child = Center(child: art(sh * 0.9));
+    final child = Center(child: JdFloat(amp: 2.5 * s, tilt: 0.05, phase: tool * 0.33, period: const Duration(milliseconds: 1900), child: art(sh * 0.9)));
     return _shaking(
       10 + tool,
       Stack(clipBehavior: Clip.none, children: [
@@ -1108,7 +1151,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
           JdSayPill(
             text: _soil(),
             width: min(w - 30 * s, 350 * s),
-            trailing: Image.asset(jd(_water <= 0.67 && _water >= 0.4 ? 'jd_drop' : 'jd_soil'), fit: BoxFit.contain),
+            trailing: JdFloat(amp: 2, scale: 0.06, child: Image.asset(jd(_water <= 0.67 && _water >= 0.4 ? 'jd_ic_drop' : 'jd_soil'), fit: BoxFit.contain)),
           ),
           Expanded(child: _careScene(s, w)),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -1119,9 +1162,9 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
           SizedBox(height: 6 * s),
           JdSpriteButton(
             sprite: 'jd_btn_hour',
-            ratio: 0.3476,
-            start: 0.27,
-            end: 0.07,
+            ratio: 0.325,
+            start: 0.12,
+            end: 0.12,
             label: jdT(context, 'observe'),
             onTap: _observe,
             width: min(w * 0.78, 300 * s),
@@ -1132,10 +1175,17 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
         ]);
       });
 
+  // growth frame shown while caring: the seed sprouts a little more each day
+  // (frames 1 → 4), then the grow phase plays the rest (4 → 11).
+  static const _careEnd = 4 / (jdGrowFrames - 1);
+  double get _careT {
+    final d = (_dayN - 1 + (_day.isAnimating ? _day.value : 0)) / max(1, _lv.days);
+    return (1 + 3 * d.clamp(0.0, 1.0)) / (jdGrowFrames - 1);
+  }
+
   Widget _careScene(double s, double w) => LayoutBuilder(builder: (_, c) {
         final h = c.maxHeight;
-        final grow = 0.78 + 0.22 * ((_dayN - 1) / max(1, _lv.days - 1)) + (_day.isAnimating ? 0.1 * _day.value : 0);
-        final potH = min(h * 0.92, 230 * s) * grow.clamp(0.7, 1.0);
+        final potH = min(h * 0.92, 230 * s);
         final wet = _water.clamp(0.0, 1.0);
         return Stack(clipBehavior: Clip.none, alignment: Alignment.bottomCenter, children: [
           // robot + bubble
@@ -1156,7 +1206,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
                 border: Border.all(color: const Color(0xFFF2B33D), width: 2 * s),
               ),
               child: Row(mainAxisSize: MainAxisSize.min, children: [
-                Image.asset(jd('jd_sun'), width: 18 * s),
+                JdFloat(amp: 0, tilt: 0.4, period: const Duration(seconds: 4), child: Image.asset(jd('jd_ic_sun'), width: 20 * s)),
                 SizedBox(width: 4 * s),
                 Text(jdT(context, 'day', {'d': _dayN, 'n': _lv.days}), style: jdText(13 * s)),
               ]),
@@ -1168,23 +1218,16 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
             child: _shaking(
               20,
               AnimatedBuilder(
-                animation: _idle,
-                builder: (_, ch) => Transform.scale(
+                animation: Listenable.merge([_idle, _day]),
+                builder: (_, __) => Transform.scale(
                   alignment: Alignment.bottomCenter,
-                  scaleX: 1.0,
                   scaleY: 1 + sin(_idle.value * 2 * pi * 2) * 0.012,
-                  child: ch,
-                ),
-                child: ColorFiltered(
-                  colorFilter: ColorFilter.mode(
-                    Color.lerp(const Color(0x00FFFFFF), const Color(0x33203A80), (wet - 0.6).clamp(0.0, 0.4) / 0.4)!,
-                    BlendMode.srcATop,
-                  ),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 600),
-                    curve: Curves.easeOutBack,
-                    height: potH,
-                    child: Image.asset(jd('jd_pot_sprout'), fit: BoxFit.contain),
+                  child: ColorFiltered(
+                    colorFilter: ColorFilter.mode(
+                      Color.lerp(const Color(0x00FFFFFF), const Color(0x33203A80), (wet - 0.6).clamp(0.0, 0.4) / 0.4)!,
+                      BlendMode.srcATop,
+                    ),
+                    child: JdGrowFlip(plant: _plant, t: _careT, height: potH),
                   ),
                 ),
               ),
@@ -1213,8 +1256,8 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
       });
 
   Widget _waterPanel(double s, double pw) {
-    final ph = pw * 0.8583;
-    final gw = pw * 0.86;
+    final ph = pw * 0.9389;
+    final gw = pw * 0.84;
     final gx = (_water.clamp(0.0, 1.0)) * gw * 0.94;
     return SizedBox(
       width: pw,
@@ -1222,10 +1265,10 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
       child: Stack(clipBehavior: Clip.none, children: [
         Positioned.fill(child: Image.asset(jd('jd_panel_water'), fit: BoxFit.fill)),
         Positioned(
-          left: pw * 0.4,
-          right: pw * 0.22,
+          left: pw * 0.3,
+          right: pw * 0.18,
           top: ph * 0.05,
-          height: ph * 0.16,
+          height: ph * 0.13,
           child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'water'), style: jdText(18 * s)))),
         ),
         // gauge
@@ -1233,17 +1276,37 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
           left: (pw - gw) / 2,
           top: ph * 0.3,
           width: gw,
-          height: gw * 0.1825 + 14 * s,
+          height: gw * 0.2175 + 14 * s,
           child: _shaking(
             20,
             Stack(clipBehavior: Clip.none, children: [
               Positioned(left: 0, right: 0, top: 10 * s, child: Image.asset(jd('jd_gauge'), width: gw)),
+              // little shine moving along the gauge
+              Positioned(
+                left: 0,
+                right: 0,
+                top: 10 * s,
+                height: gw * 0.2175,
+                child: IgnorePointer(
+                  child: AnimatedBuilder(
+                    animation: _idle,
+                    builder: (_, __) => Align(
+                      alignment: Alignment(-1 + 2 * ((_idle.value * 3) % 1.0), 0),
+                      child: Container(
+                        width: gw * 0.08,
+                        height: gw * 0.12,
+                        decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.white.withOpacity(0.35)),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 500),
                 curve: Curves.easeOutBack,
                 left: gx - 4 * s,
                 top: 0,
-                child: Image.asset(jd('jd_gauge_drop'), height: gw * 0.1825 + 12 * s),
+                child: JdFloat(amp: 2, period: const Duration(milliseconds: 1200), child: Image.asset(jd('jd_gauge_drop'), height: gw * 0.2175 + 12 * s)),
               ),
             ]),
           ),
@@ -1251,7 +1314,7 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
         Positioned(
           left: (pw - gw) / 2,
           width: gw,
-          top: ph * 0.3 + gw * 0.1825 + 16 * s,
+          top: ph * 0.3 + gw * 0.2175 + 16 * s,
           child: Row(children: [
             Expanded(flex: 40, child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'dry'), style: jdText(10 * s, color: jdOrange)))),
             Expanded(flex: 27, child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'humid'), style: jdText(10 * s, color: jdGreen)))),
@@ -1259,17 +1322,17 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
           ]),
         ),
         Positioned(
-          left: pw * 0.06,
-          right: pw * 0.06,
-          bottom: ph * 0.07,
+          left: pw * 0.07,
+          right: pw * 0.07,
+          bottom: ph * 0.08,
           child: JdSpriteButton(
             sprite: 'jd_btn_water',
-            ratio: 0.3262,
-            start: 0.36,
-            end: 0.08,
+            ratio: 0.405,
+            start: 0.34,
+            end: 0.06,
             label: jdT(context, 'waterBtn'),
             onTap: _waterIt,
-            width: pw * 0.88,
+            width: pw * 0.86,
             shadow: const Color(0xFF0D3F9C),
           ),
         ),
@@ -1278,24 +1341,24 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
   }
 
   Widget _lightPanel(double s, double pw) {
-    final ph = pw * 0.8583;
+    final ph = pw * 0.9583;
     return SizedBox(
       width: pw,
       height: ph,
       child: Stack(children: [
         Positioned.fill(child: Image.asset(jd('jd_panel_light'), fit: BoxFit.fill)),
         Positioned(
-          left: pw * 0.4,
-          right: pw * 0.2,
+          left: pw * 0.3,
+          right: pw * 0.18,
           top: ph * 0.05,
-          height: ph * 0.16,
+          height: ph * 0.13,
           child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'light'), style: jdText(18 * s)))),
         ),
         Positioned(
-          left: pw * 0.06,
-          right: pw * 0.06,
-          top: ph * 0.28,
-          bottom: ph * 0.08,
+          left: pw * 0.07,
+          right: pw * 0.07,
+          top: ph * 0.25,
+          bottom: ph * 0.09,
           child: Row(children: [
             for (final l in JdLight.values)
               Expanded(
@@ -1358,8 +1421,8 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
           if (!_watched || _lv.grow == JdGrow.watch)
             JdSpriteButton(
               sprite: 'jd_pill_play',
-              ratio: 0.2825,
-              start: 0.3,
+              ratio: 0.265,
+              start: 0.2,
               end: 0.06,
               label: jdT(context, 'watchFast').split('\n').join(' '),
               onTap: _growAnim.isAnimating ? null : _watchGrowth,
@@ -1369,9 +1432,9 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
           SizedBox(height: 4 * s),
           JdSpriteButton(
             sprite: 'jd_btn_sprout',
-            ratio: 0.2786,
-            start: 0.29,
-            end: 0.06,
+            ratio: 0.2761,
+            start: 0.12,
+            end: 0.12,
             label: jdT(context, 'grew'),
             onTap: _growDone ? _win : null,
             width: min(w * 0.86, 330 * s),
@@ -1434,14 +1497,16 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
         final asking = _lv.grow == JdGrow.parts && _watched && !_growDone;
         // the plant picture
         final labelW = 122 * s;
-        final ratio = _view == 1 ? 1.2684 : 1.3;
+        final ratio = _view == 1 || playing || !_watched ? (jdGrowRatio[_plant.id] ?? 1.0) : 1.3;
+        final marks = jdGrowMarks[_plant.id] ?? (0.5, const Offset(0.7, 0.2));
         final imgH = min(min(h * 0.94, 280 * s), (w - labelW - 70 * s) * ratio);
         final imgW = imgH / ratio;
         final ox = w - 6 * s - labelW - imgW - (_view == 1 ? 0 : 10 * s);
         // labels: (part, anchor point as fraction of the picture)
         final labels = _view == 1
-            ? const [('leaves', Offset(1.0, 0.15)), ('stem', Offset(1.0, 0.39)), ('roots', Offset(1.0, 0.7))]
+            ? [('leaves', marks.$2), ('stem', Offset(0.5, marks.$1 - 0.05)), ('roots', Offset(0.5, marks.$1 + (1 - marks.$1) * 0.5))]
             : const [('leaves', Offset(0.66, 0.2)), ('stem', Offset(0.52, 0.56))];
+        final showLabels = !playing && _watched;
         return Stack(clipBehavior: Clip.none, children: [
           Positioned(
             left: ox,
@@ -1451,14 +1516,20 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
             child: AnimatedSwitcher(
               duration: const Duration(milliseconds: 400),
               transitionBuilder: (c, a) => FadeTransition(opacity: a, child: ScaleTransition(scale: Tween(begin: 0.9, end: 1.0).animate(a), child: c)),
-              child: playing
-                  ? Image.asset(jd('jd_stage${max(0, _stage)}'), key: ValueKey('st$_stage'), fit: BoxFit.contain)
-                  : (_view == 1
-                      ? Image.asset(jd('jd_grow_cut'), key: const ValueKey('cut'), fit: BoxFit.contain)
-                      : JdPot(key: const ValueKey('pot'), plant: _plant, height: imgH)),
+              child: playing || !_watched || _view == 1
+                  ? AnimatedBuilder(
+                      key: const ValueKey('grow'),
+                      animation: _growAnim,
+                      builder: (_, __) => JdGrowFlip(
+                        plant: _plant,
+                        t: playing ? _careEnd + (1 - _careEnd) * _growAnim.value : (_watched ? 1.0 : _careEnd),
+                        height: imgH,
+                      ),
+                    )
+                  : JdPot(key: const ValueKey('pot'), plant: _plant, height: imgH),
             ),
           ),
-          if (!playing && _view == 0)
+          if (showLabels)
             Positioned.fill(
               child: IgnorePointer(
                 child: CustomPaint(
@@ -1469,10 +1540,10 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
                 ),
               ),
             ),
-          if (!playing)
+          if (showLabels)
             for (final l in labels)
               Positioned(
-                left: ox + imgW + (_view == 1 ? 2 * s : 14 * s),
+                left: ox + imgW + 14 * s,
                 top: h - imgH + imgH * l.$2.dy - 17 * s,
                 child: _shaking(40 + ['leaves', 'stem', 'roots'].indexOf(l.$1), _partLabel(l.$1, s, asking)),
               ),
@@ -1484,6 +1555,27 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
             height: imgH,
             child: IgnorePointer(child: AnimatedBuilder(animation: _burst, builder: (_, __) => CustomPaint(painter: JdBurst(_burst.value)))),
           ),
+          // while it grows: the sun turns above and rain falls on the plant
+          if (playing) ...[
+            Positioned(
+              left: ox + imgW * 0.62,
+              top: max(0.0, h - imgH * 1.15),
+              child: IgnorePointer(
+                child: AnimatedBuilder(
+                  animation: _idle,
+                  builder: (_, c) => Transform.rotate(angle: _idle.value * 2 * pi * 2, child: Transform.scale(scale: 1 + 0.08 * sin(_idle.value * 2 * pi * 8), child: c)),
+                  child: Image.asset(jd('jd_sun'), width: imgW * 0.34),
+                ),
+              ),
+            ),
+            Positioned(
+              left: ox + imgW * 0.15,
+              top: h - imgH,
+              width: imgW * 0.5,
+              height: imgH * 0.5,
+              child: IgnorePointer(child: AnimatedBuilder(animation: _idle, builder: (_, __) => CustomPaint(painter: _RainPainter(_idle.value)))),
+            ),
+          ],
           // robot at the bottom, its words at the top
           Positioned(
             left: 0,
@@ -1501,26 +1593,38 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
 
   Widget _partLabel(String part, double s, bool asking) {
     final found = _found.contains(part);
-    final icon = switch (part) { 'leaves' => 'jd_ic_leaf', 'stem' => 'jd_sprout_soil', _ => 'jd_ic_roots' };
+    const ratios = {'leaves': 0.2972, 'stem': 0.2639, 'roots': 0.2889};
+    final lw = 120 * s, lh = lw * ratios[part]!;
     return JdPress(
       onTap: () => _tapPart(part),
       label: jdT(context, part),
       child: AnimatedBuilder(
         animation: _idle,
-        builder: (_, c) => Transform.scale(scale: asking && !found ? 1 + 0.04 * sin(_idle.value * 2 * pi * 4) : 1, child: c),
-        child: Container(
-          padding: EdgeInsets.fromLTRB(6 * s, 4 * s, 10 * s, 4 * s),
-          decoration: BoxDecoration(
-            color: found ? const Color(0xFFDDF7D4) : jdCream,
-            borderRadius: BorderRadius.circular(18 * s),
-            border: Border.all(color: found ? jdGreen : (asking ? const Color(0xFF39B8F2) : const Color(0xFFF0D9AE)), width: 2.2 * s),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 5 * s, offset: Offset(0, 2 * s))],
-          ),
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Image.asset(jd(icon), height: 22 * s),
-            SizedBox(width: 4 * s),
-            Text(jdT(context, part), style: jdText(14 * s, color: const Color(0xFF2F5A12))),
-            if (found) ...[SizedBox(width: 4 * s), Icon(Icons.check_circle_rounded, color: jdGreen, size: 18 * s)],
+        builder: (_, c) => Transform.scale(scale: asking && !found ? 1 + 0.05 * sin(_idle.value * 2 * pi * 4) : 1, child: c),
+        child: SizedBox(
+          width: lw,
+          height: lh,
+          child: Stack(clipBehavior: Clip.none, children: [
+            if (asking && !found)
+              Positioned.fill(
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(lh),
+                    boxShadow: [BoxShadow(color: const Color(0xFF39B8F2).withOpacity(0.6), blurRadius: 10 * s)],
+                  ),
+                ),
+              ),
+            Positioned.fill(child: Image.asset(jd('jd_tag_$part'), fit: BoxFit.fill)),
+            Positioned(
+              left: lw * 0.33,
+              right: lw * 0.07,
+              top: lh * 0.1,
+              bottom: lh * 0.1,
+              child: Center(
+                child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, part), style: jdText(14 * s, color: const Color(0xFF2F5A12)))),
+              ),
+            ),
+            if (found) Positioned(right: -6 * s, top: -8 * s, child: JdPopIn(child: Image.asset(jd('jd_check'), width: 22 * s))),
           ]),
         ),
       ),
@@ -1528,20 +1632,20 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
   }
 
   Widget _stageStrip(double s, double width) {
-    final cw = (width - 3 * 16 * s - 10 * s) / 4;
+    final cw = (width - 3 * 16 * s - 14 * s) / 4;
     final ordering = _lv.grow == JdGrow.order && _watched;
     final ids = ordering ? _order : const [0, 1, 2, 3];
     return Container(
       width: width,
       padding: EdgeInsets.symmetric(vertical: 5 * s),
       decoration: BoxDecoration(
-        color: const Color(0xFFD7A266).withOpacity(0.9),
-        borderRadius: BorderRadius.circular(16 * s),
-        border: Border.all(color: const Color(0xFFB27A3F), width: 2 * s),
+        color: jdCream.withOpacity(0.92),
+        borderRadius: BorderRadius.circular(18 * s),
+        border: Border.all(color: const Color(0xFFB9783F), width: 2.5 * s),
       ),
       child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
         for (var pos = 0; pos < 4; pos++) ...[
-          if (pos > 0) Icon(Icons.chevron_right_rounded, color: const Color(0xFF3FAE3A), size: 16 * s),
+          if (pos > 0) JdFloat(amp: 0, scale: 0.15, period: const Duration(milliseconds: 1000), phase: pos * 0.2, child: Image.asset(jd('jd_chev'), height: 16 * s)),
           _shaking(
             30 + pos,
             JdPress(
@@ -1559,14 +1663,21 @@ class _GardenPlayState extends State<GardenPlay> with TickerProviderStateMixin {
                 ),
                 child: Stack(clipBehavior: Clip.none, children: [
                   AspectRatio(
-                    aspectRatio: 1 / 0.95,
+                    aspectRatio: 1 / 0.8,
                     child: Stack(children: [
-                      Positioned.fill(child: Image.asset(jd('jd_stage${ids[pos]}'), fit: BoxFit.fill)),
+                      Positioned.fill(
+                        child: AnimatedScale(
+                          scale: !ordering && _stage == pos ? 1.1 : 1,
+                          duration: const Duration(milliseconds: 350),
+                          curve: Curves.elasticOut,
+                          child: Image.asset(jd('jd_stage${ids[pos]}'), fit: BoxFit.contain, alignment: Alignment.bottomCenter),
+                        ),
+                      ),
                       Positioned(
-                        left: cw * 0.16,
-                        right: cw * 0.16,
-                        bottom: cw * 0.06,
-                        height: cw * 0.18,
+                        left: cw * 0.22,
+                        right: cw * 0.22,
+                        bottom: cw * 0.035,
+                        height: cw * 0.11,
                         child: Center(
                           child: FittedBox(
                             fit: BoxFit.scaleDown,
@@ -1632,25 +1743,42 @@ class _LightCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Opacity(
         opacity: dim ? 0.45 : 1,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 250),
-          padding: EdgeInsets.all(3 * s),
-          decoration: BoxDecoration(
-            color: jdCream,
-            borderRadius: BorderRadius.circular(12 * s),
-            border: Border.all(color: selected ? const Color(0xFF39D2FF) : const Color(0xFFEADCC0), width: selected ? 3 * s : 1.5 * s),
-            boxShadow: selected ? [BoxShadow(color: const Color(0xFF39D2FF).withOpacity(0.7), blurRadius: 10 * s)] : null,
-          ),
-          child: Column(children: [
-            Expanded(
-              child: Stack(clipBehavior: Clip.none, alignment: Alignment.bottomCenter, children: [
-                Positioned.fill(child: ClipRRect(borderRadius: BorderRadius.circular(9 * s), child: Image.asset(jd('jd_light${light.index}'), fit: BoxFit.cover))),
-                if (selected) Positioned(bottom: -6 * s, child: Image.asset(jd('jd_check'), width: 22 * s)),
-              ]),
+        child: Center(
+          child: AspectRatio(
+            aspectRatio: 1 / 0.99,
+            child: AnimatedScale(
+              scale: selected ? 1.08 : 1,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.elasticOut,
+              child: LayoutBuilder(builder: (_, b) {
+                final cw = b.maxWidth, ch = b.maxHeight;
+                return Stack(clipBehavior: Clip.none, children: [
+                  if (selected)
+                    Positioned(
+                      left: -4 * s,
+                      right: -4 * s,
+                      top: -4 * s,
+                      bottom: -4 * s,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14 * s),
+                          boxShadow: [BoxShadow(color: const Color(0xFF39D2FF).withOpacity(0.9), blurRadius: 12 * s, spreadRadius: 2 * s)],
+                        ),
+                      ),
+                    ),
+                  Positioned.fill(child: Image.asset(jd('jd_lc${light.index}'), fit: BoxFit.fill)),
+                  Positioned(
+                    left: cw * 0.12,
+                    right: cw * 0.12,
+                    bottom: ch * 0.06,
+                    height: ch * 0.15,
+                    child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, light.name), style: jdText(12 * s)))),
+                  ),
+                  if (selected) Positioned(right: -6 * s, top: -6 * s, child: JdPopIn(child: Image.asset(jd('jd_check'), width: 22 * s))),
+                ]);
+              }),
             ),
-            SizedBox(height: 6 * s),
-            FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, light.name), style: jdText(11.5 * s))),
-          ]),
+          ),
         ),
       );
 }
@@ -1748,9 +1876,9 @@ class _WellDoneDialog extends StatelessWidget {
       title: jdT(context, 'wellDone'),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.end, children: [
-          Image.asset(jd('jd_pot_ok'), height: 110 * s),
+          JdPopIn(delayMs: 150, child: Image.asset(jd('jd_pot_ok'), height: 110 * s)),
           SizedBox(width: 10 * s),
-          Image.asset(jd('jd_rb_thumb'), height: 120 * s),
+          JdFloat(amp: 4 * s, tilt: 0.04, child: Image.asset(jd('jd_rb_thumb'), height: 120 * s)),
         ]),
         SizedBox(height: 8 * s),
         jdNote(jdT(context, 'justRight'), s),
@@ -1771,9 +1899,9 @@ class _WetDialog extends StatelessWidget {
       title: jdT(context, 'tooWet'),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
         Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.end, children: [
-          Image.asset(jd('jd_pot_wet'), height: 110 * s),
+          JdPopIn(delayMs: 150, child: Image.asset(jd('jd_pot_wet'), height: 110 * s)),
           SizedBox(width: 10 * s),
-          Image.asset(jd('jd_rb_wave'), height: 120 * s),
+          JdFloat(amp: 4 * s, tilt: 0.04, child: Image.asset(jd('jd_rb_wave'), height: 120 * s)),
         ]),
         SizedBox(height: 8 * s),
         jdNote(jdT(context, 'tooWetSub'), s),
@@ -1802,7 +1930,7 @@ class _HintDialog extends StatelessWidget {
         Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.end, children: [
           if (extra != null) Flexible(child: FittedBox(fit: BoxFit.scaleDown, child: extra!)),
           SizedBox(width: 8 * s),
-          Image.asset(jd('jd_rb_idea'), height: 120 * s),
+          JdFloat(amp: 4 * s, tilt: 0.04, child: Image.asset(jd('jd_rb_idea'), height: 120 * s)),
         ]),
         SizedBox(height: 8 * s),
         jdNote(message, s),
@@ -1822,7 +1950,7 @@ class _PauseDialog extends StatelessWidget {
     return JdDialogFrame(
       title: jdT(context, 'pause'),
       child: Column(mainAxisSize: MainAxisSize.min, children: [
-        Image.asset(jd('jd_rb_sleep'), height: 120 * s),
+        JdFloat(amp: 4 * s, tilt: 0.04, child: Image.asset(jd('jd_rb_sleep'), height: 120 * s)),
         SizedBox(height: 6 * s),
         jdNote(jdT(context, 'pauseSub'), s),
         SizedBox(height: 12 * s),
@@ -1925,7 +2053,7 @@ class _EndPageState extends State<_EndPage> with TickerProviderStateMixin {
     final w = min(size.width, 520.0);
     final plant = widget.level.plant;
     final last = widget.level.n == jdLevels.length;
-    final checkW = min(w * 0.62, 240 * s);
+    final checkW = min(w * 0.8, 300 * s);
 
     return PopScope(
       canPop: false,
@@ -1945,21 +2073,21 @@ class _EndPageState extends State<_EndPage> with TickerProviderStateMixin {
                     0,
                     0.3,
                     jdOnSprite(
-                      'jd_plank_vine',
+                      'jd_plank_leafy',
                       min(w * 0.9, 360 * s),
-                      0.304,
+                      0.35,
                       Column(mainAxisSize: MainAxisSize.min, children: [
                         jdOutlined(jdT(context, 'bravo1'), const Color(0xFF7A2BE0), 34 * s),
                         Transform.translate(offset: Offset(0, -6 * s), child: jdOutlined(jdT(context, 'bravo2'), const Color(0xFF14A7D8), 28 * s)),
                       ]),
-                      area: const EdgeInsets.fromLTRB(0.1, 0.12, 0.1, 0.12),
+                      area: const EdgeInsets.fromLTRB(0.12, 0.16, 0.12, 0.16),
                     ),
                   ),
                   _pop(
                     0.1,
                     0.35,
-                    jdOnSprite('jd_pill_leafy', min(w * 0.82, 320 * s), 0.15, Text(plant.grown(context), style: jdText(16 * s)),
-                        area: const EdgeInsets.fromLTRB(0.12, 0.12, 0.12, 0.12)),
+                    jdOnSprite('jd_pill_leafy', min(w * 0.84, 330 * s), 0.1773, Text(plant.grown(context), style: jdText(16 * s)),
+                        area: const EdgeInsets.fromLTRB(0.12, 0.14, 0.12, 0.14)),
                   ),
                   SizedBox(height: 4 * s),
                   // stars
@@ -1971,7 +2099,7 @@ class _EndPageState extends State<_EndPage> with TickerProviderStateMixin {
                       return Stack(clipBehavior: Clip.none, alignment: Alignment.bottomCenter, children: [
                         Positioned(
                           bottom: 0,
-                          child: _pop(0.3, 0.6, JdPot(plant: plant, height: min(h * 0.95, 220 * s))),
+                          child: _pop(0.3, 0.6, JdFloat(amp: 3 * s, tilt: 0.03, child: JdPot(plant: plant, height: min(h * 0.95, 220 * s)))),
                         ),
                         PositionedDirectional(
                           start: 0,
@@ -2000,20 +2128,37 @@ class _EndPageState extends State<_EndPage> with TickerProviderStateMixin {
                     0.75,
                     SizedBox(
                       width: checkW,
-                      height: checkW * 0.6868,
+                      height: checkW * 0.4019,
                       child: Stack(children: [
                         Positioned.fill(child: Image.asset(jd('jd_checklist'), fit: BoxFit.fill)),
-                        for (var i = 0; i < 3; i++)
+                        for (var i = 0; i < 3; i++) ...[
+                          // little icon in the round slot
                           Positioned(
-                            left: checkW * 0.32,
-                            right: checkW * 0.3,
-                            top: checkW * 0.6868 * ([0.23, 0.5, 0.76][i] - 0.09),
-                            height: checkW * 0.6868 * 0.18,
+                            left: checkW * 0.075,
+                            top: checkW * 0.4019 * ([0.22, 0.5, 0.78][i]) - checkW * 0.035,
+                            width: checkW * 0.07,
+                            height: checkW * 0.07,
+                            child: Image.asset(jd(['jd_seed_icon', 'jd_ic_drop', 'jd_ic_sun'][i]), fit: BoxFit.contain),
+                          ),
+                          Positioned(
+                            left: checkW * 0.2,
+                            right: checkW * 0.16,
+                            top: checkW * 0.4019 * ([0.22, 0.5, 0.78][i] - 0.1),
+                            height: checkW * 0.4019 * 0.2,
                             child: Align(
                               alignment: AlignmentDirectional.centerStart,
                               child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'c$i'), style: jdText(14 * s))),
                             ),
                           ),
+                          // check mark pops in the square slot, one after the other
+                          Positioned(
+                            right: checkW * 0.055,
+                            top: checkW * 0.4019 * ([0.22, 0.5, 0.78][i]) - checkW * 0.04,
+                            width: checkW * 0.08,
+                            height: checkW * 0.08,
+                            child: _pop(0.55 + i * 0.1, 0.75 + i * 0.1, Image.asset(jd('jd_check_sq'), fit: BoxFit.contain)),
+                          ),
+                        ],
                       ]),
                     ),
                   ),
@@ -2030,15 +2175,20 @@ class _EndPageState extends State<_EndPage> with TickerProviderStateMixin {
                     ]),
                   ),
                   SizedBox(height: 8 * s),
+                  // Optionnel : pub choisie par l'enfant pour doubler ses pièces
+                  if (widget.gold > 0) ...[
+                    DoubleRewardButton(gold: widget.gold, width: min(w * 0.82, 320 * s), height: 40 * s),
+                    SizedBox(height: 8 * s),
+                  ],
                   _pop(
                     0.7,
                     1.0,
                     Column(children: [
                       JdSpriteButton(
                         sprite: 'jd_btn_next',
-                        ratio: 0.3524,
-                        start: 0.27,
-                        end: 0.2,
+                        ratio: 0.275,
+                        start: 0.2,
+                        end: 0.16,
                         label: last ? jdT(context, 'allDone') : jdT(context, 'next'),
                         onTap: () => Navigator.pop(context, last ? 'garden' : 'next'),
                         width: min(w * 0.82, 320 * s),
@@ -2048,7 +2198,7 @@ class _EndPageState extends State<_EndPage> with TickerProviderStateMixin {
                       Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                         JdPill(
                           label: jdT(context, 'seeGarden'),
-                          icon: Image.asset(jd('jd_sprout_soil'), height: 22 * s),
+                          icon: Image.asset(jd('jd_seed_sprout'), height: 22 * s),
                           onTap: () => Navigator.pop(context, 'garden'),
                           s: s,
                           border: const Color(0xFFE2A04A),
@@ -2075,7 +2225,7 @@ class _EndPageState extends State<_EndPage> with TickerProviderStateMixin {
   }
 
   Widget _stars(double s, double width) {
-    final h = width * 0.35;
+    final h = width * 0.4059;
     final img = Image.asset(jd('jd_stars3'), width: width, height: h, fit: BoxFit.fill);
     return AnimatedBuilder(
       animation: _idle,
@@ -2093,24 +2243,24 @@ class _EndPageState extends State<_EndPage> with TickerProviderStateMixin {
   }
 
   Widget _rewards(double s, double width) {
-    final h = width * 0.3304;
+    final h = width * 0.2712;
     return SizedBox(
       width: width,
       height: h,
       child: Stack(children: [
         Positioned.fill(child: Image.asset(jd('jd_rewards'), fit: BoxFit.fill)),
         Positioned(
-          left: width * 0.3,
-          width: width * 0.18,
-          top: h * 0.3,
-          bottom: h * 0.28,
+          left: width * 0.27,
+          width: width * 0.2,
+          top: h * 0.28,
+          bottom: h * 0.26,
           child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text('+${widget.gold}', style: jdText(22 * s, color: const Color(0xFF8A5200))))),
         ),
         Positioned(
-          left: width * 0.66,
-          width: width * 0.24,
-          top: h * 0.3,
-          bottom: h * 0.28,
+          left: width * 0.62,
+          width: width * 0.22,
+          top: h * 0.28,
+          bottom: h * 0.26,
           child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text('+${widget.gems}', style: jdText(22 * s, color: const Color(0xFF1C4FA8))))),
         ),
       ]),
@@ -2124,14 +2274,14 @@ class _EndPageState extends State<_EndPage> with TickerProviderStateMixin {
           FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'newPlant'), style: jdText(13 * s, color: jdInk))),
           SizedBox(
             width: width,
-            height: width * 0.8867,
+            height: width * 0.7063,
             child: Stack(children: [
               Positioned.fill(child: Image.asset(jd('jd_badge'), fit: BoxFit.fill)),
               Positioned(
-                left: width * 0.16,
-                right: width * 0.16,
-                bottom: width * 0.8867 * 0.1,
-                height: width * 0.8867 * 0.16,
+                left: width * 0.18,
+                right: width * 0.18,
+                bottom: width * 0.7063 * 0.1,
+                height: width * 0.7063 * 0.16,
                 child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'badgeName'), style: jdText(13 * s, color: Colors.white)))),
               ),
             ]),

@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:mortaalim/Manager/rewards.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -61,8 +62,10 @@ class PZProgress {
   static bool unlocked(Map<String, List<int>> s, String pic, int d) => d == 0 || (s[pic]?[d - 1] ?? 0) > 0;
 }
 
-int pzReward(int difficulty, int stars, int prev) =>
-    max(0, min(3, stars - prev)) * (3 + difficulty * 3) + (prev == 0 && stars > 0 ? 5 : 0);
+int pzReward(int difficulty, int stars, int prev) => pzRewardFull(difficulty, stars, prev).gold;
+
+/// Full reward of a puzzle (gold, XP, gems) — see Rewards.level.
+Reward pzRewardFull(int difficulty, int stars, int prev) => Rewards.level(tier: difficulty + 1, stars: stars, prevStars: prev);
 
 // ─── Jigsaw shapes ─────────────────────────────────────────────────────────
 

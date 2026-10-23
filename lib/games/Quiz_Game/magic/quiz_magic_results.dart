@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:mortaalim/Manager/rewards.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,8 +34,9 @@ class _QuizMagicResultsPageState extends State<QuizMagicResultsPage> with Ticker
   late final int _good = widget.items.where((i) => i.correct).length;
   late final int _total = widget.items.length;
   late final bool _won = qmPassed(_good, _total);
-  late final int _gold = _won ? _good * 5 : _good;
-  late final int _gems = !_won ? 0 : (_good == _total ? 2 : (_good >= _total * 0.8 ? 1 : 0));
+  late final Reward _prize = Rewards.session(correct: _good, total: _total, perfectGem: _won) + Reward(gold: _won ? 5 : 0);
+  late final int _gold = _prize.gold;
+  late final int _gems = _prize.gems;
   late final QmCategory _best = _bestCategory();
 
   String get _ui => qmUiLang(widget.language);
@@ -65,9 +67,7 @@ class _QuizMagicResultsPageState extends State<QuizMagicResultsPage> with Ticker
       _confetti.play();
       audio.playSfx('assets/audios/UI_Audio/SFX_Audio/CorrectAnwser_SFX.mp3');
     }
-    if (_gold > 0) xp.addGold(context, _gold);
-    if (_gems > 0) xp.addGems(context, _gems);
-    xp.addXP(_good * 2 + (_won ? 5 : 1), context: context);
+    xp.grant(context, _prize);
   }
 
   @override

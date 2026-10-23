@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:mortaalim/games/Quiz_Game/Result_QuizPage.dart';
 import 'package:mortaalim/main.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
@@ -58,8 +57,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
   bool _isTtsMuted = false; // Track if TTS is muted
 
   // ADS
-  BannerAd? _bannerAd;
-  bool _isBannerAdLoaded = false;
 
   late List<Question> _questions;
   int _currentQuestion = 0;
@@ -127,7 +124,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     audioManager.playAlert('assets/audios/QuizGame_Sounds/GameCountDown3Sec.mp3');
     audioManager.playSfx('assets/audios/QuizGame_Sounds/RoboticCountDown3sec.mp3');
     _configureTts();
-    _loadBannerAd();
     _questions = _loadQuestions(widget.language)..shuffle();
 
     if (_questions.length > 15) {
@@ -229,21 +225,11 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
     }
     _introController.dispose();
     _comboAnimationController.dispose();
-    _bannerAd?.dispose();
     flutterTts.stop(); // ✅ Stop TTS when leaving the page
     super.dispose();
   }
 
 
-  void _loadBannerAd() {
-    _bannerAd?.dispose();
-    _isBannerAdLoaded = false;
-    _bannerAd = AdHelper.getBannerAd(() {
-      setState(() {
-        _isBannerAdLoaded = true;
-      });
-    });
-  }
 
   List<Question> _loadQuestions(QuizLanguage lang) => questionsByLanguage[lang] ?? [];
 
@@ -982,19 +968,6 @@ class _QuizPageState extends State<QuizPage> with TickerProviderStateMixin {
               ),
             ),
 
-            /// ADS BANNER
-            bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled &&
-                _bannerAd != null &&
-                _isBannerAdLoaded
-                ? SafeArea(
-              child: Container(
-                color: Colors.orange.shade200,
-                height: _bannerAd!.size.height.toDouble(),
-                width: _bannerAd!.size.width.toDouble(),
-                child: FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded),
-              ),
-            )
-                : null,
           ),
 
         // Correct and wrong answer animations overlay

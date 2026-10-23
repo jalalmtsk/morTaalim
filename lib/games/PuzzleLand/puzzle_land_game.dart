@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 
 import 'package:confetti/confetti.dart';
@@ -11,6 +12,8 @@ import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
 import 'package:provider/provider.dart';
 
 import 'pz_common.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
+import 'package:mortaalim/tools/AD_Tools/double_reward_button.dart';
 
 /// One Puzzle Land round: drag the jigsaw pieces from the tray onto the board.
 class PuzzleLandGame extends StatefulWidget {
@@ -223,9 +226,9 @@ class _PuzzleLandGameState extends State<PuzzleLandGame> with TickerProviderStat
     _audio.playSfx('assets/audios/UI_Audio/SFX_Audio/${stars == 3 ? 'VictoryOrchestral_SFX' : 'victory2_SFX'}.mp3');
     await Future.delayed(const Duration(milliseconds: 900));
     if (!mounted) return;
-    final xp = Provider.of<ExperienceManager>(context, listen: false);
-    if (gold > 0) xp.addGold(context, gold);
-    if (newStars > 0) xp.addXP(4 + newStars * 3, context: context);
+    final rw = Rewards.level(tier: widget.difficulty + 1, stars: stars, prevStars: _prevStars);
+    Provider.of<ExperienceManager>(context, listen: false).grant(context, rw);
+    if (newStars < 0) return;
 
     final pi = pzPictures.indexOf(widget.picture);
     final hasNext = widget.difficulty < pzGrid.length - 1 || pi < pzPictures.length - 1;
@@ -240,6 +243,9 @@ class _PuzzleLandGameState extends State<PuzzleLandGame> with TickerProviderStat
         child: ScaleTransition(scale: CurvedAnimation(parent: a, curve: Curves.easeOutBack), child: child),
       ),
     );
+    if (!mounted) return;
+    // Fin de niveau = pause naturelle (AdHelper applique fréquence + écran « Publicité »).
+    await AdHelper.showInterstitialAd(context: context);
     if (!mounted) return;
     _prevStars = max(_prevStars, stars);
     if (res == 'next' && hasNext) {
@@ -817,6 +823,9 @@ class _WinCardState extends State<_WinCard> with SingleTickerProviderStateMixin 
                   Text('+${widget.gold}', style: kidBodyStyle(22, color: bbInk, weight: FontWeight.w700)),
                 ]),
               ),
+              const SizedBox(height: 8),
+              // Optionnel : pub choisie par l'enfant pour doubler ses pièces
+              DoubleRewardButton(gold: widget.gold, height: 40),
             ],
             const SizedBox(height: 16),
             Row(children: [

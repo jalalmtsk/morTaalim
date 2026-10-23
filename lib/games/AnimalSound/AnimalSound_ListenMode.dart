@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'dart:math';
 import 'package:just_audio/just_audio.dart';
 import 'package:mortaalim/main.dart';
-import 'package:provider/provider.dart';
 
-import '../../XpSystem.dart';
-import '../../tools/Ads_Manager.dart';
 import 'Animal_Data.dart';
 
 class ListenMode extends StatefulWidget {
@@ -24,8 +20,6 @@ class _AnimalFullScreenPageState extends State<ListenMode>
   Random random = Random();
 
   // --- Banner Ad ---
-  BannerAd? _bannerAd;
-  bool _isBannerAdLoaded = false;
   @override
   void initState() {
     super.initState();
@@ -35,7 +29,6 @@ class _AnimalFullScreenPageState extends State<ListenMode>
         Tween<double>(begin: 0, end: 15).animate(_animationController);
 
     // Initialize Banner Ad
-    _loadBannerAd();
 
   }
 
@@ -46,18 +39,7 @@ class _AnimalFullScreenPageState extends State<ListenMode>
     _audioPlayer.play();
   }
 
-  void _loadBannerAd() {
-    _bannerAd?.dispose();
-    _isBannerAdLoaded = false;
-
-    _bannerAd = AdHelper.getBannerAd(() {
-      setState(() {
-        _isBannerAdLoaded = true;
-      });
-    });
-  }
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _loadBannerAd();
   }
 
   Widget buildParticles() {
@@ -193,7 +175,6 @@ class _AnimalFullScreenPageState extends State<ListenMode>
   void dispose() {
     _audioPlayer.dispose();
     _animationController.dispose();
-    _bannerAd?.dispose();
     super.dispose();
   }
 
@@ -226,32 +207,12 @@ class _AnimalFullScreenPageState extends State<ListenMode>
 
           // Page indicator
           Positioned(
-            bottom: (context.watch<ExperienceManager>().adsEnabled &&
-                _bannerAd != null &&
-                _isBannerAdLoaded)
-                ? _bannerAd!.size.height.toDouble() + 20
-                : 20,
+            bottom: 20,
             left: 0,
             right: 0,
             child: buildPageIndicator(),
           ),
 
-          // Banner Ad
-          if (context.watch<ExperienceManager>().adsEnabled &&
-              _bannerAd != null &&
-              _isBannerAdLoaded)
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: SafeArea(
-                child: SizedBox(
-                  width: _bannerAd!.size.width.toDouble(),
-                  height: _bannerAd!.size.height.toDouble(),
-                  child: FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded),
-                ),
-              ),
-            ),
         ],
       ),
     );

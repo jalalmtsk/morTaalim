@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -118,8 +119,7 @@ class _AnimalSoundsQuizState extends State<AnimalSoundsQuiz> with TickerProvider
   Future<void> _finish() async {
     final stars = _correct >= 7 ? 3 : _correct >= 5 ? 2 : _correct >= 3 ? 1 : 0;
     final xp = Provider.of<ExperienceManager>(context, listen: false);
-    if (_correct > 0) xp.addGold(context, _correct);
-    if (_correct > 0) xp.addXP(_correct * 2, context: context);
+    xp.grant(context, Rewards.session(correct: _correct, total: _rounds));
     if (stars >= 2) _audio.playSfx('assets/audios/UI_Audio/SFX_Audio/victory2_SFX.mp3');
 
     final again = await showDialog<bool>(

@@ -109,7 +109,7 @@ class _GardenMenuState extends State<GardenMenu> with TickerProviderStateMixin {
                   AnimatedBuilder(
                     animation: _idle,
                     builder: (_, c) => Transform.translate(offset: Offset(0, sin(_idle.value * 2 * pi * 2) * 3 * s), child: c),
-                    child: Transform.translate(offset: Offset(0, -18 * s), child: _title(s, w)),
+                    child: _title(s, w),
                   ),
                 ),
                 // scene
@@ -125,105 +125,194 @@ class _GardenMenuState extends State<GardenMenu> with TickerProviderStateMixin {
   }
 
   Widget _title(double s, double w) {
-    final big = min(w * 0.15, 58 * s);
+    final tw = min(w * 0.78, 300 * s);
+    final th = tw * 0.4804;
     final words = [jdT(context, 't1'), jdT(context, 't2'), jdT(context, 't3')].where((e) => e.isNotEmpty).toList();
     const colors = [Color(0xFF7A2BE0), Color(0xFF13A6A0), Color(0xFFFF8A1F)];
-    return Column(mainAxisSize: MainAxisSize.min, children: [
-      for (var i = 0; i < words.length; i++)
-        Transform.translate(
-          offset: Offset(0, -i * big * 0.18),
-          child: FittedBox(fit: BoxFit.scaleDown, child: jdOutlined(words[i], colors[i % 3], big * (i == 0 ? 0.85 : 1), stroke: 0.2)),
-        ),
-      Transform.translate(
-        offset: Offset(0, -big * 0.3),
-        child: jdOnSprite(
-          'jd_plank_curve',
-          min(w * 0.66, 260 * s),
-          0.32,
-          Text(jdT(context, 'tag'), textAlign: TextAlign.center, style: jdText(15 * s, color: jdInk, height: 1.1)),
-          area: const EdgeInsets.fromLTRB(0.14, 0.14, 0.14, 0.14),
-        ),
+    final line1 = words.length > 2 ? '${words[0]} ${words[1]}' : words.first;
+    final line2 = words.length > 2 ? words[2] : (words.length > 1 ? words[1] : '');
+    // each letter hops in turn
+    Widget wave(String text, Color c, double size, int offset) => Row(mainAxisSize: MainAxisSize.min, children: [
+          for (var k = 0; k < text.length; k++)
+            AnimatedBuilder(
+              animation: _idle,
+              builder: (_, ch) {
+                final ph = (_idle.value * 3 - (k + offset) * 0.06) % 1.0;
+                final hop = ph < 0.18 ? sin(ph / 0.18 * pi) : 0.0;
+                return Transform.translate(offset: Offset(0, -hop * size * 0.18), child: ch);
+              },
+              child: jdOutlined(text[k], k.isEven ? c : Color.lerp(c, Colors.white, 0.18)!, size, stroke: 0.2),
+            ),
+        ]);
+    return JdPopIn(
+      child: SizedBox(
+        width: tw,
+        height: th,
+        child: Stack(children: [
+          Positioned.fill(child: Image.asset(jd('jd_title_home'), fit: BoxFit.fill)),
+          Positioned(
+            left: tw * 0.12,
+            right: tw * 0.12,
+            top: th * 0.12,
+            bottom: th * 0.36,
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                wave(line1, colors[0], tw * 0.11, 0),
+                if (line2.isNotEmpty) Transform.translate(offset: Offset(0, -tw * 0.02), child: wave(line2, colors[1], tw * 0.12, line1.length)),
+              ]),
+            ),
+          ),
+          Positioned(
+            left: tw * 0.22,
+            right: tw * 0.22,
+            bottom: th * 0.08,
+            height: th * 0.2,
+            child: Center(
+              child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'tag').replaceAll('\n', ' '), style: jdText(14 * s, color: jdBrown))),
+            ),
+          ),
+        ]),
       ),
-    ]);
+    );
   }
 
   Widget _scene(double s, double w) => LayoutBuilder(builder: (_, c) {
         final h = c.maxHeight;
         final t = _idle;
+        final heroH = min(h * 0.8, w * 0.5);
         return Stack(clipBehavior: Clip.none, alignment: Alignment.bottomCenter, children: [
-          // hero: robot watering + kid planting
+          // ground glow
           Positioned(
-            left: 0,
-            right: 0,
-            bottom: -4 * s,
-            child: Center(child: Image.asset(jd('jd_hero'), height: min(h * 0.92, w * 0.6))),
+            left: w * 0.08,
+            right: w * 0.08,
+            bottom: -heroH * 0.05,
+            height: heroH * 0.3,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(colors: [const Color(0xFFFFF6C8).withOpacity(0.75), const Color(0x00FFF6C8)]),
+              ),
+            ),
+          ),
+          // kid planting (bobbing as he digs)
+          Positioned(
+            left: w * 0.06,
+            bottom: 0,
+            child: AnimatedBuilder(
+              animation: t,
+              builder: (_, ch) => Transform.translate(
+                offset: Offset(0, sin(t.value * 2 * pi * 6).abs() * -4 * s),
+                child: Transform.rotate(alignment: Alignment.bottomCenter, angle: sin(t.value * 2 * pi * 3) * 0.02, child: ch),
+              ),
+              child: Image.asset(jd('jd_kid_plant'), height: heroH * 0.95),
+            ),
+          ),
+          // the little bean sprout growing & wiggling between them
+          Positioned(
+            left: w * 0.38,
+            bottom: 0,
+            child: AnimatedBuilder(
+              animation: t,
+              builder: (_, ch) => Transform.scale(
+                alignment: Alignment.bottomCenter,
+                scale: 0.92 + 0.08 * sin(t.value * 2 * pi * 2),
+                child: Transform.rotate(alignment: Alignment.bottomCenter, angle: sin(t.value * 2 * pi * 4) * 0.05, child: ch),
+              ),
+              child: Image.asset(jd('jd_sprout_bean'), height: heroH * 0.45),
+            ),
+          ),
+          // robot watering
+          Positioned(
+            right: w * 0.02,
+            bottom: 0,
+            child: AnimatedBuilder(
+              animation: t,
+              builder: (_, ch) => Transform.rotate(alignment: Alignment.bottomCenter, angle: -0.03 + sin(t.value * 2 * pi * 3) * 0.04, child: ch),
+              child: Transform.flip(flipX: true, child: Image.asset(jd('jd_robot_water'), height: heroH)),
+            ),
+          ),
+          // falling water drops from the can
+          Positioned(
+            right: w * 0.02 + heroH * 0.62,
+            bottom: heroH * 0.12,
+            width: heroH * 0.3,
+            height: heroH * 0.45,
+            child: IgnorePointer(child: AnimatedBuilder(animation: t, builder: (_, __) => CustomPaint(painter: _DropsPainter(t.value)))),
           ),
           // signpost with the garden words
           PositionedDirectional(
             start: 2 * s,
-            top: h * 0.02,
-            child: SizedBox(
-              width: min(w * 0.27, 105 * s),
-              child: AspectRatio(
-                aspectRatio: 1 / 0.8591,
-                child: LayoutBuilder(builder: (_, b) {
-                  final bw = b.maxWidth, bh = b.maxHeight;
-                  return Stack(children: [
-                    Positioned.fill(child: Image.asset(jd('jd_signpost'), fit: BoxFit.fill)),
-                    for (var i = 0; i < 3; i++)
-                      Positioned(
-                        left: bw * 0.18,
-                        right: bw * 0.14,
-                        top: bh * (0.08 + i * 0.205),
-                        height: bh * 0.18,
-                        child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'sign$i'), style: jdText(13 * s)))),
-                      ),
-                  ]);
-                }),
+            top: 0,
+            child: JdFloat(
+              amp: 0,
+              tilt: 0.03,
+              period: const Duration(seconds: 4),
+              child: SizedBox(
+                width: min(w * 0.24, 92 * s),
+                child: AspectRatio(
+                  aspectRatio: 1 / 1.5444,
+                  child: LayoutBuilder(builder: (_, b) {
+                    final bw = b.maxWidth, bh = b.maxHeight;
+                    return Stack(children: [
+                      Positioned.fill(child: Image.asset(jd('jd_signpost'), fit: BoxFit.fill)),
+                      for (var i = 0; i < 3; i++)
+                        Positioned(
+                          left: bw * 0.12,
+                          right: bw * 0.1,
+                          top: bh * (0.06 + i * 0.165),
+                          height: bh * 0.13,
+                          child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'sign$i'), style: jdText(13 * s, color: const Color(0xFF4A2408))))),
+                        ),
+                    ]);
+                  }),
+                ),
               ),
             ),
           ),
-          // sunflower with the bird
+          // sunflower swaying
           PositionedDirectional(
-            end: 0,
-            top: h * 0.0,
+            end: 4 * s,
+            top: 0,
             child: AnimatedBuilder(
               animation: t,
-              builder: (_, c) => Transform.rotate(alignment: Alignment.bottomCenter, angle: sin(t.value * 2 * pi * 2) * 0.04, child: c),
-              child: Image.asset(jd('jd_sunflower'), width: min(w * 0.2, 80 * s)),
+              builder: (_, c) => Transform.rotate(alignment: Alignment.bottomCenter, angle: sin(t.value * 2 * pi * 2) * 0.06, child: c),
+              child: Image.asset(jd('jd_sunflower'), width: min(w * 0.22, 86 * s)),
             ),
           ),
-          PositionedDirectional(
-            end: w * 0.13,
-            top: h * 0.02,
-            child: AnimatedBuilder(
-              animation: t,
-              builder: (_, c) => Transform.translate(offset: Offset(0, -sin(t.value * 2 * pi * 6).abs() * 3 * s), child: c),
-              child: Transform.flip(flipX: !jdRtl(context), child: Image.asset(jd('jd_bird'), width: min(w * 0.15, 58 * s))),
-            ),
-          ),
-          // butterfly
+          // bird flying across, landing on the sign
           AnimatedBuilder(
             animation: t,
             builder: (_, c) {
-              final a = t.value * 2 * pi;
-              return Positioned(
-                left: w * 0.5 + cos(a) * w * 0.3 - 20 * s,
-                top: h * 0.25 + sin(a * 2) * h * 0.14,
-                child: Transform.scale(scaleX: 0.75 + 0.25 * sin(a * 18).abs(), child: c),
-              );
+              final p = (t.value * 2) % 1.0;
+              final x = w * (1.1 - p * 1.3);
+              final y = h * 0.08 + sin(p * pi * 4) * h * 0.06;
+              return Positioned(left: x, top: y, child: Transform.rotate(angle: sin(p * pi * 8) * 0.12, child: c));
             },
-            child: Image.asset(jd('jd_butterfly'), width: 38 * s),
+            child: Image.asset(jd('jd_bird'), width: min(w * 0.13, 50 * s)),
           ),
+          // two butterflies
+          for (var b = 0; b < 2; b++)
+            AnimatedBuilder(
+              animation: t,
+              builder: (_, c) {
+                final a = t.value * 2 * pi + b * pi;
+                return Positioned(
+                  left: w * 0.45 + cos(a) * w * (0.28 - b * 0.08) - 20 * s,
+                  top: h * (0.22 + b * 0.18) + sin(a * 2) * h * 0.12,
+                  child: Transform.scale(scaleX: 0.6 + 0.4 * sin(a * 20).abs(), child: c),
+                );
+              },
+              child: Image.asset(jd('jd_butterfly'), width: (34 - b * 8) * s),
+            ),
         ]);
       });
 
   Widget _panel(double s, double w, int found) {
     final pw = w - 24 * s;
-    final ph = pw * 0.3359;
+    final cw = (pw - 24 * s) / 3;
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 12 * s),
-      padding: EdgeInsets.fromLTRB(6 * s, 6 * s, 6 * s, 10 * s),
+      padding: EdgeInsets.fromLTRB(6 * s, 8 * s, 6 * s, 10 * s),
       decoration: BoxDecoration(
         color: jdCream.withOpacity(0.96),
         borderRadius: BorderRadius.circular(30 * s),
@@ -232,44 +321,54 @@ class _GardenMenuState extends State<GardenMenu> with TickerProviderStateMixin {
       ),
       child: Column(children: [
         // three world cards
-        SizedBox(
-          width: pw,
-          height: ph,
-          child: Stack(children: [
-            Positioned.fill(child: Image.asset(jd('jd_panel3'), fit: BoxFit.fill)),
-            for (var i = 0; i < 3; i++)
-              Positioned(
-                left: pw * [0.09, 0.37, 0.65][i],
-                width: pw * 0.26,
-                top: ph * 0.1,
-                bottom: ph * 0.12,
-                child: JdPress(
-                  onTap: () => _openMap(i),
-                  label: jdT(context, 'w$i'),
-                  child: Column(children: [
-                    Expanded(
+        Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+          for (var i = 0; i < 3; i++)
+            JdPopIn(
+              delayMs: 150 + i * 120,
+              child: JdPress(
+                onTap: () => _openMap(i),
+                label: jdT(context, 'w$i'),
+                child: SizedBox(
+                  width: cw,
+                  height: cw * 0.86,
+                  child: Stack(children: [
+                    Positioned.fill(child: Image.asset(jd('jd_panel_sq'), fit: BoxFit.fill)),
+                    Positioned(
+                      left: cw * 0.12,
+                      right: cw * 0.12,
+                      top: cw * 0.08,
+                      bottom: cw * 0.28,
                       child: AnimatedBuilder(
                         animation: _idle,
-                        builder: (_, c) => Transform.translate(offset: Offset(0, sin((_idle.value * 3 + i * 0.3) * 2 * pi) * 2.5 * s), child: c),
-                        child: Image.asset(jd(['jd_seed_sprout', 'jd_can_teal', 'jd_sunflower'][i]), fit: BoxFit.contain),
+                        builder: (_, c) => Transform.translate(
+                          offset: Offset(0, sin((_idle.value * 3 + i * 0.3) * 2 * pi) * 3 * s),
+                          child: Transform.rotate(angle: sin((_idle.value * 3 + i * 0.3) * 2 * pi) * 0.05, child: c),
+                        ),
+                        child: Image.asset(jd(['jd_seed_sprout', 'jd_can_blue', 'jd_greenhouse'][i]), fit: BoxFit.contain),
                       ),
                     ),
-                    FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'w$i'), style: jdText(15 * s, color: jdInk))),
+                    Positioned(
+                      left: cw * 0.1,
+                      right: cw * 0.1,
+                      bottom: cw * 0.1,
+                      height: cw * 0.17,
+                      child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'w$i'), style: jdText(15 * s, color: jdInk)))),
+                    ),
                   ]),
                 ),
               ),
-          ]),
-        ),
-        SizedBox(height: 4 * s),
+            ),
+        ]),
+        SizedBox(height: 6 * s),
         Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
           Expanded(
             child: Column(children: [
-              jdPlay(jdT(context, 'play'), _playNext, min(pw * 0.7, 270 * s), pulse: _idle),
+              jdPlay(jdT(context, 'play'), _playNext, min(pw * 0.68, 260 * s), pulse: _idle),
               SizedBox(height: 6 * s),
               JdSpriteButton(
                 sprite: 'jd_pill_level',
-                ratio: 0.3077,
-                start: 0.26,
+                ratio: 0.2444,
+                start: 0.08,
                 end: 0.08,
                 label: jdT(context, 'choose'),
                 onTap: _openMap,
@@ -286,7 +385,7 @@ class _GardenMenuState extends State<GardenMenu> with TickerProviderStateMixin {
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 4 * s),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Image.asset(jd('jd_help'), width: 26 * s),
+                    JdFloat(amp: 0, tilt: 0.12, period: const Duration(milliseconds: 1600), child: Image.asset(jd('jd_help'), width: 28 * s)),
                     SizedBox(width: 6 * s),
                     Text(jdT(context, 'how'), style: jdText(14 * s, color: jdInk)),
                   ]),
@@ -298,29 +397,33 @@ class _GardenMenuState extends State<GardenMenu> with TickerProviderStateMixin {
           JdPress(
             onTap: _openGarden,
             label: jdT(context, 'myGarden'),
-            child: SizedBox(
-              width: min(pw * 0.3, 118 * s),
-              child: AspectRatio(
-                aspectRatio: 1 / 0.6988,
-                child: LayoutBuilder(builder: (_, b) {
-                  final bw = b.maxWidth, bh = b.maxHeight;
-                  return Stack(children: [
-                    Positioned.fill(child: Image.asset(jd('jd_garden_card'), fit: BoxFit.fill)),
-                    Positioned(
-                      left: bw * 0.42,
-                      right: bw * 0.06,
-                      top: bh * 0.2,
-                      bottom: bh * 0.14,
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-                          Text(jdT(context, 'myGarden'), style: jdText(11 * s, color: jdBrown)),
-                          Text(jdT(context, 'found', {'n': found}), style: jdText(12 * s, color: jdInk, height: 1.1)),
-                        ]),
+            child: JdFloat(
+              amp: 2.5 * s,
+              period: const Duration(milliseconds: 2800),
+              child: SizedBox(
+                width: min(pw * 0.32, 124 * s),
+                child: AspectRatio(
+                  aspectRatio: 1 / 0.7227,
+                  child: LayoutBuilder(builder: (_, b) {
+                    final bw = b.maxWidth, bh = b.maxHeight;
+                    return Stack(children: [
+                      Positioned.fill(child: Image.asset(jd('jd_garden_card'), fit: BoxFit.fill)),
+                      Positioned(
+                        left: bw * 0.44,
+                        right: bw * 0.07,
+                        top: bh * 0.28,
+                        bottom: bh * 0.14,
+                        child: FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
+                            Text(jdT(context, 'myGarden'), style: jdText(11 * s, color: jdBrown)),
+                            Text(jdT(context, 'found', {'n': found}), style: jdText(12 * s, color: jdInk, height: 1.1)),
+                          ]),
+                        ),
                       ),
-                    ),
-                  ]);
-                }),
+                    ]);
+                  }),
+                ),
               ),
             ),
           ),
@@ -328,6 +431,25 @@ class _GardenMenuState extends State<GardenMenu> with TickerProviderStateMixin {
       ]),
     );
   }
+}
+
+/// Water drops falling from the watering can.
+class _DropsPainter extends CustomPainter {
+  final double t;
+  _DropsPainter(this.t);
+  @override
+  void paint(Canvas canvas, Size size) {
+    final r = Random(3);
+    final p = Paint()..color = const Color(0xFF6CC8FF).withOpacity(0.85);
+    for (var i = 0; i < 9; i++) {
+      final x = r.nextDouble() * size.width;
+      final y = ((t * 10 + r.nextDouble()) % 1.0) * size.height;
+      canvas.drawOval(Rect.fromCenter(center: Offset(x - y * 0.15, y), width: 4, height: 8), p);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_DropsPainter o) => o.t != t;
 }
 
 extension on JdSpriteButton {
@@ -500,7 +622,7 @@ class _GardenMapState extends State<GardenMap> with TickerProviderStateMixin {
     final lvl = jdLevels[_sel - 1];
     final cardW = min(w - 20 * s, 400 * s);
     final headerH = 98 * s;
-    final cardH = cardW * 0.4446;
+    final cardH = cardW * 0.5607;
 
     return Scaffold(
       backgroundColor: const Color(0xFF9CCB6A),
@@ -511,7 +633,7 @@ class _GardenMapState extends State<GardenMap> with TickerProviderStateMixin {
           left: 0,
           right: 0,
           top: pad.top + headerH * 0.75,
-          bottom: pad.bottom + cardH * 0.82,
+          bottom: pad.bottom + cardH * 0.92,
           child: LayoutBuilder(builder: (_, c) => _map(c.maxWidth, c.maxHeight, s)),
         ),
         // header
@@ -612,14 +734,14 @@ class _GardenMapState extends State<GardenMap> with TickerProviderStateMixin {
         width: width,
         child: IgnorePointer(
           child: AspectRatio(
-            aspectRatio: 1 / 0.53,
+            aspectRatio: 1 / 0.58,
             child: Stack(children: [
               Positioned.fill(child: Image.asset(jd(a), fit: BoxFit.fill)),
               Positioned(
-                left: width * 0.14,
-                right: width * 0.14,
-                top: width * 0.08,
-                height: width * 0.25,
+                left: width * 0.16,
+                right: width * 0.16,
+                top: width * 0.1,
+                height: width * 0.2,
                 child: Center(
                   child: FittedBox(
                     fit: BoxFit.scaleDown,
@@ -636,14 +758,16 @@ class _GardenMapState extends State<GardenMap> with TickerProviderStateMixin {
     final st = _stars[n - 1];
     final open = JdStore.unlocked(_stars, n);
     final sel = n == _sel;
-    final sprite = !open ? 'jd_node_lock' : (sel ? 'jd_node_now' : (st == 3 ? 'jd_node_stars' : 'jd_node'));
+    final sprite = !open ? 'jd_node_lock' : (sel ? 'jd_node_now' : (st == 3 ? 'jd_node_stars' : 'jd_node_open'));
     final shake = n == _shakeN ? sin(_shake.value * pi * 6) * 6 * (1 - _shake.value) : 0.0;
     final pulse = sel ? 1.06 + 0.05 * sin(_idle.value * 2 * pi * 3) : 1.0;
-    final ratio = switch (sprite) { 'jd_node_now' => 0.6864, 'jd_node_lock' => 0.745, 'jd_node_stars' => 0.695, _ => 0.715 };
+    final ratio = switch (sprite) { 'jd_node_now' => 0.645, 'jd_node_lock' => 0.6105, 'jd_node_stars' => 0.605, _ => 0.645 };
+    // done levels do a little happy hop now and then
+    final hop = (open && st > 0 && !sel) ? max(0.0, sin((_idle.value * 3 + n * 0.13) * 2 * pi)) * 3 * s : 0.0;
     final h = size * ratio;
     return Positioned(
       left: c.dx - size / 2 + shake,
-      top: c.dy - h * 0.55,
+      top: c.dy - h * 0.55 - hop,
       width: size,
       height: h,
       child: GestureDetector(
@@ -654,12 +778,12 @@ class _GardenMapState extends State<GardenMap> with TickerProviderStateMixin {
           child: Stack(clipBehavior: Clip.none, alignment: Alignment.center, children: [
             Positioned.fill(child: Image.asset(jd(sprite), fit: BoxFit.fill)),
             Positioned(
-              top: h * (sprite == 'jd_node_lock' ? 0.04 : (sprite == 'jd_node_stars' ? 0.06 : 0.16)),
+              top: h * (sprite == 'jd_node_lock' ? 0.0 : (sprite == 'jd_node_stars' ? 0.1 : 0.14)),
               child: Text('$n',
-                  style: jdText(h * (sprite == 'jd_node_lock' ? 0.3 : 0.42),
-                          color: sprite == 'jd_node_now' ? Colors.white : (open ? const Color(0xFF4A1D9E) : const Color(0xFF55555F)),
+                  style: jdText(h * (sprite == 'jd_node_lock' ? 0.28 : 0.42),
+                          color: sprite == 'jd_node_now' || sprite == 'jd_node_open' ? Colors.white : (open ? const Color(0xFF4A1D9E) : const Color(0xFF55555F)),
                           weight: FontWeight.w800)
-                      .copyWith(shadows: sprite == 'jd_node_now' ? [Shadow(color: Colors.brown.withOpacity(0.5), offset: const Offset(0, 1.5))] : null)),
+                      .copyWith(shadows: sprite == 'jd_node_now' || sprite == 'jd_node_open' ? [Shadow(color: Colors.brown.withOpacity(0.5), offset: const Offset(0, 1.5))] : null)),
             ),
             if (!sel && st > 0 && st < 3)
               Positioned(
@@ -684,71 +808,68 @@ class _GardenMapState extends State<GardenMap> with TickerProviderStateMixin {
   }
 
   Widget _card(double s, double width, JdLevel lvl) {
-    final h = width * 0.4446;
+    final h = width * 0.5192;
     final known = JdStore.discoveredFrom(_stars).contains(lvl.plantId);
     return SizedBox(
       width: width,
-      height: h,
-      child: Stack(children: [
-        Positioned.fill(child: Image.asset(jd('jd_level_card'), fit: BoxFit.fill)),
-        // picture in the light circle
+      height: h + h * 0.08,
+      child: Stack(clipBehavior: Clip.none, children: [
+        Positioned(left: 0, right: 0, top: 0, height: h, child: Image.asset(jd('jd_level_card'), fit: BoxFit.fill)),
+        // picture in the light circle (covers the painted sprout)
         Positioned(
-          left: width * 0.09,
-          width: width * 0.28,
-          top: h * 0.16,
-          height: h * 0.66,
-          child: AnimatedBuilder(
-            animation: _idle,
-            builder: (_, c) => Transform.translate(offset: Offset(0, sin(_idle.value * 2 * pi * 2) * 2.5 * s), child: c),
-            child: AnimatedSwitcher(
-              duration: const Duration(milliseconds: 300),
-              child: known
-                  ? JdPot(key: ValueKey(lvl.plantId), plant: lvl.plant, height: h * 0.66)
-                  : Image.asset(jd('jd_sprout_bean'), key: const ValueKey('sprout'), fit: BoxFit.contain),
+          left: width * 0.075,
+          width: width * 0.3,
+          top: h * 0.17,
+          height: width * 0.3,
+          child: ClipOval(
+            child: DecoratedBox(
+              decoration: const BoxDecoration(gradient: RadialGradient(colors: [Color(0xFFF4FFE6), Color(0xFFBDE89A)])),
+              child: Padding(
+                padding: EdgeInsets.all(width * 0.02),
+                child: AnimatedBuilder(
+                  animation: _idle,
+                  builder: (_, c) => Transform.rotate(angle: sin(_idle.value * 2 * pi * 2) * 0.05, child: c),
+                  child: AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 350),
+                    transitionBuilder: (c, a) => ScaleTransition(scale: CurvedAnimation(parent: a, curve: Curves.elasticOut), child: c),
+                    child: known
+                        ? JdPot(key: ValueKey(lvl.plantId), plant: lvl.plant, height: width * 0.26)
+                        : Image.asset(jd('jd_seed_sprout'), key: ValueKey('s${lvl.n}'), fit: BoxFit.contain),
+                  ),
+                ),
+              ),
             ),
           ),
         ),
         Positioned(
-          left: width * 0.38,
-          right: width * 0.28,
-          top: h * 0.12,
-          height: h * 0.21,
-          child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(jdT(context, 'level', {'n': lvl.n}), style: jdText(17 * s, color: Colors.white)))),
-        ),
-        Positioned(
-          left: width * 0.38,
-          right: width * 0.08,
-          top: h * 0.33,
-          height: h * 0.17,
-          child: FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              Text(lvl.title(context), style: jdText(17 * s, color: jdInk, height: 1.0)),
-              Text(lvl.sub(context), style: jdText(10.5 * s, color: jdInkSoft, weight: FontWeight.w600, height: 1.1)),
-            ]),
-          ),
-        ),
-        // the orange pill of the sprite is the play button
-        Positioned(
-          left: width * 0.36,
-          right: width * 0.1,
-          top: h * 0.5,
-          bottom: h * 0.12,
-          child: JdPress(
-            onTap: _play,
-            label: jdT(context, 'play'),
-            child: Row(children: [
-              SizedBox(width: width * 0.25),
-              Expanded(
-                child: FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Text(jdT(context, 'play'),
-                      style: jdText(24 * s, color: Colors.white, weight: FontWeight.w800)
-                          .copyWith(shadows: const [Shadow(color: Color(0xFFB4410A), offset: Offset(0, 2))])),
+          left: width * 0.44,
+          right: width * 0.06,
+          top: h * 0.13,
+          height: h * 0.46,
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 280),
+            child: FittedBox(
+              key: ValueKey(lvl.n),
+              fit: BoxFit.scaleDown,
+              child: Column(mainAxisSize: MainAxisSize.min, children: [
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10 * s, vertical: 2 * s),
+                  decoration: BoxDecoration(color: jdOrange, borderRadius: BorderRadius.circular(12 * s)),
+                  child: Text(jdT(context, 'level', {'n': lvl.n}), style: jdText(13 * s, color: Colors.white)),
                 ),
-              ),
-            ]),
+                SizedBox(height: 3 * s),
+                Text(lvl.title(context), style: jdText(19 * s, color: jdInk, height: 1.0)),
+                Text(lvl.sub(context), style: jdText(10.5 * s, color: jdInkSoft, weight: FontWeight.w600, height: 1.2)),
+              ]),
+            ),
           ),
+        ),
+        // play button sitting on the cream pill of the card
+        Positioned(
+          left: width * 0.46,
+          right: width * 0.04,
+          top: h * 0.6,
+          child: Center(child: jdPlay(jdT(context, 'play'), _play, width * 0.5, pulse: _idle)),
         ),
       ]),
     );
@@ -769,24 +890,51 @@ class JdDialogFrame extends StatelessWidget {
 
   Widget _page(BuildContext context) {
     final s = jdScale(context);
-    final w = min(MediaQuery.sizeOf(context).width - 28, 400.0);
+    final w = min(MediaQuery.sizeOf(context).width - 28, 390.0);
+    final pw = w * 0.84;
+    final ph = pw * 0.366;
     return Center(
       child: Material(
         type: MaterialType.transparency,
         child: SizedBox(
           width: w,
-          child: Stack(children: [
-            Positioned.fill(child: Image.asset(jd('jd_dialog'), fit: BoxFit.fill, centerSlice: null)),
-            Column(mainAxisSize: MainAxisSize.min, children: [
-              SizedBox(
-                height: w * 0.17,
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(w * 0.22, w * 0.035, w * 0.22, w * 0.025),
+          child: Stack(clipBehavior: Clip.none, alignment: Alignment.topCenter, children: [
+            Container(
+              margin: EdgeInsets.only(top: ph * 0.55),
+              padding: EdgeInsets.fromLTRB(w * 0.07, ph * 0.55, w * 0.07, w * 0.07),
+              decoration: BoxDecoration(
+                color: jdCream,
+                borderRadius: BorderRadius.circular(28 * s),
+                border: Border.all(color: const Color(0xFFB9783F), width: 5 * s),
+                boxShadow: [
+                  BoxShadow(color: const Color(0xFFB8F27A).withOpacity(0.55), blurRadius: 24 * s, spreadRadius: 2 * s),
+                  BoxShadow(color: Colors.black.withOpacity(0.25), blurRadius: 14 * s, offset: Offset(0, 6 * s)),
+                ],
+              ),
+              child: child,
+            ),
+            // leafy corners
+            Positioned(left: -10 * s, bottom: -10 * s, child: JdFloat(amp: 0, tilt: 0.08, child: Image.asset(jd('jd_leaves'), width: 56 * s))),
+            Positioned(
+              right: -10 * s,
+              bottom: -10 * s,
+              child: Transform.flip(flipX: true, child: JdFloat(amp: 0, tilt: 0.08, phase: 0.5, child: Image.asset(jd('jd_leaves'), width: 56 * s))),
+            ),
+            // title plank
+            SizedBox(
+              width: pw,
+              height: ph,
+              child: Stack(children: [
+                Positioned.fill(child: Image.asset(jd('jd_plank_title'), fit: BoxFit.fill)),
+                Positioned(
+                  left: pw * 0.14,
+                  right: pw * 0.14,
+                  top: ph * 0.18,
+                  bottom: ph * 0.22,
                   child: Center(child: FittedBox(fit: BoxFit.scaleDown, child: Text(title, style: jdText(26 * s, color: jdInk, weight: FontWeight.w800)))),
                 ),
-              ),
-              Padding(padding: EdgeInsets.fromLTRB(w * 0.07, 4 * s, w * 0.07, w * 0.07), child: child),
-            ]),
+              ]),
+            ),
           ]),
         ),
       ),
@@ -822,14 +970,15 @@ class _HelpDialog extends StatelessWidget {
     final s = jdScale(context);
     Widget step(int n) => Expanded(
           child: Column(children: [
-            Stack(alignment: Alignment.topLeft, children: [
-              Image.asset(jd('jd_step$n')),
+            Stack(clipBehavior: Clip.none, alignment: Alignment.topLeft, children: [
+              JdPopIn(
+                delayMs: 120 * n,
+                child: JdFloat(amp: 3 * s, phase: n * 0.3, child: SizedBox(height: 84 * s, child: Center(child: Image.asset(jd('jd_step$n'))))),
+              ),
               Positioned(
                 left: 0,
                 top: 0,
-                width: 30 * s,
-                height: 30 * s,
-                child: Center(child: Text('$n', style: jdText(17 * s, color: Colors.white, weight: FontWeight.w800))),
+                child: CircleAvatar(radius: 13 * s, backgroundColor: jdOrange, child: Text('$n', style: jdText(15 * s, color: Colors.white, weight: FontWeight.w800))),
               ),
             ]),
             SizedBox(height: 4 * s),

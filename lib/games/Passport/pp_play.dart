@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:provider/provider.dart';
 import 'pp_data.dart';
 import 'pp_menu.dart';
 import 'pp_strings.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
+import 'package:mortaalim/tools/AD_Tools/double_reward_button.dart';
 
 enum _Phase { observe, find, puzzle, stamp }
 
@@ -267,14 +270,11 @@ class _StagePlayState extends State<StagePlay> with TickerProviderStateMixin {
     final after = await PpStore.load();
     if (!mounted) return;
     final badge = first && !before.countryDone(_st.land) && after.countryDone(_st.land);
-    final gold = first ? 12 + _st.index * 2 : 3 + fresh * 2;
-    var gems = (stars == 3 && fresh > 0) ? 1 : 0;
-    if (badge) gems += 3;
+    final tier = _st.land.id == 'MA' ? (_st.index < 4 ? 1 : 2) : 3;
+    final rw = Rewards.levelFromGain(tier: tier, stars: stars, gained: first ? stars : fresh, bonusGems: badge ? 3 : 0);
+    final gold = rw.gold, gems = rw.gems;
     try {
-      final xp = Provider.of<ExperienceManager>(context, listen: false);
-      xp.addGold(context, gold);
-      if (gems > 0) xp.addGems(context, gems);
-      xp.addXP(5 + stars * 3, context: context);
+      Provider.of<ExperienceManager>(context, listen: false).grant(context, rw);
     } catch (_) {}
     PpVoice.say(context, '${ppT(context, 'bravo1')} ${ppT(context, 'bravo2')}');
     final r = await Navigator.of(context).push<String>(PageRouteBuilder<String>(
@@ -283,6 +283,9 @@ class _StagePlayState extends State<StagePlay> with TickerProviderStateMixin {
       pageBuilder: (_, __, ___) => _EndPage(stage: _st, stars: stars, gold: gold, gems: gems, badge: badge, last: after.stamps == ppStages.length),
       transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
     ));
+    if (!mounted) return;
+    // Fin de niveau = pause naturelle (AdHelper applique fréquence + écran « Publicité »).
+    await AdHelper.showInterstitialAd(context: context);
     if (!mounted) return;
     if (r == 'again') {
       _restart();
@@ -1309,6 +1312,11 @@ class _EndPageState extends State<_EndPage> with TickerProviderStateMixin {
                   SizedBox(height: 6 * s),
                   _pop(0.55, 0.85, _rewards(s, w)),
                   SizedBox(height: 8 * s),
+                  // Optionnel : pub choisie par l'enfant pour doubler ses pièces
+                  if (widget.gold > 0) ...[
+                    DoubleRewardButton(gold: widget.gold, width: min(w * 0.76, 300 * s), height: 40 * s),
+                    SizedBox(height: 8 * s),
+                  ],
                   _pop(
                     0.7,
                     1.0,

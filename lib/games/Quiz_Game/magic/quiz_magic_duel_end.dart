@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:mortaalim/Manager/rewards.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -72,9 +73,9 @@ class _QuizMagicDuelEndPageState extends State<QuizMagicDuelEndPage> with Ticker
     }
     // rewards go to the device owner: total right answers (+ bonus for beating the robot)
     final humanGood = [for (var p = 0; p < 2; p++) if (!widget.players[p].robot) _scores[p]].fold<int>(0, (a, b) => a + b);
-    final gold = humanGood * 2 + (_vsRobot && humanWon ? 5 + widget.robotLevel * 5 : 0);
-    if (gold > 0) xp.addGold(context, gold);
-    xp.addXP(humanGood * 2 + 2, context: context);
+    final base = Rewards.session(correct: humanGood, total: humanGood);
+    // beating the robot = a small gold bonus (bigger for a stronger robot)
+    xp.grant(context, base + Reward(gold: _vsRobot && humanWon ? 3 + widget.robotLevel * 2 : 0));
   }
 
   @override

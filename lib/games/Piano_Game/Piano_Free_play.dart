@@ -52,7 +52,7 @@ class _FullPianoPageState extends State<FullPianoPage> {
   void playNoteWithXP(String note) {
     setState(() => _pressedNotes.add(note));
     _musicPlayers.play('assets/audios/piano_notes/$note.mp3');
-    xpManager.addXP(2);
+    // free play is just for fun: no XP per note (it could be farmed)
 
     // Remove pressed state after 150ms
     Future.delayed(const Duration(milliseconds: 150), () {

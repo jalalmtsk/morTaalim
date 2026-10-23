@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../tools/Ads_Manager.dart';
 import 'Stories.dart';
@@ -41,9 +40,6 @@ class _StoriesGridPageState extends State<StoriesGridPage>
 
   late AnimationController _staggerCtrl;
   Set<int> _completedStories = {};
-  InterstitialAd? _interstitialAd;
-  bool _isAdReady = false;
-  DateTime? _lastAdTime;
 
   String _searchQuery = '';
   final _searchCtrl = TextEditingController();
@@ -55,7 +51,6 @@ class _StoriesGridPageState extends State<StoriesGridPage>
         vsync: this, duration: const Duration(milliseconds: 1000))
       ..forward();
     _loadCompleted();
-    _loadAd();
   }
 
   Future<void> _loadCompleted() async {
@@ -68,24 +63,9 @@ class _StoriesGridPageState extends State<StoriesGridPage>
     if (mounted) setState(() => _completedStories = done);
   }
 
-  void _loadAd() {
-    InterstitialAd.load(
-      adUnitId: AdHelper.interstitialAdUnitId,
-      request: const AdRequest(nonPersonalizedAds: true),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) {
-          if (mounted) setState(() { _interstitialAd = ad; _isAdReady = true; });
-        },
-        onAdFailedToLoad: (_) {
-          if (mounted) setState(() => _isAdReady = false);
-        },
-      ),
-    );
-  }
   @override
   void dispose() {
     _staggerCtrl.dispose();
-    _interstitialAd?.dispose();
     _searchCtrl.dispose();
     super.dispose();
   }
@@ -103,12 +83,6 @@ class _StoriesGridPageState extends State<StoriesGridPage>
   }
 
   Future<void> _openStory(int originalIndex, Story story) async {
-    final now = DateTime.now();
-    final canAd = _isAdReady &&
-        _interstitialAd != null &&
-        (_lastAdTime == null ||
-            now.difference(_lastAdTime!) > const Duration(seconds: 10));
-
     Future<void> push() async {
       await Navigator.push(
         context,
@@ -123,23 +97,9 @@ class _StoriesGridPageState extends State<StoriesGridPage>
       _loadCompleted();
     }
 
-    if (canAd) {
-      _lastAdTime = now;
-      _interstitialAd!.fullScreenContentCallback = FullScreenContentCallback(
-        onAdDismissedFullScreenContent: (ad) {
-          ad.dispose(); _interstitialAd = null; _isAdReady = false;
-          _loadAd(); push();
-        },
-        onAdFailedToShowFullScreenContent: (ad, _) {
-          ad.dispose(); _interstitialAd = null; _isAdReady = false;
-          _loadAd(); push();
-        },
-      );
-      _interstitialAd!.show();
-      _interstitialAd = null; _isAdReady = false;
-    } else {
-      push();
-    }
+    // Pause naturelle entre deux histoires : AdHelper applique les règles
+    // (fréquence, écran « Publicité »), sinon ouvre l'histoire directement.
+    await AdHelper.showInterstitialAd(context: context, onDismissed: push);
   }
 
   // ── BUILD ──────────────────────────────────────────────────────────────────

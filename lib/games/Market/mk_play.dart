@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,8 @@ import 'package:mortaalim/XpSystem.dart';
 import 'package:provider/provider.dart';
 
 import 'mk_data.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
+import 'package:mortaalim/tools/AD_Tools/double_reward_button.dart';
 
 /// One level of Le petit marché.
 class MarketPlay extends StatefulWidget {
@@ -261,15 +264,12 @@ class _MarketPlayState extends State<MarketPlay> with TickerProviderStateMixin {
     final stars = (_mistakes == 0 && _hints == 0) ? 3 : (_mistakes + _hints <= 2 ? 2 : 1);
     final (fresh, first) = await MkStore.record(_lv.n, stars);
     if (!mounted) return;
-    final gold = first ? 10 + _lv.n * 2 : 3 + fresh * 2;
-    var gems = (stars == 3 && fresh > 0) ? 1 : 0;
     final badge = _lv.n == mkLevels.length && first;
-    if (badge) gems += 3;
+    // finishing a whole world (levels 4, 8, 12) the first time = +3 gems
+    final rw = Rewards.levelFromGain(tier: _lv.world + 1, stars: stars, gained: first ? stars : fresh, bonusGems: first && _lv.n % 4 == 0 ? 3 : 0);
+    final gold = rw.gold, gems = rw.gems;
     mkSfx(context, 'MarimbaWin_SFX.mp3');
-    final xp = Provider.of<ExperienceManager>(context, listen: false);
-    xp.addGold(context, gold);
-    if (gems > 0) xp.addGems(context, gems);
-    xp.addXP(4 + stars * 3, context: context);
+    Provider.of<ExperienceManager>(context, listen: false).grant(context, rw);
     MkVoice.say(context, '${mkT(context, 'bravo1')} ${mkT(context, 'bravo2')}');
     final r = await Navigator.of(context).push<String>(PageRouteBuilder<String>(
       opaque: false,
@@ -277,6 +277,9 @@ class _MarketPlayState extends State<MarketPlay> with TickerProviderStateMixin {
       pageBuilder: (_, __, ___) => _EndPage(level: _lv, stars: stars, gold: gold, gems: gems, badge: badge),
       transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
     ));
+    if (!mounted) return;
+    // Fin de niveau = pause naturelle (AdHelper applique fréquence + écran « Publicité »).
+    await AdHelper.showInterstitialAd(context: context);
     if (!mounted) return;
     switch (r) {
       case 'next':
@@ -1514,6 +1517,11 @@ class _EndPageState extends State<_EndPage> with TickerProviderStateMixin {
                     ),
                   ),
                   SizedBox(height: 10 * s),
+                  // Optionnel : pub choisie par l'enfant pour doubler ses pièces
+                  if (widget.gold > 0) ...[
+                    DoubleRewardButton(gold: widget.gold, width: min(w * 0.78, 310 * s), height: 40 * s),
+                    SizedBox(height: 8 * s),
+                  ],
                   ScaleTransition(
                     scale: _seg(0.65, 0.95),
                     child: MkPlayButton(

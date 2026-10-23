@@ -1,6 +1,5 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/XpSystem.dart';
@@ -9,7 +8,6 @@ import 'package:mortaalim/widgets/userStatutBar.dart';
 import 'package:provider/provider.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 
-import '../../../tools/Ads_Manager.dart';
 import '../Animal_Data.dart';
 import 'MatchTheSound_ResultPage.dart';
 import 'Tools/AnimalTiles.dart';
@@ -47,8 +45,6 @@ class _AS_MatchDropState extends State<AS_MatchDrop>
   late final Future<LottieComposition> _wrongComp;
 
   // ✅ Banner Ad
-  BannerAd? _bannerAd;
-  bool _isBannerAdLoaded = false;
 
   @override
   void initState() {
@@ -70,21 +66,10 @@ class _AS_MatchDropState extends State<AS_MatchDrop>
     // ✅ Initialize Banner Ad
 
   }
-  void _loadBannerAd() {
-    _bannerAd?.dispose();
-    _isBannerAdLoaded = false;
-
-    _bannerAd = AdHelper.getBannerAd(() {
-      setState(() {
-        _isBannerAdLoaded = true;
-      });
-    });
-  }
 
   @override
   void dispose() {
     _pulseController.dispose();
-    _bannerAd?.dispose();
     super.dispose();
   }
 
@@ -290,19 +275,6 @@ class _AS_MatchDropState extends State<AS_MatchDrop>
                     ],
                   ),
                 ),
-                if (context.watch<ExperienceManager>().adsEnabled &&
-                    _bannerAd != null &&
-                    _isBannerAdLoaded)
-                  SafeArea(
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: SizedBox(
-                        width: _bannerAd!.size.width.toDouble(),
-                        height: _bannerAd!.size.height.toDouble(),
-                        child: FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded),
-                      ),
-                    ),
-                  ),
               ],
             ),
           ),

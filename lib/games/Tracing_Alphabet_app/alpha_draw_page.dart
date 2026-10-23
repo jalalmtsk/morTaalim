@@ -1,15 +1,14 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 import 'dart:ui' as ui;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
 import 'package:mortaalim/Manager/lesson_progress.dart';
 import 'package:mortaalim/XpSystem.dart';
-import 'package:mortaalim/tools/Ads_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/widgets/KidScene/kid_page_parts.dart';
 import 'package:mortaalim/widgets/KidScene/kid_scene.dart';
@@ -115,8 +114,6 @@ class _AlphaDrawPageState extends State<AlphaDrawPage> with TickerProviderStateM
   final List<_Spark> _sparks = [];
   final Random _rng = Random();
 
-  BannerAd? _banner;
-  bool _bannerLoaded = false;
 
   AudioManager get _audio => Provider.of<AudioManager>(context, listen: false);
   ExperienceManager get _xp => Provider.of<ExperienceManager>(context, listen: false);
@@ -128,9 +125,6 @@ class _AlphaDrawPageState extends State<AlphaDrawPage> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    _banner = AdHelper.getBannerAd(() {
-      if (mounted) setState(() => _bannerLoaded = true);
-    });
     _openLanguage(_lang, first: true);
   }
 
@@ -152,7 +146,6 @@ class _AlphaDrawPageState extends State<AlphaDrawPage> with TickerProviderStateM
     _pop.dispose();
     _bump.dispose();
     _strip.dispose();
-    _banner?.dispose();
     super.dispose();
   }
 
@@ -406,8 +399,10 @@ class _AlphaDrawPageState extends State<AlphaDrawPage> with TickerProviderStateM
         setState(() => _done.add(_char));
         ActivityLog.markToday();
         _xp.addXP(1 + stars, context: context);
-        if (total % 10 == 0) {
-          _xp.addTokenBanner(context, 1);
+        if (total >= _lang.letters.length) {
+          _xp.grant(context, Rewards.alphabetComplete);
+        } else if (total % 10 == 0) {
+          _xp.grant(context, Rewards.alphabetMilestone);
           _audio.playSfx('assets/audios/UI_Audio/SFX_Audio/victory1_SFX.mp3');
         }
       }
@@ -525,7 +520,6 @@ class _AlphaDrawPageState extends State<AlphaDrawPage> with TickerProviderStateM
     final pad = MediaQuery.paddingOf(context);
     final w = min(size.width, 600.0) - 24;
     final s = _scale(context);
-    final showAd = context.select<ExperienceManager, bool>((x) => x.adsEnabled) && _banner != null && _bannerLoaded;
 
     return Scaffold(
       backgroundColor: KidColors.sky,
@@ -537,7 +531,7 @@ class _AlphaDrawPageState extends State<AlphaDrawPage> with TickerProviderStateM
             child: SizedBox(
               width: w,
               child: LayoutBuilder(builder: (context, cons) {
-                final bottomGap = 10 * s + (showAd ? 0 : pad.bottom);
+                final bottomGap = 10 * s + pad.bottom;
                 final caseH = _lang.hasCase ? 46 * s : 0.0;
                 // every fixed row has an exact height, so the board gets the rest
                 final fixed = 6 + 64 * s + 8 * s + 46 * s + 8 * s + 74 * s + 6 * s + 59 * s + caseH + 8 * s +
@@ -572,15 +566,6 @@ class _AlphaDrawPageState extends State<AlphaDrawPage> with TickerProviderStateM
           ),
         ),
       ]),
-      bottomNavigationBar: showAd
-          ? SafeArea(
-              child: SizedBox(
-                height: _banner!.size.height.toDouble(),
-                width: _banner!.size.width.toDouble(),
-                child: FamilyAdBanner(bannerAd: _banner, isLoaded: _bannerLoaded),
-              ),
-            )
-          : null,
     );
   }
 

@@ -1,0 +1,165 @@
+name: mortaalim
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.9+1
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.20.2
+
+  cupertino_icons: ^1.0.8
+  shared_preferences: ^2.5.3
+  youtube_player_flutter: ^9.1.1
+  connectivity_plus: ^6.1.4
+  just_audio: ^0.10.4
+  confetti: ^0.8.0
+  shimmer: ^3.0.0
+  flutter_tts: ^4.2.3
+  provider: ^6.1.5
+  animated_text_kit: ^4.2.3
+  url_launcher: ^6.3.1
+  package_info_plus: ^8.3.0
+  flutter_launcher_icons: ^0.14.4
+  lottie: ^3.3.1
+  fl_chart: ^0.71.0
+  flutter_colorpicker: ^1.1.0
+  google_mobile_ads: ^6.0.0
+  percent_indicator: ^4.2.5
+  font_awesome_flutter: ^11.0.0
+  flutter_staggered_animations: ^1.1.1
+  cloud_firestore: ^6.0.0
+  firebase_core: ^4.0.0
+  firebase_auth: ^6.0.0
+  uuid: ^4.5.1
+  hive: ^2.2.3
+  flutter_keyboard_visibility: ^6.0.0
+  marquee: ^2.3.0
+  share_plus: ^11.1.0
+  firebase_database: ^12.0.0
+  network_info_plus: ^6.1.4
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icons/MoorTaalimLogo.png"
+  min_sdk_android: 21
+  adaptive_icon_foreground: "assets/icons/MoorTaalimLogo.png"
+  adaptive_icon_background: "#ffffff"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
+
+  assets:
+    - assets/courses/
+    - assets/courses/primaire1/Primaire1Cours/
+    - assets/courses/primaire2/Primaire2Cours/
+    - assets/images/
+    - assets/images/Sketches/
+    - assets/images/Animals/Animal_images/
+    - assets/images/Animals/Animal_Houses/
+    - assets/icons/
+    - assets/images/GameGridImages/
+    - assets/images/Games/BrainBuilder/
+    - assets/images/Games/BrainBuilder/v2/
+    - assets/images/Games/PuzzleLand/
+    - assets/images/PractiseImage/
+    - assets/images/PractiseImage/HeavyLightImages/
+    - assets/images/PractiseImage/WuduImages/
+    - assets/images/StoriesImages/InsideStoriesImages/
+    - assets/images/StoriesImages/StoriesCovers/
+    - assets/images/SugarSmash/
+    - assets/images/FlagImagesForTracingLetters/
+    - assets/images/AvatarImage/Kids/
+    - assets/images/AvatarImage/KidsFull/
+    - assets/images/badges/
+    - assets/images/Banners/Kids/
+    - assets/images/UI/KidScene/
+    - assets/images/UI/Badges/
+    - assets/images/UI/Frames/
+    - assets/images/UI/Bars/
+    - assets/images/UI/Collection/
+    - assets/images/UI/Loading/
+    - assets/images/UI/Loading/chars/
+    - assets/images/UI/Loading/lib/
+    - assets/images/UI/Loading/adv/
+    - assets/images/UI/Toasts/
+    - assets/images/UI/Duaa/
+    - assets/images/UI/Update/
+    - assets/images/UI/AlphaDraw/
+    - assets/images/UI/EditProfile/
+    - assets/images/UI/CollectionWorld/
+    - assets/images/Games/MysteryQuest/
+    - assets/images/Games/Market/
+    - assets/images/Games/Garden/
+    - assets/images/Games/Passport/
+    - assets/images/UI/Parents/
+    - assets/images/UI/Profiles/
+    - assets/images/quiz/
+    - assets/images/magic_paint/
+    - assets/images/UI/Buttons/
+    - assets/images/UI/BackGrounds/
+    - assets/images/UI/BackGrounds/Course_BG/
+    - assets/images/UI/BackGrounds/GamePractise_BG/Art_bg/
+    - assets/images/UI/BackGrounds/GamePractise_BG/Arabic_bg/
+    - assets/images/UI/BackGrounds/GamePractise_BG/Frennch_bg/
+    - assets/images/UI/BackGrounds/GamePractise_BG/IslamicEducation_bg/
+    - assets/images/UI/BackGrounds/GamePractise_BG/Math_bg/
+    - assets/images/UI/BackGrounds/GamePractise_BG/Science_bg/
+    - assets/images/UI/utilities/
+    - assets/images/Puzz/PuzzMainImages/
+    - assets/images/Puzz/Puzz1/Puzz1_3x3/
+    - assets/images/PetImages/DragonPet/
+    - assets/images/PetImages/CatPet/
+    - assets/images/GridImages/It_Grid/
+    - assets/audios/
+    - assets/audios/quranSourate/
+    - assets/audios/sound_effects/
+    - assets/audios/piano_notes/
+    - assets/audios/QuizGame_Sounds/
+    - assets/audios/tts_female/
+    - assets/audios/tts_female/Wudu/
+    - assets/audios/UI_Audio/SFX_Audio/
+    - assets/audios/UI_Audio/ButtonSounds/
+    - assets/audios/BackGround_Audio/
+    - assets/audios/SplashScreen_Audio/
+    - assets/audios/tts_female/arabic_Questions_QuizzGame/
+    - assets/audios/quranSourate/RandomAyat/
+    - assets/audios/Animals_sounds/Animals_sound/
+    # ── Fredoka font folder (required for asset bundling) ─────────
+    - assets/fonts/Fredoka/
+    - assets/animations/
+    - assets/animations/QuizzGame_Animation/
+    - assets/animations/LvlUnlocked/
+    - assets/animations/UIBannerAnimations/
+    - assets/animations/FirstTouchAnimations/
+    - assets/animations/UI_Animations/
+    - assets/animations/PetAnimations/
+    - assets/animations/TutorielGesture/
+
+  fonts:
+    # ── Fredoka (standard width) ──────────────────────────────────
+    - family: Fredoka
+      fonts:
+        - asset: assets/fonts/Fredoka/Fredoka-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Fredoka/Fredoka-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Fredoka/Fredoka-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Fredoka/Fredoka-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Fredoka/Fredoka-Bold.ttf
+          weight: 700

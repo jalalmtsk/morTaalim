@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
 import 'package:mortaalim/tools/audio_tool/audio_tool.dart';
 import 'package:provider/provider.dart';
@@ -87,18 +88,15 @@ class _InteractiveLessonPageState extends State<InteractiveLessonPage> {
     await audioManager.playAlert('assets/audios/piano_notes/$note.mp3');
 
     if (!lessonCompleted && note == widget.lesson.notes[currentNoteIndex]) {
-      // Add XP per correct note
-      xpManager.addXP(2, context: context);
 
       setState(() {
         currentNoteIndex++;
         if (currentNoteIndex >= widget.lesson.notes.length) {
           lessonCompleted = true;
           // Bonus for completing lesson
-          xpManager.addXP(5, context: context);
-          xpManager.addGems(context, 1);
+          xpManager.grant(context, Rewards.session(correct: widget.lesson.notes.length, total: widget.lesson.notes.length));
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('🎉 Lesson Completed! You earned 50 XP & 1 gem!')),
+            const SnackBar(content: Text('🎉 Lesson Completed! Lesson completed! Well done!')),
           );
         }
       });

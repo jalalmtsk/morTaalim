@@ -105,6 +105,11 @@ flutter:
     - assets/images/Games/Market/
     - assets/images/Games/Garden/
     - assets/images/Games/Passport/
+    - assets/images/Games/Math1/
+    - assets/images/Games/Science1/
+    - assets/images/Games/Arabic1/
+    - assets/images/Games/Art1/
+    - assets/images/Games/French1/
     - assets/images/UI/Parents/
     - assets/images/UI/Profiles/
     - assets/images/quiz/

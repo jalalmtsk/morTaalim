@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
@@ -35,114 +36,6 @@ class _T {
     Color(0xFF74AEFF),
   ];
   static const String fontTitle = 'Fredoka One';
-}
-
-// ═══════════════════════════════════════════════════════════════
-//  AD LOADING OVERLAY  (fun balloon spinner, no boring spinner)
-// ═══════════════════════════════════════════════════════════════
-class _AdLoadingOverlay extends StatefulWidget {
-  const _AdLoadingOverlay();
-  @override
-  State<_AdLoadingOverlay> createState() => _AdLoadingOverlayState();
-}
-
-class _AdLoadingOverlayState extends State<_AdLoadingOverlay>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _spin;
-
-  @override
-  void initState() {
-    super.initState();
-    _spin = AnimationController(vsync: this, duration: const Duration(seconds: 2))
-      ..repeat();
-  }
-
-  @override
-  void dispose() { _spin.dispose(); super.dispose(); }
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.black.withOpacity(0.72),
-      child: Center(
-        child: Container(
-          width: 200, height: 200,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(36),
-            boxShadow: [BoxShadow(color: Colors.black38, blurRadius: 30, offset: const Offset(0, 10))],
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Spinning balloon ring
-              AnimatedBuilder(
-                animation: _spin,
-                builder: (_, __) {
-                  return SizedBox(
-                    width: 80, height: 80,
-                    child: Stack(
-                      alignment: Alignment.center,
-                      children: List.generate(6, (i) {
-                        final angle = (i / 6) * 2 * pi + _spin.value * 2 * pi;
-                        final x = cos(angle) * 28.0;
-                        final y = sin(angle) * 28.0;
-                        final color = _T.balloons[i];
-                        final scale = 0.55 + 0.45 * ((sin(_spin.value * 2 * pi + i) + 1) / 2);
-                        return Transform.translate(
-                          offset: Offset(x, y),
-                          child: Transform.scale(
-                            scale: scale,
-                            child: Text('🎈', style: TextStyle(fontSize: 18 * scale)),
-                          ),
-                        );
-                      }),
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 14),
-              const Text('Almost ready!',
-                  style: TextStyle(
-                    fontFamily: _T.fontTitle, fontSize: 18,
-                    color: Color(0xFF3A86FF),
-                  )),
-              const SizedBox(height: 6),
-              const Text('✨ One moment ✨',
-                  style: TextStyle(fontSize: 12, color: Colors.grey)),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Shows the fun loading overlay while an interstitial ad loads, then
-/// dismisses it automatically once the ad takes over (or fails).
-Future<void> _showAdWithLoadingOverlay({
-  required BuildContext context,
-  VoidCallback? onDismissed,
-}) async {
-  // Push the overlay as a route so it truly covers everything.
-  final overlayRoute = PageRouteBuilder<void>(
-    opaque: false,
-    barrierDismissible: false,
-    pageBuilder: (_, __, ___) => const _AdLoadingOverlay(),
-    transitionDuration: const Duration(milliseconds: 250),
-    transitionsBuilder: (_, anim, __, child) =>
-        FadeTransition(opacity: anim, child: child),
-  );
-  Navigator.of(context).push(overlayRoute);
-
-  await AdHelper.showInterstitialAd(
-    context: context,
-    onDismissed: () {
-      // Pop the overlay if still showing, then run callback.
-      if (Navigator.of(context).canPop()) Navigator.of(context).pop();
-      onDismissed?.call();
-    },
-  );
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -444,7 +337,7 @@ class _FindLargestNumberExerciseState
         if (_lives == 0) {
           audioManager.playSfx("assets/audios/UI_Audio/SFX_Audio/FailMeme_SFX.mp3");
           setState(() {
-            _showGameOver = true;
+            _showGameOver = true; Provider.of<ExperienceManager>(context, listen: false).grant(context, Rewards.practiceEnd(_score));
             _isAnswerCorrect = null;
             _isProcessingAnswer = false;
           });
@@ -468,7 +361,7 @@ class _FindLargestNumberExerciseState
   void _onReplayPressed() {
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     audioManager.playEventSound('cancelButton');
-    _showAdWithLoadingOverlay(context: context, onDismissed: _resetGame);
+    AdHelper.showInterstitialAd(context: context, onDismissed: _resetGame);
   }
 
   Future<bool> _confirmQuit() async {
@@ -537,14 +430,7 @@ class _FindLargestNumberExerciseState
       ),
     );
 
-    if (shouldQuit ?? false) {
-      // Show fun loading overlay while interstitial loads
-      await _showAdWithLoadingOverlay(
-        context: context,
-        onDismissed: () => Navigator.pop(context, true),
-      );
-      return true;
-    }
+    if (shouldQuit ?? false) return true; // pas de pub en quittant un jeu
     return false;
   }
 
@@ -630,7 +516,7 @@ class _FindLargestNumberExerciseState
           ],
         ),
         // context.watch mirrors Index: rebuilds automatically when adsEnabled changes.
-        bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
+        bottomNavigationBar: _showGameOver && context.watch<ExperienceManager>().adsEnabled
             ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
             : null,
       ),

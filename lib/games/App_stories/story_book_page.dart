@@ -502,7 +502,7 @@ class _StoryBookPageState extends State<StoryBookPage> with TickerProviderStateM
             if (_showCompletion) _buildCompletionOverlay(),
           ],
         ),
-        bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
+        bottomNavigationBar: _showCompletion && context.watch<ExperienceManager>().adsEnabled
             ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
             : null,
       ),

@@ -7,6 +7,7 @@ import 'package:mortaalim/l10n/app_localizations.dart';
 import '../../Manager/models/LearningPrefrences.dart';
 import '../../User_Input_Info_DataForm/LearningPreferencesForm/LearningPreferencesEnteringForm.dart';
 import 'PractiseCoursesSubjects/Arabic1/1_primaire_Arabic_Practise.dart';
+import 'PractiseCoursesSubjects/Art1/1_primaire_Art_Practise.dart';
 import 'PractiseCoursesSubjects/French1/1_primaire_French_Practise.dart';
 import 'PractiseCoursesSubjects/Math1/1_primaire_Math_Practise.dart';
 import 'PractiseCoursesSubjects/Science1/1_primaire_Science_Practise.dart';
@@ -104,6 +105,13 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique>
       accent:   Color(0xFF06B6D4),
       emoji:    '🔬',
     ),
+    _CourseConfig(
+      titleKey: 'artEducation',
+      route:    'IndexArt1Practise',
+      image:    'assets/images/UI/BackGrounds/Course_BG/artCourse_bg.png',
+      accent:   Color(0xFFEC4899),
+      emoji:    '🎨',
+    ),
   ];
 
   LearningPreferences? _prefs;
@@ -195,6 +203,7 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique>
       case 'arabic':           return l.arabic;
       case 'islamicEducation': return l.islamicEducation;
       case 'science':          return l.science;
+      case 'artEducation':     return l.artEducation;
       default:                 return key;
     }
   }
@@ -203,9 +212,10 @@ class _Primaire1PratiqueState extends State<Primaire1Pratique>
     switch (route) {
       case 'IndexMath1Practise':             return const IndexMath1Practise();
       case 'IndexFrench1Practise':           return IndexFrench1Practise();
-      case 'IndexArabic1Practise':           return ComingSoonPage();
+      case 'IndexArabic1Practise':           return const IndexArabic1Practise();
       case 'IndexScience1Practise':          return IndexScience1Practise();
       case 'IndexIslamicEducation1Practise': return IndexIslamicEducation1Practise();
+      case 'IndexArt1Practise':              return const IndexArt1Practise();
       default:                               return null;
     }
   }

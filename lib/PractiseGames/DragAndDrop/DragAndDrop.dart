@@ -2,15 +2,10 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:lottie/lottie.dart';
-import 'package:provider/provider.dart';
 
 import 'package:mortaalim/tools/audio_tool.dart';
 import 'package:mortaalim/widgets/userStatutBar.dart';
-import '../../XpSystem.dart';
-import '../../tools/AD_Tools/adLabel.dart';
-import '../../tools/Ads_Manager.dart';
 import '../practiseWords.dart';
 
 // ═══════════════════════════════════════════════════════════════
@@ -319,8 +314,6 @@ class DragDropGame extends StatefulWidget {
 class _DragDropGameState extends State<DragDropGame>
     with TickerProviderStateMixin, WidgetsBindingObserver {
 
-  BannerAd? _bannerAd;
-  bool _isBannerAdLoaded = false;
 
   final Map<String, String> _matched = {};
   late List<PractiseWords> _currentItems;
@@ -352,7 +345,6 @@ class _DragDropGameState extends State<DragDropGame>
     _bgMusic.setVolume(0.20);
 
     _startGame();
-    _loadBannerAd();
   }
 
   @override void dispose() {
@@ -360,22 +352,13 @@ class _DragDropGameState extends State<DragDropGame>
     _bgCtrl.dispose(); _entryCtrl.dispose();
     _audioPlayer.dispose(); _bgMusic.dispose();
     _timer?.cancel();
-    _bannerAd?.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _loadBannerAd();
   }
 
-  void _loadBannerAd() {
-    _bannerAd?.dispose(); _isBannerAdLoaded = false;
-    if (!mounted) return;
-    if (!Provider.of<ExperienceManager>(context, listen: false).adsEnabled) return;
-    _bannerAd = AdHelper.getBannerAd(
-            () { if (mounted) setState(() => _isBannerAdLoaded = true); });
-  }
 
   void _startGame() {
     _matched.clear();
@@ -481,9 +464,6 @@ class _DragDropGameState extends State<DragDropGame>
 
     return Scaffold(
       backgroundColor: _Z.cream,
-      bottomNavigationBar: context.watch<ExperienceManager>().adsEnabled
-          ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _isBannerAdLoaded)
-          : null,
       body: Stack(children: [
         // Tent BG texture
         Positioned.fill(child: CustomPaint(painter: _TentBgPainter())),

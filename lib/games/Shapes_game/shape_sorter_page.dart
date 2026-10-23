@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'package:mortaalim/Manager/rewards.dart';
 import 'dart:math';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'shape_data.dart';
 import '../../XpSystem.dart';
@@ -58,9 +58,6 @@ class _ShapeSorterPageState extends State<ShapeSorterPage>
   // ── Random ───────────────────────────────────────────────────
   final Random _rng = Random();
 
-  // ── Ads ──────────────────────────────────────────────────────
-  BannerAd? _bannerAd;
-  bool      _bannerLoaded = false;
 
   // ── Background confetti dots (decorative, static seed) ───────
   late final List<_BgDot> _bgDots;
@@ -101,7 +98,6 @@ class _ShapeSorterPageState extends State<ShapeSorterPage>
         duration: const Duration(milliseconds: 450));
     _funFactAnim = CurvedAnimation(parent: _funFactCtrl, curve: Curves.elasticOut);
 
-    _loadBannerAd();
     _startRound();
   }
 
@@ -113,23 +109,13 @@ class _ShapeSorterPageState extends State<ShapeSorterPage>
     _bgCtrl.dispose(); _portalCtrl.dispose(); _floatCtrl.dispose();
     _shakeCtrl.dispose(); _funFactCtrl.dispose();
     for (final c in _popCtrl.values) c.dispose();
-    _bannerAd?.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) _loadBannerAd();
   }
 
-  void _loadBannerAd() {
-    _bannerAd?.dispose(); _bannerLoaded = false;
-    if (!mounted) return;
-    if (!Provider.of<ExperienceManager>(context, listen: false).adsEnabled) return;
-    _bannerAd = AdHelper.getBannerAd(() {
-      if (mounted) setState(() => _bannerLoaded = true);
-    });
-  }
 
   // ── Round management ─────────────────────────────────────────
   void _startRound() {
@@ -226,7 +212,7 @@ class _ShapeSorterPageState extends State<ShapeSorterPage>
   void _onWin() {
     _confetti.play();
     Provider.of<ExperienceManager>(context, listen: false)
-        .addXP(_loop + 1, context: context);
+        .grant(context, Rewards.endlessLevel(level: _loop, stars: _hearts.clamp(1, 3)));
     _showEndDialog(isWin: true);
   }
   void _onTimeUp()   => _showEndDialog(isWin: false);
@@ -318,13 +304,9 @@ class _ShapeSorterPageState extends State<ShapeSorterPage>
   // ══════════════════════════════════════════════════════════════
   @override
   Widget build(BuildContext context) {
-    final adsOn = context.watch<ExperienceManager>().adsEnabled;
     return Scaffold(
       // Bright warm background colour
       backgroundColor: const Color(0xFFFFF3E0),
-      bottomNavigationBar: adsOn
-          ? FamilyAdBanner(bannerAd: _bannerAd, isLoaded: _bannerLoaded)
-          : null,
       body: Stack(children: [
         // ── ANIMATED GRADIENT BG ────────────────────────────
         AnimatedBuilder(animation: _bgCtrl, builder: (_, __) => Container(
