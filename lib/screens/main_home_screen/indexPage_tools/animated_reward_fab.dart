@@ -57,7 +57,7 @@ class _AnimatedRewardFABState extends State<AnimatedRewardFAB>
               audioManager.playEventSound('clickButton');
               AdHelper.showRewardedAdWithLoading(context, () {
                 Provider.of<ExperienceManager>(context, listen: false)
-                    .addTokenBanner(context, 2);
+                    .addGems(context, 2);
               });
             },
             child: Container(
@@ -106,19 +106,19 @@ class _AnimatedRewardFABState extends State<AnimatedRewardFAB>
             ),
           ),
 
-          // "+2 Tolims" badge — top-left
+          // "+2 gems" badge — top-left
           Positioned(
             top: -10,
             left: -14,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
               decoration: BoxDecoration(
-                color: const Color(0xFF00C853), // vivid green
+                color: const Color(0xFF7B3FE4), // gem purple
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(color: Colors.white, width: 1.5),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.green.withOpacity(0.45),
+                    color: const Color(0xFF7B3FE4).withOpacity(0.45),
                     blurRadius: 6,
                     offset: const Offset(0, 2),
                   ),
@@ -126,11 +126,10 @@ class _AnimatedRewardFABState extends State<AnimatedRewardFAB>
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
-                  Icon(Icons.generating_tokens_rounded,
-                      color: Colors.white, size: 12),
-                  SizedBox(width: 3),
-                  Text(
+                children: [
+                  Image.asset('assets/images/Games/Math1/m1_gem.webp', width: 16, height: 16),
+                  const SizedBox(width: 3),
+                  const Text(
                     '+2',
                     style: TextStyle(
                       color: Colors.white,

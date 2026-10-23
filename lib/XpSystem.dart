@@ -40,8 +40,9 @@ import 'screens/profiles/profile_store.dart';
 class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
   // User progress & rewards
   int _xp = 0;
-  int _stars = 5;
-  int Tolims = 20;
+  // A new player always starts with 0 gold and 3 gems.
+  int _stars = 3;
+  int Tolims = 0;
 
   //------------------------------------------------------------------//
 
@@ -716,8 +717,8 @@ KidToast.reward(gems: amount);
     learningPreferences.clearPrefs(prefs);
     inventoryManager.clearPrefs(prefs);
     _xp = 0;
-    _stars = 0;
-    Tolims = 20;
+    _stars = 3;
+    Tolims = 0;
     customization.unlockedAvatars = List<String>.from(AvatarCatalog.starter);
     customization.selectedAvatar = AvatarCatalog.defaultAvatar;
     _unlockedCourses = [];
@@ -772,8 +773,8 @@ KidToast.reward(gems: amount);
   Future<void> loadData() async {
     final prefs = await SharedPreferences.getInstance();
     _xp = prefs.getInt('xp') ?? 0;
-    _stars = prefs.getInt('stars') ?? 5;
-    Tolims = prefs.getInt('saveTokens') ?? 20;
+    _stars = prefs.getInt('stars') ?? 3;
+    Tolims = prefs.getInt('saveTokens') ?? 0;
     _banned = prefs.getBool('banned') ?? false;
 
     _unlockedCourses = prefs.getStringList('unlockedCourses') ?? ['AlphaDraw', 'BrainQuest'];
@@ -941,7 +942,7 @@ KidToast.reward(gems: amount);
     userProfile.loadFromMap(data);
 
     _xp = data["xp"] ?? 0;
-    _stars = data["stars"] ?? 0;
+    _stars = data["stars"] ?? 3;
     Tolims = data["tolims"] ?? 0;
 
     _unlockedLanguages = List<String>.from(data["unlockedLanguages"] ?? []);

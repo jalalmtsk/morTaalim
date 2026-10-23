@@ -10,6 +10,7 @@ import '../../widgets/RewardChest.dart';
 import 'BannerTab/IndexBanner.dart';
 import 'FunMojiTab/IndexFunMoji.dart';
 import 'GiftsTabs/IndexGiftTabs.dart';
+import 'shop_soon.dart';
 
 class MainShopPageIndex extends StatefulWidget {
   /// True when shown as a tab of the home screen (no back button).
@@ -46,8 +47,12 @@ class _MainShopPageIndexState extends State<MainShopPageIndex>
     super.dispose();
   }
 
+  /// The shop is closed for now: a cute "coming soon" page is shown instead.
+  static const bool shopOpen = false;
+
   @override
   Widget build(BuildContext context) {
+    if (!shopOpen) return ShopSoonPage(embedded: widget.embedded);
     final audioManager = Provider.of<AudioManager>(context, listen: false);
     final theme = Theme.of(context);
 

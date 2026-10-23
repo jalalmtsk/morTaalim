@@ -124,7 +124,7 @@ class _Topic {
 
 List<_Topic> get _topics => [
       _Topic('quran', (c) => tr(c).relQuran, (c) => tr(c).relQuranSub, RelCategory.listen, true, _quranCount),
-      _Topic('prayer', (c) => tr(c).relPrayer, (c) => tr(c).relPrayerSub, RelCategory.practice, false, _prayerActivities.length),
+      _Topic('prayer', (c) => tr(c).relPrayer, (c) => tr(c).relPrayerSub, RelCategory.practice, false, 0), // prayer: coming soon (was _prayerActivities.length)
       _Topic('duas', (c) => tr(c).relDuas, (c) => tr(c).relDuasSub, RelCategory.listen, true, _duaas.length),
       _Topic('stories', (c) => tr(c).relStories, (c) => tr(c).relStoriesSub, RelCategory.learn, false,
           allStories.where((s) => s.available).length),

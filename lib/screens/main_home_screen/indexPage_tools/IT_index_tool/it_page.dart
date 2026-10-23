@@ -57,9 +57,8 @@ final List<ITTopic> itTopics = [
   ITTopic('basics', (t) => t.itBasics, ITLevel.beginner, 'orange', [
     for (final l in computerBasicsLessons) ITLesson((t) => t.itBasics, '', l.thumb),
   ]),
-  ITTopic('coding', (t) => t.itCoding, ITLevel.explorer, 'purple', [
-    ITLesson((t) => t.lessonBinary, 'IT_BinaryNumbers', 'assets/images/IT/binary.png'),
-  ]),
+  // Coding: coming soon (was: ITLesson((t) => t.lessonBinary, 'IT_BinaryNumbers', 'assets/images/IT/binary.png'))
+  ITTopic('coding', (t) => t.itCoding, ITLevel.explorer, 'purple', const []),
   ITTopic('typing', (t) => t.itTyping, ITLevel.beginner, 'blue', const []),
   ITTopic('safety', (t) => t.itSafety, ITLevel.beginner, 'green', const []),
   ITTopic('robotics', (t) => t.itRobotics, ITLevel.explorer, 'orange', const []),

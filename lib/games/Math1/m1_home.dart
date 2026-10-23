@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:mortaalim/Manager/lesson_progress.dart';
+import 'package:mortaalim/tools/Ads_Manager.dart';
 
 import 'm1_kit.dart';
 import 'm1_shell.dart';
@@ -47,6 +48,14 @@ class _M1HomeState extends State<M1Home> with TickerProviderStateMixin {
     _idle.dispose();
     M1Voice.stop();
     super.dispose();
+  }
+
+  /// Leaving the world is a natural break: AdHelper may show an interstitial.
+  void _leave() {
+    M1Voice.stop();
+    AdHelper.showInterstitialAd(context: context, onDismissed: () {
+      if (mounted) Navigator.of(context).maybePop();
+    });
   }
 
   Future<void> _open(M1Game g) async {
@@ -110,7 +119,7 @@ class _M1HomeState extends State<M1Home> with TickerProviderStateMixin {
                     child: M1Float(amp: 4, child: Image.asset(m1(_w.homeMascot!), height: head * 0.58, fit: BoxFit.contain)),
                   ),
                 ),
-              PositionedDirectional(start: 10, top: 6, child: m1Round(context, _w.homeBack, 52, () => Navigator.of(context).maybePop(), flipRtl: true)),
+              PositionedDirectional(start: 10, top: 6, child: m1Round(context, _w.homeBack, 52, _leave, flipRtl: true)),
               PositionedDirectional(end: 10, top: 6, child: m1Round(context, _w.homeSound, 52, _hello)),
             ]),
           ),
@@ -135,6 +144,7 @@ class _M1HomeState extends State<M1Home> with TickerProviderStateMixin {
                   area: const EdgeInsets.fromLTRB(0.18, 0.18, 0.18, 0.22)),
             ),
           ),
+          const AutoFamilyBanner(),
         ]),
       ),
     ]);

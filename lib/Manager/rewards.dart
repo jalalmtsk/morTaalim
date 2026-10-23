@@ -15,7 +15,8 @@ import 'package:mortaalim/XpSystem.dart';
 //          avatars, banners and frames.
 //
 // Rough targets for a child playing ~20 min a day:
-//   ≈ 120 XP, ≈ 80–120 gold, ≈ 5–8 gems per day.
+//   ≈ 180 XP, ≈ 40–60 gold, ≈ 5–8 gems per day.
+//   (Gold is kept scarce on purpose; XP is generous so levels move fast.)
 // ═══════════════════════════════════════════════════════════════════════════
 
 class Reward {
@@ -54,11 +55,11 @@ class Rewards {
   static Reward level({required int tier, required int stars, required int prevStars, int bonusGems = 0}) {
     final t = tier.clamp(1, 4);
     final s = stars.clamp(0, 3);
-    if (s == 0) return const Reward(xp: 2);
+    if (s == 0) return const Reward(xp: 4);
     final first = prevStars <= 0;
     final gained = max(0, s - prevStars);
-    final xp = (first || gained > 0) ? 8 + 4 * t + 3 * s : 4 + 2 * t;
-    final gold = first ? 10 + 5 * t + 2 * s : (gained > 0 ? 4 * gained : 2);
+    final xp = (first || gained > 0) ? 14 + 6 * t + 5 * s : 6 + 3 * t;
+    final gold = first ? 4 + 2 * t + s : (gained > 0 ? 2 * gained : 1);
     final gems = (s == 3 && prevStars < 3 ? 1 : 0) + bonusGems;
     return Reward(xp: xp, gold: gold, gems: gems);
   }
@@ -69,56 +70,56 @@ class Rewards {
 
   // ── quiz / exercise / arcade sessions ──────────────────────────────────
   /// One finished round: [correct] good answers out of [total].
-  ///  XP   2 per good answer + 5 for finishing (max 40)
-  ///  gold 1 per 2 good answers + 3 for a perfect round (max 15)
+  ///  XP   3 per good answer + 8 for finishing (max 60)
+  ///  gold 1 per 3 good answers + 2 for a perfect round (max 8)
   ///  gems 1 for a perfect round of 10+ questions [perfectGem]
   static Reward session({required int correct, required int total, bool finished = true, bool perfectGem = false}) {
     final c = max(0, correct);
     final perfect = finished && total > 0 && c >= total;
-    final xp = min(40, 2 * c + (finished ? 5 : 0));
-    final gold = min(15, c ~/ 2 + (perfect ? 3 : 0));
+    final xp = min(60, 3 * c + (finished ? 8 : 0));
+    final gold = min(8, c ~/ 3 + (perfect ? 2 : 0));
     final gems = (perfect && perfectGem && total >= 10) ? 1 : 0;
     return Reward(xp: xp, gold: gold, gems: gems);
   }
 
   /// Score-based arcade games (piano tiles, jumping board …): XP grows slowly with the score.
   static Reward arcade(int score, {int perXp = 5, int perGold = 25}) =>
-      Reward(xp: min(30, 2 + score ~/ perXp), gold: min(10, score ~/ perGold));
+      Reward(xp: min(45, 4 + (score * 3) ~/ (perXp * 2)), gold: min(5, score ~/ (perGold * 2)));
 
   /// End of an endless practice run (math, matching … with lives):
   /// a small bonus on top of the 1 XP per good answer.
   static Reward practiceEnd(int score) {
-    if (score < 3) return const Reward(xp: 1);
-    return Reward(xp: min(10, score), gold: min(10, score ~/ 3) + (score >= 10 ? 3 : 0));
+    if (score < 3) return const Reward(xp: 2);
+    return Reward(xp: min(18, (score * 3) ~/ 2), gold: min(5, score ~/ 5) + (score >= 10 ? 1 : 0));
   }
 
   /// Endless "next level" games (Memory, Shape sorter …): grows with the
   /// level reached but stays small, since they can be replayed forever.
   static Reward endlessLevel({required int level, required int stars}) {
     final t = (1 + level ~/ 3).clamp(1, 4);
-    return Reward(xp: 6 + 2 * t + 2 * stars.clamp(1, 3), gold: 3 + 2 * t + stars.clamp(1, 3));
+    return Reward(xp: 10 + 3 * t + 3 * stars.clamp(1, 3), gold: 1 + t);
   }
 
   /// Alphabet tracing: every 10 new letters learnt.
-  static const alphabetMilestone = Reward(gold: 10, xp: 5);
+  static const alphabetMilestone = Reward(gold: 4, xp: 12);
 
   /// Alphabet tracing: a whole alphabet finished.
-  static const alphabetComplete = Reward(gold: 25, gems: 2);
+  static const alphabetComplete = Reward(gold: 12, gems: 2, xp: 30);
 
   // ── learning content ───────────────────────────────────────────────────
   /// A lesson / story / course chapter read to the end.
-  static Reward lesson({bool first = true}) => first ? const Reward(xp: 12, gold: 8) : const Reward(xp: 4);
+  static Reward lesson({bool first = true}) => first ? const Reward(xp: 20, gold: 4) : const Reward(xp: 6);
 
   /// A video watched to the end.
-  static const video = Reward(xp: 4, gold: 2);
+  static const video = Reward(xp: 6, gold: 1);
 
   /// Creative play (drawing, free piano …): a little XP, no farming.
-  static const creative = Reward(xp: 5, gold: 2);
+  static const creative = Reward(xp: 8, gold: 1);
 
   // ── daily & meta ───────────────────────────────────────────────────────
-  static const duaa = Reward(gold: 5, xp: 2);
-  static const newBadge = Reward(gold: 10, gems: 1);
-  static const unlockSomething = Reward(xp: 10);
+  static const duaa = Reward(gold: 2, xp: 5);
+  static const newBadge = Reward(gold: 5, gems: 1, xp: 15);
+  static const unlockSomething = Reward(xp: 15);
 
   // ── shop ───────────────────────────────────────────────────────────────
   /// Gold needed to buy one gem in the trade dialog (gems stay rare).

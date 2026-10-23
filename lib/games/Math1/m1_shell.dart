@@ -356,6 +356,7 @@ class _M1GameMenuState extends State<M1GameMenu> with TickerProviderStateMixin {
           SizedBox(height: h * 0.014),
           _tip(next, w),
           SizedBox(height: h * 0.012),
+          const AutoFamilyBanner(),
         ]),
       ),
     ]);
@@ -1407,6 +1408,7 @@ class _M1ResultPageState extends State<M1ResultPage> with TickerProviderStateMix
             ),
           ]),
           const SizedBox(height: 8),
+          const AutoFamilyBanner(),
         ]),
       ),
       IgnorePointer(child: AnimatedBuilder(animation: _in, builder: (_, __) => CustomPaint(painter: M1Confetti((_in.value * 1.2).clamp(0.0, 1.0)), size: Size.infinite))),
@@ -1646,6 +1648,7 @@ class _M1MapPageState extends State<M1MapPage> with TickerProviderStateMixin {
           Expanded(child: _map()),
           _levelCard(w),
           SizedBox(height: max(6.0, h * 0.01)),
+          const AutoFamilyBanner(),
         ]),
       ),
     ]);

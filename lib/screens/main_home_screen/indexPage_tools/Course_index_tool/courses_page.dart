@@ -63,7 +63,7 @@ final List<_Subject> _grade1 = [
   _Subject('math', (t) => t.math, CoursesAssets.tileMath, 'orange', 5, () => const IndexMath1Practise()),
   _Subject('french', (t) => t.french, CoursesAssets.tileLanguages, 'green', 5, () => const IndexFrench1Practise()),
   _Subject('science', (t) => t.science, CoursesAssets.tileScience, 'blue', 5, () => const IndexScience1Practise()),
-  _Subject('islamicEducation', (t) => t.islamicEducation, null, 'pink', 3, () => const IndexIslamicEducation1Practise(),
+  _Subject('islamicEducation', (t) => t.islamicEducation, null, 'pink', 0 /* coming soon */, () => const IndexIslamicEducation1Practise(),
       iconArt: 'assets/images/UI/BackGrounds/Course_BG/islamCourse_bg.png',
       iconColors: const [Color(0xFFD4F7D9), Color(0xFF6FD08A)]),
   _Subject('arabic', (t) => t.arabic, CoursesAssets.tileReading, 'purple', 5, () => const IndexArabic1Practise()),

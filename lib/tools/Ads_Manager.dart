@@ -14,16 +14,16 @@ class AdPolicy {
   AdPolicy._();
 
   /// Aucune interstitielle pendant les premières minutes d'une session.
-  static const Duration sessionGrace = Duration(minutes: 2);
+  static const Duration sessionGrace = Duration(minutes: 1);
 
   /// Écart minimum entre deux pubs plein écran (interstitielle OU récompensée).
-  static const Duration minFullScreenGap = Duration(minutes: 3);
+  static const Duration minFullScreenGap = Duration(minutes: 2);
 
   /// Une interstitielle au maximum toutes les N fins de niveau / de partie.
-  static const int completionsPerInterstitial = 2;
+  static const int completionsPerInterstitial = 1;
 
   /// Nombre maximum de pubs récompensées par jour.
-  static const int rewardedDailyCap = 6;
+  static const int rewardedDailyCap = 12;
 
   /// Durée de l'écran « Petite pause publicité… » avant l'interstitielle.
   static const Duration adBreakNotice = Duration(milliseconds: 1300);
@@ -478,6 +478,8 @@ class AdHelper {
       'noAd': 'Aucune vidéo disponible pour le moment.',
       'doubleGold': 'Regarder une pub : x2 pièces',
       'doubled': 'Pièces doublées !',
+      'gems': 'Regarder une pub : +{n} gemmes',
+      'gemsDone': 'Gemmes gagnées !',
     },
     'en': {
       'adBreak': 'Short ad break…',
@@ -486,6 +488,8 @@ class AdHelper {
       'noAd': 'No video available right now.',
       'doubleGold': 'Watch an ad: x2 coins',
       'doubled': 'Coins doubled!',
+      'gems': 'Watch an ad: +{n} gems',
+      'gemsDone': 'Gems earned!',
     },
     'ar': {
       'adBreak': 'استراحة إعلانية قصيرة…',
@@ -494,6 +498,8 @@ class AdHelper {
       'noAd': 'لا يوجد فيديو متاح حاليًا.',
       'doubleGold': 'شاهد إعلانًا: ضاعف العملات',
       'doubled': 'تمت مضاعفة العملات!',
+      'gems': 'شاهد إعلانًا: +{n} جواهر',
+      'gemsDone': 'ربحت الجواهر!',
     },
     'de': {
       'adBreak': 'Kurze Werbepause…',
@@ -502,6 +508,8 @@ class AdHelper {
       'noAd': 'Gerade ist kein Video verfügbar.',
       'doubleGold': 'Werbung ansehen: x2 Münzen',
       'doubled': 'Münzen verdoppelt!',
+      'gems': 'Werbung ansehen: +{n} Edelsteine',
+      'gemsDone': 'Edelsteine erhalten!',
     },
   };
 
@@ -618,4 +626,40 @@ class FamilyAdBanner extends StatelessWidget {
       ),
     );
   }
+}
+
+/// ════════════════════════════════════════════════════════════════════════════
+/// AutoFamilyBanner — bannière qui se charge toute seule (menus / résultats).
+/// Respecte adsEnabled, se libère au dispose, prend 0 px tant qu'elle n'est pas prête.
+/// ════════════════════════════════════════════════════════════════════════════
+class AutoFamilyBanner extends StatefulWidget {
+  const AutoFamilyBanner({super.key});
+  @override
+  State<AutoFamilyBanner> createState() => _AutoFamilyBannerState();
+}
+
+class _AutoFamilyBannerState extends State<AutoFamilyBanner> {
+  BannerAd? _ad;
+  bool _loaded = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_ad != null) return;
+    if (!AdHelper._adsEnabled(context)) return;
+    try {
+      _ad = AdHelper.getBannerAd(() {
+        if (mounted) setState(() => _loaded = true);
+      });
+    } catch (_) {}
+  }
+
+  @override
+  void dispose() {
+    _ad?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => FamilyAdBanner(bannerAd: _ad, isLoaded: _loaded);
 }

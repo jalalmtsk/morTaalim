@@ -1,0 +1,1038 @@
+import 'package:mortaalim/widgets/KidScene/kid_toast.dart';
+import 'package:mortaalim/Manager/rewards.dart';
+import 'package:mortaalim/Manager/models/avatar_catalog.dart';
+import 'dart:async';
+import 'dart:math';
+import 'dart:ui';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:mortaalim/Manager/Services/YoutubeProgressManager.dart';
+import 'package:mortaalim/Manager/models/CourseProgressionManager.dart';
+import 'package:mortaalim/Manager/models/InventoryPet.dart';
+
+import 'package:mortaalim/ManagerTools/StarCountPulse.dart';
+import 'package:mortaalim/tools/audio_tool/Audio_Manager.dart';
+
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+//MANAGERS/MODELS
+import 'Manager/models/LearningPrefrences.dart';
+import 'Manager/models/customazationSetting.dart';
+import 'Manager/models/user_profile.dart';
+
+// Manager TOOLS BANNERS STAR /XP /TOLIM /LEVEL UP
+import 'ManagerTools/AnimatedSpendingStarBanner.dart';
+import 'ManagerTools/AnimatedSpendingTolimBanner.dart';
+import 'ManagerTools/AnimatedStarBanner.dart';
+import 'ManagerTools/AnimatedTolimBanner.dart';
+import 'ManagerTools/AnimatedXpBanner.dart';
+import 'package:mortaalim/ManagerTools/LevelUpOverlayHelper.dart';
+
+import 'ManagerTools/StarDeductionOverlay.dart';
+import 'main.dart';
+import 'screens/profiles/profile_store.dart';
+
+class ExperienceManager extends ChangeNotifier with WidgetsBindingObserver {
+  // User progress & rewards
+  int _xp = 0;
+  int _stars = 5;
+  int Tolims = 20;
+
+  //------------------------------------------------------------------//
+
+  // Customization
+  List<String> _unlockedCourses = [];
+  List<String> _unlockedLanguages = ['arabic', 'french'];
+
+  // User personal info
+  String? _userId;
+  bool _banned = false; // <-- New banned flag
+
+  UserProfile userProfile = UserProfile();
+  YoutubeProgressManager youtubeProgressManager = YoutubeProgressManager();
+  CourseProgressionManager courseProgressionManager = CourseProgressionManager();
+  Inventory inventoryManager = Inventory();
+  // Customazation
+  CustomizationSettings customization = CustomizationSettings();
+
+  //LearningPreferenes
+  LearningPreferences learningPreferences = LearningPreferences();
+
+  // UX & animations
+  int _recentlyAddedTokens = 0;
+  int _recentlyAddedStars = 0;
+  bool _showTokenFlash = false;
+  bool _showStarFlash = false;
+
+  Timer? _rewardTimer;
+  Timer? _delayedRestartTimer;
+
+  bool get isFirstLogin => lastLogin == null;
+
+  // Ads toggle
+  bool _adsEnabled = true;
+
+
+  // Login/logout tracking
+  DateTime? _lastLogin;
+  DateTime? _lastLogout;
+
+
+  // Firestore instance
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  ExperienceManager() {
+    WidgetsBinding.instance.addObserver(this);
+    loadData();
+  }
+
+  // -------------- XP System -------------------
+
+  /// Total XP needed to pass [level] (see Rewards: 50, 75, 100 … XP per level).
+  int getXPForLevel(int level) => Rewards.totalXpFor(level + 1);
+
+  int get level {
+    int lvl = 1;
+    while (_xp >= getXPForLevel(lvl)) {
+      lvl++;
+    }
+    return lvl;
+  }
+
+  double get levelProgress {
+    int currentLevel = level;
+    int prevXP = getXPForLevel(currentLevel - 1);
+    int nextXP = getXPForLevel(currentLevel);
+    return ((_xp - prevXP) / (nextXP - prevXP)).clamp(0.0, 1.0);
+  }
+
+  int get currentLevelXP => _xp - getXPForLevel(level - 1);
+  int get requiredXPForNextLevel => getXPForLevel(level) - getXPForLevel(level - 1);
+
+  // -------------- Getters -------------------
+
+  int get xp => _xp;
+
+  /// The app has exactly two currencies:
+  ///  • gold  – earned by playing, spent on unlocking games / courses / languages
+  ///  • gems  – rarer, spent on skins (avatars, banners, frames)
+  /// (Stored under the legacy "Tolims"/"stars" keys so existing saves keep their balance.)
+  int get gold => Tolims;
+  int get gems => _stars;
+  bool get banned => _banned;
+
+  //------------------------------------------------------------------//
+
+
+  List<String> get unlockedAvatars => customization.unlockedAvatars;
+  String get selectedAvatar => customization.selectedAvatar;
+
+  Locale get locale => Locale(userProfile.preferredLanguage);
+  List<String> get unlockedCourses => _unlockedCourses;
+  List<String> get unlockedLanguages => _unlockedLanguages;
+
+  List<String> get unlockedBanners => customization.unlockedBanners;
+  String get selectedBannerImage => customization.selectedBannerImage;
+
+  String get selectedAvatarFrame => customization.selectedAvatarFrame;
+  List<String> get unlockedAvatarFrames => customization.unlockedAvatarFrames;
+
+  int get recentlyAddedTokens => _recentlyAddedTokens;
+  int get recentlyAddedStars => _recentlyAddedStars;
+
+  bool get showTokenFlash => _showTokenFlash;
+  bool get showStarFlash => _showStarFlash;
+
+  bool get adsEnabled => _adsEnabled;
+
+  DateTime? get lastLogin => _lastLogin;
+  DateTime? get lastLogout => _lastLogout;
+
+
+
+  // ---------------- User setters -------------------
+
+  void setFullName(String name) {
+    if (userProfile.fullName != name) {
+      userProfile.fullName = name;
+      _saveData(); // ✅ Save change
+      notifyListeners();
+    }
+  }
+
+  void setBanned(bool value) {
+    if (_banned != value) {
+      _banned = value;
+      _saveData(); // persist to SharedPreferences
+      notifyListeners();
+    }
+  }
+
+  void setLastName(String name) {
+    if (userProfile.lastName != name) {
+      userProfile.lastName = name;
+      _saveData(); // ✅ Save change
+      notifyListeners();
+    }
+  }
+
+  void setSchoolName(String schoolName) {
+    if (userProfile.schoolName != schoolName) {
+      userProfile.schoolName = schoolName;
+      _saveData(); // ✅ Save change
+      notifyListeners();
+    }
+  }
+
+  void setSpecialNeeds(String specialNeeds) {
+    if (userProfile.specialNeeds != specialNeeds) {
+      userProfile.specialNeeds = specialNeeds;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setParentGuardianName(String parentGuardianName) {
+    if (userProfile.parentGuardianName != parentGuardianName) {
+      userProfile.parentGuardianName = parentGuardianName;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setBirthday(String birthday) {
+    if (userProfile.birthday != birthday) {
+      userProfile.birthday = birthday;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setSchoolType(String schoolType) {
+    if (userProfile.schoolType != schoolType) {
+      userProfile.schoolType = schoolType;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setSchoolGrade(String schoolGrade) {
+    if (userProfile.schoolGrade != schoolGrade) {
+      userProfile.schoolGrade = schoolGrade;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  String get schoolLevel => userProfile.schoolLevel ?? '';
+  String get lyceeTrack => userProfile.lyceeTrack ?? '';
+
+  void setSchoolLevel(String value) {
+    if (userProfile.schoolLevel != value) {
+      userProfile.schoolLevel = value;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setLyceeTrack(String value) {
+    if (userProfile.lyceeTrack != value) {
+      userProfile.lyceeTrack = value;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setAge(int age) {
+    userProfile.age = age;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setCountry(String country) {
+    userProfile.country = country;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setCity(String city) {
+    userProfile.city = city;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setGender(String gender) {
+    userProfile.gender = gender;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setEmail(String email) {
+    userProfile.email = email;
+    _saveData();
+    notifyListeners();
+  }
+
+
+  // ---------------- Other setters (customization) -------------------
+
+  void unlockAvatar(String emoji) {
+    if (!customization.unlockedAvatars.contains(emoji)) {
+      customization.unlockedAvatars.add(emoji);
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void selectAvatar(String emoji) {
+    if (customization.unlockedAvatars.contains(emoji)) {
+      customization.selectedAvatar = emoji;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void unlockBanner(String path) {
+    if (!customization.unlockedBanners.contains(path)) {
+      customization.unlockedBanners.add(path);
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void selectBannerImage(String path) {
+    if (customization.unlockedBanners.contains(path)) {
+      customization.selectedBannerImage = path;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void unlockAvatarFrame(String path) {
+    if (!customization.unlockedAvatarFrames.contains(path)) {
+      customization.unlockedAvatarFrames.add(path);
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void selectAvatarFrame(String path) {
+    if (customization.unlockedAvatarFrames.contains(path)) {
+      customization.selectedAvatarFrame = path;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  void setPreferredLanguage(String lang) {
+    if (userProfile.preferredLanguage != lang) {
+      userProfile.preferredLanguage = lang;
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  bool isCourseUnlocked(String title) => _unlockedCourses.contains(title);
+
+  /// Unlocks a game / course with gold. Returns true when it is (now) unlocked.
+  bool unlockCourse(String title, int cost) {
+    if (_unlockedCourses.contains(title)) return true;
+    if (Tolims < cost) return false;
+    _unlockedCourses.add(title);
+    Tolims -= cost;
+    _saveData();
+    notifyListeners();
+    return true;
+  }
+
+  bool isLanguageUnlocked(String code) => _unlockedLanguages.contains(code);
+
+  /// Unlocks a language with gold. Returns true when it is (now) unlocked.
+  bool unlockLanguage(String code, int cost) {
+    if (_unlockedLanguages.contains(code)) return true;
+    if (Tolims < cost) return false;
+    _unlockedLanguages.add(code);
+    Tolims -= cost;
+    _saveData();
+    notifyListeners();
+    return true;
+  }
+
+  Future<void> changeLanguage(Locale locale) async {
+    userProfile.preferredLanguage = locale.languageCode;
+    await _saveData(); // save to SharedPreferences
+    notifyListeners();
+  }
+
+  bool buySaveTokens({int amount = 3}) {
+    if (Tolims >= amount && amount > 0) {
+      int starsToAdd = amount ~/ Rewards.goldPerGem;
+      if (starsToAdd <= 0) return false;
+      Tolims -= starsToAdd * Rewards.goldPerGem;
+      _stars += starsToAdd;
+      _saveData();
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+
+
+
+  //----------------------------Learning Preferences--------------------------------
+  void setBetterSubjects(List<String> subjects) {
+    learningPreferences.betterSubjects = subjects;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setPreferredLearningStyle(String style) {
+    learningPreferences.preferredLearningStyle = style;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setStudyTimePreference(String timePreference) {
+    learningPreferences.studyTimePreference = timePreference;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setDifficultyPreference(String difficulty) {
+    learningPreferences.difficultyPreference = difficulty;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setGoalType(String goalType) {
+    learningPreferences.goalType = goalType;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setWeeklyGoal(String weeklyGoal) {
+    learningPreferences.weeklyGoal = weeklyGoal;
+    _saveData();
+    notifyListeners();
+  }
+
+  void setLongTermGoal(String longTermGoal) {
+    learningPreferences.longTermGoal = longTermGoal;
+    _saveData();
+    notifyListeners();
+  }
+
+
+  //-------------------YoutubeVideoReward----------------------------
+
+  /// Mark a video as completed
+  Future<void> markVideoCompleted({required String videoId}) async {
+    if (!youtubeProgressManager.completedVideoIds.contains(videoId)) {
+      youtubeProgressManager.completedVideoIds.add(videoId);
+      _saveData();
+      notifyListeners();
+    }
+  }
+
+  // Methods to add or remove completed videos
+  void addCompletedVideo(String videoId) {
+    youtubeProgressManager.completedVideoIds.add(videoId);
+    _saveData();
+    notifyListeners();
+  }
+
+  void removeCompletedVideo(String videoId) {
+    youtubeProgressManager.completedVideoIds.remove(videoId);
+    _saveData();
+    notifyListeners();
+  }
+
+
+  //--------------------InvetoryPet Methods-----------------------------------
+
+  /// Add food and notify listeners
+  Future<void> addFood(int amount) async {
+    if (amount <= 0) return;
+    inventoryManager.food += amount;
+    await _saveData();
+    notifyListeners();
+  }
+
+  /// Spend food if possible; return true if success
+  Future<bool> spendFood(int amount) async {
+    if (amount <= 0 || amount > inventoryManager.food) return false;
+    inventoryManager.food -= amount;
+    await _saveData();
+    notifyListeners();
+    return true;
+  }
+
+  /// Add water and notify listeners
+  Future<void> addWater(int amount) async {
+    if (amount <= 0) return;
+    inventoryManager.water += amount;
+    await _saveData();
+    notifyListeners();
+  }
+
+  /// Spend water if possible; return true if success
+  Future<bool> spendWater(int amount) async {
+    if (amount <= 0 || amount > inventoryManager.water) return false;
+    inventoryManager.water -= amount;
+    await _saveData();
+    notifyListeners();
+    return true;
+  }
+
+  /// Add energy and notify listeners
+  Future<void> addEnergy(int amount) async {
+    if (amount <= 0) return;
+    inventoryManager.energy += amount;
+    await _saveData();
+    notifyListeners();
+  }
+
+  /// Spend energy if possible; return true if success
+  Future<bool> spendEnergy(int amount) async {
+    if (amount <= 0 || amount > inventoryManager.energy) return false;
+    inventoryManager.energy -= amount;
+    await _saveData();
+    notifyListeners();
+    return true;
+  }
+
+  // ---------------- Reward & Banner methods -------------------
+
+  /// Gold: rewards from playing; spent on unlocking games, courses and languages.
+  void addGold(BuildContext context, int amount) => addTokenBanner(context, amount);
+  void spendGold(BuildContext context, int amount) => SpendTokenBanner(context, amount);
+
+  /// Gems: spent on skins (avatars, banners, frames).
+  void addGems(BuildContext context, int amount) => addStarBanner(context, amount);
+  void spendGems(BuildContext context, int amount) => SpendStarBanner(context, amount);
+
+  void addTokenBanner(BuildContext context, int amount) {
+
+    Tolims += amount;
+    _recentlyAddedTokens = amount;
+    _recentlyAddedStars = 0;
+    _showTokenFlash = true;
+    notifyListeners();
+
+    _tokenBannerVisible = true;
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      _showTokenFlash = false;
+      notifyListeners();
+    });
+
+    Future.delayed(const Duration(seconds: 1), () {
+      _recentlyAddedTokens = 0;
+      _tokenBannerVisible = false;
+      notifyListeners();
+    });
+
+    _saveData();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+      final overlay = Overlay.of(context);
+      if (overlay == null) return;
+
+KidToast.reward(gold: amount);
+      _tokenBannerVisible = false;
+    });
+  }
+
+  void SpendTokenBanner(BuildContext context, int amount) async{
+    Tolims -= amount;
+    _recentlyAddedTokens = -amount;
+    _showTokenFlash = false;
+    await _saveData(); // ✅ Save immediately
+    notifyListeners();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final overlay = Overlay.of(context);
+      if (overlay == null || !context.mounted) return;
+
+      late OverlayEntry entry;
+      entry = OverlayEntry(
+        builder: (ctx) => AnimatedTokenSpentBanner(
+          tokenAmount: amount,
+          onDismiss: () => entry.remove(),
+        ),
+      );
+      overlay.insert(entry);
+    });
+  }
+
+  bool _tokenBannerVisible = false;
+  bool _starBannerVisible = false;
+
+
+  void addStarBanner(
+      BuildContext context,
+      int amount, {
+        GlobalKey? starIconKey,
+        Offset? animationFrom,
+        Offset? animationTo,
+      }) {
+    if (amount <= 0) return;
+
+    final oldStars = _stars;
+    _stars += amount;
+    _recentlyAddedStars = amount;
+    _recentlyAddedTokens = 0;
+    _showStarFlash = true;
+    notifyListeners();
+
+    Future.delayed(const Duration(milliseconds: 600), () {
+      _showStarFlash = false;
+      notifyListeners();
+    });
+
+    Future.delayed(const Duration(seconds: 1), () {
+      _recentlyAddedStars = 0;
+      notifyListeners();
+    });
+
+    _saveData();
+
+    // StarCountPulse overlay
+    if (starIconKey != null && starIconKey.currentContext != null) {
+      final overlay = Overlay.of(context);
+      if (overlay != null) {
+        final box = starIconKey.currentContext!.findRenderObject() as RenderBox;
+        final position = box.localToGlobal(Offset.zero);
+        final size = box.size;
+
+        const animationSize = 26.0;
+        final adjustedPosition = Offset(
+          position.dx + size.width / 2 - animationSize / 2,
+          position.dy + size.height / 2 - animationSize / 2,
+        );
+
+        late OverlayEntry pulseEntry;
+        pulseEntry = OverlayEntry(
+          builder: (_) => Positioned(
+            top: adjustedPosition.dy - 7,
+            left: adjustedPosition.dx + 15,
+            child: Material(
+              color: Colors.transparent,
+              child: StarCountPulse(
+                oldStars: oldStars,
+                deduction: -amount,
+                onFinish: () => pulseEntry.remove(),
+              ),
+            ),
+          ),
+        );
+        overlay.insert(pulseEntry);
+      }
+    }
+
+    // StarDeductionOverlay
+    if (animationFrom != null && animationTo != null) {
+      StarDeductionOverlay.showStarAnimation(
+        context,
+        from: animationFrom,
+        to: animationTo,
+        starCount: amount,
+        onComplete: () {},
+      );
+    }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+      final overlay = Overlay.of(context);
+      if (overlay == null) return;
+
+KidToast.reward(gems: amount);
+    });
+  }
+
+  void SpendStarBanner(BuildContext context, int amount) async{
+    _stars -= amount;
+    _recentlyAddedStars = -amount;
+    _showStarFlash = false;
+    await _saveData(); // ✅ Save immediately
+    notifyListeners();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final overlay = Overlay.of(context);
+      if (!context.mounted) return;
+
+      late OverlayEntry entry;
+      entry = OverlayEntry(
+        builder: (ctx) => AnimatedStarSpentBanner(
+          starAmount: amount,
+          onDismiss: () => entry.remove(),
+        ),
+      );
+      overlay.insert(entry);
+    });
+  }
+
+
+  void addXP(int amount, {BuildContext? context}) async {
+    final int oldLevel = level;
+    _xp += amount;
+    final int newLevel = level;
+
+    if (newLevel > oldLevel && context != null && context.mounted) {
+      var gems = 0;
+      for (var l = oldLevel + 1; l <= newLevel; l++) {
+        gems += Rewards.gemsForLevel(l);
+      }
+      addStarBanner(context, min(gems, 15));
+    }
+    _saveData();
+    notifyListeners();
+
+    if (context != null && context.mounted) {
+      // Slight delay to allow UI to update
+      await Future.delayed(const Duration(milliseconds: 100));
+
+      // 1️⃣ Show XP banner and wait until it disappears
+      await AnimatedXPBanner.show(context, amount);
+
+      // 2️⃣ Only after XP banner ends, show Level Up banner if level increased
+      if (newLevel > oldLevel && context.mounted) {
+        await LevelUpOverlayHelper.showOverlayLevelUpBanner(context, newLevel);
+      }
+    }
+  }
+
+
+
+//----------------------------------------------------------------------------------
+  void resetData() {
+    userProfile.clearPrefs(prefs);
+    learningPreferences.clearPrefs(prefs);
+    inventoryManager.clearPrefs(prefs);
+    _xp = 0;
+    _stars = 0;
+    Tolims = 20;
+    customization.unlockedAvatars = List<String>.from(AvatarCatalog.starter);
+    customization.selectedAvatar = AvatarCatalog.defaultAvatar;
+    _unlockedCourses = [];
+    _unlockedLanguages = ['arabic', 'french'];
+    _saveData();
+    notifyListeners();
+  }
+
+
+  Future<void> initUser() async {
+    // 1. Always load local data first (instant offline loading)
+    await loadData();
+
+    // 2. If online, login Firebase (optional)
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) {
+      _userId = 'offline_user';
+      if (kDebugMode) print('Offline mode: Local data only');
+      notifyListeners();
+      return;
+    }
+
+    try {
+      final currentUser = FirebaseAuth.instance.currentUser;
+      if (currentUser == null) {
+        final userCredential = await FirebaseAuth.instance.signInAnonymously();
+        _userId = userCredential.user!.uid;
+      } else {
+        _userId = currentUser.uid;
+      }
+
+      // 3. Background cloud sync (doesn't block UI)
+      syncWithFirebaseIfOnline();
+    } catch (e) {
+      _userId = 'offline_user';
+      if (kDebugMode) print('Firebase login failed. Offline only: $e');
+    }
+
+    notifyListeners();
+  }
+
+  void startConnectivityListener() {
+    Connectivity().onConnectivityChanged.listen((status) async {
+      if (status != ConnectivityResult.none) {
+        await syncWithFirebaseIfOnline();
+      }
+    });
+  }
+
+
+  // ---------------- Local Storage Load/Save -------------------
+  Future<void> loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    _xp = prefs.getInt('xp') ?? 0;
+    _stars = prefs.getInt('stars') ?? 5;
+    Tolims = prefs.getInt('saveTokens') ?? 20;
+    _banned = prefs.getBool('banned') ?? false;
+
+    _unlockedCourses = prefs.getStringList('unlockedCourses') ?? ['AlphaDraw', 'BrainQuest'];
+    _unlockedLanguages = prefs.getStringList('unlockedLanguages') ?? ['arabic', 'french'];
+
+    userProfile = UserProfile.fromPrefs(prefs);
+    customization = CustomizationSettings.fromPrefs(prefs);
+    courseProgressionManager = await CourseProgressionManager.fromPrefs(prefs);
+    youtubeProgressManager = await YoutubeProgressManager.fromPrefs(prefs);
+    inventoryManager = await Inventory.fromPrefs(prefs);
+    _adsEnabled = prefs.getBool('adsEnabled') ?? true;
+
+    notifyListeners();
+  }
+
+
+  /// Writes everything to SharedPreferences now (used before switching child).
+  Future<void> saveNow() => _saveData();
+
+  Future<void> _saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('xp', _xp);
+    await prefs.setInt('stars', _stars);
+    await prefs.setInt('saveTokens', Tolims);
+    await prefs.setBool('banned', _banned);
+
+    await prefs.setStringList('unlockedCourses', _unlockedCourses);
+    await prefs.setStringList('unlockedLanguages', _unlockedLanguages);
+
+    await courseProgressionManager.saveToPrefs(prefs);
+    // Personal info
+    await userProfile.saveToPrefs(prefs);
+    //Customazations
+    await customization.saveToPrefs(prefs);
+
+    await inventoryManager.saveToPrefs(prefs);
+    // YoutubeProgressManager
+    youtubeProgressManager.saveToPrefs(prefs);
+  }
+
+
+  // ---------------- Firebase Sync -------------------
+  Future<void> syncWithFirebaseIfOnline() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    if (connectivityResult == ConnectivityResult.none) return;
+    if (_userId == null || _userId == 'offline_user') return;
+
+    final userDoc = _firestore.collection('users').doc(ProfileStore.cloudDocId(_userId!));
+
+    try {
+      // Save locally before syncing
+      await _saveData();
+
+      // 🔽 Step 1: Get remote values for admin-controlled fields
+      final snapshot = await userDoc.get();
+      bool remoteIsLocked = false;
+      bool remoteAdsEnabled = true;
+
+      if (snapshot.exists) {
+        final data = snapshot.data();
+        if (data != null) {
+          remoteIsLocked = data['isLocked'] ?? false;
+          remoteAdsEnabled = data['adsEnabled'] ?? true;
+        }
+      }
+
+      // 🔽 Step 2: Apply remote control fields locally
+      _banned = remoteIsLocked;
+      _adsEnabled = remoteAdsEnabled;
+
+      // 🔼 Step 3: Push all other local data to Firebase (except admin-controlled ones)
+      await userDoc.set({
+        "xp": _xp,
+        "stars": _stars,
+        "tolims": Tolims,
+        "uid": _userId,
+        "unlockedLanguages": _unlockedLanguages,
+        "unlockedCourses": _unlockedCourses,
+        // Skip isLocked and adsEnabled here (admin controls them)
+        ...userProfile.toMap(),
+        ...customization.toMap(),
+        ...learningPreferences.toMap(),
+        ...courseProgressionManager.toMap(),
+        ...inventoryManager.toMap(),
+        ...youtubeProgressManager.toMap(),
+      }, SetOptions(merge: true));
+
+      print("✅ Firebase sync complete: Local data pushed; admin fields pulled.");
+    } catch (e) {
+      if (kDebugMode) print("❌ Firebase sync failed: $e");
+    }
+  }
+
+
+
+  // Codes a forte entropie (10 caracteres, alphabet mixte majuscule/minuscule/
+  // chiffres, sans caracteres ambigus) : ~62^10 combinaisons possibles, contre
+  // seulement 36^6 avant -- rend le brute-force du code de sauvegarde
+  // impraticable. Voir aussi les regles Firestore recommandees (firestore.rules)
+  // qui doivent restreindre la lecture/ecriture de la collection "backups".
+  String generateBackupCode({int length = 10}) {
+    const characters =
+        'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789';
+    final random = Random.secure();
+    return List.generate(
+        length, (_) => characters[random.nextInt(characters.length)]).join();
+  }
+
+  static const Duration _backupCodeTtl = Duration(days: 7);
+
+  Future<String> saveBackup() async {
+    String backupCode;
+
+    while (true) {
+      backupCode = generateBackupCode();
+      final doc = await _firestore.collection('backups').doc(backupCode).get();
+      if (!doc.exists) break;
+      // Collision extremement improbable avec 10 caracteres, mais on regenere
+      // par securite plutot que de suffixer un timestamp predictible.
+    }
+
+    final backupData = {
+      ...userProfile.toMap(),
+      ...customization.toMap(),
+      ...courseProgressionManager.toMap(),
+      ...inventoryManager.toMap(),
+      ...youtubeProgressManager.toMap(),
+
+      "xp": _xp,
+      "stars": _stars,
+      "tolims": Tolims,
+      "unlockedLanguages": _unlockedLanguages,
+      "unlockedCourses": _unlockedCourses,
+      "adsEnabled": _adsEnabled,
+      "ownerUid": _userId,
+      "createdAt": FieldValue.serverTimestamp(),
+    };
+
+    await _firestore.collection('backups').doc(backupCode).set(backupData);
+
+    if (kDebugMode) print("✅ Backup saved (code hidden in release logs)");
+    return backupCode;
+  }
+
+  Future<void> loadBackup(String backupCode) async {
+    final backupRef = _firestore.collection('backups').doc(backupCode);
+    final backupDoc = await backupRef.get();
+
+    if (!backupDoc.exists) {
+      throw Exception("Backup not found");
+    }
+
+    final data = backupDoc.data()!;
+
+    // Expiration : un code non utilise devient invalide apres 7 jours,
+    // ce qui reduit fortement la fenetre d'exploitation en cas de fuite
+    // ou de tentative de brute-force du code.
+    final createdAt = (data['createdAt'] as Timestamp?)?.toDate();
+    if (createdAt != null &&
+        DateTime.now().difference(createdAt) > _backupCodeTtl) {
+      await backupRef.delete();
+      throw Exception("Backup code expired");
+    }
+
+    userProfile.loadFromMap(data);
+
+    _xp = data["xp"] ?? 0;
+    _stars = data["stars"] ?? 0;
+    Tolims = data["tolims"] ?? 0;
+
+    _unlockedLanguages = List<String>.from(data["unlockedLanguages"] ?? []);
+    _unlockedCourses = List<String>.from(data["unlockedCourses"] ?? []);
+
+    customization.loadFromMap(data);
+    courseProgressionManager.loadFromMap(data);
+    inventoryManager.loadFromMap(data);
+    youtubeProgressManager.loadFromMap(data);
+
+    _adsEnabled = data["adsEnabled"] ?? _adsEnabled;
+
+    await _saveData();
+
+    // Usage unique : une fois restaure, le code est detruit immediatement.
+    // Cela ferme la fenetre d'exploitation pour quiconque devinerait ou
+    // intercepterait un code apres qu'il ait deja servi.
+    await backupRef.delete();
+
+    if (kDebugMode) print("✅ Backup loaded successfully");
+
+    // Navigate to Auth screen (restart flow)
+    navigatorKey.currentState?.pushNamedAndRemoveUntil('Auth', (route) => false);
+  }
+
+  // ---------------- Track Login & Logout -------------------
+
+  void onAppStart(String userId) {
+    _lastLogin = DateTime.now();
+    _userId = userId; // Assign the passed userId to the private field
+    syncWithFirebaseIfOnline();
+  }
+
+  Future<void> onAppClose() async {
+    _lastLogout = DateTime.now();
+    if (_userId != null) {
+      await _firestore.collection('users').doc(ProfileStore.cloudDocId(_userId!)).set({
+        "lastLogout": _lastLogout?.toIso8601String(),
+      }, SetOptions(merge: true));
+    }
+    await _saveData();
+  }
+
+  //ADDING XP
+  void _showOverlayXPAddedBanner(BuildContext context, int xpAmount) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!context.mounted) return;
+
+      final overlay = Overlay.of(context);
+      if (overlay == null) return;
+
+      Provider.of<AudioManager>(context, listen: false)
+          .playSfx("assets/audios/sound_effects/correct_anwser.mp3");
+
+      late OverlayEntry entry;
+
+      entry = OverlayEntry(
+        builder: (ctx) {
+          return AnimatedXPBanner(
+            xpAmount: xpAmount,
+            onDismiss: () => entry.remove(),
+          );
+        },
+      );
+
+      overlay.insert(entry);
+    });
+  }
+
+  void init(BuildContext context) {
+
+  }
+
+  // ADS MANAGER
+  void setAdsEnabled(bool value) {
+    _adsEnabled = value;
+    _saveAdsPreference();
+    notifyListeners();
+  }
+
+  Future<void> _saveAdsPreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('adsEnabled', _adsEnabled);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _rewardTimer?.cancel();
+    _delayedRestartTimer?.cancel();
+    super.dispose();
+  }
+
+}

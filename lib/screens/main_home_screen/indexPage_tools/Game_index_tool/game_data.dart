@@ -28,15 +28,16 @@ final List<Map<String, dynamic>> games = [
     'cost': 0,
     'unlockType': 'logic',
   },
-  {
-    'title': 'MagicPassport',
-    'icon': Icons.travel_explore_rounded,
-    'routeName': 'MagicPassport',
-    'image': 'assets/images/GameGridImages/MagicPassport.png',
-    'locked': false,
-    'cost': 0,
-    'unlockType': 'logic',
-  },
+  // Magic Passport — hidden for now
+  // {
+  //   'title': 'MagicPassport',
+  //   'icon': Icons.travel_explore_rounded,
+  //   'routeName': 'MagicPassport',
+  //   'image': 'assets/images/GameGridImages/MagicPassport.png',
+  //   'locked': false,
+  //   'cost': 0,
+  //   'unlockType': 'logic',
+  // },
   {
     'title': 'MonJardin',
     'icon': Icons.local_florist_rounded,
@@ -74,25 +75,27 @@ final List<Map<String, dynamic>> games = [
     'unlockType': 'logic',
   },
 
-  {
-    'title': 'shapeSorter',
-    'icon': Icons.square_foot_outlined,
-    'routeName': 'ShapeSorter',
-    'image': 'assets/images/GameGridImages/Shape.png', // ✅ New key
-    'locked': true,
-    'cost': 0,
-    'unlockType': 'puzzle',
-  },
+  // Shape Pop — hidden for now
+  // {
+  //   'title': 'shapeSorter',
+  //   'icon': Icons.square_foot_outlined,
+  //   'routeName': 'ShapeSorter',
+  //   'image': 'assets/images/GameGridImages/Shape.png', // ✅ New key
+  //   'locked': true,
+  //   'cost': 0,
+  //   'unlockType': 'puzzle',
+  // },
 
-  {
-    'title': 'appStories',
-    'icon': Icons.menu_book,
-    'routeName': 'AppStories',
-    'image': 'assets/images/GameGridImages/StoriesGame.png', // ✅ New key
-    'locked': true,
-    'cost': 0,
-    'unlockType': 'reading',
-  },
+  // Story Land — hidden for now
+  // {
+  //   'title': 'appStories',
+  //   'icon': Icons.menu_book,
+  //   'routeName': 'AppStories',
+  //   'image': 'assets/images/GameGridImages/StoriesGame.png', // ✅ New key
+  //   'locked': true,
+  //   'cost': 0,
+  //   'unlockType': 'reading',
+  // },
 
   {
     'title': 'MagicPainting',
@@ -137,15 +140,16 @@ final List<Map<String, dynamic>> games = [
     'unlockType': 'language',
   },
 
-  {
-    'title': 'WordExplorer',
-    'icon': Icons.swipe_left,
-    'routeName': 'WordExplorer',
-    'image': 'assets/images/GameGridImages/BookOfWords.png', // ✅ New key
-    'locked': true,
-    'cost': 30,
-    'unlockType': 'iq',
-  },
+  // Word Explorer — hidden for now
+  // {
+  //   'title': 'WordExplorer',
+  //   'icon': Icons.swipe_left,
+  //   'routeName': 'WordExplorer',
+  //   'image': 'assets/images/GameGridImages/BookOfWords.png', // ✅ New key
+  //   'locked': true,
+  //   'cost': 30,
+  //   'unlockType': 'iq',
+  // },
 
   {
     'title': 'Piano',
